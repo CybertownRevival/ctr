@@ -1,0 +1,413 @@
+<HTML>
+
+<HEAD>
+
+<meta http-equiv="Content-Type" content="text/html">
+
+<title>Cybertown - Civilization for the Virtual Age</title>
+
+<!-- cityhall/action.tmpl -->
+
+<BASE TARGET="place">
+
+<!-- common/loadinfo.tmpl -->
+
+<!-- included in action.tmpl to load an info window and close it automatically when switching the place -->
+
+<script language=javascript>
+
+winClose = false;
+
+winFocus = false;
+
+if (navigator.appName == "Netscape")
+
+{
+
+ winClose = true;
+
+ winFocus = true;
+
+}
+
+else
+
+{
+
+ var i = navigator.appVersion.indexOf("MSIE");
+
+ if (i >= 0)
+
+ {
+
+  var ver = parseInt(navigator.appVersion.substring(i+5,i+6));
+
+  if ( ver > 4)
+
+   winClose = true;
+
+  if ( ver > 3 )
+
+   winFocus = true;
+
+ }
+
+}
+
+
+
+myInfoWin = null;
+
+
+
+function loadInfo(par)
+
+{
+
+ loadCustom( par, 620, 450 );
+
+}
+
+
+
+function closeInfoWin()
+
+{
+
+ if (winClose && myInfoWin && !myInfoWin.closed)
+
+ {
+
+  myInfoWin.close();
+
+ }
+
+}
+
+function loadCustom(par,h,v)
+
+{
+
+ closeInfoWin();
+
+var paramstring = 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=' + h + ',height=' + v;
+
+
+
+ win = window.open(par, "info",paramstring);
+
+ if (winFocus)
+
+ {
+
+    win.focus();
+
+ }
+
+ myInfoWin = win;
+
+}
+
+
+
+function loadMap(par)
+
+{
+
+ closeInfoWin();
+
+var paramstring = 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=no,copyhistroy=no,width=520,height=478';
+
+
+
+ win = window.open(par, "info",paramstring);
+
+ if (winFocus)
+
+ {
+
+    win.focus();
+
+ }
+
+ myInfoWin = win;
+
+}
+
+
+
+<!--begin added this reset -->
+
+function jumpreset( par1, par2 )
+
+{
+
+	jump( par2 );
+
+	par1[0].selected = true;
+
+}
+
+<!--end added this reset -->
+
+
+
+
+
+function jump( par )
+
+{
+
+ closeInfoWin();
+
+
+
+var parArray = new Array(4);
+
+parArray = par.split(" ");
+
+var type = parArray[0];
+
+var url = parArray[1];
+
+var h = parArray[2];
+
+var v = parArray[3];
+
+
+
+ if (url != '') 
+
+ {
+
+  if ( type == "top")
+
+  {
+
+   top.location.href = url;
+
+  }
+
+
+
+  else if ( type == "info")
+
+  {
+
+   loadInfo(url);
+
+  }
+
+
+
+  else if ( type == "custom")
+
+  {
+
+   loadCustom(url,h,v);
+
+  }
+
+
+
+  else if ( type == "place")
+
+  {
+
+   top.place.location.href = url;
+
+  }
+
+
+
+  else if ( type == "poll")
+
+  {
+
+   loadCustom( url, 600, 500 );
+
+  }
+
+ }
+
+}
+
+
+
+
+
+
+
+function showMorphBanner()
+
+{
+
+}
+
+
+
+</script>
+
+<!-- end of include common/loadinfo.tmpl -->
+
+
+
+<!-- moderation -->
+
+<script language="JavaScript">
+
+function moderate() {
+
+window.open('place?ac=moderate&plc=jail&TKT=76b9bcd4604bc967','Moderator', 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=no,resizable=yes,copyhistory=no,width=800,height=600');
+
+ }
+
+</script>
+
+<!-- end moderation -->
+
+
+
+</HEAD>
+
+
+
+<!-- common/body1.tmpl -->
+
+<!-- e.g. used for all action templates -->
+
+
+
+<BODY onUnload="closeInfoWin()" BACKGROUND="/images/back.gif" BGCOLOR="#002020" LINK="#00FF00" VLINK="#00FF00" ALINK="#FFFFFF" TEXT="#D0DBF7">
+
+<FONT face="Arial, Helvetica, sans-serif" size=-1>
+
+
+
+<!-- end of include body1.tmpl -->
+
+
+
+<!-- common/controlbegin.tmpl -->
+
+<!-- included in action.tmpl -->
+
+<form name="navbar">
+
+<!-- end of include controlbegin.tmpl -->
+<div align=center>
+
+<a href="./" target="_top">
+
+<b><i><font face="Arial" size=+0 color="#00FF00">Jail</font></i></b></a><br>
+
+
+
+<a href="/cgi-bin/jail/place?plc=jail&ac=place&ID=0000000000000033&force=s">
+
+<IMG SRC="/images/buttons/b2dchat.gif" BORDER=0 ALT="2D Chat"></a>
+
+<a href="/cgi-bin/jail/place?plc=jail&ac=place&ID=0000000000000033&force=p">
+
+<IMG SRC="/images/buttons/b3dchat.gif" BORDER=0 ALT="3D Chat"></a><br>
+
+
+
+
+
+
+
+<br>
+
+<br>
+
+<a href="javascript:loadInfo('/places/jail/yurhere.html')" target=_self>
+
+<IMG SRC="/places/jail/images/yurhere.gif" BORDER=0 ALT="Info"></a>
+
+
+
+<a href="javascript:loadInfo('/places/jail/phonecall.html')" target=_self>
+
+<IMG SRC="/places/jail/images/1call.gif" BORDER=0 ALT="Info"></a>
+
+
+
+<a href="javascript:loadInfo('/info/about/details/constitution.html')" target=_self>
+
+<IMG SRC="/places/jail/images/constitution.gif" BORDER=0 ALT="Info"></a>
+
+
+
+<a href="javascript:loadInfo('/places/jail/jailrr.html')" target=_self>
+
+<IMG SRC="/places/jail/images/rules.gif" BORDER=0 ALT="Info"></a>
+
+
+
+<a href="javascript:loadInfo('/founderguide.html')" target=_self>
+
+<IMG SRC="/places/jail/images/guidelines.gif" BORDER=0 ALT="Info"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- common/controlend.tmpl -->
+
+<!-- included in action.tmpl, table starts in control.tmpl -->
+
+</div></form>
+
+<MAP Name="controlmap">
+
+    <AREA Shape="rect" coords = "3,40,95,55"  HREF="javascript:loadInfo('/info/directory.html')" ALT="Directory" target=_self>
+
+	<AREA Shape="rect" coords = "0,60,100,73" HREF="javascript:loadInfo('/info/controlpanel/index.html')"
+
+ ALT="How Do I?" target=_self>
+
+
+
+	<AREA Shape="rect" coords = "0,77,100,94"  HREF="javascript:loadInfo('edit?KEY=Jailbird&TPL=property/mydata&ac=read')" ALT="My Info" target=_self>
+
+
+
+    <AREA Shape="rect" coords = "1,99,98,113"  HREF="javascript:loadInfo('/info/controlpanel/index.html')" ALT="How Do I?" target=_self>
+
+
+
+    <AREA Shape="rect" coords = "0,118,100,132"  HREF="javascript:loadInfo('/info/helpinfo.html')" ALT="Help/Info" target=_self>
+
+    <AREA Shape="rect" coords = "0,138,100,152"  HREF="javascript:loadCustom('/cgi-bin/calweb/calweb.cgi',720,450)" ALT="Activities" target=_self>
+
+  <area shape="rect" coords="0,157,101,170" HREF="javascript:loadInfo('/places/post/post.html')" target="_self" alt="Send a Postcard">
+
+<area shape="rect" coords="1,177,102,191" HREF="javascript:loadInfo('/cgi-bin/cybertown/msb?DTY=O&KTY=ID&KEY=0000000000000001&TY=m')" target="_self" alt="Feedback Board">
+
+
+
+<AREA Shape="rect" coords = "0,196,102,209"  HREF="javascript:loadCustom('/tour/intro.htm',520,400)" ALT="City Tour" target=_self>
+
+
+
+	<AREA Shape="rect" coords = "20,212,148,246"  HREF="javascript:loadMap('place?ac=print&tpl=enter/mapcity')" ALT="City Map" target=_self>
+
+</MAP>
+
+<!-- end of include controlend.tmpl -->
+
+
+
+
+
+</font></BODY></HTML>
+
+

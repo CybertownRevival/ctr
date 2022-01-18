@@ -1,0 +1,12 @@
+{
+    "default": {
+        "name": "Default",
+        "url": "/avatars/default.wrl",
+        "gestures": ["Hallo","Hey","Agree","Like","Dislike","Disagree","Not now","Good bye","Appear","Disappear"]
+    },
+    "tonaki/m1": {
+        "name": "Tonaki's m1",
+        "url": "/avatars/m1.wrl",
+        "gestures": ["Bonjour01","Rire jim","Frowns jim","Agrees jim","Smiles jim","Disagrees jim","Non jim","Rejet jim","Good by jim","Superzen lil","Pose homme","Marche"]
+    }
+}

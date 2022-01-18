@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body, html {
+    background-color: #000;
+    color: rgb(208, 219, 247);
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-size: 13px;
+}
+
+
+@layer base {
+    h1 {
+        @apply text-3xl;
+    }
+    h2 {
+        @apply text-2xl;
+    }
+    h3 {
+        @apply text-xl;
+    }
+    h4 {
+        @apply text-lg;
+    }
+    .btn { 
+        @apply p-1 bg-gray-300 text-black hover:bg-gray-200 active:bg-gray-400; 
+    }
+    .input-text {
+        @apply text-black p-0.5;
+    }
+    select {
+        @apply text-black p-0.5;
+    }
+}
+
+a {
+    text-decoration: underline;
+    color: #00FF00;
+
+    &:link {
+        text-decoration: underline;
+        color: #00FF00;
+    }
+
+    &:visited {
+        color: #00FF00;
+    }
+
+    &:active {
+        color: #fff;
+
+    }
+}  
+
+.bg-lines {
+    background: linear-gradient(#000000 50%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 0), #323232;
+    background-size: auto 2px;
+}
+
+X3DCanvas {
+    height: 100%;
+    width: 100%;
+    scroll: none;
+    Overflow: hidden;
+}
+
+.bg-chat {
+    background-color: #004d00;
+}
+
+.chat {
+    border: 1px solid #001F00;
+    background-color: #009200;
+
+    .messages-pane {
+        border: 1px solid black;
+        background-color: #004d00;
+    }
+
+}
+.text-chat {
+    color: #00df00;
+}
+
+table {
+    line-height: normal;
+    font-size:medium;
+}
+
+.menu {
+    width: 155px;
+    height: 250px;
+    background: url('/assets/img/finalcontx.gif') top center no-repeat;
+    display:block;
+    position: relative;
+
+    .menuLink {
+        position: absolute;
+        height: 15px;
+        width: 100px;
+        display:block;
+    }
+
+
+}
+
+.btn-ui {
+    font-family: arial;
+    font-size: x-small;
+    color: #d0dbf7 !important;
+    border: 1px solid #8f9bb6;
+    border-radius: 5px;
+    box-shadow: -2px 3px black;
+    margin: 3px;
+    letter-spacing: 1px;
+    background-color: #001829;
+    width: 112px;
+    display: block;
+    text-align:center;
+    text-decoration: none !important;
+    text-transform: uppercase;
+    margin-left: auto;
+    margin-right: auto;
+
+}

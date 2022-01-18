@@ -1,0 +1,210 @@
+
+
+
+
+<html>
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html">
+
+<title>Cybertown - Civilization for the Virtual Age</title>
+
+<script language=javascript>
+
+pluginUpdate = 1;
+
+timerid = setTimeout( 'init()', 1000 );
+
+cityTime = new Date();
+
+cityTime.setHours(20);
+
+cityTime.setMinutes (33);
+
+cityTime.setSeconds (54);
+
+cityTimeOffset = cityTime.getTime() - (new Date()).getTime();
+
+function init()
+
+{
+
+    // we need to call the server otherwise the cookie is not set if an http proxy is used
+
+    if ( top.refresh )
+
+    {
+
+        timerid = setTimeout( 'refreshTimer()', 30*1000 );
+
+        top.refresh.location.href = "http://www.cybertown.com:2080/refresh.tmpl?ac=check";
+
+    }
+
+    else
+
+    {
+
+        timerid = setTimeout( 'init()', 1000 );
+
+    }
+
+}
+
+function printDate(timeString,count,time)
+
+{
+
+    if ( count > 1 )
+
+        text = "Citizens Online";
+
+    else if ( count == 1 )
+
+        text = "Citizen Online";
+
+    else if ( count == -1 )
+
+        text = "Citizens Online";
+
+
+
+    if ( top.date )
+
+    {
+
+        top.date.document.open("text/html");
+
+        top.date.document.writeln("<HTML><BODY BACKGROUND='/images/back.gif' BGCOLOR=#002020 LINK=#FFFF00 VLINK=#FFFF00 ALINK=#FFFFFF TEXT=#D0DBF7>");
+
+        top.date.document.writeln("<div align=center><IMG SRC='http://www.cybertown.com/images/ctlogo.gif' BORDER=0>");
+
+        top.date.document.writeln("<br><FONT size=-1 color=#33CCCC>City Time " + timeString);
+
+        top.date.document.writeln("</font>");
+
+        top.date.document.writeln("<FONT size=-1>");
+
+        top.date.document.writeln("Citizens Online");
+
+        top.date.document.writeln("</font>");
+
+        top.date.document.writeln("</body></html>");
+
+        top.date.document.close();
+
+    }
+
+}
+
+function refreshTimer()
+
+{
+
+    if ( top.place.World==null && top.place.document.applets.length==0 ) // no plugin active
+
+    {
+
+        if ( top.refresh )
+
+        {
+
+            top.refresh.location.href = "http://www.cybertown.com:2080/refresh.tmpl?ac=check";
+
+        }
+
+    }
+
+    else 
+
+    {
+
+	now = new Date();
+
+	cityTime.setTime(now.getTime()+cityTimeOffset);
+
+	ampm = " AM";
+
+	if (cityTime.getHours() >= 12) { ampm = " PM"; }
+
+	hour = cityTime.getHours();
+
+	if (hour > 12) { hour -= 12; }
+
+	timeString = hour + ":";
+
+	if (cityTime.getMinutes() < 10) { timeString += "0"; }
+
+	timeString += cityTime.getMinutes() + ampm + "<BR>";
+
+	printDate( timeString, -1, cityTime.getTime() );
+
+    }
+
+    timerid = setTimeout( 'refreshTimer()', 30*1000 );
+
+}
+
+function update(timeString,count,time)
+
+{
+
+    printDate(timeString,count,time);
+
+}
+
+listWin = 0;
+
+function list(url)
+
+{
+
+  listWin = window.open(url, "list", "toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=200,height=450");
+
+}
+
+receiveWin = 0;
+
+function messageReceived()
+
+{
+
+  receiveWin = window.open("http://www.cybertown.com:2080/receive.tmpl?ac=getmessage&", "receive", "toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=600,height=250");
+
+}
+
+</script>
+
+</head>
+
+<frameset rows="70,100%,*,*" border=0 marginheight=0 marginwidth=0 frameborder=0 framespacing=0>
+
+  <frame name="top" src="/places/jail/menu.html" scrolling="auto" noresize border=0 marginheight=0 marginwidth=0 frameborder=0 framespacing=0>
+
+  <frameset cols="*,185" border=0 marginheight=0 marginwidth=0 frameborder=0 framespacing=0>
+
+    <frame name="place" src="/cgi-bin/cybertown/templates/jail/scripts/place?plc=jail&ac=place&ID=0000000000000033&force=s" scrolling="auto" noresize border=0>
+
+    <frameset rows="54,*" border=0 marginheight=0 marginwidth=0 frameborder=0 framespacing=0>
+
+      <frame name="date" src="/blank.html" scrolling="no" noresize border=0 marginheight=0 marginwidth=0 frameborder=0 framespacing=0>
+
+      <frame name="action" src="/places/jail/action.html" scrolling="auto" noresize>
+
+    </frameset>
+
+  </frameset>
+
+ <frame name="HTML" src="/blank.html" noresize scrolling="no" border=0 marginheight=0 marginwidth=0 frameborder=0 framespacing=0>
+
+ <frame name="refresh" src="/blank.html" noresize scrolling="no" border=0 marginheight=0 marginwidth=0 frameborder=0 framespacing=0>
+</frameset>
+
+
+
+</html>
+
+
+
+

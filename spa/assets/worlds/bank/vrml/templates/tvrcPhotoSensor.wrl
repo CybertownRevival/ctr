@@ -1,0 +1,539 @@
+#VRML V2.0 utf8
+		
+  #@ <Name><ger>Das Lichtschranke-Objekt</ger><eng>The photo electric light barrier object</eng><spa>The Photo electric light barrier object</spa></Name>	 
+	#@ <summary><ger>Dieses Objekt dient zur Darstellung einer Lichtschranke. Das Aussehen kann dabei &uuml;ber verschiedene Parameter angepasst werden. Die Steuerung des Zustands erfolgt &uuml;ber die Proze&szlig;anbindung.
+	#@ </ger><eng>To visualize a Photo electric light barrier one can use this object. It is possible to change the appearance by adjusting some parameters. The state of the barrier is controlled via a signal. 
+	#@ </eng></summary>
+	#@<category>TvrcBasic</category>
+  #@<NeedGeometryInterface>true</NeedGeometryInterface>
+	#@<icon>obj_Lichtschranke.ico</icon>
+#@<tag>photosensor</tag>
+PROTO tvrcPhotoSensor [ 
+
+	#@ <summary><ger>Gibt die Farbe der Lichtschranke im inaktiven Zustand an (kein Durchgang).
+	#@ </ger><eng>The color of the light barrier when not activated (no transit).
+	#@ </eng></summary>		
+	#@ Farbe des Sensors bei Low-Signal	(default: blau)
+	#@ <Name><ger>Farbe bei Low-Signal</ger><eng>Low Signal Color</eng><spa>Color Inactivo</spa></Name>	 
+	#@ <Visible>true</Visible>
+	exposedField SFColor signalLowCol 0 0 1
+	
+	#@ <summary><ger>Gibt die Farbe der Lichtschranke im aktiven Zustand an (Durchgang).
+	#@ </ger><eng>The color of the light barrier when activated (transit).
+	#@ </eng></summary>		
+	#@ Farbe des Sensors bei High-Signal (default: gruen)
+	#@ <Name><ger>Farbe bei High-Signal</ger><eng>High Signal Color</eng><spa>Color Activo</spa></Name>	 
+	#@ <Visible>true</Visible>
+	exposedField SFColor signalHighCol 0 1 0
+
+	#@ <summary><ger>Signaleingang f&uuml;r die Umschaltung zwischen inaktivem und aktivem Zustand.
+	#@ </ger><eng>Signal input for the switch from inactive to active status.
+	#@ </eng></summary>	
+	#@ <Name><ger>Aktiver Zustand</ger><eng>Signal</eng><spa>Señal</spa></Name>	 
+	#@ <Visible>true</Visible>
+	exposedField SFBool signal FALSE
+	
+	#@ <summary><ger>Standardm&auml;&szlig;ig wird die Lichtschranke mit 2 kegelf&ouml;rmigen Sensoren visualisiert. Wird diese Eigenschaft deaktiviert, wird nur ein Sensor visualisiert. 
+	#@ </ger>
+	#@ <eng>In the default setting, the light barrier is shown with two coneshaped sensors. If this property is deactivated, then only one sensor is displayed.
+	#@ </eng></summary>
+	#@ <Name><ger>Doppelsensor</ger><eng>Double sensor</eng><spa>Double sensor</spa></Name>	 
+	#@ <Visible>true</Visible>
+	exposedField SFBool flgDoppelsensor TRUE
+		
+	#@ <summary><ger>Visualisiert im inaktiven Zustand der Lichtschranke (kein Durchgang) einen d&uuml;nnen Strahl zwischen den Sensoren.
+	#@ </ger><eng>With the light barrier not activated,(no transit), a narrow beam is displayed between the sensors.
+	#@ </eng></summary>
+	#@ <Name><ger>Strahl einblenden</ger><eng>Show Ray</eng><spa>Mostrar haz</spa></Name>	 
+	#@ <Visible>true</Visible>		   
+	exposedField SFBool	swRayOn FALSE
+	
+	#@ <summary><ger>Gibt den Abstand zwischen den beiden Sensoren der Lichtschranke an.
+	#@ </ger><eng>Indicates the distance between the two light barrier sensors.
+	#@ </eng></summary>		
+	#@ Abstand der Sensoren bei Sensorart Paerchen
+	#eventIn SFFloat objAbstand_in
+	#@ <Name><ger>Abstand</ger><eng>Distance</eng><spa>Ancho</spa></Name>	 
+	#@ <Visible>true</Visible>
+	exposedField SFFloat objAbstand 100
+		
+	#@ <summary><ger>Standardm&auml;&szlig;ig wird die Lichtschranke visualisiert. Wird diese Eigenschaft nicht gesetzt, wird sie ausgeblendet.
+	#@ </ger><eng>The default setting shows the light barrier. If this property isn't set, it is not visible.
+	#@ </eng></summary>	
+	#@ <Name><ger>Sichtbar</ger><eng>Visible</eng><spa>Visible</spa></Name>	 
+	#@ <Visible>true</Visible>		
+	exposedField SFBool	objVisibleOn TRUE
+
+	#@ <summary><ger>Detailanzeige des Sensors.	Man kann w&auml;len zwischen alleiniger Darstellung des Sensors und zus&auml;tzlicher Anzeige der Fahne.
+	#@ </ger><eng> Level of detail.	It's possible to choose between only the sensor is visible and sensor and flag are visible.
+	#@ </eng></summary>	  
+	#@ <Name><ger>Fahne einblenden</ger><eng>Show Flag</eng><spa>Detalles</spa></Name>	 
+	#@ <Visible>true</Visible>
+	exposedField SFBool objDetailOn FALSE
+
+	#@ <summary><ger>Textfarbe der Beschriftung.
+	#@ </ger>
+	#@ <eng> Caption text color.
+	#@ </eng></summary>						  
+	#@ <Name><ger>Textfarbe</ger><eng>Color Label</eng><spa>Color etiqueta</spa></Name>	 
+	#@ <Visible>true</Visible>
+	exposedField SFColor lblTextColor 1 1 1
+
+	#@ <summary><ger>Transparenz der Beschriftung.
+	#@ </ger><eng>Transparency of the text.
+	#@ </eng></summary>								  
+	#@ <Name><ger>Transparenz Text</ger><eng>Transparency Label</eng><spa>Transparencia etiqueta</spa></Name>	 
+	#@ <Visible>true</Visible>
+	#@ <Range Min="0" Max="1"></Range>
+	exposedField SFFloat lblTextTransparency 0
+
+	#@ <summary><ger>Beschriftungstext(z.B. Signalname von der Steuerung).
+	#@ </ger><eng>Caption text.
+	#@ </eng></summary>	
+	#exposedField MFString lblTextMF "none"
+	#@ <Name><ger>Text</ger><eng>Text</eng><spa>Texto</spa></Name>	 
+	#@ <Visible>true</Visible>
+	exposedField SFString lblTextSF "none"
+	
+	#@ <summary><ger>Farbe des Beschriftungsf&auml;hnchens.
+	#@ </ger><eng>The color of the caption label.
+	#@ </eng></summary>				   
+	#@ <Name><ger>Hintergrundfarbe</ger><eng>Color label</eng><spa>Color fondo</spa></Name>	 
+	#@ <Visible>true</Visible>
+	exposedField SFColor lblColor .8 .8 .8
+	
+	#@ <summary><ger>Transparenz des Beschriftungsf&auml;hnchens.
+	#@ </ger><eng>Transparency of the caption label.
+	#@ </eng></summary>
+	#@ <Name><ger>Transparenz</ger><eng>Transparency</eng><spa>Transparencia</spa></Name>	 
+	#@ <Visible>true</Visible>
+	#@ <Range Min="0" Max="1"></Range>
+	exposedField SFFloat lblTransparency .6
+
+	### Geometrietransformationen im lokalen Koordinatensystem.	->ausgeblendet
+
+	#@ <summary><ger>Position der Lichtschranke in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Position of the light barrier in reference to the local coordinate system. 
+	#@ </eng></summary>					  
+	#@ <Name><ger>Position</ger><eng>Position</eng><spa>Posición</spa></Name>	 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>
+	exposedField SFVec3f objPosTrl 0 0 0
+	
+	#@ <summary><ger>Drehung der Lichtschranke in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Rotation of the light barrier in reference to the local coordinate system.
+	#@ </eng></summary>				 
+	#@ <Name><ger>Drehung</ger><eng>Rotation</eng><spa>Rotación</spa></Name>	 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>
+	exposedField SFRotation objPosRot 0 0 1 0
+	
+	#@ <summary><ger>Skalierung der Lichtschranke in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Scaling of the light barrier in reference to the local coordinate system.
+	#@ </eng></summary>			   
+	#@ <Name><ger>Skalierung</ger><eng>Scale</eng><spa>Escala</spa></Name>	 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>
+	#@ <Default>0.005 0.005 0.005</Default>
+	exposedField SFVec3f objScale 0.005 0.005 0.005
+	
+	#field SFVec3f raySize 0 0 0
+	exposedField SFVec3f raySize 0 0 0
+
+											
+
+ 	 
+	eventOut SFTime touchTime
+	exposedField SFBool flgTouchBtEnabled TRUE
+
+	# Pfad des Knotens, bei dem auf Kollision getest werden soll
+	# Der letzte Knoten ist der gesuchte Shape
+	#exposedField MFNode	collisionPath []
+
+	exposedField SFNode	collisionPathNode Switch { }
+
+	exposedField SFString	testInfo "leer"
+
+exposedField MFNode	ownPath []
+]
+
+{
+	PROTO interface [
+		exposedField SFBool		signal			IS signal
+		exposedField SFFloat	objAbstand		IS objAbstand
+		exposedField SFColor	signalLowCol	IS signalLowCol
+		exposedField SFColor	signalHighCol	IS signalHighCol
+		exposedField SFVec3f	raySize 		IS raySize
+		exposedField SFString	lblTextSF		IS lblTextSF
+	]{}	
+
+	DEF	oI interface {
+		signal			IS signal
+		objAbstand		IS objAbstand
+		signalLowCol	IS	signalLowCol
+		signalHighCol	IS signalHighCol
+		raySize 		IS raySize
+		lblTextSF		IS lblTextSF
+	}
+
+	DEF trfAll2 Transform { 
+		scale IS objScale
+		rotation IS	objPosRot
+		translation IS objPosTrl
+		children [
+			#USE collisionPathNode
+      DEF tempSwitch Switch {
+				whichChoice	-1
+				choice []
+			}
+			DEF swOnOffAll Switch {	
+			    choice [
+					DEF trfAll Transform {
+						children [
+							Transform {
+								children [
+									
+									DEF tsSensor TouchSensor {
+									}
+
+									DEF touch_bauteil TouchSensor {
+										enabled	IS flgTouchBtEnabled
+										touchTime IS touchTime
+									}
+
+									#@stellt Strahl zwischen den beiden Sensoren dar, momentan nicht aktiv
+									
+									DEF	swRay Switch { 
+										choice [
+												DEF	trfRay Transform {
+												translation 20 0 0
+												children [
+	                         DEF internRay Shape {
+													 geometry DEF shpRay Box {}
+														appearance Appearance { material DEF rayCol Material {
+																diffuseColor 1 1 1
+																transparency 0
+															}
+									    				}
+													}
+												]
+												
+											}
+										]
+									}
+							
+									#@erster Sensor
+									DEF trfSensor1 Transform {
+										rotation 1   0 0  -1.57
+										children [
+											Shape {
+												geometry Cone { bottomRadius 20 height 20 }
+												appearance Appearance { 
+													material DEF colSensor1 Material {
+														diffuseColor 1 1 1
+									  					transparency 0
+													} 
+												}
+											}
+										]
+									}
+							
+									#@zweiter Sensor
+									DEF trfSensor2 Transform {
+										rotation 1   0 0  1.57
+										children [
+											Shape {
+												geometry Cone {  bottomRadius 20 height 20 }
+												appearance Appearance { 
+													material DEF colSensor2 Material {
+														diffuseColor 1 1 1		 
+													}
+									    		}
+											}
+										]
+									}
+								]
+							}
+						
+							DEF tsSensor1 Switch {	
+								choice [
+									DEF trfDetail1 Transform {
+										children [
+											Shape {
+												appearance Appearance	{
+													material Material	{
+														#diffuseColor IS	borderColor
+													}
+												}
+												geometry IndexedLineSet {
+													coord   DEF lineCoord Coordinate {
+														point [0 0 0   0 105.0 0]
+													}
+													coordIndex	[ 0, 1, -1 ]
+												}
+											}
+									
+											
+											#@ Signal bei touch auf Label, momentan nicht benutzt
+											#DEF	tsLbl_out TouchSensor {}
+											
+											Billboard {
+												children [
+													
+													
+													Transform {
+														translation	0 120 0
+														children [
+
+															DEF shpLbl Shape {
+																geometry DEF lblText Text {
+																	#string IS lblTextMF
+																	fontStyle FontStyle	{
+																		justify	"MIDDLE"
+																		size 40
+																	}
+																}
+																appearance Appearance {
+																	material Material {
+																		diffuseColor IS	lblTextColor
+																	}
+																}
+															}
+														]
+													}
+													
+													
+													
+													Transform {
+														translation	0 130 0
+														children [
+															DEF	shpLblBack Shape {
+																geometry Box {
+																	size 100 50 5
+																}
+																appearance Appearance {
+																	material Material {
+																		diffuseColor IS	lblColor
+																		transparency IS	lblTransparency
+																	}
+																}
+															}
+														]
+													}
+
+
+												]
+											}#Ende Billboard
+										]}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+
+	
+
+
+	DEF scSensor Script {
+		#@ ermoeglicht mehrere Stufen der Info-Anzeige 1 - mit Fahne, 2 ohne...		
+		
+		#field SFNode trfAll2 USE trfAll2
+		
+exposedField SFNode collisionPathNode IS collisionPathNode
+		field	SFNode trfAll2 USE trfAll2
+	field	SFNode trfAll USE trfAll
+		field	SFNode trfRay USE trfRay
+		field	SFNode internRay USE internRay
+
+		field SFNode objInt USE	oI
+		
+		field SFNode trfDetail1 USE	trfDetail1
+		field SFNode trfSensor1 USE trfSensor1
+		field SFNode trfSensor2 USE trfSensor2
+		field SFNode colSensor1 USE colSensor1
+		field SFNode colSensor2 USE colSensor2
+
+		field SFNode swRay		USE swRay
+	    field SFNode tsSensor1	USE tsSensor1
+		field SFNode swOnOffAll USE	swOnOffAll
+		
+		field SFNode shpRay USE shpRay
+		field SFNode rayCol USE	rayCol
+		#field SFVec3f raySize IS raySize
+		
+		field SFNode tsSensor1 USE tsSensor1
+				
+		eventIn SFFloat objAbstand_in #IS objAbstand_in
+		eventIn	SFColor	signalHighCol_in
+		eventIn	SFColor	signalLowCol_in
+		
+		eventIn SFBool swSensorDetail_in
+		#@ Ansteuerung der Sensoren (1-highlevel, 0-lowlevel)
+		eventIn	SFString lblTextSF_in
+		field SFNode lblText USE lblText
+		exposedField SFBool signal IS signal
+		exposedField SFBool	swRayOn IS swRayOn
+		exposedField SFBool	objVisibleOn IS	objVisibleOn
+		exposedField SFBool	objDetailOn IS objDetailOn
+		exposedField SFBool	flgDoppelsensor IS flgDoppelsensor
+		
+		directOutput TRUE
+
+
+		url "vrmlscript:
+
+		function flgDoppelsensor(value){
+
+			flgDoppelsensor ? colSensor2.transparency= 0 : colSensor2.transparency= 1;
+		}
+
+		function objDetailOn(value){
+			objDetailOn ? tsSensor1.whichChoice= 0 : tsSensor1.whichChoice= -1;
+		}
+
+		function objVisibleOn(value){
+			objVisibleOn ? swOnOffAll.whichChoice= 0 : swOnOffAll.whichChoice= -1;
+		}
+
+		function swRayOn(value){
+			swRayOn ? swRay.whichChoice= 0 : swRay.whichChoice= -1;
+		}
+		
+		function initialize () {
+			print('tvrcPhotSensor.initialize');
+			
+            //Text init.
+			lblText.string[0] = objInt.lblTextSF;
+			
+			if(signal){
+				colSensor1.diffuseColor = objInt.signalHighCol;
+				colSensor2.diffuseColor = objInt.signalHighCol;
+		    	rayCol.transparency = 1;
+			}
+			else{
+				colSensor1.diffuseColor = objInt.signalLowCol;
+				colSensor2.diffuseColor = objInt.signalLowCol;
+				rayCol.transparency = 0;
+			}
+
+			//Anfangsabstand darstellen
+			abstand(objInt.objAbstand);
+
+			// Initialisierung der Parameter
+			flgDoppelsensor();
+			objDetailOn();
+			objVisibleOn();
+			swRayOn();
+		collisionPathNode.choice=new	MFNode(/*SFNode n1, SFNode n2, ...*/);
+			 collisionPathNode.choice.add(trfAll2);
+			 	collisionPathNode.choice.add(trfAll);
+collisionPathNode.choice.add(trfRay);
+		 	 collisionPathNode.choice.add(shpRay);
+		}
+
+		function abstand (value, time) {
+			//Positionierung der Sensoren
+			trfSensor1.translation = new SFVec3f (20, 0,  value/2);
+			trfSensor2.translation = new SFVec3f (20, 0, -value/2);
+			//Positionierung Detail1 (Fahne)
+			trfDetail1.translation = new SFVec3f (20, 0,  value/2);
+			//Dicke des Strahls festlegen
+			shpRay.size = new SFVec3f (.5, .5, value);
+		}		
+		
+
+		function lblTextSF_in (value, time) {
+			lblText.string[0] = value;
+		}
+		
+		
+		//Abstand wurde veraendert
+		function objAbstand_in (value, time) {
+			abstand(value);
+		}
+
+
+		
+		//Farbumschlag je nach Eingang (0 - blau, 1 - gruen)
+		function signal (value, time) {
+			
+			if (value) {
+				colSensor1.diffuseColor = objInt.signalHighCol;
+				colSensor2.diffuseColor = objInt.signalHighCol;
+		    	rayCol.transparency = 1;
+			}
+			else {
+				colSensor1.diffuseColor = objInt.signalLowCol;
+				colSensor2.diffuseColor = objInt.signalLowCol;
+				rayCol.transparency = 0;
+		    }
+		}
+
+
+
+		function swSensorDetail_in (value) {
+			//Detailstufen des Sensors (Anzeigen der Fahne oder nich...)
+			if (value) {
+				if (!tsSensor1.whichChoice) {
+					tsSensor1.whichChoice = -1;
+				}
+				else tsSensor1.whichChoice = 0;
+			}
+		}
+
+		
+		
+		function signalHighCol_in (value, time) {
+			//neue Farbe zuweisen
+			objInt.signalHighCol = value;
+			//evtl. Sensorfarbe sofort setzen			
+			if (signal) {
+				colSensor1.diffuseColor = objInt.signalHighCol;
+				colSensor2.diffuseColor = objInt.signalHighCol;
+			}
+		}
+
+		
+		
+		function signalLowCol_in (value, time) {
+			//neue Farbe zuweisen
+			objInt.signalLowCol = value;
+			//evtl. Sensorfarbe sofort setzen
+			if (!signal) {
+				colSensor1.diffuseColor = objInt.signalLowCol;
+				colSensor2.diffuseColor = objInt.signalLowCol;
+			}
+		}
+		"
+	}
+
+	#Signal vom Touchsensor (Detaillierung)
+	ROUTE tsSensor.isActive TO scSensor.swSensorDetail_in
+	ROUTE oI.objAbstand	TO scSensor.objAbstand_in
+	ROUTE oI.signalLowCol TO scSensor.signalLowCol_in
+	ROUTE oI.signalHighCol TO scSensor.signalHighCol_in
+	ROUTE oI.lblTextSF TO scSensor.lblTextSF_in
+}
+
+
+#---------------------------------------------------------
+
+
+DEF ph1 tvrcPhotoSensor {
+	objScale .01 .01 .01
+	lblTextSF "test"
+	swRayOn FALSE
+	objAbstand 200
+	signal FALSE
+}
+
+#DEF	siggi signalgeber {
+#	schaltFunktion TRUE
+#	scale .1 .1 .1
+#	translation	1 1 1
+#}
+
+#ROUTE siggi.SFBool_schalt_out TO ph1.signal_in

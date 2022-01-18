@@ -1,0 +1,71 @@
+#VRML V2.0 utf8
+
+DEF Wrapper1 Transform{
+	children
+Transform {
+	children[
+DEF BOX Transform {
+	children[	 Shape {
+    appearance	Appearance {
+      material	Material {
+		  diffuseColor 0 0 1
+    	emissiveColor 0 0 1
+		  
+      }
+
+    }
+
+    geometry	IndexedLineSet {
+		coord Coordinate  {
+			point [-0.5 -0.5 0.5, 0.5 -0.5 0.5, 0.5 -0.5 -0.5, -0.5 -0.5 -0.5,
+				-0.5  0.5 0.5, 0.5  0.5 0.5,	0.5  0.5 -0.5, -0.5  0.5 -0.5]
+			}
+			coordIndex [3,2,1,0,-1,
+				0,1,5,4,-1,
+				1,2,6,5,-1,
+				2,3,7,6,-1,
+				3,0,4,7,-1,
+				4,5,6,7,-1	 ]
+
+    }
+
+  #translation	0 1 1
+}
+Shape {
+	appearance Appearance {
+		material Material {
+			transparency 0.5
+			diffuseColor 0.8 0.8 0.8
+		}
+	}
+	geometry	IndexedFaceSet {
+		coord Coordinate  {
+			point [-0.5 -0.5 0.5, 0.5 -0.5 0.5, 0.5 -0.5 -0.5, -0.5 -0.5 -0.5,
+				-0.5  0.5 0.5, 0.5  0.5 0.5,	0.5  0.5 -0.5, -0.5  0.5 -0.5]
+			}
+			coordIndex [3,2,1,0,-1,
+				0,1,5,4,-1,
+				1,2,6,5,-1,
+				2,3,7,6,-1,
+				3,0,4,7,-1,
+				4,5,6,7,-1	 ]
+
+    }
+}
+Viewpoint {
+	description	"marker"
+	position 0 0 4
+}
+]
+#Animation:the speed of movement, 
+}
+
+
+
+]
+	scale 1.01 1.01 1.01
+}
+	
+}
+
+DEF	dummy Transform {}

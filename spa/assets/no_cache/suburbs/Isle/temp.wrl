@@ -1,0 +1,19 @@
+#VRML V2.0 utf8
+
+EXTERNPROTO TimedTrigger[
+eventIn SFTime set_retrieve
+exposedField SFString loadURL
+exposedField SFString triggerName
+exposedField SFBool onLoadRetrieve
+eventOut SFTime startTime_changed
+eventOut SFTime stopTime_changed
+eventOut MFString url_changed
+eventOut SFBool isActive]"http://www.colonycity.com/events/morph2/vrml/no_cache/tt.wrl#TimedTrigger"
+Transform{
+translation 23.1937 1.07142 -69.7165 
+
+children[
+DEF t TimedTrigger{triggerName "trigger1"}
+DEF i Inline{url""}
+]}
+ROUTE t.url_changed TO i.set_url

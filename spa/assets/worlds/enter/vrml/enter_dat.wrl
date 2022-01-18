@@ -1,0 +1,329 @@
+#VRML V2.0 utf8
+
+
+PROTO JumpInfo[
+exposedField MFString type[]
+exposedField MFString name[]
+exposedField MFString urls["","","",""]
+]{}
+
+PROTO info[
+exposedField MFNode   jumps []
+exposedField MFString marquee []
+exposedField MFString banners []
+exposedField MFString random_banners []
+]{}
+
+info{
+################################################################
+#URL of animated Marquee
+################################################################
+
+marquee "marquee.gif"
+
+################################################################
+#URLs of Banner ads
+################################################################
+banners [ 
+          "ctbanner.gif",
+          "ctbanner.gif",
+          "ctbanner.gif",
+          "random",
+]
+
+random_banners[
+          "ctbanner.gif",
+          "ctbanner.gif",
+          "ctbanner.gif",
+          "ctbanner.gif",
+]
+jumps[
+
+################################################################
+#Parameters of Jumpgate elements
+#
+#  type  'link' 'place' or 'pop'   
+#  name  name to appear in directory
+#  urls  for places define ["menu frame URL","action frame URL","bxx frame URL"] 
+#        for links  define ["content URL","optional target parameter "]
+#        for pops   define ["content URL"]
+################################################################
+
+JumpInfo{
+ type "place"
+ name "Sci-Fi Colony"
+ urls [
+    "/cgi-bin/cybertown/place?ac=menu&ID=0102000000000000&type=C&CID=0102000000000000&ctype=C&plc=community&home=1",
+    "/cgi-bin/cybertown/community?ac=action&ID=0102000000000000",
+    "/cgi-bin/cybertown/place?plc=scifi_col&DTY=C&ID=0102000000000000&ac=3D&T_refresh=false&IE=x.bxx",
+    ""
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Entertainment Colony"
+ urls [
+    "/cgi-bin/cybertown/place?ac=menu&ID=0104000000000000&type=C&CID=0104000000000000&ctype=C&plc=community&home=1",
+    "/cgi-bin/cybertown/community?ac=action&ID=0104000000000000",
+    "/cgi-bin/cybertown/place?plc=ent_col&DTY=C&ID=0104000000000000&ac=3D&T_refresh=false&IE=x.bxx",
+    ""
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Games Colony"
+ urls [
+    "/cgi-bin/cybertown/place?ac=menu&ID=0101000000000000&type=C&CID=0101000000000000&ctype=C&plc=community&home=1",
+    "/cgi-bin/cybertown/community?ac=action&ID=0101000000000000",
+    "/cgi-bin/cybertown/place?plc=games_col&DTY=C&ID=0101000000000000&ac=3D&T_refresh=false&IE=x.bxx",
+    ""
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Virtual Worlds Colony"
+ urls [
+    "/cgi-bin/cybertown/place?ac=menu&ID=0103000000000000&type=C&CID=0103000000000000&ctype=C&plc=community&home=1",
+    "/cgi-bin/cybertown/community?ac=action&ID=0103000000000000",
+    "/cgi-bin/cybertown/place?plc=vrtwrlds_col&DTY=C&ID=0103000000000000&ac=3D&T_refresh=false&IE=x.bxx",
+    ""
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Inner Realms Colony"
+ urls [
+    "/cgi-bin/cybertown/place?ac=menu&ID=0105000000000000&type=C&CID=0105000000000000&ctype=C&plc=community&home=1",
+    "/cgi-bin/cybertown/community?ac=action&ID=0105000000000000",
+    "/cgi-bin/cybertown/place?plc=inrlms_col&DTY=C&ID=0105000000000000&ac=3D&T_refresh=false&IE=x.bxx",
+    ""
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Teens Colony"
+ urls ["/cgi-bin/cybertown/community?ID=0106000000000000","target=_top"]
+ urls [
+    "/cgi-bin/cybertown/place?ac=menu&ID=0105000000000000&type=C&CID=0106000000000000&ctype=C&plc=community&home=1",
+    "/cgi-bin/cybertown/community?ac=action&ID=0106000000000000",
+    "/cgi-bin/cybertown/community?DTY=C&ID=0106000000000000&ac=place",
+    "target=place"
+ ] 
+},
+JumpInfo{
+ type "link"
+ name "Mothership"
+ urls ["/cgi-bin/cybertown/community?ID=0107000000000000","target=_top"]
+},
+JumpInfo{
+ type "place"
+ name "Newcomers Club"
+ urls [
+    "/cgi-bin/cybertown/place?ac=menu&plc=club&DTY=CL&ID=CL00000000001b9b&home=1",
+    "/cgi-bin/cybertown/place?ac=action&plc=club&DTY=CL&ID=CL00000000001b9b",
+    "/cgi-bin/cybertown/place?plc=club&DTY=CL&ID=CL00000000001b9b&ac=3D&T_refresh=false&IE=x.bxx",
+    ""
+ ]
+},
+JumpInfo{
+ type "place"
+ name "E Plex"
+ urls [
+    "/cgi-bin/cybertown/place?ac=menu&plc=ent_complex&ID=0000000000000017&home=1",
+    "/cgi-bin/cybertown/place?ac=action&plc=ent_complex&ID=0000000000000017",
+    "/cgi-bin/cybertown/place?plc=ent_complex&ID=0000000000000017&ac=place",
+    "target=place"
+ ]
+},
+JumpInfo{
+ type "link"
+ name "The Clubs"
+ urls [  "/cgi-bin/cybertown/place?plc=clubdir&T_level=top&force=s","target=_top"]
+},
+JumpInfo{
+ type "place"
+ name "Flea Market"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=fleamarket&ID=0000000000000016&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=fleamarket&ID=0000000000000016",
+  "/cgi-bin/cybertown/place?plc=fleamarket&ID=0000000000000016&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "place"
+ name "The Mall"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=shopping&ID=000000000000009a&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=shopping&ID=000000000000009a",
+  "/cgi-bin/cybertown/place?plc=shopping&ID=000000000000009a&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Homebuilder"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=iwosmall&ID=00000000000009f1&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=iwosmall&ID=00000000000009f1",
+  "/cgi-bin/cybertown/place?plc=iwosmall&ID=00000000000009f1&ac=3D&T_refresh=false&IE=x.bxx",
+    ""  
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Employment Office"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=employment&ID=000000000000000c&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=employment&ID=000000000000000c",
+  "/cgi-bin/cybertown/place?plc=employment&ID=000000000000000c&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Le Cafe"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=cafe&ID=0000000000000006&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=cafe&ID=0000000000000006",
+  "/cgi-bin/cybertown/place?plc=cafe&ID=0000000000000006&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Library"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=library&ID=0000000000000005&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=library&ID=0000000000000005",
+  "/cgi-bin/cybertown/place?plc=library&ID=0000000000000005&ac=place",
+  "target=place"
+ ]
+},
+JumpInfo{
+ type "place"
+ name "City Hall"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=cityhall&ID=0000000000000002&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=cityhall&ID=0000000000000002",
+  "/cgi-bin/cybertown/place?plc=cityhall&ID=0000000000000002&ac=3D&T_refresh=false&IE=x.bxx",
+    ""
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Fun Park"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=funpark&ID=000000000000000a&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=funpark&ID=000000000000000a",
+  "/cgi-bin/cybertown/place?plc=funpark&ID=000000000000000a&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Sunset Beach"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=beach&ID=0000000000000031&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=beach&ID=0000000000000031",
+  "/cgi-bin/cybertown/place?plc=beach&ID=0000000000000031&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Theme Park"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=themepark&ID=0000000000000015&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=themepark&ID=0000000000000015",
+  "/cgi-bin/cybertown/place?plc=themepark&ID=0000000000000015&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Water Park"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=waterpark&ID=0000000000000014&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=waterpark&ID=0000000000000014",
+  "/cgi-bin/cybertown/place?plc=waterpark&ID=0000000000000014&ac=3D&T_refresh=false&IE=x.bxx",
+    ""  
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Theater"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=theater&ID=0000000000000008&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=theater&ID=0000000000000008",
+  "/cgi-bin/cybertown/place?plc=theater&ID=0000000000000008&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Pool"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=pool&ID=000000000000000b&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=pool&ID=000000000000000b",
+  "/cgi-bin/cybertown/place?plc=pool&ID=000000000000000b&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "place"
+ name "Stadium"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=stadium&ID=000000000000000d&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=stadium&ID=000000000000000d",
+  "/cgi-bin/cybertown/place?plc=stadium&ID=000000000000000d&ac=3D&T_refresh=false&IE=x.bxx",
+    "" 
+ ]
+},
+JumpInfo{
+ type "link"
+ name "Suburbs"
+ urls ["http://www.cybertown.com/cgi-bin/cybertown/place?plc=suburbs","target=_top"]
+},
+JumpInfo{
+ type "place"
+ name "Post Office"
+ urls [
+  "/cgi-bin/cybertown/place?ac=menu&plc=post&ID=0000000000000010&home=1",
+  "/cgi-bin/cybertown/place?ac=action&plc=post&ID=0000000000000010",
+  "/cgi-bin/cybertown/place?plc=post&ID=0000000000000010&ac=place",
+  "target=place" 
+ ]
+},
+JumpInfo{
+ type "link"
+ name "Portals"
+ urls ["http://www.cybertown.com/info/portals.html","target=place"]
+},
+################################################################
+#ALWAYS leave these two empty jumpinfos to the end of the list. 
+JumpInfo{
+ type ""
+ name ""
+ urls ["","",""]
+},
+JumpInfo{
+ type ""
+ name ""
+ urls ["","",""]
+}
+#ALWAYS leave these two empty jumpinfos to the end of the list. 
+################################################################
+]}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,71 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - "ct-api"
+      - "ct-socket"
+      - "db"
+    links:
+      - "ct-api"
+      - "ct-socket"
+      - "db"
+    volumes:
+      - ./:/var/www/cybertown
+      - ./docker/nginx/vhost.conf:/etc/nginx/conf.d/cybertown.conf
+      - ./docker/ssl:/etc/ssl
+    working_dir:
+      /var/www/cybertown
+
+  db:
+    image: mysql:5.7
+    ports:
+      - "3360:3306"
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pw
+      MYSQL_DATABASE: cybertown
+
+  ct-api:
+    image: node:14
+    depends_on:
+      - "db"
+    links:
+      - "db"
+    volumes:
+      - ./api:/usr/src/app
+    working_dir:
+      /usr/src/app
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      JWT_SECRET: devsecret
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: pw
+      DB_DATABASE: cybertown
+    command: bash -c "npm run dev"
+
+  ct-socket:
+    image: node:14
+    depends_on:
+      - "db"
+    links:
+      - "db"
+    volumes:
+      - ./spa:/usr/src/app
+    working_dir:
+      /usr/src/app
+    ports:
+      - "8000:8000"
+
+    command: bash -c "npm run dev-server"
+
+volumes:
+  data:

@@ -1,0 +1,330 @@
+#VRML V2.0 utf8
+
+### Proto kann als Umschalter oder (Taster und/oder Taktgeber) konfiguriert werden...
+	#@ <Name><ger>Das Touchsensor-Objekt</ger><eng>The touchsensor object</eng><spa>The touchsensor object</spa></Name> 
+	#@ <summary><ger>Das Objekt Touchsensor kann verwendet werden, um in einer 3D-Szene bin&auml;re Signale zu erzeugen. Dazu wird er in der 3D-Szene einfach angeklickt und liefert dabei ein Bool-Signal.</ger>
+	#@ <eng>The touch sensor object can be used to generate binary signals within a 3D scene. Simply clicking on it in the 3D scene causes a bool signal to be transmitted.
+	#@ </eng></summary>
+	#@<category>TvrcBasic</category>
+  #@<NeedGeometryInterface>true</NeedGeometryInterface>
+	#@<icon>obj_Touchsensor.ico</icon>
+ #<position>0 0.1 0.1</position>
+PROTO tvrcTouchSensor [
+	
+
+	#@ <summary><ger>Farbe des Touchsensors im inaktiven Zustand.	
+	#@ </ger><eng>Color of the touch sensor in off-state.
+	#@ </eng></summary>	
+	#@ <Name><ger>Farbe bei Status inaktiv</ger><eng>Color Status off-state</eng><spa>Color Inactivo</spa></Name>	  
+	#@ <Visible>true</Visible>
+	exposedField SFColor diffColorOff	0.7 0.2 0.2
+
+	#@ <summary><ger>Farbe des Touchsensors im aktiven Zustand.	
+	#@ </ger><eng>Color of the touch sensor in on-state.
+	#@ </eng></summary>	
+	#@ <Name><ger>Farbe bei Status aktiv</ger><eng>Color Status on-state</eng><spa>Color Activo</spa></Name>	  
+	#@ <Visible>true</Visible>
+	exposedField SFColor diffColorOn	0.2 0.7 0.2
+
+	#@ <summary><ger>Transparenz des Touchsensors. Wert zwischen 0 und 1.
+	#@ </ger><eng>Transparency of touch sensor. Range between 0 and 1.
+	#@ </eng></summary>		
+	#@ <Name><ger>Transparenz</ger><eng>Transparency</eng><spa>Transparencia</spa></Name> 
+	#@ <Visible>true</Visible>
+	#@ <Range Min="0" Max="1"></Range>
+	exposedField SFFloat transparency 0		
+	
+	#@ <summary><ger>Standardm&auml;&szlig;ig arbeitet der Touchsensor als Taster. Wird 'Schaltfunktion' aktiviert, arbeitet er als Schalter.
+	#@ </ger><eng>In its default setting the touch sensor works as a key or button; with this setting activated, it acts as a switch.
+	#@ </eng></summary>
+	#@ <Name><ger>Schaltfunktion</ger><eng>Switch</eng><spa>Interruptor</spa></Name> 
+	#@ <Visible>true</Visible>
+	exposedField SFBool schaltFunktion FALSE	 #Standard: Tastfunktion, TRUE - Schaltfunktion
+
+	#@ <summary><ger>Liefert ein Signal zur&uuml;ck, welches den aktuellen Status angibt.
+	#@0...inaktiv
+	#@1...aktiv
+	#@ </ger><eng>Delivers a bool signal which specifies the current state.
+	#@0...inactive
+	#@1...active
+	#@ </eng></summary>
+	#@ <Name><ger>Status</ger><eng>State</eng><spa>Pulsador</spa></Name> 
+	#@ <Visible>true</Visible>
+	eventOut SFBool SFBool_out
+
+	### Geometrietransformationen im lokalen Koordinatensystem.->ausgeblendet
+
+	#@ <summary><ger>Position des Touchsensors in Bezug auf das lokalen Koordinatensystem.
+	#@ </ger><eng>Position of touch sensor in reference to the local coordinate system.
+	#@ </eng></summary>		
+	#@ <Name><ger>Position</ger><eng>Position</eng><spa>Posición</spa></Name> 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>
+	exposedField SFVec3f objPosTrl 0 0 0
+
+	#@ <summary><ger>Rotation des Touchsensors in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Rotation of touch sensor in reference to the lokal coordinate system.
+	#@ </eng></summary>		
+	#@ <Name><ger>Drehung</ger><eng>Rotation</eng><spa>Rotación</spa></Name> 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>
+	exposedField SFRotation	objPosRot 0 0 1 0
+
+	#@ <summary><ger>Skalierung des Touchsensors in Bezug auf das lokalen Koordinatensystem.
+	#@ </ger><eng>Scaling of Touchsensor in reference to the local coordinate system.
+	#@ </eng></summary>	
+	#@ <Name><ger>Skalierung</ger><eng>Scale</eng><spa>Escala</spa></Name> 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>
+	exposedField SFVec3f objScale 0.06 0.06 0.06
+	
+	eventOut SFTime	startTime
+	eventOut SFInt32 swOnOff
+	eventOut SFBool testOutput
+	eventOut SFBool	timerEnabled  
+	eventOut SFTime touchTime			  
+	exposedField SFBool test_out FALSE
+	exposedField SFBool flgTouchBtEnabled TRUE
+	exposedField SFFloat textSize .5
+	exposedField SFString nameSensorSF  ""
+	field SFFloat radiusSensor 1
+	field SFColor diffuseColor 1 0 0
+	
+
+]{
+	
+	
+	PROTO interface [
+		exposedField SFBool schaltFunktion IS schaltFunktion
+		exposedField SFBool test_out IS test_out
+		exposedField SFString nameSensorSF IS nameSensorSF
+		exposedField SFFloat textSize IS textSize
+	]{}
+
+	DEF	objInt interface {
+		schaltFunktion IS schaltFunktion
+		test_out IS	test_out
+		nameSensorSF IS	nameSensorSF
+		textSize IS	textSize
+	}
+	
+	
+	
+	Transform  {
+		
+		translation	IS objPosTrl
+		rotation IS	objPosRot
+		scale IS objScale
+		children [
+			DEF touch_bauteil TouchSensor	{
+				enabled	IS flgTouchBtEnabled
+				touchTime IS touchTime
+			}
+			
+			DEF shpSensor Shape {
+				geometry Sphere	{
+					radius IS radiusSensor
+				}
+				appearance Appearance {
+					material DEF matSensor Material {
+						diffuseColor IS	diffuseColor
+						transparency IS	transparency
+						specularColor	0.8 0.8 0.7
+					}
+				}
+			}
+		
+			DEF	trfSensorName Transform {
+				children [
+					Billboard {
+						children [
+							Shape {
+								geometry DEF lblText Text {
+									#string IS nameSensorMF
+									fontStyle DEF lblFontStyle FontStyle	{
+										#size IS	textSizeFld
+									}
+								}
+							}
+						]
+					}
+				]
+			}
+		
+			DEF scrSensor Script {
+				
+				
+				field SFNode objInt USE	objInt
+
+				field SFNode touch_bauteil USE touch_bauteil
+				field SFNode scrSensor USE scrSensor
+
+				
+				field SFNode trfSensorName USE	trfSensorName
+				field SFNode matSensor USE	matSensor
+				field SFNode shpSensor USE shpSensor
+				field SFFloat radiusSensor IS	radiusSensor
+
+				eventIn SFBool isActive	
+				eventIn SFTime touchTime
+					
+				eventOut SFTime	startTime IS startTime
+				
+				eventOut SFInt32 swOnOff IS	swOnOff
+				eventOut SFBool testOutput IS	testOutput
+				eventOut SFBool	timerEnabled IS	timerEnabled		 
+				eventOut SFBool SFBool_out	IS SFBool_out			 # Statusausgabe des Touchsensors
+
+				field SFNode lblText USE lblText
+				field SFNode lblFontStyle USE lblFontStyle
+				
+
+				eventIn	SFString nameSensorSF_in	#Funktion fuer Wandlung nach MFString
+				eventIn	SFFloat	textSize_in #textgroesse konvertieren
+
+				field SFBool sensorOn FALSE							 # interner Status des Sensors
+
+				exposedField SFBool  schaltFunktion IS schaltFunktion
+				exposedField SFColor diffColorOff	IS diffColorOff
+				exposedField SFColor diffColorOn	IS diffColorOn
+
+				directOutput TRUE
+				
+				url "javascript:
+				
+				function initialize () {
+					
+				//Name zuweisen (Wandlung MF -> SF)	
+					lblText.string[0] = objInt.nameSensorSF;
+					lblText.fontStyle.size = objInt.textSize;				
+				
+				//tast- oder schaltfunktion
+				if (objInt.schaltFunktion == true) {
+					Browser.addRoute (touch_bauteil , 'touchTime', scrSensor, 'touchTime');
+				}
+				else {
+					Browser.addRoute (touch_bauteil , 'isActive', scrSensor, 'isActive');
+				}
+					trfSensorName.translation = new SFVec3f (0, radiusSensor, 0);
+
+					//Sensor inaktiv
+					matSensor.diffuseColor = diffColorOff;
+					sensorOn= false;
+				}
+
+
+				// Anpassen der Farbe bei neuer Farbauswahl
+				function diffColorOff(value){
+					if(!sensorOn){
+						matSensor.diffuseColor = diffColorOff;
+					}
+				}
+
+				function diffColorOn(value){
+					if(sensorOn){
+						matSensor.diffuseColor = diffColorOn;
+					}
+				}
+
+				// Beim aendern der Sensorfunktion, Routen veraendern
+				function schaltFunktion(value){
+					if(value){
+						Browser.deleteRoute(touch_bauteil, 'isActive', scrSensor, 'isActive');
+						Browser.addRoute (touch_bauteil , 'touchTime', scrSensor, 'touchTime');
+					}
+					else{  
+						Browser.deleteRoute (touch_bauteil , 'touchTime', scrSensor, 'touchTime');
+						Browser.addRoute (touch_bauteil , 'isActive', scrSensor, 'isActive');
+						sensorOn= SFBool_out= false;
+						diffColorOff();
+					}
+				}
+				
+				//Textgroesse anpassen
+				function textSize_in (value, time) {
+					
+					lblFontStyle.size = value;
+					lblText.string[0] = lblText.string[0];
+					//print ('Update textSize ' + lblFontStyle.size);
+				}
+
+
+				//Wandlung SFString in MFString fuer lblText...
+				function nameSensorSF_in (value, time) {
+					lblText.string[0] = value;
+				}
+				
+				
+				//bei jeder Aktivierung des Sensors umschalten des Ausgangs
+				function touchTime (value, time)  {	
+					
+					//Umschalter SFBool...
+					if (sensorOn) {		 
+						sensorOn= SFBool_out = false;
+						matSensor.diffuseColor = diffColorOff;
+					}
+					else {				   
+						sensorOn= SFBool_out = true;
+						matSensor.diffuseColor = diffColorOn;
+					}
+				
+				}
+				
+				
+				
+				function isActive (value, time)  {
+				 
+					if (!sensorOn)	{				
+						
+						//startTime-Event Taster...
+						startTime = time;
+						
+						sensorOn= SFBool_out = true;
+						objInt.test_out = true;
+						
+						//Sensorfarbe setzen (gruen)
+						matSensor.diffuseColor = diffColorOn;
+					}
+				    
+					else {
+						
+						//hier festlegen, ob Signl ruecksetzen nach Loslassen Sensor Teil 3 von X
+						sensorOn= SFBool_out = false;
+						//debug, test
+						objInt.test_out = false;  
+						
+						//Sensorfarbe setzen (rot)
+						matSensor.diffuseColor = diffColorOff;
+					}
+				
+				}
+				
+				"
+			}
+		]
+		
+	}
+
+	ROUTE objInt.nameSensorSF TO scrSensor.nameSensorSF_in
+	ROUTE objInt.textSize TO scrSensor.textSize_in
+}
+
+
+
+#--------------------------------------------------------------------------------#
+
+
+
+### Test ###
+DEF trfGeber_01 Transform {
+	translation	0 0 0
+	children [
+		DEF	Schalter tvrcTouchSensor {
+			objScale .1 .1 .1
+			schaltFunktion TRUE
+			#radiusSensor .1
+			nameSensorSF	"test"
+			textSize 1
+		}
+	]
+}

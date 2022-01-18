@@ -1,0 +1,20 @@
+#VRML V2.0 utf8
+
+EXTERNPROTO Bot[
+eventIn SFTime set_pop
+eventIn SFString new_url
+exposedField SFString url
+exposedField SFString status
+exposedField SFString scrollbars
+exposedField SFInt32  height
+exposedField SFInt32  width
+exposedField SFString description
+exposedField MFNode children
+eventOut SFBool isOver
+eventOut SFTime touchTime
+]"http://www.colonycity.com/events/morph2/vrml/bots/mcp.wrl#Bot"
+
+Transform{translation 77.9834 1.7501 -37.9345 rotation 0 -1 0 2.41557
+children Bot{description "Capture the Bot"url"http://www.colonycity.com/cgi-bin/colonycity/edit?ac=print&TPL=morph2/bot/botcap&BOT=0&CD=lkj213kl"}}
+
+ 

@@ -1,0 +1,97 @@
+#VRML V2.0 utf8
+
+# Copyright by tarakos GmbH (www.tarakos.com)
+
+DEF navigation_info NavigationInfo {
+	avatarSize [1,1.75,0.5]
+	type "FLY"
+}
+
+Background {
+  groundAngle	1.57079
+  groundColor	[ 0.1 0.1 0.1,
+	    0.2 0.2 1 ]
+  skyAngle	[ 0.2, 1.57079 ]
+  skyColor	[ 1 1 0,
+	    1 1 1,
+	    0.2 0.2 1 ]
+}
+
+
+
+DEF _PointLight PointLight {
+	color 1 1 1
+	location 0 50 0
+	radius 1e+006
+}
+
+
+EXTERNPROTO Layer2D[ 
+	eventIn MFNode addChildren 
+	eventIn MFNode removeChildren 
+	exposedField MFNode children 
+	exposedField SFVec2f translation 
+	exposedField SFVec2f size 
+	exposedField SFNode background 
+	exposedField SFNode viewport 
+] 
+["urn:inet:blaxxun.com:node:Layer2D",
+"http://www.blaxxun.com/vrml/protos/nodes.wrl#Layer2D",
+] 
+
+DEF Klick Transform { children [
+	DEF Klicky Anchor	{ url "http://www.tarakos.com"  parameter "target=parent" children [
+	Layer2D 
+{ 
+	translation .05 -.35
+	size 1.5 1
+	children [
+		DEF BaseTransform Transform {   
+			scale 2.1 0.7 2.1 
+			children
+			[
+				Transform { 
+					translation	0.0 0.2 0
+					children         [
+						Transform {
+							scale 0.23 0.45 0.45
+							center 0.0 0.0 .5
+							children      Shape {
+    							appearance  DEF help Appearance {
+    								material DEF LogoMaterial
+									Material {transparency 0 emissiveColor 1 1 1}
+									texture DEF LogoTexture ImageTexture {url "ct.png"}
+								}
+
+    							geometry IndexedFaceSet {
+    								coord     Coordinate {
+        								point   [ -1 -1 0,
+                							1 -1 0,
+                							1 1 0,
+                							-1 1 0 ]
+    								}
+
+    								coordIndex        [ 0, 1, 2, 3]
+    								solid     FALSE
+    								texCoord TextureCoordinate {
+										point	[0 0,
+											1 0,
+											1 1,
+											0 1]
+									}
+    								texCoordIndex     [0 1 2 3]
+    							}
+
+							}
+
+							#				  translation   0 0 0
+						}
+			
+					]
+				}
+			]
+		} 
+	]
+}]}								
+]
+}

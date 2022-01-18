@@ -1,0 +1,1107 @@
+<HTML>
+
+<HEAD>
+
+<meta http-equiv="Content-Type" content="text/html">
+
+<title>Cybertown - Civilization for the Virtual Age</title>
+
+<base target="_top">
+
+<!-- common/loadinfo.tmpl -->
+
+<!-- included in action.tmpl to load an info window and close it automatically when switching the place -->
+
+<script language=javascript>
+
+winClose = false;
+
+winFocus = false;
+
+if (navigator.appName == "Netscape")
+
+{
+
+ winClose = true;
+
+ winFocus = true;
+
+}
+
+else
+
+{
+
+ var i = navigator.appVersion.indexOf("MSIE");
+
+ if (i >= 0)
+
+ {
+
+  var ver = parseInt(navigator.appVersion.substring(i+5,i+6));
+
+  if ( ver > 4)
+
+   winClose = true;
+
+  if ( ver > 3 )
+
+   winFocus = true;
+
+ }
+
+}
+
+
+
+myInfoWin = null;
+
+
+
+function loadInfo(par)
+
+{
+
+ loadCustom( par, 620, 450 );
+
+}
+
+
+
+function closeInfoWin()
+
+{
+
+ if (winClose && myInfoWin && !myInfoWin.closed)
+
+ {
+
+  myInfoWin.close();
+
+ }
+
+}
+
+function loadCustom(par,h,v)
+
+{
+
+ closeInfoWin();
+
+var paramstring = 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=' + h + ',height=' + v;
+
+
+
+ win = window.open(par, "info",paramstring);
+
+ if (winFocus)
+
+ {
+
+    win.focus();
+
+ }
+
+ myInfoWin = win;
+
+}
+
+
+
+function loadMap(par)
+
+{
+
+ closeInfoWin();
+
+var paramstring = 'toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=no,copyhistroy=no,width=520,height=478';
+
+
+
+ win = window.open(par, "info",paramstring);
+
+ if (winFocus)
+
+ {
+
+    win.focus();
+
+ }
+
+ myInfoWin = win;
+
+}
+
+
+
+<!--begin added this reset -->
+
+function jumpreset( par1, par2 )
+
+{
+
+	jump( par2 );
+
+	par1[0].selected = true;
+
+}
+
+<!--end added this reset -->
+
+
+
+
+
+function jump( par )
+
+{
+
+ closeInfoWin();
+
+
+
+var parArray = new Array(4);
+
+parArray = par.split(" ");
+
+var type = parArray[0];
+
+var url = parArray[1];
+
+var h = parArray[2];
+
+var v = parArray[3];
+
+
+
+ if (url != '') 
+
+ {
+
+  if ( type == "top")
+
+  {
+
+   top.location.href = url;
+
+  }
+
+
+
+  else if ( type == "info")
+
+  {
+
+   loadInfo(url);
+
+  }
+
+
+
+  else if ( type == "custom")
+
+  {
+
+   loadCustom(url,h,v);
+
+  }
+
+
+
+  else if ( type == "place")
+
+  {
+
+   top.place.location.href = url;
+
+  }
+
+
+
+  else if ( type == "poll")
+
+  {
+
+   loadCustom( url, 600, 500 );
+
+  }
+
+ }
+
+}
+
+
+
+
+
+
+
+function showMorphBanner()
+
+{
+
+}
+
+
+
+</script>
+
+<!-- end of include common/loadinfo.tmpl -->
+
+
+
+</HEAD>
+
+
+
+<BODY onUnload="closeInfoWin()" BACKGROUND="/images/back.gif" BGCOLOR="#002020" LINK="#FFFF00" VLINK="#FFFF00" ALINK="#FFFFFF" TEXT="#D0DBF7">
+
+
+
+<table border=0 width=100% cellpadding=0 cellspacing=0>
+
+<tr>
+
+
+
+<!-- common/menu.tmpl -->
+
+<!-- included in menu.tmpl to show common parts, LEFT aligned!!! -->
+
+<!-- NOTE: the whole line (from td to /td) MUST be a single line, otherwise it causes a larger height -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- show the join now or win a t-shirt icons at the left side -->
+
+
+
+
+
+
+
+<td width=10><IMG SRC="/images/menu/tinyimage.gif" BORDER=0 width=10></td><td align=left width=70><a href="javascript:void(0)" onClick="javascript:win=window.open('http://www.cybertown.com/friends/tellfriends.html','tellfriends','toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=632,height=580');" target="_self"><IMG SRC="/ad/wintsmall.gif" BORDER=0></a></td><td width=10><IMG SRC="/images/menu/tinyimage.gif" BORDER=0 width=10></td>
+
+
+
+
+
+
+
+<!-- end of left side icons -->
+
+
+
+
+
+
+
+<!-- begin large center banner ads -->
+
+
+
+
+
+<!-- colony ads -->
+
+
+
+<!-- end of colony ads -->
+
+
+
+
+
+
+
+<!-- homes ads -->
+
+
+
+
+
+<!-- end  homes ads -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- neighborhoods -->
+
+
+
+
+
+<!-- end of neighborhoods -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- blocks -->
+
+
+
+
+
+<!-- end of blocks -->
+
+
+
+
+
+
+
+<!-- clubs -->
+
+
+
+
+
+<!-- end of clubs -->
+
+
+
+
+
+
+
+
+
+<!-- mall -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end of mall -->
+
+
+
+
+
+
+
+
+
+<!-- employment office -->
+
+<!-- end of employment office -->
+
+
+
+
+
+
+
+<!-- cafe -->
+
+<!-- end of cafe -->
+
+
+
+
+
+
+
+<!-- FunPark -->
+
+<!-- end of Fun Park -->
+
+
+
+
+
+
+
+<!-- Water Park -->
+
+<!-- end of Water Park -->
+
+
+
+
+
+<!-- ThemePark -->
+
+<!-- end of Theme Park -->
+
+
+
+
+
+<!-- City Hall -->
+
+<!-- end of City Hall -->
+
+
+
+
+
+
+
+
+
+<!-- pool -->
+
+<!-- end of pool -->
+
+
+
+
+
+
+
+
+
+<!-- clubdir -->
+
+<!-- end of clubdir -->
+
+
+
+
+
+
+
+
+
+<!-- stadium -->
+
+<!-- end of stadium -->
+
+
+
+<!-- suburbs -->
+
+<!-- end of suburbs -->
+
+
+
+<!-- homebuilder-->
+
+<!-- homebuilder -->
+
+
+
+
+
+<!-- theater -->
+
+<!-- end of theater -->
+
+
+
+
+
+<!-- arcade -->
+
+<!-- end of arcade -->
+
+
+
+<!-- casino -->
+
+<!-- end of casino -->
+
+
+
+<!-- nightclub -->
+
+<!-- end of nightclub -->
+
+
+
+<!-- gallery -->
+
+<!-- end of gallery-->
+
+
+
+<!-- library -->
+
+<!-- end of library-->
+
+
+
+<!-- vdrome -->
+
+<!-- end of vdrome -->
+
+
+
+<!-- eplex-->
+
+<!-- end of eplex-->
+
+
+
+
+
+<!-- sunset beach -->
+
+<!-- end ofsunset beach -->
+
+
+
+
+
+
+
+<!-- flea market -->
+
+<!-- end of flea market -->
+
+
+
+<!-- Outlands ads -->
+
+<!-- end of Outlands -->
+
+
+
+
+
+<!-- end of include menu.tmpl -->
+
+
+
+<!-- common/menuright.tmpl -->
+
+<!-- included in menu.tmpl to show common parts, RIGHT aligned!!! -->
+
+
+
+<!-- enclose it all in a little table to keep it grouped right -->
+
+<td align=right>
+
+<table align=right border=0 cellspacing=0 cellpadding=0>
+
+<tr>
+
+
+
+
+
+<!-- show the news icon -->
+
+<td width=10><IMG SRC="/images/menu/tinyimage.gif" BORDER=0 width=10></td><td align=right width=63><a href="javascript:loadInfo('/places/news/magazine/dailynews/index.html')" target=_self><IMG SRC="/images/menu/news.gif" BORDER=0></a></td><td width=10><IMG SRC="/images/menu/tinyimage.gif" BORDER=0 width=10></td>
+
+<!-- end of news icon -->
+
+
+
+
+
+
+
+<!-- colony ads -->
+
+
+
+<!-- end of colony ads -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- homes ads -->
+
+
+
+
+
+<!-- end  homes ads -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- neighborhoods -->
+
+
+
+
+
+<!-- end of neighborhoods -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- blocks -->
+
+
+
+
+
+<!-- end of blocks -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- right side ads for various places -->
+
+
+
+
+
+
+
+<!-- mall -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end of mall -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- flea market -->
+
+<!-- end of flea market -->
+
+
+
+
+
+<!-- employment office -->
+
+<!-- end of employment office -->
+
+
+
+
+
+<!-- cafe -->
+
+<!-- end of cafe -->
+
+
+
+
+
+
+
+<!-- FunPark -->
+
+<!-- end of Fun Park -->
+
+
+
+
+
+
+
+<!-- WaterPark -->
+
+<!-- end of WaterPark -->
+
+
+
+
+
+
+
+<!-- Theme Park -->
+
+<!-- end of Theme Park -->
+
+
+
+
+
+
+
+<!-- City Hall -->
+
+<!-- end of City Hall -->
+
+
+
+
+
+
+
+
+
+<!-- pool -->
+
+<!-- end of pool -->
+
+
+
+
+
+
+
+
+
+<!-- clubdir -->
+
+<!-- end of clubdir -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- stadium -->
+
+<!-- end of stadium -->
+
+
+
+
+
+
+
+<!-- theater -->
+
+<!-- end of theater -->
+
+
+
+
+
+<!-- ePlex -->
+
+<!-- end of ePlex -->
+
+
+
+
+
+
+
+
+
+<!-- casino -->
+
+<!-- end of casino -->
+
+
+
+
+
+
+
+<!-- arcade -->
+
+<!-- end of arcade -->
+
+
+
+
+
+<!-- gallery -->
+
+<!-- end of gallery -->
+
+
+
+
+
+
+
+<!-- movies -->
+
+<!-- end of movies -->
+
+
+
+
+
+<!-- nightclub -->
+
+<!-- end of nightclub -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end misc. rightside ads -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- don't modify menuright.tmpl past here -->
+
+</tr>
+
+</table>
+
+</td>
+
+
+
+<SCRIPT  language="JavaScript">  
+
+<!--
+
+
+
+var reload = 0;
+
+var lastID = "";
+
+
+
+function send_place(id,loadURL){
+
+
+
+ if("0000000000000033" != id && reload < 1){
+
+  parent.place.location.href = loadURL;
+
+  reload++;
+
+ }
+
+
+
+ if(reload > 0){
+
+  parent.place.World.document.CC3D.setNodeEventIn('place_script','set_place','0000000000000033');
+
+ } 
+
+   
+
+}
+
+//-->   
+
+</SCRIPT>
+
+
+
+
+
+<!-- end of include menuright.tmpl -->
+
+
+
+
+
+
+
+
+
+</tr>
+
+</table>
+
+
+
+</BODY>
+
+</HTML>
+
+

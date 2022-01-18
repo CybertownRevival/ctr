@@ -1,0 +1,41 @@
+#VRML V2.0 utf8
+
+EXTERNPROTO Avatar [
+
+ exposedField MFFloat avatarSize
+ eventIn SFBool isAvatar
+ eventIn SFTime gesture1
+ eventIn SFTime gesture2
+ eventIn SFTime gesture3
+ eventIn SFTime gesture4
+ eventIn SFTime gesture5
+ eventIn SFTime gesture6
+ eventIn SFTime gesture7
+ eventIn SFTime gesture8
+ eventIn SFVec3f set_position
+ exposedField SFRotation rotation
+ exposedField SFInt32 whichChoice
+ eventOut SFBool isOver
+ eventOut SFTime touchTime
+ exposedField SFBool isPilot
+ exposedField SFString nickname
+ exposedField MFString texture
+
+exposedField MFNode v15_children
+exposedField MFNode vc7_children
+exposedField MFNode neck_children
+exposedField MFNode skull_children
+exposedField MFNode r_wrist_children
+exposedField MFNode l_wrist_children 
+]"./m.wrl#Avatar"
+
+
+DEF Avatar Avatar{ 
+texture "./gm.jpg"
+r_wrist_children[
+Transform{translation -.2 .03 0 rotation 0 -1 0 1.571 children[ Inline{url "../weapons/repulsor.wrl"}]}
+] 
+
+}#END avatar 
+
+EXPORT Avatar

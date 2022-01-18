@@ -1,0 +1,548 @@
+#VRML V2.0 utf8
+  
+	#@ <Name><ger>Das Fahne-Objekt</ger><eng>The flag object</eng><spa>The flag object</spa></Name> 
+	#@<summary><ger>
+	#@Das Objekt kann verwendet werden, um das Auftreten von Fehlern und Fehlerorten in der 3D-Szene zu visualisieren. Die Fahne besitzt einen eigenen Viewpoint, den man &uuml;ber Parameter frei einstellen kann. Wird die Fahne in der 3D-Szene eingeblendet, nimmt der Standort des Betrachters diesen Viewport ein. Mit dem Objekt Box kann zus&auml;tzlich das betroffene Objekt mit einer halbtransparenten blinkenden H&uuml;lle versehen werden.
+	#@ </ger><eng>This object may be used to provide graphic representation of the presence and location of malfunctions within the 3D scene. The flag has its own viewpoint, whose parameters can be adjusted. This means that when the flag is displayed in the 3D scene, the observer’s location takes, if necessary, the position of this viewport. Using the Box object, the relevant object or component can be provided with a semi-transparent flashing shell.
+	#@ </eng></summary> 
+	#@<category>TvrcBasic</category>
+  #@<NeedGeometryInterface>true</NeedGeometryInterface>
+	#@<icon>obj_Fahne.ico</icon>
+PROTO tvrcFlag [
+	
+	#@ <summary><ger>Gibt den Text f&uuml;r die Titelzeile der Fahne an. Die Titelzeile wird in rot dargestellt.
+	#@ </ger><eng>Provides the wording of the flag heading. Caption heading is shown in red.
+	#@ </eng></summary>	
+	#@ <Name><ger>Titelzeile</ger><eng>Titel</eng><spa>Encabezado</spa></Name> 
+	#@ <Visible>true</Visible>
+	exposedField MFString textHeader ["textHeader"]
+	
+	#@ <summary><ger>Kann z.B. eine kurze Beschreibung des aufgetretenen Fehlers enthalten.
+	#@ </ger><eng>Can, for example, include a brief description of the malfunction which has occurred.
+	#@ </eng></summary>
+	#@ <Name><ger>Textzeile</ger><eng>Text</eng><spa>Texto</spa></Name> 
+	#@ <Visible>true</Visible>
+	exposedField MFString textBody ["textBody"]
+	
+	#@ <summary><ger>Hintergrundfarbe der Titelzeile.	
+	#@ </ger><eng>Backgroundcolor of header.
+	#@ </eng></summary>
+	#@ <Name><ger>Titelfarbe</ger><eng>Color Titel</eng><spa>Color encabezado</spa></Name> 
+	#@ <Visible>true</Visible>
+	exposedField SFColor headerColor 0.96 0.06 0.06
+	
+	#@ <summary><ger>Farbe des Rahmens.	
+	#@ </ger><eng>Color of border.
+	#@ </eng></summary>
+	#@ <Name><ger>Rahmenfarbe</ger><eng>Color Border</eng><spa>Color marco</spa></Name> 
+	#@ <Visible>true</Visible>
+	exposedField SFColor borderColor 0.5 0.5 0.5
+
+	#@ <summary><ger>Standardm&auml;&szlig;ig ist diese Eigenschaft auf 1 gesetzt. Damit wird beim Einblenden der Fahne der Standort in der 3D-Szene so ver&auml;ndert, dass die Fahne etwa in Bildmitte zu sehen ist. Durch &Auml;nderung der Viewpointparameter, kann diese Ansicht noch angepasst werden. Dies eignet sich insbesondere f&uuml;r die Identifikation von Fehlerorten. Wird eigene Ansicht ausgeschaltet, bleibt der aktuelle Standort in der Szene nach dem Einblenden der Fahne erhalten.
+	#@ </ger><eng>This property is normally set to 1. This ensures that on display, the 3D viewpoint is changed such that the flag is shown more or less at the centre of the image. This is particularly usefull for identifying the location of faults or malfunctions.
+	#@If OwnViewpoint is de-selected, then the current viewpoint of the scene is maintained even when the flag is displayed.
+	#@ </eng></summary>
+	#@ <Name><ger>Eigene Ansicht</ger><eng>Use own Viewpoint</eng><spa>useOwnView</spa></Name>
+	#@<Interface>Geometry</Interface>	  
+	#@ <Visible>true</Visible>
+	exposedField SFBool useOwnView FALSE
+
+	#@ <summary><ger>Proze&szlig;anschlu&szlig; f&uuml;r die Visualisierung der Fahne. Die Fahne wird bei der Aktivierung eingeblendet und die Ansicht wechselt zum Viewpoint der Fahne, falls die eigene Ansicht aktiviert ist.	
+	#@ </ger><eng>Process connection for graphic display of flag.
+	#@ </eng></summary>	
+	#@ <Name><ger>Einblenden</ger><eng>Visible</eng><spa>Mostrar</spa></Name> 
+	#@ <Visible>true</Visible>
+	exposedField SFBool show TRUE
+
+	#@ <summary><ger>Position des Viewpoints in Bezug auf das lokale Koordinatensystem. Die Position des Viewpoints kann manuell eingestellt werden und wird angezeigt, wenn die Eigenschaft eigene Ansicht aktiviert ist.
+	#@ </ger><eng>Position of viewpoint in reference to the local coordinate system.
+	#@ </eng></summary>
+	#@ <Name><ger>Viewpointposition</ger><eng>Viewpoint position</eng><spa>Posición</spa></Name>
+	#@<Interface>Geometry</Interface>	  
+	#@ <Visible>true</Visible>
+	exposedField SFVec3f viewpointPosition 0 20 15
+
+	#@ <summary><ger>Drehung des Viewpoints in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Rotation viewpoint in reference to the local coordinate system.
+	#@ </eng></summary>
+	#@ <Name><ger>Viewpointorientation</ger><eng>Viewpoint orientation</eng><spa>Viewpoint orientation</spa></Name>
+	#@ <Visible>true</Visible>
+	exposedField SFRotation	viewpointOrientation 0 1 0 0
+
+	### Geometrietransformationen->ausgeblendet
+	
+	#@ <summary><ger>Position der Fahne inklusive des Viewpoints in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Position of flag and viewpoint in reference to the local coordinate system.
+	#@ </eng></summary>
+	#@ <Name><ger>Position</ger><eng>Position</eng><spa>Posición</spa></Name>
+	#@<Interface>Geometry</Interface>	  
+	#@ <Visible>false</Visible>
+	exposedField  SFVec3f objPosTrl 0 0 0
+	
+	#@ <summary><ger>Drehung der Fahne inklusive des Viewpoints in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Rotation of flag and viewpoint in reference to the local coordinate system.
+	#@ </eng></summary>
+	#@ <Name><ger>Drehung</ger><eng>Rotation</eng><spa>Rotación</spa></Name>
+	#@<Interface>Geometry</Interface>	  
+	#@ <Visible>false</Visible>
+	exposedField  SFRotation objPosRot 0 0 1 0
+	
+	#@<summary><ger>Skalierung der Fahne in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Scaling of the flag in reference to the local coordinate system.
+	#@ </eng></summary> 
+	#@ <Name><ger>Skalierung</ger><eng>Scale</eng><spa>Escala</spa></Name>
+	#@<Interface>Geometry</Interface>	  
+	#@ <Visible>true</Visible>
+	#@ <Default>0.02 0.02 0.1</Default>
+	exposedField  SFVec3f objScale 0.3 0.3 1
+
+	exposedField MFString textLines ["line1"]
+	exposedField SFBool flgTouchBtEnabled TRUE
+	eventOut SFTime touchTime			  
+	eventIn SFTime havTouch
+	exposedField SFVec3f position 0 0 0 	
+	exposedField SFColor linesColor 0.8 0.9 1
+	
+	]
+{
+	PROTO interface [
+		exposedField SFVec3f objScale IS objScale
+		exposedField SFVec3f objPosTrl IS objPosTrl
+		exposedField MFString textHeader IS	textHeader
+		exposedField MFString textBody IS textBody
+		exposedField SFBool show IS show
+		exposedField SFBool useOwnView IS useOwnView
+	    exposedField SFVec3f viewpointPosition IS viewpointPosition
+
+	]{}	
+
+
+	DEF	objInt interface {
+		textHeader IS textHeader
+		textBody IS	textBody
+		show IS	show
+		useOwnView IS useOwnView
+		objPosTrl IS objPosTrl
+		objScale IS	objScale 
+	    viewpointPosition IS viewpointPosition
+	}
+	
+	
+
+	DEF trfAll Transform {
+		scale  IS objScale
+		rotation IS	objPosRot
+		translation	IS objPosTrl
+		children [
+			
+			DEF	touch_bauteil TouchSensor {
+				enabled	IS flgTouchBtEnabled
+				touchTime IS touchTime
+			}
+
+			DEF	trfFlag Transform {
+				children [
+		
+					#DEF SavedViewPoint Viewpoint {
+					#position -10 3 3
+					#orientation	0 1 0 -1.57
+					#jump FALSE
+					#}
+					DEF Flag_View Viewpoint {
+						position IS viewpointPosition
+						orientation	IS viewpointOrientation #0 1 0 2.0
+						jump FALSE
+					}
+
+					
+					Transform {
+						translation	IS position
+						#scale .1 .1 .1
+						children [
+
+							DEF swFlag Switch {
+								whichChoice -1
+								choice Group{
+									children[
+						
+										DEF TheLine Transform {
+						
+											children Shape {
+												appearance Appearance	{
+													material Material	{
+														diffuseColor IS	borderColor
+													}
+												}
+												geometry IndexedLineSet {
+													coord   DEF LineCoord Coordinate {
+														point [0 0 0   0 40.0 0]
+													}
+													coordIndex	[ 0, 1, -1 ]
+												}
+											}
+										}
+										DEF ThePlane Transform {
+											translation	0 40 0
+			
+											children Billboard {
+												axisOfRotation 0 0 0
+												children [ 
+													DEF TheTextTouch TouchSensor {} 
+													Transform {
+														children Shape {
+					    									appearance Appearance {
+																material DEF TextMaterial_0 Material {
+																	diffuseColor 0 0 0
+																	shininess    0.5
+																}
+															}
+															geometry DEF TheText_0 Text {
+					    										fontStyle DEF myFontStyle FontStyle {
+					    											family "TYPEWRITER"
+					    											size 3.5
+					    											style "BOLD" 
+			         	    									}
+					    										string ""  
+															}
+														} 
+														translation 1 0 0.8 
+													} 
+													Transform {
+														children Shape {
+															appearance Appearance {
+					  											material DEF TextMaterial_1 Material {
+																	diffuseColor 0 0 0
+																	shininess    0.5
+																}
+															}
+															geometry DEF TheText_1 Text {
+																fontStyle USE myFontStyle 
+																string ""  
+															}
+		  												} 
+														translation 1 -4 0.8 
+													} 
+					
+				
+													DEF TextTrans_0 Transform {
+														children Shape {
+						    								appearance Appearance {
+																material DEF TheBgMat_0 Material {
+																	diffuseColor IS	headerColor
+																	shininess 0.13
+																	transparency 0.1
+																}
+															}
+															geometry IndexedFaceSet {
+						    									coord	Coordinate {
+						    										point	[ -1 -1 0,-1 1 0,1 1 0,1 -1 0 ]}
+						    									coordIndex	[ 0, 1, 2, 3, -1 ]
+						    									solid	FALSE						}}
+														translation	45 1 0
+														scale 45 2 1
+					    							}
+					    							DEF TextTrans_1 Transform {
+														children Shape {
+						    								appearance Appearance {
+																material Material {
+																	diffuseColor IS	linesColor
+																	shininess 0.13
+							  										transparency 0.1
+																}
+															}
+															geometry IndexedFaceSet {
+						    									coord	Coordinate {
+						    										point	[ -1 -1 0,-1 1 0,1 1 0,1 -1 0 ]}
+						    									coordIndex	[ 0, 1, 2, 3, -1 ]
+						    									solid	FALSE						}}
+														translation	45 -3 0
+														scale 45 2 1
+ 													}
+													DEF	TheLineAround Transform	{
+														translation	45 -1 0.05
+														scale	45 4 1
+														children	Shape	{
+															appearance Appearance	{
+																material	Material {
+																	diffuseColor IS	borderColor
+																}
+															}
+															geometry IndexedLineSet	{
+																coord	Coordinate {
+						    										point	[ -1.0 -1.0 0, -1.0 1.0 0, 1.0 1.0 0, 1.0 -1.0 0 ]}
+						    									coordIndex	[ 0, 1, 2, 3, 0, -1 ]
+															}
+														}
+													}
+												] 
+											}
+										}
+									]
+								}					 
+							} 
+						]
+					}
+				]
+			}
+		]
+	}
+	
+	DEF scFlag Script {	
+
+    	field SFNode objInt USE	objInt
+		eventIn SFTime havTouch IS havTouch
+		eventIn	MFString textHeader_In #IS textHeader_In
+		eventIn	MFString textLines_In #IS textLines_In
+		eventIn SFTime touch_0		
+		eventIn SFTime touch
+    	eventOut MFString textOut0_0
+    	eventOut MFString textOut0_1
+    	eventOut MFString textOut_0
+
+		field SFNode Flag_View USE Flag_View
+		field SFNode TheText_0 USE TheText_0 
+		field SFNode TheText_1 USE TheText_1
+		field SFNode TextTrans_1 USE TextTrans_1
+		field SFNode TextTrans_0 USE TextTrans_0
+		field SFNode TheLineAround USE TheLineAround
+		field SFNode myFontStyle USE myFontStyle
+		#field SFNode oldView USE SavedViewPoint
+		
+		field MFString textHeader ""#IS textHeader
+		field MFString textLines "" #IS textLines
+		field SFBool useOwnView TRUE
+    	field SFInt32 count 0
+		field SFBool setText FALSE 
+    	field SFInt32 touch_text_count_0 0
+    	field SFInt32 touch_color_count_0 0
+
+		field SFNode swFlag USE	swFlag
+
+		eventIn	SFBool useOwnView_in
+
+		eventIn	SFVec3f unbindViewpoint
+		exposedField SFBool	show IS	show
+		exposedField SFVec3f viewpointPosition IS viewpointPosition
+		exposedField SFRotation	viewpointOrientation IS	viewpointOrientation
+		directOutput TRUE
+	
+    	url "javascript:
+		
+		function viewpointPosition(value){
+				
+			if (useOwnView){
+				Flag_View.set_bind = true;
+			}
+		}
+
+		function viewpointOrientation(value){
+		
+			if (useOwnView){
+				Flag_View.set_bind = true;
+			}	
+		}
+
+		//debug
+		function unbindViewpoint (value, time) {
+		
+		
+		//print ('Flag_View.position: ' + Flag_View.position);
+		
+		Flag_View.set_bind = false;
+		//print ('Flag_View.isBound: ' + Flag_View.isBound);
+		
+		}
+
+		
+		
+		
+		function initialize () {  
+			
+			//			print ('initialize: ' + objInt.textBody );
+			//			print ('initialize: ' + objInt.textHeader );
+			
+			//			TheText_0.set_string = textHeader[0]; 
+			//    		TheText_1.set_string = textLines;
+
+			TheText_0.set_string = objInt.textHeader; 
+    		TheText_1.set_string = objInt.textBody;
+			AdaptToTextSize();
+
+			useOwnView = objInt.useOwnView;
+			
+			if (objInt.show) {
+				show(true);
+			}
+
+			Flag_View.set_bind = false;
+			//print ('Flag_View.isBound: ' + Flag_View.isBound);
+
+		}
+		
+		
+
+		function useOwnView_in (value, time) {
+		
+			useOwnView = value;
+			//print ('useOwnView: ' + value);
+		}
+		
+		function show(value, time) {
+		
+			//touch(timestamp, timestamp);
+			if (value){ 
+				//print ('useOwnView: ' + useOwnView );
+				//print ('Fehler!');
+				swFlag.whichChoice = 0;
+				if (useOwnView){
+					//saveViewPoint('SavedViewpoint'); 
+					Flag_View.set_bind = true;
+				}
+			}
+    		else {
+        		swFlag.whichChoice = -1;
+        		count = 0;
+				//if (useOwnView){
+        		//oldView.set_bind = true;
+				//}
+    		}
+		}
+
+
+    	function touch (value, time) {
+    		
+			//print ('fct touch...');
+
+			count++;
+    		if (count == 1){ 
+				swFlag.whichChoice = 0;
+				if (useOwnView){
+					//saveViewPoint('SavedViewpoint'); 
+					//Flag_View.set_bind = true;
+				}
+			}
+    		else {
+        		swFlag.whichChoice = -1;
+        		count = 0;
+				//if (useOwnView){
+        		//oldView.set_bind = true;
+				//}
+    		}
+    	}
+
+    	
+		
+		function textHeader_In (value, time) {
+			//print ('TextHeader_in: ' + value);
+			TheText_0.string = value;	   
+			textHeader = value;
+			AdaptToTextSize();
+		}	
+
+
+		function textLines_In (value, time) {
+			//print ('TextLines_in: ' + value);
+			TheText_1.string = value;	   
+			textLines = value;
+			AdaptToTextSize();
+		}
+
+
+		function AdaptToTextSize() {
+			//Anpassung der Fahne an die Groesse des Textes
+			//1. Bestimmung der ausdehnung
+			
+			var maxX;
+			var maxY;
+			
+			maxY = TheText_1.string.length;
+			maxX = 10;
+			
+			for (i=0; i<maxY; i++){
+				if (maxX < TheText_1.string[i].length) maxX = TheText_1.string[i].length;
+			} 
+			if (maxX <	TheText_0.string[0].length) maxX =	TheText_0.string[0].length;
+			maxX = maxX +1; 
+			//2. Skalierung und platzierung der Flaechen
+			TextTrans_1.scale[0] = maxX*myFontStyle.size/3.8;
+			TextTrans_1.scale[1] = myFontStyle.size * (maxY-1) /2 +3;
+			TextTrans_1.translation [0] = maxX *myFontStyle.size /3.8;
+			TextTrans_1.translation [1] = -myFontStyle.size * (maxY-1)/2 -4;
+		  
+		
+			TheLineAround.scale[0] = maxX*myFontStyle.size/3.8;
+			TheLineAround.scale[1] = myFontStyle.size * (maxY+1) /2+1.5;
+			TheLineAround.translation [0] = maxX *myFontStyle.size /3.8;
+			TheLineAround.translation [1] = -myFontStyle.size * (maxY+1)/2 +1.5;
+			
+			//3. View setzen
+//			if (maxX > 30){
+//				Flag_View.position[2] = maxX *myFontStyle.size /3.8;
+//				Flag_View.position[0] = -maxX *myFontStyle.size /1.9;
+//			}
+		
+			// Headerlaenge anpassen
+			if (TheText_0.string.length < maxX){ 
+				TextTrans_0.scale[0] = maxX*myFontStyle.size/3.8;
+				TextTrans_0.translation [0] = maxX *myFontStyle.size /3.8;
+			}
+		}
+		
+
+		"
+	}
+	ROUTE objInt.textHeader	TO scFlag.textHeader_In
+	ROUTE objInt.textBody TO scFlag.textLines_In
+	ROUTE objInt.useOwnView	TO scFlag.useOwnView_in
+	ROUTE objInt.objPosTrl TO scFlag.unbindViewpoint
+	ROUTE objInt.objScale TO scFlag.unbindViewpoint
+}
+
+#---------------------------------------------------------------------------------------
+
+#DEF	alarm tvrcFlag {
+#	show TRUE
+#	useOwnView TRUE
+#	objPosRot 0 0 1 0
+#	objPosTrl 0 0 0
+#	objScale .1 .1 .1
+#	textHeader ["Meine neue Kopfzeile"]
+#	textBody ["meineLine1", "line2", "line3", "line4"]
+#}
+
+
+
+
+#Transform {
+#	translation	2 0 0
+#	children [
+#	Shape {
+#		geometry Box {
+#			size 2 2 2
+#		}
+#	}
+	
+#	]
+#}
+
+
+#DEF	mover tvrcMover	{
+
+#}
+#ROUTE mover.translation_out	TO alarm.objPosTrl
+
+
+
+#Transform  {
+#	translation	0 2 0
+#	children [
+#			DEF	touchi tvrcTouchSensor {
+#	schaltFunktion TRUE
+#}	
+	
+#	]
+#}
+
+
+
+#ROUTE touchi.SFBool_schalt_out TO alarm.show_in

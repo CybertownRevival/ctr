@@ -1,0 +1,688 @@
+#VRML V2.0 utf8
+
+
+	#@ <Name><ger>Das Ampel-Objekt</ger><eng>The traffic light object</eng><spa>The Traffic light-object</spa></Name>
+	#@ <summary><ger>Mit dem Ampel-Objekt ist es m&ouml;glich eine Ampel mit einem, zwei oder drei Signalen darzustellen, dabei passt sich die Ampelgr&ouml;&szlig;e automatisch an. Die Farbe jedes Signals ist frei w&auml;bar. Die Schaltung der Ampelsignale wird &uuml;ber den Status geregelt. 
+	#@ </ger><eng>The traffic light object enables to visualize a traffic light with one, two or tree signals, whereas the object size will be adjusted automatically. It is possible to choose an own color for every signal. The signals of the traffic light are controlled by the variable state.
+	#@ </eng></summary>
+	#@<category>TvrcBasic</category>
+  #@<NeedGeometryInterface>true</NeedGeometryInterface>
+	#@<icon>obj_Ampel.ico</icon>
+PROTO tvrcTrafficLight [
+
+	#@ <summary><ger>Ampelfarbe.
+	#@ </ger><eng> Color of traffic light.
+	#@ </eng></summary>	
+	#@ <Name><ger>Farbe</ger><eng>Color</eng><spa>Color</spa></Name>	  
+	#@ <Visible>true</Visible>	
+	exposedField SFColor farbe_ampel .22 .16 .17
+
+	#@ <summary><ger>Ampeltransparenz. Wert zwischen 0 und 1.
+	#@ </ger>
+	#@ <eng>Transparency of traffic light. Range between 0 and 1.
+	#@ </eng></summary>	    
+	#@ <Name><ger>Transparenz</ger><eng>Transparency</eng><spa>Transparencia</spa></Name>	  
+	#@ <Visible>true</Visible>
+	#@ <Range Min="0" Max="1"></Range>
+	exposedField SFFloat transparenz_ampel 0
+
+	#@ <summary><ger>Gibt die Anzahl der Signale an. Man kann zwischen einem, zwei und drei Signalen w&auml;hlen.
+	#@ </ger><eng>The value indicates the number of signals. It's possible to choose between one, two or tree signals.
+	#@ </eng></summary>
+	#@ <Name><ger>Anzahl der Signale</ger><eng>Number of Lights</eng><spa>Number of Lights</spa></Name>	  
+	#@ <Visible>true</Visible>
+	#@ <Values>
+	#@ <Value ger="eins" eng="one" spa="one" >1</Value>
+	#@ <Value ger="zwei" eng="two" spa="two">2</Value>
+	#@ <Value ger="drei" eng="tree" spa="tree">3</Value> 
+	#@</Values>
+	exposedField SFInt32 anzahl_lichter 3
+
+	#@ <summary><ger>Der Wert kennzeichnet die Farbe des oberen Signals der Ampel.
+	#@ </ger><eng>The value indicates the individual color of the upper signal.
+	#@ </eng></summary>
+	#@ <Name><ger>Signalfarbe1</ger><eng>Color of upper light</eng><spa>Color of upper light</spa></Name>	  
+	#@ <Visible>true</Visible>
+	exposedField SFColor farbe1 1 0 0
+
+ 	#@ <summary><ger>Der Wert kennzeichnet die Farbe des mittleren Signals der Ampel.
+	#@ </ger><eng>The value indicates the individual color of the second signal.
+	#@ </eng></summary>
+	#@ <Name><ger>Signalfarbe2</ger><eng>Color of second light</eng><spa>Color of second light</spa></Name>	  
+	#@ <Visible>true</Visible>
+	exposedField SFColor farbe2 1 1 0
+
+ 	#@ <summary><ger>Der Wert kennzeichnet die Farbe des unteren Signals der Ampel.
+	#@ </ger><eng>The value indicates the individual color of the lower signal.
+	#@ </eng></summary>
+	#@ <Name><ger>Signalfarbe2</ger><eng>Color of lower light</eng><spa>Color of lower light</spa></Name>	  
+	#@ <Visible>true</Visible>
+	exposedField SFColor farbe3 0 1 0
+    	
+	################################################################################
+	#@ <summary><ger>Proze&szlig;anschlu&szlig; f&uuml;r die Schaltung der Ampelfarben. F&uuml;r die Schaltung der Farben gilt: 
+	#@ 0 - keine Licht geschaltet 
+	#@ 1 - obere Licht geschaltet 
+	#@ 2 - mittleres Licht geschaltet
+	#@ 3 - untere Licht geschaltet
+	#@ 4 - Lichter 1 und 2 leuchten
+	#@ 5 - Lichter 2 und 3 leuchten
+	#@Bei einem Licht ist nur der Status 0 und 1 aktiv. Bei drei Lichtern k&ouml;nnen die Zust&auml;nde 0-5 eingenommen werden.
+	#@ </ger><eng>Process connection for switching signal colors.
+	#@ Color controls as follows:
+	#@ 0 - no color selected
+	#@ 1 - upper color selected
+	#@ 2 - second color selected
+	#@ 3 - lower color selected
+	#@ 4 - first and second color selected
+	#@ 5 - second and third color selected
+	#@If there is only one light activated, it's possible to choose between state 0 and 1. All five states are available, when tree lights are activated. 
+	#@ </eng></summary>
+	#@ <Name><ger>Status</ger><eng>State</eng></Name>	
+	#@ <Visible>true</Visible>
+	#@ <Values>
+	#@ <Value ger="kein Licht" eng="no Light" spa="Ninguna luz" >0</Value>
+	#@ <Value ger="1.Signal" eng="1. Light" spa="1. Light">1</Value>
+	#@ <Value ger="2.Signal" eng="2. Light" spa="2. Light">2</Value>
+	#@ <Value ger="3.Signal" eng="3. Light" spa="3. Light">3</Value>
+	#@ <Value ger="1. und 2." eng="1. and 2." spa="1. and 2.">4</Value>
+	#@ <Value ger="2. und 3." eng="2. and 3." spa="2. and 3.">5</Value>
+	#@</Values>
+	exposedField	SFInt32	status	0
+
+	### Geometrietransformationen im lokalen Koordinatensystem.->ausblenden
+
+	#@ <summary><ger>Ampelposition in Bezug auf das lokale Koordinatensystem.
+	#@ </ger>
+	#@ <eng>Position of traffic light in reference to the local coordinate system.
+	#@ </eng></summary>
+    #@ <Name><ger>Position</ger><eng>Position</eng><spa>Posición</spa></Name>
+	#@ <Interface>Geometry</Interface>
+	#@ <Default>0 0 0</Default>
+	#@ <Visible>false</Visible>
+	exposedField SFVec3f	objPosTrl 0 0 0
+
+	#@ <summary><ger>Drehung der Ampel in Bezug auf das lokalen Koordinatensystem.
+	#@ </ger>
+	#@ <eng>Rotation of traffic light in reference to the local coordinate system.
+	#@ </eng></summary>	
+	#@ <Name><ger>Drehung</ger><eng>Rotation</eng><spa>Rotación</spa></Name>
+	#@ <Interface>Geometry</Interface>
+	#@ <Default>0 1 0 0</Default>
+	#@ <Visible>false</Visible>
+	exposedField SFRotation objPosRot	0 1 0 0
+
+	#@ <summary><ger>Skalierung der Ampelin Bezug auf das lokalen Koordinatensystem.
+	#@ </ger>
+	#@ <eng>Scaling of traffic light in reference to the local coordinate system.
+	#@ </eng></summary>	
+	#@ <Name><ger>Skalierung</ger><eng>Scale</eng><spa>Escala</spa></Name>
+	#@ <Interface>Geometry</Interface>
+	#@ <Default>0.25 0.25 0.25</Default>
+	#@ <Visible>false</Visible>
+	exposedField SFVec3f	objScale  1 1 1
+
+	exposedField SFVec3f abmessungen .3 .8 .22 
+	eventOut SFTime touchTime
+	exposedField SFBool flgTouchBtEnabled TRUE
+	exposedField SFRotation neigung	1 0 0 0
+	exposedField SFString	name  ""
+	exposedField SFVec3f	pos_box 0 0 0
+	field SFVec3f size 5.5 4 0.25
+	field MFFloat range	5				 
+	eventIn MFInt32 	abmessungen_in
+	eventIn MFInt32 	skalierung_in
+	eventIn MFInt32 	position_in
+	eventIn SFFloat 	drehung_in
+	eventIn SFFloat 	neigung_in
+	eventIn SFString	name_in
+	eventIn MFInt32 	range_in
+	eventOut SFString	name_out
+	eventOut SFInt32	schalter_index_out
+	eventIn SFBool		schalter_animation_in
+	eventIn SFColor 	farbe_ampel_in	  
+    eventIn SFFloat 	transparenz_ampel_in
+	eventIn	SFTime  	touch_objekt_in
+
+]
+{
+#	PROTO interface[
+#		exposedField SFInt32 anzahl_lichter IS anzahl_lichter
+#		exposedField SFColor farbe1			IS farbe1
+#		exposedField SFColor farbe2			IS farbe2
+#		exposedField SFColor farbe3			IS farbe3
+#	]{}
+
+#	DEF	obj1 interface {
+#		anzahl_lichter  IS anzahl_lichter
+#		farbe1			IS farbe1
+#		farbe2			IS farbe2
+#		farbe3			IS farbe3
+#	}
+
+
+	DEF alles Group	{
+		children [
+			DEF drehen Transform {
+				translation IS objPosTrl   
+				scale		IS objScale
+				rotation	IS objPosRot
+				children [
+					DEF	neigen Transform {
+						rotation IS neigung 
+						children [ 
+							DEF	touch_bauteil TouchSensor{
+								enabled	IS flgTouchBtEnabled
+								touchTime IS touchTime
+							}  
+							Group {	
+								children[ 
+									#### Detailmodell ########################################
+									DEF	Ampel Transform	{
+										children [
+											DEF	ampelkoerper Transform {
+												translation	0 .6 0
+												children [
+													Shape {
+														appearance Appearance {
+															material DEF ampel_koerper Material {
+																diffuseColor IS farbe_ampel #.22 .16 .17
+																specularColor .26 .26 .26
+																emissiveColor .22 .16 .17
+																ambientIntensity 0
+																shininess .1
+																transparency IS	transparenz_ampel
+															}
+														}
+														geometry DEF a_box Box {
+															size .5 1.2 .4
+														}
+													}
+												]}#ende ampelkoerper
+											DEF licht_rot Transform	{
+												translation	0 1 .1
+												children [
+													Shape {
+														appearance Appearance {
+															material DEF rotes_licht Material {
+																#															diffuseColor 0 0 0
+																#															specularColor .9 .9 .9
+																#															emissiveColor 1 0 0
+																#															ambientIntensity 0
+																#															shininess .05
+																diffuseColor .275 .00784 0
+																specularColor .38 .0745 .0745
+																emissiveColor .722 .404 0
+																ambientIntensity .173
+																shininess .722
+																transparency .078
+															}
+														}
+														geometry DEF ro_licht Sphere	{
+															radius .2
+														}
+													}
+												]}#ende licht_rot
+											DEF	switch_gelb Switch {
+												whichChoice	-1
+												choice [
+													DEF licht_gelb Transform	{
+														translation	0 .6 .1
+														children [
+															Shape {
+																appearance Appearance {
+																	material DEF gelbes_licht Material {
+																		#															diffuseColor 0 0 0
+																		#															specularColor .99 1 .79
+																		#															emissiveColor 1 .75 .07
+																		#															ambientIntensity 0
+																		#															shininess .05
+																		diffuseColor 0 0 0	 
+																		specularColor .0588 .31 .0745
+																		emissiveColor .827 .467 .353
+																		ambientIntensity 0
+																		shininess .055
+																		transparency .4
+																	}
+																}
+																geometry DEF ge_licht Sphere	{
+																	radius .2
+																}
+															}
+														]}#ende licht_rot
+												]}#ende switch_gelb
+											DEF	switch_gruen Switch	{
+												whichChoice	-1
+												choice [
+													DEF licht_gruen Transform	{
+														translation	0 .2 .1
+														children [
+															Shape {
+																appearance Appearance {
+																	material DEF gruenes_licht Material {
+																		#															diffuseColor 0 0 0
+																		#															specularColor .87 .71 .06
+																		#															emissiveColor 0 .76 0
+																		#															ambientIntensity 0
+																		#															shininess .03
+																		diffuseColor 0 .0314 0	 
+																		specularColor .286 .38 .0588
+																		emissiveColor .424 .533 0
+																		ambientIntensity .169
+																		shininess .761
+																		transparency .471
+																	}
+																}
+																geometry DEF gr_licht Sphere	{
+																	radius .2
+																}
+															}
+														]}#ende licht_rot
+												]}#ende Switch_gruen
+										]}#ende Ampel	  
+						 			##########################################################
+								]}#ende Group	 
+						]}#ende neigen
+				]}#ende drehen
+		]}#ende alles
+	DEF	ansicht Viewpoint {
+		position 0 .5 3	   
+		fieldOfView 0.8
+		orientation 0 0 1 0			
+		description "Startansicht"
+	}
+
+	DEF	sensorscript Script	{
+
+		eventIn	SFBool		sensor_click
+		eventOut SFString	name_out IS	name_out 
+		eventIn	SFString	name_in IS name_in
+		field SFString		name	""
+   	
+    	url "vrmlscript:
+
+		function initialize(){							  
+		}
+		function name_in(value){
+			name = value;
+		}
+	
+		function sensor_click(value){
+			if (value==1) { name_out = name; }
+    	}
+  
+		"}#ende sensorscript
+
+	DEF  positionierung Script  {
+
+		directOutput TRUE
+
+		eventIn	MFInt32		position_in 	IS position_in
+		eventIn	SFFloat		drehung_in		IS drehung_in
+		eventIn	SFFloat		neigung_in		IS neigung_in
+		eventIn	SFString	name_in			IS name_in
+		eventIn	MFInt32		range_in		IS range_in
+		eventIn MFInt32 	skalierung_in	IS skalierung_in
+		eventIn MFInt32 	abmessungen_in	IS abmessungen_in
+
+		eventIn	SFColor		farbe_ampel_in		 IS farbe_ampel_in
+		eventIn	SFFloat		transparenz_ampel_in IS transparenz_ampel_in
+		eventIn	SFTime		touch_objekt_in		 IS	touch_objekt_in
+
+    	eventOut SFVec3f	pos_out
+    	eventOut SFVec3f	center_out
+		eventOut MFNode 	tragmittel_out
+    	eventOut SFRotation neigung_out
+    	eventOut SFRotation drehung_out
+    	eventOut SFVec3f	scale_laenge_out
+    	eventOut MFFloat	range_out
+		eventOut SFVec3f	scale_out
+		eventOut SFVec3f	pos_out_bounding
+	
+		field SFFloat	scale_laenge 1
+		field SFFloat	neigungswinkel 0
+		field SFFloat	laenge 50
+		field SFFloat	hoehe 20
+		field MFFloat	range IS range
+		field MFFloat	range_temp [] 
+		field SFVec3f	pos_temp 0 0 0
+		field SFVec3f	scale_temp 0 0 0
+		field SFVec3f	size 0 0 0
+		field SFVec3f	size_temp 0 0 0
+										 
+		field SFFloat   radius 0
+
+		field SFNode	ampel_koerper	USE	ampel_koerper
+		field SFNode	gelbes_licht	USE gelbes_licht
+		field SFNode	rotes_licht 	USE	rotes_licht
+		field SFNode	gruenes_licht	USE gruenes_licht
+
+		field SFNode	a_box	 USE a_box
+		field SFNode	ro_licht USE ro_licht
+		field SFNode	ge_licht USE ge_licht
+		field SFNode	gr_licht USE gr_licht
+
+		field SFNode	ampelkoerper USE ampelkoerper
+		field SFNode	licht_rot	 USE licht_rot
+		field SFNode	licht_gelb	 USE licht_gelb
+		field SFNode	licht_gruen  USE licht_gruen
+
+		field SFNode	switch_gelb  USE switch_gelb
+		field SFNode	switch_gruen USE switch_gruen
+		field SFNode	ansicht 	 USE ansicht
+		
+		exposedField SFVec3f	position	IS objPosTrl
+		exposedField SFRotation	drehung		IS objPosRot
+		exposedField SFRotation	neigung		IS neigung
+		exposedField SFString	name		IS name
+		exposedField SFVec3f	scale		IS objScale
+		exposedField SFVec3f	pos_box 	IS pos_box
+
+		exposedField SFInt32	anzahl_lichter		IS anzahl_lichter
+		exposedField SFColor	farbe1				IS farbe1 
+		exposedField SFColor	farbe2				IS farbe2
+		exposedField SFColor	farbe3				IS farbe3
+		exposedField SFVec3f	abmessungen 		IS abmessungen
+		exposedField SFInt32	status				IS status
+		exposedField SFColor	farbe_ampel 		IS farbe_ampel 
+		exposedField SFFloat	transparenz_ampel	IS transparenz_ampel
+
+		
+#		""
+
+		url	"vrmlscript:
+
+		function initialize(){
+						 
+			pos_temp					= position;	   
+			ampel_koerper.diffuseColor	= farbe_ampel;
+			ampel_koerper.transparency	= transparenz_ampel;
+			//a_box.size = new SFVec3f(abmessungen[0], abmessungen[1], abmessungen[2]);
+//			a_box.size = new SFVec3f(abmessungen[0], abmessungen[0]*anzahl_lichter, abmessungen[2]);
+
+//			radius = (abmessungen[1]/(anzahl_lichter*2.5));	   
+//			if(radius>(abmessungen[0]/2.5)) radius = abmessungen[0]/2.5;	
+
+//			ro_licht.radius = radius;
+//			ge_licht.radius = radius;
+//			gr_licht.radius = radius;
+
+//			ampelkoerper.translation = new SFVec3f(0, abmessungen[1]/2, 0);
+//			licht_rot.translation	 = new SFVec3f(0, abmessungen[1]-radius*1.25, abmessungen[2]/2-radius/2);
+//			licht_gelb.translation	 = new SFVec3f(0, abmessungen[1]-radius*3.75, abmessungen[2]/2-radius/2);
+//			licht_gruen.translation  = new SFVec3f(0, abmessungen[1]-radius*6.25, abmessungen[2]/2-radius/2);
+			
+			resize_ampel();
+
+			switch_gelb.whichChoice = -1;
+			switch_gruen.whichChoice = -1;
+			if(anzahl_lichter>=2) { switch_gelb.whichChoice  = 0; }
+			if(anzahl_lichter>=3) { switch_gruen.whichChoice = 0; }
+			status_anzeige(); 
+		}
+
+		function status_anzeige(){
+			if(status==0) {
+				rotes_licht.diffuseColor		= new SFColor(0, 0, 0);
+				rotes_licht.specularColor		= new SFColor(.0588, .31, .0745);
+				rotes_licht.emissiveColor		= new SFColor(.827, .467, .353); //farben_lichter[0]; //
+				rotes_licht.ambientIntensity	= 0;
+				rotes_licht.shininess			= .05;
+				rotes_licht.transparency		= .4;
+			
+				if(anzahl_lichter>=2) {			 												  
+					gelbes_licht.diffuseColor		= new SFColor( 0, 0, 0);
+					gelbes_licht.specularColor		= new SFColor( .0588, .31, .0745);
+					gelbes_licht.emissiveColor		= new SFColor( .827, .467, .353); //farben_lichter[1]; //
+					gelbes_licht.ambientIntensity	= 0;
+					gelbes_licht.shininess			= .05;
+					gelbes_licht.transparency		= .4;
+				}
+				if(anzahl_lichter>=3) {
+					gruenes_licht.diffuseColor		= new SFColor(0, 0, 0);
+					gruenes_licht.specularColor 	= new SFColor(.0588, .31, .0745);
+					gruenes_licht.emissiveColor 	= new SFColor(.827, .467, .353);  //farben_lichter[2]; //
+					gruenes_licht.ambientIntensity	= 0;
+					gruenes_licht.shininess 		= .05;
+					gruenes_licht.transparency		= .4;
+				}		
+			}
+			if(status==1 || status==4) {	// rot leuchtet	oder gelb und rot leuchten								
+				rotes_licht.diffuseColor		= new SFColor( 0, 0, 0);
+				rotes_licht.specularColor		= new SFColor( .9, .9, .9);
+				rotes_licht.emissiveColor		= farbe1; //new SFColor( 1, 0, 0);
+				rotes_licht.ambientIntensity	= 0;
+				rotes_licht.shininess			= .05;
+				rotes_licht.transparency		= 0;
+			
+				if(anzahl_lichter>=2) {	
+					if(anzahl_lichter > 2 && status==4){
+						gelbes_licht.diffuseColor		= new SFColor(0, 0, 0);
+						gelbes_licht.specularColor		= new SFColor(.99, 1, .79);
+						gelbes_licht.emissiveColor		= farbe2; //new SFColor(1, .75, .07);
+						gelbes_licht.ambientIntensity	= 0;
+						gelbes_licht.shininess			= .05;
+						gelbes_licht.transparency		= 0;
+					}
+					else{		 												  
+						gelbes_licht.diffuseColor		= new SFColor( 0, 0, 0);
+						gelbes_licht.specularColor		= new SFColor( .0588, .31, .0745);
+						gelbes_licht.emissiveColor		= new SFColor( .827, .467, .353); //farben_lichter[1]; //
+						gelbes_licht.ambientIntensity	= 0;
+						gelbes_licht.shininess			= .05;
+						gelbes_licht.transparency		= .4;
+					}
+				}
+				if(anzahl_lichter>=3) {
+					gruenes_licht.diffuseColor		= new SFColor(0, 0, 0);
+					gruenes_licht.specularColor 	= new SFColor(.0588, .31, .0745);
+					gruenes_licht.emissiveColor 	= new SFColor(.827, .467, .353);  //farben_lichter[2]; //
+					gruenes_licht.ambientIntensity	= 0;
+					gruenes_licht.shininess 		= .05;
+					gruenes_licht.transparency		= .4;
+				}			
+			}
+			else if(status==2) { // gelb leuchtet
+				rotes_licht.diffuseColor		= new SFColor(0, 0, 0);
+				rotes_licht.specularColor		= new SFColor(.0588, .31, .0745);
+				rotes_licht.emissiveColor		= new SFColor(.827, .467, .353); //farben_lichter[0]; //
+				rotes_licht.ambientIntensity	= 0;
+				rotes_licht.shininess			= .05;
+				rotes_licht.transparency		= .4;
+
+				if(anzahl_lichter>=2) {	
+					gelbes_licht.diffuseColor		= new SFColor(0, 0, 0);
+					gelbes_licht.specularColor		= new SFColor(.99, 1, .79);
+					gelbes_licht.emissiveColor		= farbe2; //new SFColor(1, .75, .07);
+					gelbes_licht.ambientIntensity	= 0;
+					gelbes_licht.shininess			= .05;
+					gelbes_licht.transparency		= 0;			  
+				}
+				if(anzahl_lichter>=3) {															
+					gruenes_licht.diffuseColor		= new SFColor(0, 0, 0);
+					gruenes_licht.specularColor 	= new SFColor(.0588, .31, .0745);
+					gruenes_licht.emissiveColor 	= new SFColor(.827, .467, .353); // farben_lichter[2]; //
+					gruenes_licht.ambientIntensity	= 0;
+					gruenes_licht.shininess 		= .05;
+					gruenes_licht.transparency		= .4;
+				}				   
+			}
+			else if(status==3 || status == 5) {  // gruen leuchtet
+				rotes_licht.diffuseColor		= new SFColor(0, 0, 0);
+				rotes_licht.specularColor		= new SFColor(.0588, .31, .0745);
+				rotes_licht.emissiveColor		= new SFColor(.827, .467, .353); //farben_lichter[0]; //
+				rotes_licht.ambientIntensity	= 0;
+				rotes_licht.shininess			= .05;
+				rotes_licht.transparency		= .4;			  
+
+				if(anzahl_lichter>=2) {
+					if(anzahl_lichter > 2 && status==5){
+						gelbes_licht.diffuseColor		= new SFColor(0, 0, 0);
+						gelbes_licht.specularColor		= new SFColor(.99, 1, .79);
+						gelbes_licht.emissiveColor		= farbe2; //new SFColor(1, .75, .07);
+						gelbes_licht.ambientIntensity	= 0;
+						gelbes_licht.shininess			= .05;
+						gelbes_licht.transparency		= 0;
+					}
+					else{		 												  
+						gelbes_licht.diffuseColor		= new SFColor( 0, 0, 0);
+						gelbes_licht.specularColor		= new SFColor( .0588, .31, .0745);
+						gelbes_licht.emissiveColor		= new SFColor( .827, .467, .353); //farben_lichter[1]; //
+						gelbes_licht.ambientIntensity	= 0;
+						gelbes_licht.shininess			= .05;
+						gelbes_licht.transparency		= .4;
+					}
+				}
+				if(anzahl_lichter>=3) {	
+					gruenes_licht.diffuseColor		= new SFColor(0, 0, 0);
+					gruenes_licht.specularColor 	= new SFColor(.87, .71, .06);
+					gruenes_licht.emissiveColor 	= farbe3; //new SFColor(0, .76, 0); 
+					gruenes_licht.ambientIntensity	= 0;
+					gruenes_licht.shininess 		=.03;
+					gruenes_licht.transparency		= 0;
+				}	
+			}
+		}
+
+		function resize_ampel(){
+
+			abmessungen[1]= abmessungen[0] * anzahl_lichter;
+			a_box.size = new SFVec3f(abmessungen[0], abmessungen[1], abmessungen[2]);
+
+			radius = abmessungen[0]/2.5;	
+
+			ro_licht.radius = radius;
+			ge_licht.radius = radius;
+			gr_licht.radius = radius;
+
+			ampelkoerper.translation = new SFVec3f(0, abmessungen[1]/2, 0);
+			licht_rot.translation	 = new SFVec3f(0, abmessungen[1]-radius*1.25, abmessungen[2]/2-radius/2);
+			licht_gelb.translation	 = new SFVec3f(0, abmessungen[1]-radius*3.75, abmessungen[2]/2-radius/2);
+			licht_gruen.translation  = new SFVec3f(0, abmessungen[1]-radius*6.25, abmessungen[2]/2-radius/2);
+
+		
+		}
+
+		function farbe1(value){
+
+			print('farbe1');
+			if(status==1 || status == 4){
+				rotes_licht.emissiveColor		= farbe1;
+			}
+		}
+
+		function farbe2(value){
+
+			print('farbe2');
+			if(status==2 || status == 4 || status == 5){
+				gelbes_licht.emissiveColor		= farbe2;
+			}
+		}
+
+		function farbe3(value){
+			print('farbe3');
+			if(status==3 || status == 5){
+				gruenes_licht.emissiveColor		= farbe3;
+			}
+		}
+
+		function anzahl_lichter(value){
+
+			print('Anzahl' + anzahl_lichter);
+			resize_ampel();
+			
+			if(anzahl_lichter>=2) switch_gelb.whichChoice  = 0;
+			else switch_gelb.whichChoice = -1;
+
+			if(anzahl_lichter>=3)  switch_gruen.whichChoice = 0;
+			else switch_gruen.whichChoice = -1;
+
+			status_anzeige(); 
+		}
+
+		function status(value) {
+			
+			if(anzahl_lichter < 3 && status > anzahl_lichter)
+				print('Error: There are not enough lights for this state');
+			else status_anzeige();
+		}
+
+		function touch_objekt_in(value) {  
+			//		count_0++;
+			//    	if (count_0==1){ choice_0 = 0;
+			ansicht.jump		= FALSE;
+			ansicht.set_bind	= TRUE;		 
+			//		}
+			//    	else {
+			//        	choice_0 = -1;
+			//        	count_0 = 0;
+			//      };
+		}
+
+		function position_in(value){
+			//		print('position'+value);
+			pos_temp[0] = value[0]/1000;
+			pos_temp[1] = value[1]/1000;
+			pos_temp[2] = value[2]/1000;													  
+			pos_out = pos_temp;																
+		}
+
+		function drehung_in (value){
+			drehung_out	= new SFRotation(0, 1, 0, value);
+			//		print('drehung_in'+drehung_out);
+		}
+
+		function neigung_in (value){						 
+			neigungswinkel	= value; 
+			neigung_out		= new SFRotation(0, 0, 1, neigungswinkel);	 
+		}
+		
+		function skalierung_in(value){
+			//		print('skalierung'+value);
+			scale_temp[0] = value[0]/100;
+			scale_temp[1] = value[1]/100;
+			scale_temp[2] = value[2]/100;
+			scale_out	  = scale_temp;
+		}
+
+		function abmessungen_in(value){
+			//		print('abmessungen'+value);
+			abmessungen				= new SFVec3f(value[0]/1000,value[1]/1000, value[2]/1000);	   
+		}
+
+		function range_in(value){
+			//		print('range'+value);
+			range_temp[0]	= value[0]*100;
+			range			= range_temp;	 
+			//		detail_an_aus.range = range;	// setzt wert fur range, dafuer notwendig SFNode detail_an_aus in Scriptvariablen 
+		}
+		
+		"}#ende positionierung
+
+
+	#### Routen ##################################################################################
+	
+	ROUTE positionierung.pos_out		TO drehen.translation
+	ROUTE positionierung.center_out		TO drehen.center
+	ROUTE positionierung.drehung_out	TO drehen.rotation
+	ROUTE positionierung.neigung_out	TO neigen.rotation
+	ROUTE touch_bauteil.isActive		TO sensorscript.sensor_click
+	ROUTE positionierung.scale_out		TO drehen.scale
+
+}
+
+#---------------------------------------------------------------------------------
+
+DEF ampi tvrcTrafficLight {
+	flgTouchBtEnabled FALSE
+}
+
+#DEF	siggi tvrcTouchSensor {
+#	schaltFunktion TRUE
+#	objScale .1 .1 .1
+#	objPosTrl 1 1 1
+#	SFInt32_schalt_low 1
+#	SFInt32_schalt_high	2
+#}
+
+#ROUTE siggi.SFInt32_schalt_out TO ampi.status_in

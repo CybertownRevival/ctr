@@ -1,0 +1,165 @@
+#VRML V2.0 utf8
+
+Transform{
+translation 9.7 0 -35
+rotation 0 -1 0 0.3
+scale 1.2 1.2 1.2 
+children[
+Shape{
+appearance Appearance{
+material Material{
+diffuseColor 0 0 1
+}
+}
+geometry DEF words Text{
+fontStyle FontStyle{
+family  "SANS"
+justify "MIDDLE"
+} string "Mothership VRML Contest Winners" }
+}
+]
+}
+
+Transform{
+translation 9.7 -1 -35
+rotation 0 -1 0 0.3
+scale 0.8 0.8 0.8
+children[
+Shape{
+appearance Appearance{
+material Material{
+diffuseColor 0.3 0.3 1
+}
+}
+geometry DEF words1 Text{
+fontStyle FontStyle{
+family  "SANS"
+justify "MIDDLE"
+} string "Move closer to see the winners" }
+}
+]
+}
+
+Transform {
+rotation         0  0  1  0
+scale            2 2 2
+translation      0  0  -35
+children[
+LOD {
+range [8.0]
+level [
+Inline { url ["./contest/bug2.wrl"] }
+Group {}
+]
+}
+]
+}
+
+Transform {
+rotation         0  0  1  0
+scale            1  1  1
+translation      3  -2  -34
+children[
+LOD {
+range [8.0]
+level [
+Inline { url ["./contest/darko.wrl"] }
+Group {}
+]
+}
+]
+}
+
+Transform {
+rotation         0  0  1  0
+scale            1  1  1
+translation      6  -2  -33
+children[
+LOD {
+range [8.0]
+level [
+Inline { url ["./contest/fembot.wrl"] }
+Group {}
+]
+}
+]
+}
+
+Transform {
+rotation         0  0  1  0
+scale            1  1  1
+translation      9  -2  -32
+children[
+LOD {
+range [8.0]
+level [
+Inline { url ["./contest/firediamond.wrl"] }
+Group {}
+]
+}
+]
+}
+
+Transform {
+rotation         0  -1  0  0.8
+scale            1  1  1
+translation      12  -2.5  -31
+children[
+LOD {
+range [8.0]
+level [
+Inline { url ["./contest/flightpack.wrl"] }
+Group {}
+]
+}
+]
+}
+
+Transform {
+rotation         0  0  1  0
+scale            1  1  1
+translation      15  -2  -30
+children[
+LOD {
+range [8.0]
+level [
+Inline { url ["./contest/futuregocart.wrl"] }
+Group {}
+]
+}
+]
+}
+
+Transform {
+rotation         0  0  1  0
+scale            1  1  1
+translation      18  -2  -29
+children[
+LOD {
+range [8.0]
+level [
+Inline { url ["./contest/newbunny.wrl"] }
+Group {}
+]
+}
+]
+}
+
+Transform {
+rotation         0  -1  0  0.5
+scale            1.5  1.5  1.5
+translation      21  -2  -28
+children[
+LOD {
+range [8.0]
+level [
+Inline { url ["./contest/rozzinkor.wrl"] }
+Group {}
+]
+}
+]
+}
+
+
+
+

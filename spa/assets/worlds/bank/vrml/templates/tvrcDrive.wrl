@@ -1,0 +1,2916 @@
+#VRML V2.0 utf8
+
+#Achtung: zu diesem Proto gehoert das Texturverzeichnis tvrcAntriebTex
+
+#Proto Antrieb: Antrieb definieren
+#Proto statusFarbe: setzt Bool-Status in Farbe um
+									  
+
+### Gestalt von Drive
+PROTO tvrcShpDrive [
+	exposedField SFColor diffColor  0.61 0.61 0.61 #default: 0.61 0.61 0.61
+	exposedField SFVec3f objPosTrl 0 0 0
+	exposedField SFRotation objPosRot 0 0 1 0
+	exposedField SFVec3f objScale 1 1 1
+	#@ Ein- und Ausblenden der Instanz (0 - sichtbar; -1 -> unsichtbar; default: 0)
+	#exposedField SFInt32 objVisible 0 derzeit nicht verwendet...
+]
+{
+	Transform {
+		
+		scale IS objScale
+		rotation IS	objPosRot
+		translation IS objPosTrl
+		
+		children	[
+    		
+			DEF MotorEinheit Transform {
+    			children	DEF Motor Transform {
+					children	[
+						DEF Motorrippen Transform {
+	    					children	[
+	    						DEF Transform1 Transform {
+									children	DEF Rippe Transform {
+										children	Shape {
+		    								appearance	Appearance {
+		    									material	Material {
+													ambientIntensity	0.229508
+													diffuseColor IS diffColor
+													#specularColor IS specColor
+													shininess	0.9
+		    									}
+
+		    									texture	ImageTexture {
+													url	"templates/tvrcAntriebTex/dullchrome.jpg"
+		    									}
+
+		    								}
+
+		    								geometry	DEF _1 IndexedFaceSet {
+		    									coord	Coordinate {
+													point	[ 0.45 0.015 -0.025,
+														-0.45 0.015 -0.025,
+														-0.45 -0.015 -0.025,
+														0.45 0.015 0.025 ]
+		    									}
+
+		    									coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+			        								3, 0, 2, -1, 2, 1, 3, -1 ]
+		    									texCoord	TextureCoordinate {
+													point	[ 0.99 0,
+														0 0,
+														0.99 0.00555556 ]
+		    									}
+
+		    									ccw	FALSE
+		    									creaseAngle	0.506145
+		    									normalIndex	[  ]
+		    									texCoordIndex	[ 0, 1, 1, -1, 1, 0, 2, -1,
+			        								2, 0, 1, -1, 1, 1, 2, -1 ]
+		    								}
+
+										}
+
+										translation	1.28378 1.45375 0
+										rotation	1 0 0  1.57079
+									}
+
+									translation	0.11435 0.0211125 0.227389
+									rotation	-1 0 0  0.261799
+	    						}
+	    						DEF Transform2 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.010681 0.163183
+									rotation	-1 0 0  0.261799
+	    						}
+	    						DEF Transform3 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.0262106 0.0436505
+									rotation	-1 0 0  0.261799
+	    						}
+	    						DEF Transform4 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.0672391 -0.0102459
+									rotation	-1 0 0  0.261799
+	    						}
+	    						DEF Transform5 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.102043 -0.0647942
+									rotation	-1 0 0  0.261799
+	    						}
+	    						DEF Transform6 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.144396 -0.11737
+									rotation	-1 0 0  0.261799
+	    						}
+	    						DEF Transform7 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.185288 -0.168485
+									rotation	-1 0 0  0.261799
+	    						}
+	    						DEF Transform8 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.000408376 0.102401
+									rotation	-1 0 0  0.261799
+	    						}
+	    						DEF Transform9 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.038908 -0.303593
+									rotation	1 0 0  0.261799
+	    						}
+	    						DEF Transform10 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.232022 -0.209378
+									rotation	-1 0 0  0.261799
+	    						}
+	    						DEF Transform11 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.0248485 -0.241899
+									rotation	1 0 0  0.261799
+	    						}
+	    						DEF Transform12 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.0144008 -0.176984
+									rotation	1 0 0  0.261799
+	    						}
+	    						DEF Transform13 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.000173656 -0.117892
+									rotation	1 0 0  0.261799
+	    						}
+	    						DEF Transform14 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.0919931 0.0495614
+									rotation	1 0 0  0.261799
+	    						}
+	    						DEF Transform15 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.159055 0.154653
+									rotation	1 0 0  0.261799
+	    						}
+	    						DEF Transform16 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.12457 0.101494
+									rotation	1 0 0  0.261799
+	    						}
+	    						DEF Transform17 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.342581 0.614414
+									rotation	-1 0 0  1.309
+	    						}
+	    						DEF Transform18 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.659821 0.655715
+									rotation	-1 0 0  1.57079
+	    						}
+	    						DEF Transform19 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.449809 0.63886
+									rotation	-1 0 0  1.309
+	    						}
+	    						DEF Transform20 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.502926 0.649301
+									rotation	-1 0 0  1.309
+	    						}
+	    						DEF Transform21 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.555423 0.658676
+									rotation	-1 0 0  1.309
+	    						}
+	    						DEF Transform22 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.394833 0.625345
+									rotation	-1 0 0  1.309
+	    						}
+	    						DEF Transform23 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.605969 0.681175
+									rotation	-1 0 0  1.309
+	    						}
+	    						DEF Transform24 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.701665 0.743046
+									rotation	-1 0 0  1.309
+	    						}
+	    						DEF Transform25 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.747735 0.772088
+									rotation	-1 0 0  1.309
+	    						}
+	    						DEF Transform26 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.9688 0.616419
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform27 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.650884 0.713048
+									rotation	-1 0 0  1.309
+	    						}
+	    						DEF Transform28 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.908834 0.628119
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform29 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.789373 0.653406
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform30 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.729113 0.670545
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform31 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.680688 0.703787
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform32 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.850331 0.642745
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform33 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.628131 0.73382
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform34 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.583081 0.766356
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform35 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.0565133 -0.00635093
+									rotation	1 0 0  0.261799
+	    						}
+	    						DEF Transform36 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.541028 0.795327
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform37 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.31759 0
+									rotation	-1 0 0  3.14159
+	    						}
+	    						DEF Transform38 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.27588 0.307839
+									rotation	-1 0 0  2.87979
+	    						}
+	    						DEF Transform39 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.28849 0.241216
+									rotation	-1 0 0  2.87979
+	    						}
+	    						DEF Transform40 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.30109 0.178193
+									rotation	-1 0 0  2.87979
+	    						}
+	    						DEF Transform41 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.3173 0.120572
+									rotation	-1 0 0  2.87979
+	    						}
+	    						DEF Transform42 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.33711 0.0575498
+									rotation	-1 0 0  2.87979
+	    						}
+	    						DEF Transform43 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.49666 0.823349
+									rotation	-1 0 0  1.8326
+	    						}
+	    						DEF Transform44 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.37132 0.00533119
+									rotation	-1 0 0  2.87979
+	    						}
+	    						DEF Transform45 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.40421 -0.0468876
+									rotation	-1 0 0  2.87979
+	    						}
+	    						DEF Transform46 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.43974 -0.0973055
+									rotation	-1 0 0  2.87979
+	    						}
+	    						DEF Transform47 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.47215 -0.140521
+									rotation	-1 0 0  2.87979
+	    						}
+	    						DEF Transform48 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.0201618 -0.059612
+									rotation	1 0 0  0.261799
+	    						}
+	    						DEF Transform49 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.27996 -0.304821
+									rotation	1 0 0  2.8798
+	    						}
+	    						DEF Transform50 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.29782 -0.236366
+									rotation	1 0 0  2.8798
+	    						}
+	    						DEF Transform51 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.3127 -0.161959
+									rotation	1 0 0  2.8798
+	    						}
+	    						DEF Transform52 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.3241 -0.0960338
+									rotation	1 0 0  2.8798
+	    						}
+	    						DEF Transform53 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.36321 -0.0266925
+									rotation	1 0 0  2.8798
+	    						}
+	    						DEF Transform54 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.40422 0.027086
+									rotation	1 0 0  2.8798
+	    						}
+	    						DEF Transform55 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.44259 0.0870694
+									rotation	1 0 0  2.8798
+	    						}
+	    						DEF Transform56 Transform {
+									children	USE Rippe
+
+									translation	0.11435 1.4833 0.14432
+									rotation	1 0 0  2.8798
+	    						}
+	    						DEF Transform57 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.491608 -0.834411
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform58 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.551027 -0.794823
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform59 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.609826 -0.753095
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform60 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.654149 -0.715848
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform61 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.827338 -0.834438
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform62 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.77986 -0.797076
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform63 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.721287 -0.761661
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform64 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.669271 -0.728619
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform65 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.615186 -0.692216
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform66 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.558031 -0.66815
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform67 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.503883 -0.656117
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform68 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.444899 -0.640682
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform69 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.395605 -0.629479
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform70 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.34183 -0.618275
+									rotation	1 0 0  1.309
+	    						}
+	    						DEF Transform71 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.65535 -0.665569
+									rotation	1 0 0  1.5708
+	    						}
+	    						DEF Transform72 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.707924 -0.688961
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform73 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.76394 -0.664314
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform74 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.821076 -0.654231
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform75 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.879332 -0.643028
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform76 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.931987 -0.630705
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform77 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.98016 -0.618381
+									rotation	1 0 0  1.8326
+	    						}
+	    						DEF Transform78 Transform {
+									children	USE Rippe
+
+									translation	0.11435 -0.00699507 0
+	    						}
+	    						DEF Transform79 Transform {
+									children	USE Rippe
+
+									translation	0.11435 0.0352277 0.289235
+									rotation	-1 0 0  0.261799
+	    						}
+	    					]
+	    					translation	-0.550112 2.2612 -1.81887e-008
+	    					scale	1 0.8 0.8
+						}
+						DEF Grundkoerper1 Transform {
+	    					children	Shape {
+	    						appearance	Appearance {
+									material	Material {
+										ambientIntensity	0.229508
+										diffuseColor IS diffColor
+										#specularColor IS specColor
+										shininess	0.9
+									}
+
+									texture	ImageTexture {
+										url	"templates/tvrcAntriebTex/dullchrome.jpg"
+									}
+
+	    						}
+
+	    						geometry	DEF _2 IndexedFaceSet {
+									coord	Coordinate {
+										point	[ 0.294666 0.5 -0.711388,
+			    							1.94519e-008 -0.5 -0.77,
+			    							0.294666 -0.5 -0.711388,
+			    							-4.18087e-008 0.5 -0.77,
+			    							0.544472 0.5 -0.544472,
+			    							0.544472 -0.5 -0.544472,
+			    							0.711388 -0.5 -0.294666,
+			    							0.711388 0.5 -0.294666,
+			    							0.77 -0.5 5.35686e-008,
+			    							0.77 0.5 2.93643e-008,
+			    							0.711388 -0.5 0.294667,
+			    							0.711388 0.5 0.294667,
+			    							0.544472 -0.5 0.544472,
+			    							0.544472 0.5 0.544472,
+			    							0.294666 -0.5 0.711388,
+			    							0.294666 0.5 0.711388,
+			    							1.34941e-007 -0.5 0.77,
+			    							7.36803e-008 0.5 0.77,
+			    							-0.294666 -0.5 0.711388,
+			    							-0.294666 0.5 0.711388,
+			    							-0.544472 -0.5 0.544472,
+			    							-0.544472 0.5 0.544472,
+			    							-0.711388 0.5 0.294667,
+			    							-0.711388 -0.5 0.294667,
+			    							-0.77 0.5 -7.00247e-009,
+			    							-0.77 -0.5 -2.93643e-008,
+			    							-0.711387 0.5 -0.294667,
+			    							-0.711387 -0.5 -0.294667,
+			    							-0.544472 0.5 -0.544472,
+			    							-0.544472 -0.5 -0.544472,
+			    							-0.294666 0.5 -0.711388,
+			    							-0.294666 -0.5 -0.711388,
+			    							-3.06314e-008 0.5 1.11809e-008,
+			    							3.06314e-008 -0.5 -1.11809e-008 ]
+									}
+
+									coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+										4, 2, 5, -1, 2, 4, 0, -1,
+										6, 4, 5, -1, 4, 6, 7, -1,
+										8, 7, 6, -1, 7, 8, 9, -1,
+										10, 9, 8, -1, 9, 10, 11, -1,
+										12, 11, 10, -1, 11, 12, 13, -1,
+										14, 13, 12, -1, 13, 14, 15, -1,
+										16, 15, 14, -1, 15, 16, 17, -1,
+										18, 17, 16, -1, 17, 18, 19, -1,
+										20, 19, 18, -1, 19, 20, 21, -1,
+										22, 20, 23, -1, 20, 22, 21, -1,
+										24, 23, 25, -1, 23, 24, 22, -1,
+										26, 25, 27, -1, 25, 26, 24, -1,
+										28, 27, 29, -1, 27, 28, 26, -1,
+										30, 29, 31, -1, 29, 30, 28, -1,
+										3, 31, 1, -1, 31, 3, 30, -1,
+										28, 30, 32, -1, 26, 28, 32, -1,
+										24, 26, 32, -1, 24, 32, 22, -1,
+										22, 32, 21, -1, 21, 32, 19, -1,
+										19, 32, 17, -1, 17, 32, 15, -1,
+										32, 13, 15, -1, 32, 11, 13, -1,
+										32, 9, 11, -1, 32, 7, 9, -1,
+										32, 4, 7, -1, 32, 0, 4, -1,
+										32, 3, 0, -1, 30, 3, 32, -1,
+										33, 2, 1, -1, 33, 5, 2, -1,
+										33, 6, 5, -1, 33, 8, 6, -1,
+										33, 10, 8, -1, 33, 12, 10, -1,
+										33, 14, 12, -1, 16, 14, 33, -1,
+										18, 16, 33, -1, 20, 18, 33, -1,
+										23, 20, 33, -1, 25, 23, 33, -1,
+										25, 33, 27, -1, 27, 33, 29, -1,
+										29, 33, 31, -1, 31, 33, 1, -1 ]
+									texCoord	TextureCoordinate {
+										point	[ 0.691342 0.00380597,
+			    							0.5 0,
+			    							0.853553 0.0146447,
+			    							0.96194 0.0308658,
+			    							0.99 0.05,
+			    							0.96194 0.0691342,
+			    							0.853553 0.0853553,
+			    							0.691342 0.096194,
+			    							0.5 0.099,
+			    							0.308658 0.096194,
+			    							0.146447 0.0853553,
+			    							0.0380597 0.0691342,
+			    							0 0.05,
+			    							0.0380604 0.0308658,
+			    							0.146447 0.0146447,
+			    							0.308658 0.00380597,
+			    							0.5 0.05 ]
+									}
+
+									ccw	FALSE
+									creaseAngle	0.506145
+									normalIndex	[  ]
+									texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+										2, 0, 2, -1, 0, 2, 0, -1,
+										3, 2, 2, -1, 2, 3, 3, -1,
+										4, 3, 3, -1, 3, 4, 4, -1,
+										5, 4, 4, -1, 4, 5, 5, -1,
+										6, 5, 5, -1, 5, 6, 6, -1,
+										7, 6, 6, -1, 6, 7, 7, -1,
+										8, 7, 7, -1, 7, 8, 8, -1,
+										9, 8, 8, -1, 8, 9, 9, -1,
+										10, 9, 9, -1, 9, 10, 10, -1,
+										11, 10, 11, -1, 10, 11, 10, -1,
+										12, 11, 12, -1, 11, 12, 11, -1,
+										13, 12, 13, -1, 12, 13, 12, -1,
+										14, 13, 14, -1, 13, 14, 13, -1,
+										15, 14, 15, -1, 14, 15, 14, -1,
+										1, 15, 1, -1, 15, 1, 15, -1,
+										14, 15, 16, -1, 13, 14, 16, -1,
+										12, 13, 16, -1, 12, 16, 11, -1,
+										11, 16, 10, -1, 10, 16, 9, -1,
+										9, 16, 8, -1, 8, 16, 7, -1,
+										16, 6, 7, -1, 16, 5, 6, -1,
+										16, 4, 5, -1, 16, 3, 4, -1,
+										16, 2, 3, -1, 16, 0, 2, -1,
+										16, 1, 0, -1, 15, 1, 16, -1,
+										16, 0, 1, -1, 16, 2, 0, -1,
+										16, 3, 2, -1, 16, 4, 3, -1,
+										16, 5, 4, -1, 16, 6, 5, -1,
+										16, 7, 6, -1, 8, 7, 16, -1,
+										9, 8, 16, -1, 10, 9, 16, -1,
+										11, 10, 16, -1, 12, 11, 16, -1,
+										12, 16, 13, -1, 13, 16, 14, -1,
+										14, 16, 15, -1, 15, 16, 1, -1 ]
+	    						}
+
+	    					}
+
+	    					translation	0.799888 2.7892 -1.97712e-008
+	    					rotation	0.57735 0.57735 -0.57735  2.0944
+	    					scale	1 0.8 0.8
+	    					scaleOrientation	-1.1817e-006 1.1817e-006 1  1.5708
+						}
+						DEF Grundkoerper2 Transform {
+	    					children	Shape {
+	    						appearance	Appearance {
+									material	Material {
+										ambientIntensity	0.229508
+										diffuseColor IS diffColor
+										#specularColor IS specColor
+										shininess	0.9
+									}
+
+									texture	ImageTexture {
+										url	"templates/tvrcAntriebTex/dullchrome.jpg"
+									}
+
+	    						}
+
+	    						geometry	DEF _3 IndexedFaceSet {
+									coord	Coordinate {
+										point	[ 0.317627 0.15 -0.76682,
+			    							-2.15616e-008 -0.15 -0.83,
+			    							0.317627 -0.15 -0.76682,
+			    							4.32783e-008 0.15 -0.83,
+			    							0.586899 0.15 -0.586899,
+			    							0.586899 -0.15 -0.586899,
+			    							0.76682 -0.15 -0.317627,
+			    							0.76682 0.15 -0.317627,
+			    							0.83 -0.15 2.89733e-008,
+			    							0.83 0.15 2.0172e-008,
+			    							0.76682 -0.15 0.317628,
+			    							0.76682 0.15 0.317628,
+			    							0.586899 -0.15 0.586899,
+			    							0.586899 0.15 0.586899,
+			    							0.317627 -0.15 0.76682,
+			    							0.317627 0.15 0.76682,
+			    							1.42984e-007 -0.15 0.83,
+			    							1.14696e-007 0.15 0.83,
+			    							-0.317627 -0.15 0.76682,
+			    							-0.317627 0.15 0.76682,
+			    							-0.586899 -0.15 0.586899,
+			    							-0.586899 0.15 0.586899,
+			    							-0.76682 0.15 0.317628,
+			    							-0.76682 -0.15 0.317628,
+			    							-0.83 0.15 -2.89722e-008,
+			    							-0.83 -0.15 -2.0173e-008,
+			    							-0.76682 0.15 -0.317628,
+			    							-0.76682 -0.15 -0.317628,
+			    							-0.586899 0.15 -0.586899,
+			    							-0.586899 -0.15 -0.586899,
+			    							-0.317627 0.15 -0.76682,
+			    							-0.317627 -0.15 -0.76682,
+			    							3.24211e-008 0.15 1.88829e-008,
+			    							-3.24211e-008 -0.15 -1.88829e-008 ]
+									}
+
+									coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+										4, 2, 5, -1, 2, 4, 0, -1,
+										6, 4, 5, -1, 4, 6, 7, -1,
+										8, 7, 6, -1, 7, 8, 9, -1,
+										10, 9, 8, -1, 9, 10, 11, -1,
+										12, 11, 10, -1, 11, 12, 13, -1,
+										14, 13, 12, -1, 13, 14, 15, -1,
+										16, 15, 14, -1, 15, 16, 17, -1,
+										18, 17, 16, -1, 17, 18, 19, -1,
+										20, 19, 18, -1, 19, 20, 21, -1,
+										22, 20, 23, -1, 20, 22, 21, -1,
+										24, 23, 25, -1, 23, 24, 22, -1,
+										26, 25, 27, -1, 25, 26, 24, -1,
+										28, 27, 29, -1, 27, 28, 26, -1,
+										30, 29, 31, -1, 29, 30, 28, -1,
+										3, 31, 1, -1, 31, 3, 30, -1,
+										28, 30, 32, -1, 26, 28, 32, -1,
+										24, 26, 32, -1, 24, 32, 22, -1,
+										22, 32, 21, -1, 21, 32, 19, -1,
+										19, 32, 17, -1, 17, 32, 15, -1,
+										32, 13, 15, -1, 32, 11, 13, -1,
+										32, 9, 11, -1, 32, 7, 9, -1,
+										32, 4, 7, -1, 32, 0, 4, -1,
+										32, 3, 0, -1, 30, 3, 32, -1,
+										33, 2, 1, -1, 33, 5, 2, -1,
+										33, 6, 5, -1, 33, 8, 6, -1,
+										33, 10, 8, -1, 33, 12, 10, -1,
+										33, 14, 12, -1, 16, 14, 33, -1,
+										18, 16, 33, -1, 20, 18, 33, -1,
+										23, 20, 33, -1, 25, 23, 33, -1,
+										25, 33, 27, -1, 27, 33, 29, -1,
+										29, 33, 31, -1, 31, 33, 1, -1 ]
+									texCoord	TextureCoordinate {
+										point	[ 0.691342 0.00380602,
+			    							0.5 0,
+			    							0.853554 0.0146446,
+			    							0.96194 0.0308658,
+			    							0.99 0.05,
+			    							0.96194 0.0691342,
+			    							0.853554 0.0853554,
+			    							0.691342 0.096194,
+			    							0.5 0.099,
+			    							0.308658 0.096194,
+			    							0.146446 0.0853554,
+			    							0.0380602 0.0691342,
+			    							0 0.05,
+			    							0.0380602 0.0308658,
+			    							0.146446 0.0146446,
+			    							0.308658 0.00380602,
+			    							0.5 0.05 ]
+									}
+
+									ccw	FALSE
+									creaseAngle	0.506145
+									normalIndex	[  ]
+									texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+										2, 0, 2, -1, 0, 2, 0, -1,
+										3, 2, 2, -1, 2, 3, 3, -1,
+										4, 3, 3, -1, 3, 4, 4, -1,
+										5, 4, 4, -1, 4, 5, 5, -1,
+										6, 5, 5, -1, 5, 6, 6, -1,
+										7, 6, 6, -1, 6, 7, 7, -1,
+										8, 7, 7, -1, 7, 8, 8, -1,
+										9, 8, 8, -1, 8, 9, 9, -1,
+										10, 9, 9, -1, 9, 10, 10, -1,
+										11, 10, 11, -1, 10, 11, 10, -1,
+										12, 11, 12, -1, 11, 12, 11, -1,
+										13, 12, 13, -1, 12, 13, 12, -1,
+										14, 13, 14, -1, 13, 14, 13, -1,
+										15, 14, 15, -1, 14, 15, 14, -1,
+										1, 15, 1, -1, 15, 1, 15, -1,
+										14, 15, 16, -1, 13, 14, 16, -1,
+										12, 13, 16, -1, 12, 16, 11, -1,
+										11, 16, 10, -1, 10, 16, 9, -1,
+										9, 16, 8, -1, 8, 16, 7, -1,
+										16, 6, 7, -1, 16, 5, 6, -1,
+										16, 4, 5, -1, 16, 3, 4, -1,
+										16, 2, 3, -1, 16, 0, 2, -1,
+										16, 1, 0, -1, 15, 1, 16, -1,
+										16, 0, 1, -1, 16, 2, 0, -1,
+										16, 3, 2, -1, 16, 4, 3, -1,
+										16, 5, 4, -1, 16, 6, 5, -1,
+										16, 7, 6, -1, 8, 7, 16, -1,
+										9, 8, 16, -1, 10, 9, 16, -1,
+										11, 10, 16, -1, 12, 11, 16, -1,
+										12, 16, 13, -1, 13, 16, 14, -1,
+										14, 16, 15, -1, 15, 16, 1, -1 ]
+	    						}
+
+	    					}
+
+	    					translation	1.44205 2.7892 1.11566e-008
+	    					rotation	0.57735 0.57735 -0.57735  2.0944
+	    					scale	1 0.8 0.8
+	    					scaleOrientation	-1.33356e-006 1.33357e-006 1  1.5708
+						}
+						DEF Transform80 Transform {
+	    					children	Shape {
+	    						appearance	Appearance {
+									material	Material {
+										ambientIntensity	0.229508
+										diffuseColor IS diffColor
+										#specularColor IS specColor
+										shininess	0.9
+									}
+
+									texture	ImageTexture {
+										url	"templates/tvrcAntriebTex/dullchrome.jpg"
+									}
+
+	    						}
+
+	    						geometry	DEF _4 IndexedFaceSet {
+									coord	Coordinate {
+										point	[ 0.191342 0.05 -0.46194,
+			    							3.53351e-008 -0.05 -0.5,
+			    							0.191342 -0.05 -0.46194,
+			    							1.75361e-008 0.05 -0.5,
+			    							0.353554 0.0499999 -0.353554,
+			    							0.353554 -0.05 -0.353554,
+			    							0.46194 -0.05 -0.191342,
+			    							0.46194 0.05 -0.191342,
+			    							0.5 -0.05 4.1762e-008,
+			    							0.5 0.05 1.65785e-008,
+			    							0.46194 -0.05 0.191342,
+			    							0.46194 0.05 0.191342,
+			    							0.353554 -0.05 0.353554,
+			    							0.353554 0.05 0.353554,
+			    							0.191342 -0.05 0.46194,
+			    							0.191342 0.05 0.46194,
+			    							7.55949e-008 -0.05 0.5,
+			    							5.77972e-008 0.05 0.5,
+			    							-0.191342 -0.05 0.46194,
+			    							-0.191342 0.05 0.46194,
+			    							-0.353554 -0.05 0.353554,
+			    							-0.353554 0.05 0.353554,
+			    							-0.46194 0.05 0.191342,
+			    							-0.46194 -0.05 0.191342,
+			    							-0.5 0.0500001 4.8035e-009,
+			    							-0.5 -0.05 -1.65784e-008,
+			    							-0.46194 0.05 -0.191342,
+			    							-0.46194 -0.05 -0.191342,
+			    							-0.353554 0.0500001 -0.353554,
+			    							-0.353554 -0.05 -0.353554,
+			    							-0.191342 0.0499999 -0.46194,
+			    							-0.191342 -0.05 -0.46194,
+			    							3.76666e-008 0.05 -1.25921e-008,
+			    							-3.76666e-008 -0.05 1.25921e-008 ]
+									}
+
+									coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+										4, 2, 5, -1, 2, 4, 0, -1,
+										6, 4, 5, -1, 4, 6, 7, -1,
+										8, 7, 6, -1, 7, 8, 9, -1,
+										10, 9, 8, -1, 9, 10, 11, -1,
+										12, 11, 10, -1, 11, 12, 13, -1,
+										14, 13, 12, -1, 13, 14, 15, -1,
+										16, 15, 14, -1, 15, 16, 17, -1,
+										18, 17, 16, -1, 17, 18, 19, -1,
+										20, 19, 18, -1, 19, 20, 21, -1,
+										22, 20, 23, -1, 20, 22, 21, -1,
+										24, 23, 25, -1, 23, 24, 22, -1,
+										26, 25, 27, -1, 25, 26, 24, -1,
+										28, 27, 29, -1, 27, 28, 26, -1,
+										30, 29, 31, -1, 29, 30, 28, -1,
+										3, 31, 1, -1, 31, 3, 30, -1,
+										28, 30, 32, -1, 26, 28, 32, -1,
+										24, 26, 32, -1, 24, 32, 22, -1,
+										22, 32, 21, -1, 21, 32, 19, -1,
+										19, 32, 17, -1, 17, 32, 15, -1,
+										32, 13, 15, -1, 32, 11, 13, -1,
+										32, 9, 11, -1, 32, 7, 9, -1,
+										32, 4, 7, -1, 32, 0, 4, -1,
+										32, 3, 0, -1, 30, 3, 32, -1,
+										33, 2, 1, -1, 33, 5, 2, -1,
+										33, 6, 5, -1, 33, 8, 6, -1,
+										33, 10, 8, -1, 33, 12, 10, -1,
+										33, 14, 12, -1, 16, 14, 33, -1,
+										18, 16, 33, -1, 20, 18, 33, -1,
+										23, 20, 33, -1, 25, 23, 33, -1,
+										25, 33, 27, -1, 27, 33, 29, -1,
+										29, 33, 31, -1, 31, 33, 1, -1 ]
+									texCoord	TextureCoordinate {
+										point	[ 0.691342 0.003806,
+			    							0.5 0,
+			    							0.853554 0.0146446,
+			    							0.96194 0.0308658,
+			    							0.99 0.05,
+			    							0.96194 0.0691342,
+			    							0.853554 0.0853554,
+			    							0.691342 0.096194,
+			    							0.5 0.099,
+			    							0.308658 0.096194,
+			    							0.146446 0.0853554,
+			    							0.03806 0.0691342,
+			    							0 0.05,
+			    							0.03806 0.0308658,
+			    							0.146446 0.0146446,
+			    							0.308658 0.003806,
+			    							0.5 0.05 ]
+									}
+
+									ccw	FALSE
+									creaseAngle	0.506145
+									normalIndex	[  ]
+									texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+										2, 0, 2, -1, 0, 2, 0, -1,
+										3, 2, 2, -1, 2, 3, 3, -1,
+										4, 3, 3, -1, 3, 4, 4, -1,
+										5, 4, 4, -1, 4, 5, 5, -1,
+										6, 5, 5, -1, 5, 6, 6, -1,
+										7, 6, 6, -1, 6, 7, 7, -1,
+										8, 7, 7, -1, 7, 8, 8, -1,
+										9, 8, 8, -1, 8, 9, 9, -1,
+										10, 9, 9, -1, 9, 10, 10, -1,
+										11, 10, 11, -1, 10, 11, 10, -1,
+										12, 11, 12, -1, 11, 12, 11, -1,
+										13, 12, 13, -1, 12, 13, 12, -1,
+										14, 13, 14, -1, 13, 14, 13, -1,
+										15, 14, 15, -1, 14, 15, 14, -1,
+										1, 15, 1, -1, 15, 1, 15, -1,
+										14, 15, 16, -1, 13, 14, 16, -1,
+										12, 13, 16, -1, 12, 16, 11, -1,
+										11, 16, 10, -1, 10, 16, 9, -1,
+										9, 16, 8, -1, 8, 16, 7, -1,
+										16, 6, 7, -1, 16, 5, 6, -1,
+										16, 4, 5, -1, 16, 3, 4, -1,
+										16, 2, 3, -1, 16, 0, 2, -1,
+										16, 1, 0, -1, 15, 1, 16, -1,
+										16, 0, 1, -1, 16, 2, 0, -1,
+										16, 3, 2, -1, 16, 4, 3, -1,
+										16, 5, 4, -1, 16, 6, 5, -1,
+										16, 7, 6, -1, 8, 7, 16, -1,
+										9, 8, 16, -1, 10, 9, 16, -1,
+										11, 10, 16, -1, 12, 11, 16, -1,
+										12, 16, 13, -1, 13, 16, 14, -1,
+										14, 16, 15, -1, 15, 16, 1, -1 ]
+	    						}
+
+	    					}
+
+	    					translation	0.252299 2.7892 -1.6591e-009
+	    					rotation	0.57735 0.57735 -0.57735  2.0944
+	    					scale	1 0.8 0.8
+	    					scaleOrientation	1.16218e-007 -1.16218e-007 1  1.5708
+						}
+						DEF Transform81 Transform {
+	    					children	Shape {
+	    						appearance	Appearance {
+									material	Material {
+										ambientIntensity	0.229508
+										diffuseColor IS diffColor
+										#specularColor IS specColor
+										shininess	0.9
+									}
+
+									texture	ImageTexture {
+										url	"templates/tvrcAntriebTex/dullchrome.jpg"
+									}
+
+	    						}
+
+	    						geometry	DEF _5 IndexedFaceSet {
+									coord	Coordinate {
+										point	[ 0.0765366 0.025 -0.184776,
+			    							-8.85127e-009 -0.025 -0.2,
+			    							0.0765366 -0.025 -0.184776,
+			    							1.82191e-008 0.025 -0.2,
+			    							0.141421 0.025 -0.141421,
+			    							0.141421 -0.025 -0.141421,
+			    							0.184776 -0.025 -0.0765366,
+			    							0.184776 0.025 -0.0765366,
+			    							0.2 -0.025 -1.30576e-008,
+			    							0.2 0.025 2.22001e-008,
+			    							0.184776 -0.025 0.0765368,
+			    							0.184776 0.025 0.0765368,
+			    							0.141421 -0.025 0.141421,
+			    							0.141421 0.025 0.141421,
+			    							0.0765366 -0.025 0.184776,
+			    							0.0765366 0.025 0.184776,
+			    							7.49131e-008 -0.025 0.2,
+			    							8.85129e-009 0.025 0.2,
+			    							-0.0765366 -0.025 0.184776,
+			    							-0.0765366 0.025 0.184776,
+			    							-0.141421 -0.025 0.141421,
+			    							-0.141421 0.025 0.141421,
+			    							-0.184776 0.025 0.0765368,
+			    							-0.184776 -0.025 0.0765368,
+			    							-0.2 0.025 1.30576e-008,
+			    							-0.2 -0.025 -2.22001e-008,
+			    							-0.184776 0.025 -0.0765368,
+			    							-0.184776 -0.025 -0.0765368,
+			    							-0.141421 0.025 -0.141421,
+			    							-0.141421 -0.025 -0.141421,
+			    							-0.0765366 0.025 -0.184776,
+			    							-0.0765366 -0.025 -0.184776,
+			    							1.35358e-008 0.025 1.76289e-008,
+			    							-1.35358e-008 -0.025 -1.76289e-008 ]
+									}
+
+									coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+										4, 2, 5, -1, 2, 4, 0, -1,
+										6, 4, 5, -1, 4, 6, 7, -1,
+										8, 7, 6, -1, 7, 8, 9, -1,
+										10, 9, 8, -1, 9, 10, 11, -1,
+										12, 11, 10, -1, 11, 12, 13, -1,
+										14, 13, 12, -1, 13, 14, 15, -1,
+										16, 15, 14, -1, 15, 16, 17, -1,
+										18, 17, 16, -1, 17, 18, 19, -1,
+										20, 19, 18, -1, 19, 20, 21, -1,
+										22, 20, 23, -1, 20, 22, 21, -1,
+										24, 23, 25, -1, 23, 24, 22, -1,
+										26, 25, 27, -1, 25, 26, 24, -1,
+										28, 27, 29, -1, 27, 28, 26, -1,
+										30, 29, 31, -1, 29, 30, 28, -1,
+										3, 31, 1, -1, 31, 3, 30, -1,
+										28, 30, 32, -1, 26, 28, 32, -1,
+										24, 26, 32, -1, 24, 32, 22, -1,
+										22, 32, 21, -1, 21, 32, 19, -1,
+										19, 32, 17, -1, 17, 32, 15, -1,
+										32, 13, 15, -1, 32, 11, 13, -1,
+										32, 9, 11, -1, 32, 7, 9, -1,
+										32, 4, 7, -1, 32, 0, 4, -1,
+										32, 3, 0, -1, 30, 3, 32, -1,
+										33, 2, 1, -1, 33, 5, 2, -1,
+										33, 6, 5, -1, 33, 8, 6, -1,
+										33, 10, 8, -1, 33, 12, 10, -1,
+										33, 14, 12, -1, 16, 14, 33, -1,
+										18, 16, 33, -1, 20, 18, 33, -1,
+										23, 20, 33, -1, 25, 23, 33, -1,
+										25, 33, 27, -1, 27, 33, 29, -1,
+										29, 33, 31, -1, 31, 33, 1, -1 ]
+									texCoord	TextureCoordinate {
+										point	[ 0.691342 0.003806,
+			    							0.5 0,
+			    							0.853553 0.0146447,
+			    							0.96194 0.0308658,
+			    							0.99 0.05,
+			    							0.96194 0.0691342,
+			    							0.853553 0.0853553,
+			    							0.691342 0.096194,
+			    							0.5 0.099,
+			    							0.308658 0.096194,
+			    							0.146447 0.0853553,
+			    							0.03806 0.0691342,
+			    							0 0.05,
+			    							0.03806 0.0308658,
+			    							0.146447 0.0146447,
+			    							0.308658 0.003806,
+			    							0.5 0.05 ]
+									}
+
+									ccw	FALSE
+									creaseAngle	0.506145
+									normalIndex	[  ]
+									texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+										2, 0, 2, -1, 0, 2, 0, -1,
+										3, 2, 2, -1, 2, 3, 3, -1,
+										4, 3, 3, -1, 3, 4, 4, -1,
+										5, 4, 4, -1, 4, 5, 5, -1,
+										6, 5, 5, -1, 5, 6, 6, -1,
+										7, 6, 6, -1, 6, 7, 7, -1,
+										8, 7, 7, -1, 7, 8, 8, -1,
+										9, 8, 8, -1, 8, 9, 9, -1,
+										10, 9, 9, -1, 9, 10, 10, -1,
+										11, 10, 11, -1, 10, 11, 10, -1,
+										12, 11, 12, -1, 11, 12, 11, -1,
+										13, 12, 13, -1, 12, 13, 12, -1,
+										14, 13, 14, -1, 13, 14, 13, -1,
+										15, 14, 15, -1, 14, 15, 14, -1,
+										1, 15, 1, -1, 15, 1, 15, -1,
+										14, 15, 16, -1, 13, 14, 16, -1,
+										12, 13, 16, -1, 12, 16, 11, -1,
+										11, 16, 10, -1, 10, 16, 9, -1,
+										9, 16, 8, -1, 8, 16, 7, -1,
+										16, 6, 7, -1, 16, 5, 6, -1,
+										16, 4, 5, -1, 16, 3, 4, -1,
+										16, 2, 3, -1, 16, 0, 2, -1,
+										16, 1, 0, -1, 15, 1, 16, -1,
+										16, 0, 1, -1, 16, 2, 0, -1,
+										16, 3, 2, -1, 16, 4, 3, -1,
+										16, 5, 4, -1, 16, 6, 5, -1,
+										16, 7, 6, -1, 8, 7, 16, -1,
+										9, 8, 16, -1, 10, 9, 16, -1,
+										11, 10, 16, -1, 12, 11, 16, -1,
+										12, 16, 13, -1, 13, 16, 14, -1,
+										14, 16, 15, -1, 15, 16, 1, -1 ]
+	    						}
+
+	    					}
+
+	    					translation	0.178054 2.79027 -4.5344e-010
+	    					rotation	0.57735 0.57735 -0.57735  2.0944
+	    					scale	1 0.8 0.8
+	    					scaleOrientation	7.59003e-010 -7.59004e-010 1  1.5708
+						}
+						DEF Stromkasten Transform {
+	    					children	[
+	    						DEF Transform82 Transform {
+									children	Shape {
+										appearance	Appearance {
+		    								material	Material {
+		    									ambientIntensity	0.229508
+		    									diffuseColor IS diffColor
+		    									#specularColor IS specColor
+		    									shininess	0.9
+		    								}
+
+		    								texture	ImageTexture {
+		    									url	"templates/tvrcAntriebTex/dullchrome.jpg"
+		    								}
+
+										}
+
+										geometry	DEF _6 IndexedFaceSet {
+		    								coord	Coordinate {
+		    									point	[ 0.25 0.25 0.1,
+			        								-0.25 -0.25 0.1,
+			        								-0.25 0.25 0.1,
+			        								0.25 -0.25 0.1,
+			        								-0.25 -0.25 -0.1,
+			        								0.25 0.25 -0.1,
+			        								-0.25 0.25 -0.1,
+			        								0.25 -0.25 -0.1 ]
+		    								}
+
+		    								coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+			    								4, 5, 6, -1, 5, 4, 7, -1,
+			    								2, 4, 6, -1, 4, 2, 1, -1,
+			    								7, 0, 5, -1, 0, 7, 3, -1,
+			    								5, 2, 6, -1, 2, 5, 0, -1,
+			    								1, 7, 4, -1, 7, 1, 3, -1 ]
+		    								texCoord	TextureCoordinate {
+		    									point	[ 0.99 0.099,
+			        								0 0,
+			        								0 0.099,
+			        								0.99 0 ]
+		    								}
+
+		    								ccw	FALSE
+		    								creaseAngle	0.506145
+		    								normalIndex	[  ]
+		    								texCoordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+			    								1, 0, 2, -1, 0, 1, 3, -1,
+			    								2, 1, 2, -1, 1, 2, 1, -1,
+			    								3, 0, 0, -1, 0, 3, 3, -1,
+			    								0, 2, 2, -1, 2, 0, 0, -1,
+			    								1, 3, 1, -1, 3, 1, 3, -1 ]
+										}
+
+									}
+
+									translation	1.31502 0.66 0.870287
+	    						}
+	    						DEF Transform83 Transform {
+									children	DEF _7 Transform {
+										children	Shape {
+		    								appearance	Appearance {
+		    									material	Material {
+													ambientIntensity	0.229508
+													diffuseColor IS diffColor
+													#specularColor IS specColor
+													shininess	0.9
+		    									}
+
+		    								}
+
+		    								geometry	DEF _8 IndexedFaceSet {
+		    									coord	Coordinate {
+													point	[ 3.39516e-008 -0.025 -0.05,
+														0.0191342 0.025 -0.046194,
+														3.82738e-008 0.025 -0.05,
+														0.0191342 -0.025 -0.046194,
+														0.0353554 0.025 -0.0353554,
+														0.0353554 -0.025 -0.0353554,
+														0.046194 0.025 -0.0191342,
+														0.0461939 -0.025 -0.0191342,
+														0.05 0.025 1.03226e-008,
+														0.05 -0.025 1.05055e-008,
+														0.0461939 0.025 0.0191342,
+														0.0461941 -0.025 0.0191342,
+														0.0353554 0.025 0.0353554,
+														0.0353554 -0.025 0.0353554,
+														0.0191341 -0.025 0.046194,
+														0.0191341 0.025 0.046194,
+														-3.8274e-008 -0.025 0.05,
+														-3.39517e-008 0.025 0.05,
+														-0.0191342 -0.025 0.046194,
+														-0.0191342 0.025 0.046194,
+														-0.0353554 -0.025 0.0353554,
+														-0.0353554 0.025 0.0353554,
+														-0.046194 -0.025 0.0191342,
+														-0.0461939 0.025 0.0191342,
+														-0.05 -0.025 -1.03226e-008,
+														-0.05 0.025 -1.05055e-008,
+														-0.0461939 -0.025 -0.0191342,
+														-0.0461941 0.025 -0.0191342,
+														-0.0353554 -0.025 -0.0353554,
+														-0.0353554 0.025 -0.0353554,
+														-0.0191341 0.025 -0.046194,
+														-0.0191341 -0.025 -0.046194,
+														-6.40663e-008 0.025 -9.23459e-011,
+														6.40663e-008 -0.025 9.23459e-011 ]
+		    									}
+
+		    									coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+			        								3, 4, 1, -1, 4, 3, 5, -1,
+			        								5, 6, 4, -1, 6, 5, 7, -1,
+			        								7, 8, 6, -1, 8, 7, 9, -1,
+			        								9, 10, 8, -1, 10, 9, 11, -1,
+			        								11, 12, 10, -1, 12, 11, 13, -1,
+			        								12, 14, 15, -1, 14, 12, 13, -1,
+			        								15, 16, 17, -1, 16, 15, 14, -1,
+			        								17, 18, 19, -1, 18, 17, 16, -1,
+			        								19, 20, 21, -1, 20, 19, 18, -1,
+			        								21, 22, 23, -1, 22, 21, 20, -1,
+			        								23, 24, 25, -1, 24, 23, 22, -1,
+			        								25, 26, 27, -1, 26, 25, 24, -1,
+			        								27, 28, 29, -1, 28, 27, 26, -1,
+			        								28, 30, 29, -1, 30, 28, 31, -1,
+			        								31, 2, 30, -1, 2, 31, 0, -1,
+			        								32, 29, 30, -1, 32, 27, 29, -1,
+			        								32, 25, 27, -1, 32, 23, 25, -1,
+			        								32, 21, 23, -1, 32, 19, 21, -1,
+			        								17, 19, 32, -1, 15, 17, 32, -1,
+			        								12, 15, 32, -1, 10, 12, 32, -1,
+			        								8, 10, 32, -1, 8, 32, 6, -1,
+			        								6, 32, 4, -1, 4, 32, 1, -1,
+			        								1, 32, 2, -1, 32, 30, 2, -1,
+			        								3, 0, 33, -1, 5, 3, 33, -1,
+			        								7, 5, 33, -1, 9, 7, 33, -1,
+			        								9, 33, 11, -1, 11, 33, 13, -1,
+			        								13, 33, 14, -1, 14, 33, 16, -1,
+			        								16, 33, 18, -1, 33, 20, 18, -1,
+			        								33, 22, 20, -1, 33, 24, 22, -1,
+			        								33, 26, 24, -1, 33, 28, 26, -1,
+			        								33, 31, 28, -1, 33, 0, 31, -1 ]
+		    									ccw	FALSE
+		    									creaseAngle	0.506145
+		    									normalIndex	[  ]
+		    									texCoordIndex	[  ]
+		    								}
+
+										}
+
+										translation	1.46085 0.892238 0.870287
+									}
+
+									translation	-0.290771 0 0
+	    						}
+	    						DEF Transform84 Transform {
+									children	USE _7
+
+	    						}
+	    					]
+	    					translation	-0.550112 2.2612 -0.0293773
+	    					scale	1 0.8 0.8
+						}
+						DEF Transform85 Transform {
+	    					children	Shape {
+	    						appearance	Appearance {
+									material	Material {
+										ambientIntensity	0.229508
+										diffuseColor IS diffColor
+										#specularColor IS specColor
+										shininess	0.9
+									}
+
+									texture	ImageTexture {
+										url	"templates/tvrcAntriebTex/dullchrome.jpg"
+									}
+
+	    						}
+
+	    						geometry	DEF _9 IndexedFaceSet {
+									coord	Coordinate {
+										point	[ 0.1 0.015 0.0175,
+			    							-0.1 -0.015 0.0175,
+			    							-0.1 0.015 0.0175,
+			    							0.1 -0.015 0.0175,
+			    							-0.1 -0.015 -0.0175,
+			    							0.1 0.015 -0.0175,
+			    							-0.1 0.015 -0.0175,
+			    							0.1 -0.015 -0.0175 ]
+									}
+
+									coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+										4, 5, 6, -1, 5, 4, 7, -1,
+										2, 4, 6, -1, 4, 2, 1, -1,
+										7, 0, 5, -1, 0, 7, 3, -1,
+										5, 2, 6, -1, 2, 5, 0, -1,
+										1, 7, 4, -1, 7, 1, 3, -1 ]
+									texCoord	TextureCoordinate {
+										point	[ 0.99 0.0175,
+			    							0 0.0175,
+			    							0 0,
+			    							0.99 0 ]
+									}
+
+									ccw	FALSE
+									creaseAngle	0.506145
+									normalIndex	[  ]
+									texCoordIndex	[ 0, 1, 1, -1, 1, 0, 0, -1,
+										2, 3, 2, -1, 3, 2, 3, -1,
+										1, 2, 2, -1, 2, 1, 1, -1,
+										3, 0, 3, -1, 0, 3, 0, -1,
+										3, 1, 2, -1, 1, 3, 0, -1,
+										1, 3, 2, -1, 3, 1, 0, -1 ]
+	    						}
+
+	    					}
+
+	    					translation	0.0227607 2.85264 1.98406e-009
+	    					scale	1 0.8 0.8
+						}
+						DEF Transform86 Transform {
+	    					children	Shape {
+	    						appearance	Appearance {
+									material	Material {
+										ambientIntensity	0.229508
+										diffuseColor IS diffColor
+										#specularColor IS specColor
+										shininess	0.9
+									}
+
+									texture	ImageTexture {
+										url	"templates/tvrcAntriebTex/dullchrome.jpg"
+									}
+
+	    						}
+
+	    						geometry	DEF _10 IndexedFaceSet {
+									coord	Coordinate {
+										point	[ 0.0267878 0.125 -0.0646716,
+			    							3.18561e-008 -0.125 -0.07,
+			    							0.0267878 -0.125 -0.0646716,
+			    							2.56504e-008 0.125 -0.07,
+			    							0.0494975 0.125 -0.0494975,
+			    							0.0494975 -0.125 -0.0494975,
+			    							0.0646716 -0.125 -0.0267878,
+			    							0.0646716 0.125 -0.0267878,
+			    							0.07 -0.125 -1.31287e-008,
+			    							0.07 0.125 2.53224e-008,
+			    							0.0646716 -0.125 0.0267879,
+			    							0.0646716 0.125 0.0267879,
+			    							0.0494975 -0.125 0.0494975,
+			    							0.0494975 0.125 0.0494975,
+			    							0.0267878 -0.125 0.0646716,
+			    							0.0267878 0.125 0.0646716,
+			    							-2.56504e-008 -0.125 0.07,
+			    							-3.18561e-008 0.125 0.07,
+			    							-0.0267878 -0.125 0.0646716,
+			    							-0.0267878 0.125 0.0646716,
+			    							-0.0494975 -0.125 0.0494975,
+			    							-0.0494975 0.125 0.0494975,
+			    							-0.0646716 0.125 0.0267879,
+			    							-0.0646716 -0.125 0.0267879,
+			    							-0.07 0.125 1.31287e-008,
+			    							-0.07 -0.125 2.12437e-008,
+			    							-0.0646715 0.125 -0.0267879,
+			    							-0.0646715 -0.125 -0.0267879,
+			    							-0.0494975 0.125 -0.0494975,
+			    							-0.0494975 -0.125 -0.0494975,
+			    							-0.0267878 0.125 -0.0646716,
+			    							-0.0267878 -0.125 -0.0646716,
+			    							-3.10288e-009 0.125 -4.05719e-009,
+			    							3.10288e-009 -0.125 4.05719e-009 ]
+									}
+
+									coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+										4, 2, 5, -1, 2, 4, 0, -1,
+										6, 4, 5, -1, 4, 6, 7, -1,
+										8, 7, 6, -1, 7, 8, 9, -1,
+										10, 9, 8, -1, 9, 10, 11, -1,
+										12, 11, 10, -1, 11, 12, 13, -1,
+										14, 13, 12, -1, 13, 14, 15, -1,
+										16, 15, 14, -1, 15, 16, 17, -1,
+										18, 17, 16, -1, 17, 18, 19, -1,
+										20, 19, 18, -1, 19, 20, 21, -1,
+										22, 20, 23, -1, 20, 22, 21, -1,
+										24, 23, 25, -1, 23, 24, 22, -1,
+										26, 25, 27, -1, 25, 26, 24, -1,
+										28, 27, 29, -1, 27, 28, 26, -1,
+										30, 29, 31, -1, 29, 30, 28, -1,
+										3, 31, 1, -1, 31, 3, 30, -1,
+										28, 30, 32, -1, 26, 28, 32, -1,
+										24, 26, 32, -1, 24, 32, 22, -1,
+										22, 32, 21, -1, 21, 32, 19, -1,
+										19, 32, 17, -1, 17, 32, 15, -1,
+										32, 13, 15, -1, 32, 11, 13, -1,
+										32, 9, 11, -1, 32, 7, 9, -1,
+										32, 4, 7, -1, 32, 0, 4, -1,
+										32, 3, 0, -1, 30, 3, 32, -1,
+										33, 2, 1, -1, 33, 5, 2, -1,
+										33, 6, 5, -1, 33, 8, 6, -1,
+										33, 10, 8, -1, 33, 12, 10, -1,
+										33, 14, 12, -1, 16, 14, 33, -1,
+										18, 16, 33, -1, 20, 18, 33, -1,
+										23, 20, 33, -1, 25, 23, 33, -1,
+										25, 33, 27, -1, 27, 33, 29, -1,
+										29, 33, 31, -1, 31, 33, 1, -1 ]
+									texCoord	TextureCoordinate {
+										point	[ 0.99 0.0387151,
+			    							0 0.028,
+			    							0 0.0387151,
+			    							0.99 0.028,
+			    							0.99 0.047799,
+			    							0 0.047799,
+			    							0 0.0538686,
+			    							0.99 0.0538686,
+			    							0 0.056,
+			    							0.99 0.056,
+			    							0 0.028,
+			    							0.99 0.028,
+			    							0 0.0172849,
+			    							0.99 0.0172849,
+			    							0 0.008201,
+			    							0.99 0.008201,
+			    							0.99 0.00213136,
+			    							0 0.00213136,
+			    							0.99 0,
+			    							0 0,
+			    							0.99 0.0021314,
+			    							0 0.0021314 ]
+									}
+
+									ccw	FALSE
+									creaseAngle	0.506145
+									normalIndex	[  ]
+									texCoordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+										4, 2, 5, -1, 2, 4, 0, -1,
+										6, 4, 5, -1, 4, 6, 7, -1,
+										8, 7, 6, -1, 7, 8, 9, -1,
+										6, 9, 8, -1, 9, 6, 7, -1,
+										5, 7, 6, -1, 7, 5, 4, -1,
+										2, 4, 5, -1, 4, 2, 0, -1,
+										10, 0, 2, -1, 0, 10, 11, -1,
+										12, 11, 10, -1, 11, 12, 13, -1,
+										14, 13, 12, -1, 13, 14, 15, -1,
+										16, 14, 17, -1, 14, 16, 15, -1,
+										18, 17, 19, -1, 17, 18, 16, -1,
+										20, 19, 21, -1, 19, 20, 18, -1,
+										15, 21, 14, -1, 21, 15, 20, -1,
+										13, 14, 12, -1, 14, 13, 15, -1,
+										3, 12, 1, -1, 12, 3, 13, -1,
+										15, 13, 3, -1, 20, 15, 3, -1,
+										18, 20, 3, -1, 18, 3, 16, -1,
+										16, 3, 15, -1, 15, 3, 13, -1,
+										13, 3, 11, -1, 11, 3, 0, -1,
+										3, 4, 0, -1, 3, 7, 4, -1,
+										3, 9, 7, -1, 3, 7, 9, -1,
+										3, 4, 7, -1, 3, 0, 4, -1,
+										3, 3, 0, -1, 13, 3, 3, -1,
+										1, 2, 1, -1, 1, 5, 2, -1,
+										1, 6, 5, -1, 1, 8, 6, -1,
+										1, 6, 8, -1, 1, 5, 6, -1,
+										1, 2, 5, -1, 10, 2, 1, -1,
+										12, 10, 1, -1, 14, 12, 1, -1,
+										17, 14, 1, -1, 19, 17, 1, -1,
+										19, 1, 21, -1, 21, 1, 14, -1,
+										14, 1, 12, -1, 12, 1, 1, -1 ]
+	    						}
+
+	    					}
+
+	    					translation	0.0303218 2.78859 1.17255e-010
+	    					rotation	0.57735 0.57735 -0.57735  2.0944
+	    					scale	1 0.8 0.8
+	    					scaleOrientation	3.23901e-008 -3.23902e-008 1  1.5708
+						}
+					]
+					translation	-1.59205 -2.7892 0
+    			}
+
+    			translation	0.659849 0.00130302 0.0146476
+    			rotation	0 0 1  0
+    			scale	0.9 0.8 0.8
+    			scaleOrientation	0 0 1  0
+    		}
+    		DEF Grundkoerper Transform {
+    			children	Shape {
+					appearance	Appearance {
+						material	Material {
+	    					ambientIntensity	0.229508
+	    					diffuseColor IS diffColor
+	    					#specularColor IS specColor
+	    					shininess	0.9
+						}
+
+						texture	ImageTexture {
+	    					url	"templates/tvrcAntriebTex/dullchrome.jpg"
+						}
+
+					}
+
+					geometry	DEF _11 IndexedFaceSet {
+						coord	Coordinate {
+	    					point	[ -0.45 -0.75 1,
+		    					0.45 0.75 1,
+		    					0.45 -0.75 1,
+		    					-0.45 0.75 1,
+		    					0.45 0.75 -1,
+		    					-0.45 -0.75 -1,
+		    					0.45 -0.75 -1,
+		    					-0.45 0.75 -1 ]
+						}
+
+						coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+		    				4, 5, 6, -1, 5, 4, 7, -1,
+		    				3, 5, 7, -1, 5, 3, 0, -1,
+		    				6, 1, 4, -1, 1, 6, 2, -1,
+		    				4, 3, 7, -1, 3, 4, 1, -1,
+		    				0, 6, 5, -1, 6, 0, 2, -1 ]
+						texCoord	TextureCoordinate {
+	    					point	[ 0.99 0,
+		    					0.99 0.075,
+		    					0 0.075,
+		    					0 0 ]
+						}
+
+						ccw	FALSE
+						creaseAngle	0.506145
+						normalIndex	[  ]
+						texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+		    				2, 3, 3, -1, 3, 2, 2, -1,
+		    				1, 3, 2, -1, 3, 1, 0, -1,
+		    				3, 1, 2, -1, 1, 3, 0, -1,
+		    				2, 1, 2, -1, 1, 2, 1, -1,
+		    				0, 3, 3, -1, 3, 0, 0, -1 ]
+					}
+
+    			}
+
+    			translation	-1.72006 0.0113214 -0.00435648
+    			rotation	-1.43118e-007 1 4.98679e-006  1.57079
+    			scale	0.8 0.8 1
+    			scaleOrientation	0 0 1  0
+    		}
+    		DEF Verschraubungsplatte Transform {
+    			children	[
+					DEF Transform87 Transform {
+						children	Shape {
+	    					appearance	Appearance {
+	    						material	Material {
+									ambientIntensity	0.229508
+									diffuseColor IS diffColor
+									#specularColor IS specColor
+									shininess	0.9
+	    						}
+
+	    						texture	ImageTexture {
+									url	"templates/tvrcAntriebTex/dullchrome.jpg"
+	    						}
+
+	    					}
+
+	    					geometry	DEF _12 IndexedFaceSet {
+	    						coord	Coordinate {
+									point	[ 0.375 0.025 0.7,
+										-0.375 -0.0250001 0.7,
+										-0.375 0.025 0.7,
+										0.375 -0.025 0.7,
+										-0.375 -0.025 -0.7,
+										0.375 0.0250001 -0.7,
+										-0.375 0.025 -0.7,
+										0.375 -0.025 -0.7 ]
+	    						}
+
+	    						coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+		        					4, 5, 6, -1, 5, 4, 7, -1,
+		        					1, 6, 2, -1, 6, 1, 4, -1,
+		        					5, 3, 0, -1, 3, 5, 7, -1,
+		        					2, 5, 0, -1, 5, 2, 6, -1,
+		        					7, 1, 3, -1, 1, 7, 4, -1 ]
+	    						texCoord	TextureCoordinate {
+									point	[ 0.99 0.0535714,
+										0.99 0,
+										0 0,
+										0 0.0535714 ]
+	    						}
+
+	    						ccw	FALSE
+	    						creaseAngle	0.506145
+	    						normalIndex	[  ]
+	    						texCoordIndex	[ 0, 1, 1, -1, 1, 0, 0, -1,
+		        					2, 3, 2, -1, 3, 2, 3, -1,
+		        					1, 2, 1, -1, 2, 1, 2, -1,
+		        					3, 0, 0, -1, 0, 3, 3, -1,
+		        					1, 3, 0, -1, 3, 1, 2, -1,
+		        					3, 1, 0, -1, 1, 3, 2, -1 ]
+	    					}
+
+						}
+
+						translation	0.1 1.33552 0
+					}
+					DEF Schrauben Transform {
+						children	[
+	    					DEF Schraube Transform {
+	    						children	DEF Schraube_13 Transform {
+									children	Shape {
+										appearance	Appearance {
+		    								material	Material {
+		    									ambientIntensity	0.229508
+		    									diffuseColor IS diffColor
+		    									#specularColor IS specColor
+		    									shininess	0.9
+		    								}
+
+		    								texture	ImageTexture {
+		    									url	"templates/tvrcAntriebTex/dullchrome.jpg"
+		    								}
+
+										}
+
+										geometry	DEF _14 IndexedFaceSet {
+		    								coord	Coordinate {
+		    									point	[ -1.46061e-008 -0.015 -0.05,
+			        								0.0191342 0.0150001 -0.046194,
+			        								2.43602e-008 0.015 -0.05,
+			        								0.0191342 -0.015 -0.046194,
+			        								0.0353554 0.015 -0.0353554,
+			        								0.0353554 -0.015 -0.0353554,
+			        								0.046194 -0.015 -0.0191342,
+			        								0.046194 0.015 -0.0191342,
+			        								0.05 -0.015 -2.32636e-009,
+			        								0.05 0.015 1.20804e-008,
+			        								0.046194 -0.015 0.0191342,
+			        								0.046194 0.015 0.0191342,
+			        								0.0353554 -0.015 0.0353554,
+			        								0.0353554 0.015 0.0353554,
+			        								0.0191342 0.015 0.046194,
+			        								0.0191342 -0.0149999 0.046194,
+			        								1.46061e-008 0.015 0.05,
+			        								-2.43602e-008 -0.015 0.05,
+			        								-0.0191342 -0.0150001 0.046194,
+			        								-0.0191342 0.015 0.046194,
+			        								-0.0353554 0.015 0.0353554,
+			        								-0.0353554 -0.015 0.0353554,
+			        								-0.046194 0.015 0.0191342,
+			        								-0.046194 -0.015 0.0191342,
+			        								-0.05 0.015 2.32628e-009,
+			        								-0.05 -0.015 -1.20804e-008,
+			        								-0.046194 0.015 -0.0191342,
+			        								-0.046194 -0.015 -0.0191342,
+			        								-0.0353554 0.015 -0.0353554,
+			        								-0.0353554 -0.015 -0.0353554,
+			        								-0.0191342 0.0149999 -0.046194,
+			        								-0.0191342 -0.015 -0.046194,
+			        								-1.77697e-008 0.015 -3.00496e-008,
+			        								1.77697e-008 -0.015 3.00496e-008 ]
+		    								}
+
+		    								coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+			    								3, 4, 1, -1, 4, 3, 5, -1,
+			    								4, 6, 7, -1, 6, 4, 5, -1,
+			    								7, 8, 9, -1, 8, 7, 6, -1,
+			    								9, 10, 11, -1, 10, 9, 8, -1,
+			    								11, 12, 13, -1, 12, 11, 10, -1,
+			    								12, 14, 13, -1, 14, 12, 15, -1,
+			    								15, 16, 14, -1, 16, 15, 17, -1,
+			    								16, 18, 19, -1, 18, 16, 17, -1,
+			    								18, 20, 19, -1, 20, 18, 21, -1,
+			    								21, 22, 20, -1, 22, 21, 23, -1,
+			    								23, 24, 22, -1, 24, 23, 25, -1,
+			    								25, 26, 24, -1, 26, 25, 27, -1,
+			    								27, 28, 26, -1, 28, 27, 29, -1,
+			    								29, 30, 28, -1, 30, 29, 31, -1,
+			    								31, 2, 30, -1, 2, 31, 0, -1,
+			    								28, 30, 32, -1, 26, 28, 32, -1,
+			    								24, 26, 32, -1, 24, 32, 22, -1,
+			    								22, 32, 20, -1, 20, 32, 19, -1,
+			    								19, 32, 16, -1, 32, 14, 16, -1,
+			    								32, 13, 14, -1, 32, 11, 13, -1,
+			    								32, 9, 11, -1, 32, 7, 9, -1,
+			    								32, 4, 7, -1, 32, 1, 4, -1,
+			    								2, 1, 32, -1, 30, 2, 32, -1,
+			    								0, 33, 3, -1, 33, 5, 3, -1,
+			    								33, 6, 5, -1, 33, 8, 6, -1,
+			    								33, 10, 8, -1, 33, 12, 10, -1,
+			    								33, 15, 12, -1, 33, 17, 15, -1,
+			    								18, 17, 33, -1, 21, 18, 33, -1,
+			    								23, 21, 33, -1, 25, 23, 33, -1,
+			    								25, 33, 27, -1, 27, 33, 29, -1,
+			    								29, 33, 31, -1, 31, 33, 0, -1 ]
+		    								texCoord	TextureCoordinate {
+		    									point	[ 0.5 0,
+			        								0.691342 0.003806,
+			        								0.853554 0.0146446,
+			        								0.96194 0.0308658,
+			        								0.99 0.05,
+			        								0.96194 0.0691342,
+			        								0.853554 0.0853554,
+			        								0.691342 0.096194,
+			        								0.5 0.099,
+			        								0.308658 0.096194,
+			        								0.146446 0.0853554,
+			        								0.03806 0.0691342,
+			        								0 0.05,
+			        								0.03806 0.0308658,
+			        								0.146446 0.0146446,
+			        								0.308658 0.003806,
+			        								0.5 0.05 ]
+		    								}
+
+		    								ccw	FALSE
+		    								creaseAngle	0.506145
+		    								normalIndex	[  ]
+		    								texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+			    								1, 2, 1, -1, 2, 1, 2, -1,
+			    								2, 3, 3, -1, 3, 2, 2, -1,
+			    								3, 4, 4, -1, 4, 3, 3, -1,
+			    								4, 5, 5, -1, 5, 4, 4, -1,
+			    								5, 6, 6, -1, 6, 5, 5, -1,
+			    								6, 7, 6, -1, 7, 6, 7, -1,
+			    								7, 8, 7, -1, 8, 7, 8, -1,
+			    								8, 9, 9, -1, 9, 8, 8, -1,
+			    								9, 10, 9, -1, 10, 9, 10, -1,
+			    								10, 11, 10, -1, 11, 10, 11, -1,
+			    								11, 12, 11, -1, 12, 11, 12, -1,
+			    								12, 13, 12, -1, 13, 12, 13, -1,
+			    								13, 14, 13, -1, 14, 13, 14, -1,
+			    								14, 15, 14, -1, 15, 14, 15, -1,
+			    								15, 0, 15, -1, 0, 15, 0, -1,
+			    								14, 15, 16, -1, 13, 14, 16, -1,
+			    								12, 13, 16, -1, 12, 16, 11, -1,
+			    								11, 16, 10, -1, 10, 16, 9, -1,
+			    								9, 16, 8, -1, 16, 7, 8, -1,
+			    								16, 6, 7, -1, 16, 5, 6, -1,
+			    								16, 4, 5, -1, 16, 3, 4, -1,
+			    								16, 2, 3, -1, 16, 1, 2, -1,
+			    								0, 1, 16, -1, 15, 0, 16, -1,
+			    								0, 16, 1, -1, 16, 2, 1, -1,
+			    								16, 3, 2, -1, 16, 4, 3, -1,
+			    								16, 5, 4, -1, 16, 6, 5, -1,
+			    								16, 7, 6, -1, 16, 8, 7, -1,
+			    								9, 8, 16, -1, 10, 9, 16, -1,
+			    								11, 10, 16, -1, 12, 11, 16, -1,
+			    								12, 16, 13, -1, 13, 16, 14, -1,
+			    								14, 16, 15, -1, 15, 16, 0, -1 ]
+										}
+
+									}
+
+									translation	0.465872 1.33417 0.462718
+	    						}
+
+	    						translation	-0.680986 0.0388579 0.176927
+	    					}
+	    					DEF Transform88 Transform {
+	    						children	USE Schraube_13
+
+	    						translation	-0.360772 0.0388576 0.174328
+	    					}
+	    					DEF Transform89 Transform {
+	    						children	USE Schraube_13
+
+	    						translation	-0.0511809 0.0388573 0.173808
+	    					}
+	    					DEF Transform90 Transform {
+	    						children	USE Schraube_13
+
+	    						translation	-0.0545137 0.0388576 -0.452124
+	    					}
+	    					DEF Transform91 Transform {
+	    						children	USE Schraube_13
+
+	    						translation	-0.0555682 0.0388573 -1.09094
+	    					}
+	    					DEF Transform92 Transform {
+	    						children	USE Schraube_13
+
+	    						translation	-0.356449 0.0388573 -1.08584
+	    					}
+	    					DEF Transform93 Transform {
+	    						children	USE Schraube_13
+
+	    						translation	-0.676749 0.0388575 -1.09099
+	    					}
+	    					DEF Transform94 Transform {
+	    						children	USE Schraube_13
+
+	    						translation	-0.677297 0.0388579 -0.452124
+	    					}
+						]
+					}
+    			]
+    			translation	-1.40517 0.00990343 0.083606
+    			rotation	0.577354 -0.577347 -0.577349  4.18879
+    			scale	0.8 1 0.8
+    			scaleOrientation	0 0 1  0
+    		}
+    		DEF Einteilungshaelfte Transform {
+    			children	[
+					DEF Transform95 Transform {
+						children	Shape {
+	    					appearance	Appearance {
+	    						material	Material {
+									ambientIntensity	0.229508
+									diffuseColor IS diffColor
+									#specularColor IS specColor
+									shininess	0.9
+	    						}
+
+	    						texture	ImageTexture {
+									url	"templates/tvrcAntriebTex/dullchrome.jpg"
+	    						}
+
+	    					}
+
+	    					geometry	DEF _15 IndexedFaceSet {
+	    						coord	Coordinate {
+									point	[ 0.025 0.015 0.03,
+										-0.025 -0.015 0.03,
+										-0.025 0.0150001 0.03,
+										0.025 -0.015 0.03,
+										-0.025 -0.015 -0.03,
+										0.025 0.015 -0.03,
+										-0.025 0.015 -0.03,
+										0.025 -0.0150001 -0.03 ]
+	    						}
+
+	    						coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+		        					4, 5, 6, -1, 5, 4, 7, -1,
+		        					4, 2, 1, -1, 2, 4, 6, -1,
+		        					5, 3, 0, -1, 3, 5, 7, -1,
+		        					2, 5, 0, -1, 5, 2, 6, -1,
+		        					7, 1, 3, -1, 1, 7, 4, -1 ]
+	    						texCoord	TextureCoordinate {
+									point	[ 0.99 0.0833333,
+										0.99 0,
+										0 0,
+										0 0.0833333 ]
+	    						}
+
+	    						ccw	FALSE
+	    						creaseAngle	0.506145
+	    						normalIndex	[  ]
+	    						texCoordIndex	[ 0, 1, 1, -1, 1, 0, 0, -1,
+		        					2, 3, 2, -1, 3, 2, 3, -1,
+		        					2, 1, 1, -1, 1, 2, 2, -1,
+		        					3, 0, 0, -1, 0, 3, 3, -1,
+		        					1, 3, 0, -1, 3, 1, 2, -1,
+		        					3, 1, 0, -1, 1, 3, 2, -1 ]
+	    					}
+
+						}
+
+						translation	-1.37628 0.82261 0.0235671
+						rotation	-0.577354 0.577349 0.577348  2.0944
+						scale	1 0.8 0.8
+						scaleOrientation	0.57735 -0.57735 0.57735  2.0944
+					}
+					DEF Transform96 Transform {
+						children	Shape {
+	    					appearance	Appearance {
+	    						material	Material {
+									ambientIntensity	0.229508
+									diffuseColor IS diffColor
+									#specularColor IS specColor
+									shininess	0.9
+	    						}
+
+	    						texture	ImageTexture {
+									url	"templates/tvrcAntriebTex/dullchrome.jpg"
+	    						}
+
+	    					}
+
+	    					geometry	DEF _16 IndexedFaceSet {
+	    						coord	Coordinate {
+									point	[ 0.025 -0.015 1,
+										-0.025 0.015 1,
+										0.025 0.015 1,
+										-0.025 -0.015 1,
+										-0.025 0.015 -1,
+										0.025 -0.015 -1,
+										0.025 0.015 -1,
+										-0.025 -0.015 -1 ]
+	    						}
+
+	    						coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+		        					4, 5, 6, -1, 5, 4, 7, -1,
+		        					1, 7, 4, -1, 7, 1, 3, -1,
+		        					5, 2, 6, -1, 2, 5, 0, -1,
+		        					2, 4, 6, -1, 4, 2, 1, -1,
+		        					3, 5, 7, -1, 5, 3, 0, -1 ]
+	    						texCoord	TextureCoordinate {
+									point	[ 0.99 0.0025,
+										0.99 0,
+										0 0,
+										0 0.0025 ]
+	    						}
+
+	    						ccw	FALSE
+	    						creaseAngle	0.506145
+	    						normalIndex	[  ]
+	    						texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+		        					2, 3, 3, -1, 3, 2, 2, -1,
+		        					1, 2, 2, -1, 2, 1, 1, -1,
+		        					3, 0, 3, -1, 0, 3, 0, -1,
+		        					0, 2, 3, -1, 2, 0, 1, -1,
+		        					1, 3, 2, -1, 3, 1, 0, -1 ]
+	    					}
+
+						}
+
+						translation	-0.363558 0.83967 0.023567
+						rotation	0 1 0  1.57079
+						scale	0.8 1 0.8
+						scaleOrientation	2.18557e-008 -0.707107 0.707107  3.14159
+					}
+    			]
+    			translation	-1.35494 -0.225386 -0.0279251
+    			rotation	0 0 1  0
+    		}
+    		DEF Antrieb_Ausgang Transform {
+    			children	[
+					DEF Absatz-Ausgang Transform {
+						children	Shape {
+	    					appearance	Appearance {
+	    						material	Material {
+									ambientIntensity	0.229508
+									diffuseColor IS diffColor
+									#specularColor IS specColor
+									shininess	0.9
+	    						}
+
+	    						texture	ImageTexture {
+									url	"templates/tvrcAntriebTex/dullchrome.jpg"
+	    						}
+
+	    					}
+
+	    					geometry	DEF _17 IndexedFaceSet {
+	    						coord	Coordinate {
+									point	[ 1.88252e-009 0.025 -0.3,
+										0.114805 -0.025 -0.277164,
+										0.114805 0.025 -0.277164,
+										6.50643e-009 -0.025 -0.3,
+										0.212132 -0.025 -0.212132,
+										0.212132 0.025 -0.212132,
+										0.277164 0.025 -0.114805,
+										0.277164 -0.025 -0.114805,
+										0.3 0.025 1.38616e-008,
+										0.3 -0.025 2.02154e-008,
+										0.277164 0.025 0.114805,
+										0.277164 -0.025 0.114805,
+										0.212132 -0.025 0.212132,
+										0.212132 0.025 0.212132,
+										0.114805 0.025 0.277164,
+										0.114805 -0.025 0.277164,
+										3.81971e-008 0.025 0.3,
+										4.28211e-008 -0.025 0.3,
+										-0.114805 0.025 0.277164,
+										-0.114805 -0.025 0.277164,
+										-0.212132 0.025 0.212132,
+										-0.212132 -0.025 0.212132,
+										-0.277164 -0.025 0.114805,
+										-0.277164 0.025 0.114805,
+										-0.3 -0.025 -1.38615e-008,
+										-0.3 0.025 9.58683e-009,
+										-0.277164 -0.025 -0.114805,
+										-0.277164 0.025 -0.114805,
+										-0.212132 0.025 -0.212132,
+										-0.212132 -0.025 -0.212132,
+										-0.114805 -0.025 -0.277164,
+										-0.114805 0.025 -0.277164 ]
+	    						}
+
+	    						coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+		        					2, 4, 5, -1, 4, 2, 1, -1,
+		        					4, 6, 5, -1, 6, 4, 7, -1,
+		        					7, 8, 6, -1, 8, 7, 9, -1,
+		        					9, 10, 8, -1, 10, 9, 11, -1,
+		        					10, 12, 13, -1, 12, 10, 11, -1,
+		        					12, 14, 13, -1, 14, 12, 15, -1,
+		        					15, 16, 14, -1, 16, 15, 17, -1,
+		        					17, 18, 16, -1, 18, 17, 19, -1,
+		        					19, 20, 18, -1, 20, 19, 21, -1,
+		        					20, 22, 23, -1, 22, 20, 21, -1,
+		        					23, 24, 25, -1, 24, 23, 22, -1,
+		        					25, 26, 27, -1, 26, 25, 24, -1,
+		        					26, 28, 27, -1, 28, 26, 29, -1,
+		        					28, 30, 31, -1, 30, 28, 29, -1,
+		        					31, 3, 0, -1, 3, 31, 30, -1,
+		        					24, 22, 21, -1, 24, 21, 29, -1,
+		        					29, 21, 17, -1, 26, 24, 29, -1,
+		        					3, 30, 29, -1, 3, 29, 12, -1,
+		        					21, 19, 17, -1, 17, 15, 12, -1,
+		        					12, 4, 3, -1, 9, 12, 11, -1,
+		        					3, 4, 1, -1, 9, 7, 4, -1,
+		        					12, 9, 4, -1, 17, 12, 29, -1,
+		        					25, 27, 28, -1, 31, 0, 28, -1,
+		        					28, 5, 8, -1, 23, 25, 20, -1,
+		        					25, 28, 13, -1, 20, 16, 18, -1,
+		        					5, 28, 0, -1, 13, 20, 25, -1,
+		        					6, 8, 5, -1, 28, 8, 10, -1,
+		        					14, 16, 13, -1, 16, 20, 13, -1,
+		        					10, 13, 28, -1, 5, 0, 2, -1 ]
+	    						texCoord	TextureCoordinate {
+									point	[ 0.5 0,
+										0.691342 0.003806,
+										0.853553 0.0146447,
+										0.96194 0.0308658,
+										0.99 0.05,
+										0.96194 0.0691342,
+										0.853553 0.0853553,
+										0.691342 0.096194,
+										0.5 0.099,
+										0.308658 0.096194,
+										0.146447 0.0853553,
+										0.03806 0.0691342,
+										0 0.05,
+										0.03806 0.0308658,
+										0.146447 0.0146447,
+										0.308658 0.003806 ]
+	    						}
+
+	    						ccw	FALSE
+	    						creaseAngle	0.506145
+	    						normalIndex	[  ]
+	    						texCoordIndex	[ 0, 1, 1, -1, 1, 0, 0, -1,
+		        					1, 2, 2, -1, 2, 1, 1, -1,
+		        					2, 3, 2, -1, 3, 2, 3, -1,
+		        					3, 4, 3, -1, 4, 3, 4, -1,
+		        					4, 5, 4, -1, 5, 4, 5, -1,
+		        					5, 6, 6, -1, 6, 5, 5, -1,
+		        					6, 7, 6, -1, 7, 6, 7, -1,
+		        					7, 8, 7, -1, 8, 7, 8, -1,
+		        					8, 9, 8, -1, 9, 8, 9, -1,
+		        					9, 10, 9, -1, 10, 9, 10, -1,
+		        					10, 11, 11, -1, 11, 10, 10, -1,
+		        					11, 12, 12, -1, 12, 11, 11, -1,
+		        					12, 13, 13, -1, 13, 12, 12, -1,
+		        					13, 14, 13, -1, 14, 13, 14, -1,
+		        					14, 15, 15, -1, 15, 14, 14, -1,
+		        					15, 0, 0, -1, 0, 15, 15, -1,
+		        					12, 11, 10, -1, 12, 10, 14, -1,
+		        					14, 10, 8, -1, 13, 12, 14, -1,
+		        					0, 15, 14, -1, 0, 14, 6, -1,
+		        					10, 9, 8, -1, 8, 7, 6, -1,
+		        					6, 2, 0, -1, 4, 6, 5, -1,
+		        					0, 2, 1, -1, 4, 3, 2, -1,
+		        					6, 4, 2, -1, 8, 6, 14, -1,
+		        					12, 13, 14, -1, 15, 0, 14, -1,
+		        					14, 2, 4, -1, 11, 12, 10, -1,
+		        					12, 14, 6, -1, 10, 8, 9, -1,
+		        					2, 14, 0, -1, 6, 10, 12, -1,
+		        					3, 4, 2, -1, 14, 4, 5, -1,
+		        					7, 8, 6, -1, 8, 10, 6, -1,
+		        					5, 6, 14, -1, 2, 0, 1, -1 ]
+	    					}
+
+						}
+
+						translation	-0.361103 0.33796 0.409682
+						rotation	-6.89117e-007 -0.707107 0.707107  3.14159
+					}
+					DEF Antriebswelle Transform {
+						children	[
+	    					DEF Passfeder Transform {
+	    						children	Shape {
+									appearance	Appearance {
+										material	Material {
+		    								ambientIntensity	0.229508
+		    								diffuseColor IS diffColor
+		    								#specularColor IS specColor
+		    								shininess	0.9
+										}
+
+										texture	ImageTexture {
+		    								url	"templates/tvrcAntriebTex/dullchrome.jpg"
+										}
+
+									}
+
+									geometry	DEF _18 IndexedFaceSet {
+										coord	Coordinate {
+		    								point	[ 0.1 -0.01 0.025,
+			    								-0.1 0.01 0.025,
+			    								0.1 0.01 0.025,
+			    								-0.1 -0.00999998 0.025,
+			    								-0.1 0.01 -0.025,
+			    								0.1 -0.01 -0.025,
+			    								0.1 0.00999998 -0.025,
+			    								-0.1 -0.01 -0.025 ]
+										}
+
+										coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+			    							4, 5, 6, -1, 5, 4, 7, -1,
+			    							1, 7, 4, -1, 7, 1, 3, -1,
+			    							5, 2, 6, -1, 2, 5, 0, -1,
+			    							6, 1, 4, -1, 1, 6, 2, -1,
+			    							3, 5, 7, -1, 5, 3, 0, -1 ]
+										texCoord	TextureCoordinate {
+		    								point	[ 0.99 0.025,
+			    								0 0.025,
+			    								0 0,
+			    								0.99 0 ]
+										}
+
+										ccw	FALSE
+										creaseAngle	0.506145
+										normalIndex	[  ]
+										texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+			    							2, 3, 3, -1, 3, 2, 2, -1,
+			    							1, 2, 2, -1, 2, 1, 1, -1,
+			    							3, 0, 3, -1, 0, 3, 0, -1,
+			    							3, 1, 2, -1, 1, 3, 0, -1,
+			    							1, 3, 2, -1, 3, 1, 0, -1 ]
+									}
+
+	    						}
+
+	    						translation	-0.920591 0.756748 2.14609e-007
+	    					}
+	    					DEF Transform98 Transform {
+	    						children	Shape {
+									appearance	Appearance {
+										material	Material {
+		    								ambientIntensity	0.229508
+		    								diffuseColor IS diffColor
+		    								#specularColor IS specColor
+		    								shininess	0.9
+										}
+
+										texture	ImageTexture {
+		    								url	"templates/tvrcAntriebTex/dullchrome.jpg"
+										}
+
+									}
+
+									geometry	DEF _19 IndexedFaceSet {
+										coord	Coordinate {
+		    								point	[ 0.0382683 0.15 -0.092388,
+			    								-2.56988e-009 -0.15 -0.1,
+			    								0.0382683 -0.15 -0.092388,
+			    								-6.18409e-009 0.15 -0.1,
+			    								0.0707107 0.15 -0.0707107,
+			    								0.0707107 -0.15 -0.0707107,
+			    								0.092388 0.15 -0.0382683,
+			    								0.092388 -0.15 -0.0382683,
+			    								0.1 0.15 7.7799e-009,
+			    								0.1 -0.15 2.2958e-009,
+			    								0.092388 0.15 0.0382684,
+			    								0.092388 -0.15 0.0382684,
+			    								0.0707107 0.15 0.0707107,
+			    								0.0707107 -0.15 0.0707107,
+			    								0.0382683 -0.15 0.092388,
+			    								0.0382683 0.15 0.092388,
+			    								2.10852e-008 -0.15 0.1,
+			    								1.7471e-008 0.15 0.1,
+			    								-0.0382683 -0.15 0.092388,
+			    								-0.0382683 0.15 0.092388,
+			    								-0.0707107 -0.15 0.0707107,
+			    								-0.0707107 0.15 0.0707107,
+			    								-0.092388 -0.15 0.0382684,
+			    								-0.092388 0.15 0.0382684,
+			    								-0.1 -0.15 -7.77988e-009,
+			    								-0.1 0.15 -2.29579e-009,
+			    								-0.0923879 -0.15 -0.0382684,
+			    								-0.0923879 0.15 -0.0382684,
+			    								-0.0707107 -0.15 -0.0707107,
+			    								-0.0707107 0.15 -0.0707107,
+			    								-0.0382683 0.15 -0.092388,
+			    								-0.0382683 -0.15 -0.092388 ]
+										}
+
+										coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+			    							4, 2, 5, -1, 2, 4, 0, -1,
+			    							5, 6, 4, -1, 6, 5, 7, -1,
+			    							7, 8, 6, -1, 8, 7, 9, -1,
+			    							9, 10, 8, -1, 10, 9, 11, -1,
+			    							11, 12, 10, -1, 12, 11, 13, -1,
+			    							14, 12, 13, -1, 12, 14, 15, -1,
+			    							16, 15, 14, -1, 15, 16, 17, -1,
+			    							18, 17, 16, -1, 17, 18, 19, -1,
+			    							20, 19, 18, -1, 19, 20, 21, -1,
+			    							21, 22, 23, -1, 22, 21, 20, -1,
+			    							23, 24, 25, -1, 24, 23, 22, -1,
+			    							25, 26, 27, -1, 26, 25, 24, -1,
+			    							27, 28, 29, -1, 28, 27, 26, -1,
+			    							30, 28, 31, -1, 28, 30, 29, -1,
+			    							3, 31, 1, -1, 31, 3, 30, -1,
+			    							20, 16, 9, -1, 20, 18, 16, -1,
+			    							26, 24, 22, -1, 28, 26, 9, -1,
+			    							1, 31, 28, -1, 9, 1, 28, -1,
+			    							9, 22, 20, -1, 16, 14, 13, -1,
+			    							16, 13, 9, -1, 9, 13, 11, -1,
+			    							5, 2, 9, -1, 9, 7, 5, -1,
+			    							1, 9, 2, -1, 9, 26, 22, -1,
+			    							29, 30, 3, -1, 29, 3, 8, -1,
+			    							17, 21, 27, -1, 23, 25, 21, -1,
+			    							21, 25, 27, -1, 21, 17, 19, -1,
+			    							8, 27, 29, -1, 4, 8, 3, -1,
+			    							6, 8, 4, -1, 27, 8, 15, -1,
+			    							15, 17, 27, -1, 15, 8, 12, -1,
+			    							8, 10, 12, -1, 4, 3, 0, -1 ]
+										texCoord	TextureCoordinate {
+		    								point	[ 0.99 0.0460894,
+			    								0 0.0333333,
+			    								0 0.0460894,
+			    								0.99 0.0333333,
+			    								0.99 0.0569036,
+			    								0 0.0569036,
+			    								0.99 0.0641293,
+			    								0 0.0641293,
+			    								0.99 0.0666667,
+			    								0 0.0666667,
+			    								0 0.0333333,
+			    								0.99 0.0333333,
+			    								0 0.0205772,
+			    								0.99 0.0205772,
+			    								0 0.0097631,
+			    								0.99 0.0097631,
+			    								0 0.00253734,
+			    								0.99 0.00253734,
+			    								0 0,
+			    								0.99 0,
+			    								0 0.00253737,
+			    								0.99 0.00253737 ]
+										}
+
+										ccw	FALSE
+										creaseAngle	0.506145
+										normalIndex	[  ]
+										texCoordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+			    							4, 2, 5, -1, 2, 4, 0, -1,
+			    							5, 6, 4, -1, 6, 5, 7, -1,
+			    							7, 8, 6, -1, 8, 7, 9, -1,
+			    							9, 6, 8, -1, 6, 9, 7, -1,
+			    							7, 4, 6, -1, 4, 7, 5, -1,
+			    							2, 4, 5, -1, 4, 2, 0, -1,
+			    							10, 0, 2, -1, 0, 10, 11, -1,
+			    							12, 11, 10, -1, 11, 12, 13, -1,
+			    							14, 13, 12, -1, 13, 14, 15, -1,
+			    							15, 16, 17, -1, 16, 15, 14, -1,
+			    							17, 18, 19, -1, 18, 17, 16, -1,
+			    							19, 20, 21, -1, 20, 19, 18, -1,
+			    							21, 14, 15, -1, 14, 21, 20, -1,
+			    							13, 14, 12, -1, 14, 13, 15, -1,
+			    							3, 12, 1, -1, 12, 3, 13, -1,
+			    							14, 10, 9, -1, 14, 12, 10, -1,
+			    							20, 18, 16, -1, 14, 20, 9, -1,
+			    							1, 12, 14, -1, 9, 1, 14, -1,
+			    							9, 16, 14, -1, 10, 2, 5, -1,
+			    							10, 5, 9, -1, 9, 5, 7, -1,
+			    							5, 2, 9, -1, 9, 7, 5, -1,
+			    							1, 9, 2, -1, 9, 20, 16, -1,
+			    							15, 13, 3, -1, 15, 3, 8, -1,
+			    							11, 15, 21, -1, 17, 19, 15, -1,
+			    							15, 19, 21, -1, 15, 11, 13, -1,
+			    							8, 21, 15, -1, 4, 8, 3, -1,
+			    							6, 8, 4, -1, 21, 8, 0, -1,
+			    							0, 11, 21, -1, 0, 8, 4, -1,
+			    							8, 6, 4, -1, 4, 3, 0, -1 ]
+									}
+
+	    						}
+
+	    						translation	-0.902576 0.657978 -0.000970756
+	    						rotation	0.57735 0.57735 -0.57735  2.0944
+	    					}
+	    					DEF Transform99 Transform {
+	    						children	Shape {
+									appearance	Appearance {
+										material	Material {
+		    								ambientIntensity	0.229508
+		    								diffuseColor IS diffColor
+		    								#specularColor IS specColor
+		    								shininess	0.9
+										}
+
+										texture	ImageTexture {
+		    								url	"templates/tvrcAntriebTex/dullchrome.jpg"
+										}
+
+									}
+
+									geometry	DEF _20 IndexedFaceSet {
+										coord	Coordinate {
+		    								point	[ 0.0508134 0.025 -0.0210476,
+			    								0.0388909 -0.025 -0.0388909,
+			    								0.0508134 -0.025 -0.0210476,
+			    								0.0210476 0.025 0.0508134,
+			    								0.0388909 -0.025 0.0388909,
+			    								0.0210476 -0.025 0.0508134,
+			    								-0.0508134 0.025 0.0210476,
+			    								-0.055 -0.025 1.59511e-009,
+			    								-0.055 0.025 6.48298e-009,
+			    								-0.0508134 -0.025 0.0210476,
+			    								0.0508134 -0.025 0.0210476,
+			    								-0.0388909 -0.025 0.0388909,
+			    								-0.0210476 -0.025 0.0508134,
+			    								-0.0210476 0.025 0.0508134,
+			    								0.0508134 0.025 0.0210476,
+			    								0.0210476 0.025 -0.0508134,
+			    								-3.87775e-009 -0.025 -0.055,
+			    								-0.0388909 0.025 -0.0388909,
+			    								-0.0388909 -0.025 -0.0388909,
+			    								-0.0210476 0.025 -0.0508134 ]
+										}
+
+										coordIndex	[ 0, 1, 2, -1, 3, 4, 5, -1,
+			    							6, 7, 8, -1, 7, 6, 9, -1,
+			    							4, 10, 5, -1, 6, 11, 9, -1,
+			    							12, 11, 13, -1, 13, 11, 6, -1,
+			    							3, 13, 6, -1, 14, 10, 4, -1,
+			    							4, 3, 14, -1, 14, 3, 6, -1,
+			    							15, 16, 1, -1, 6, 8, 17, -1,
+			    							14, 6, 17, -1, 12, 13, 3, -1,
+			    							12, 5, 10, -1, 5, 12, 3, -1,
+			    							18, 16, 19, -1, 19, 17, 18, -1,
+			    							16, 18, 12, -1, 19, 15, 14, -1,
+			    							14, 17, 19, -1, 15, 19, 16, -1,
+			    							16, 2, 1, -1, 16, 12, 10, -1,
+			    							10, 14, 0, -1, 0, 2, 10, -1,
+			    							10, 2, 16, -1, 17, 8, 7, -1,
+			    							7, 9, 11, -1, 7, 18, 17, -1,
+			    							18, 7, 12, -1, 11, 12, 7, -1,
+			    							15, 1, 0, -1, 0, 14, 15, -1 ]
+										texCoord	TextureCoordinate {
+		    								point	[ 0.96194 0.0308658,
+			    								0.853554 0.0146446,
+			    								0.691342 0.096194,
+			    								0.853554 0.0853554,
+			    								0.03806 0.0691342,
+			    								0 0.05,
+			    								0.96194 0.0691342,
+			    								0.146446 0.0853554,
+			    								0.308658 0.096194,
+			    								0.691342 0.003806,
+			    								0.5 0,
+			    								0.146446 0.0146446,
+			    								0.308658 0.003806 ]
+										}
+
+										ccw	FALSE
+										creaseAngle	0.506145
+										normalIndex	[  ]
+										texCoordIndex	[ 0, 1, 0, -1, 2, 3, 2, -1,
+			    							4, 5, 5, -1, 5, 4, 4, -1,
+			    							3, 6, 2, -1, 4, 7, 4, -1,
+			    							8, 7, 8, -1, 8, 7, 4, -1,
+			    							2, 8, 4, -1, 6, 6, 3, -1,
+			    							3, 2, 6, -1, 6, 2, 4, -1,
+			    							9, 10, 1, -1, 4, 5, 11, -1,
+			    							6, 4, 11, -1, 8, 8, 2, -1,
+			    							8, 2, 6, -1, 2, 8, 2, -1,
+			    							11, 10, 12, -1, 12, 11, 11, -1,
+			    							10, 11, 8, -1, 12, 9, 6, -1,
+			    							6, 11, 12, -1, 9, 12, 10, -1,
+			    							10, 0, 1, -1, 10, 8, 6, -1,
+			    							6, 6, 0, -1, 0, 0, 6, -1,
+			    							6, 0, 10, -1, 11, 5, 5, -1,
+			    							5, 4, 7, -1, 5, 11, 11, -1,
+			    							11, 5, 8, -1, 7, 8, 5, -1,
+			    							9, 1, 0, -1, 0, 6, 9, -1 ]
+									}
+
+	    						}
+
+	    						translation	-1.03272 0.65666 -0.001989
+	    						rotation	0.57735 0.57735 -0.57735  2.0944
+	    					}
+						]
+						translation	-0.363071 -0.324264 -0.316275
+						rotation	0 1 0  1.57079
+					}
+    			]
+    			translation	-1.35494 -0.225386 -0.0279251
+    			rotation	0 0 1  0
+    		}
+    		DEF Motoranschluss Transform {
+    			children	[
+					DEF Absatz_Eingang Transform {
+						children	Shape {
+	    					appearance	Appearance {
+	    						material	Material {
+									ambientIntensity	0.229508
+									diffuseColor IS diffColor
+									#specularColor IS specColor
+									shininess	0.9
+	    						}
+
+	    						texture	ImageTexture {
+									url	"templates/tvrcAntriebTex/dullchrome.jpg"
+	    						}
+
+	    					}
+
+	    					geometry	DEF _21 IndexedFaceSet {
+	    						coord	Coordinate {
+									point	[ 0.22961 0.025 -0.554328,
+										2.23414e-008 -0.025 -0.6,
+										0.22961 -0.025 -0.554328,
+										2.04838e-008 0.025 -0.6,
+										0.424264 0.025 -0.424264,
+										0.424264 -0.025 -0.424264,
+										0.554328 -0.025 -0.22961,
+										0.554328 0.025 -0.22961,
+										0.6 -0.025 3.16794e-008,
+										0.6 0.025 2.69859e-008,
+										0.554328 -0.025 0.22961,
+										0.554328 0.025 0.22961,
+										0.424264 -0.025 0.424264,
+										0.424264 0.025 0.424264,
+										0.22961 -0.025 0.554328,
+										0.22961 0.025 0.554328,
+										9.87255e-008 -0.025 0.6,
+										9.68679e-008 0.025 0.6,
+										-0.22961 -0.025 0.554328,
+										-0.22961 0.025 0.554328,
+										-0.424264 -0.025 0.424264,
+										-0.424264 0.025 0.424264,
+										-0.554328 0.025 0.22961,
+										-0.554328 -0.025 0.22961,
+										-0.6 0.025 -1.87703e-009,
+										-0.6 -0.025 2.81674e-009,
+										-0.554327 0.025 -0.22961,
+										-0.554327 -0.025 -0.22961,
+										-0.424264 0.025 -0.424264,
+										-0.424264 -0.025 -0.424264,
+										-0.22961 0.025 -0.554328,
+										-0.22961 -0.025 -0.554328,
+										2.88737e-008 0.025 -2.34694e-009,
+										-2.88737e-008 -0.025 2.34694e-009 ]
+	    						}
+
+	    						coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+		        					4, 2, 5, -1, 2, 4, 0, -1,
+		        					6, 4, 5, -1, 4, 6, 7, -1,
+		        					8, 7, 6, -1, 7, 8, 9, -1,
+		        					10, 9, 8, -1, 9, 10, 11, -1,
+		        					12, 11, 10, -1, 11, 12, 13, -1,
+		        					14, 13, 12, -1, 13, 14, 15, -1,
+		        					16, 15, 14, -1, 15, 16, 17, -1,
+		        					18, 17, 16, -1, 17, 18, 19, -1,
+		        					20, 19, 18, -1, 19, 20, 21, -1,
+		        					22, 20, 23, -1, 20, 22, 21, -1,
+		        					24, 23, 25, -1, 23, 24, 22, -1,
+		        					26, 25, 27, -1, 25, 26, 24, -1,
+		        					28, 27, 29, -1, 27, 28, 26, -1,
+		        					30, 29, 31, -1, 29, 30, 28, -1,
+		        					3, 31, 1, -1, 31, 3, 30, -1,
+		        					28, 30, 32, -1, 26, 28, 32, -1,
+		        					24, 26, 32, -1, 24, 32, 22, -1,
+		        					22, 32, 21, -1, 21, 32, 19, -1,
+		        					19, 32, 17, -1, 17, 32, 15, -1,
+		        					32, 13, 15, -1, 32, 11, 13, -1,
+		        					32, 9, 11, -1, 32, 7, 9, -1,
+		        					32, 4, 7, -1, 32, 0, 4, -1,
+		        					32, 3, 0, -1, 30, 3, 32, -1,
+		        					33, 2, 1, -1, 33, 5, 2, -1,
+		        					33, 6, 5, -1, 33, 8, 6, -1,
+		        					33, 10, 8, -1, 33, 12, 10, -1,
+		        					33, 14, 12, -1, 16, 14, 33, -1,
+		        					18, 16, 33, -1, 20, 18, 33, -1,
+		        					23, 20, 33, -1, 25, 23, 33, -1,
+		        					25, 33, 27, -1, 27, 33, 29, -1,
+		        					29, 33, 31, -1, 31, 33, 1, -1 ]
+	    						texCoord	TextureCoordinate {
+									point	[ 0.691342 0.003806,
+										0.5 0,
+										0.853553 0.0146447,
+										0.96194 0.0308658,
+										0.99 0.05,
+										0.96194 0.0691342,
+										0.853553 0.0853553,
+										0.691342 0.096194,
+										0.5 0.099,
+										0.308658 0.096194,
+										0.146447 0.0853553,
+										0.03806 0.0691342,
+										0 0.05,
+										0.0380608 0.0308658,
+										0.146447 0.0146447,
+										0.308658 0.003806,
+										0.5 0.05 ]
+	    						}
+
+	    						ccw	FALSE
+	    						creaseAngle	0.506145
+	    						normalIndex	[  ]
+	    						texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+		        					2, 0, 2, -1, 0, 2, 0, -1,
+		        					3, 2, 2, -1, 2, 3, 3, -1,
+		        					4, 3, 3, -1, 3, 4, 4, -1,
+		        					5, 4, 4, -1, 4, 5, 5, -1,
+		        					6, 5, 5, -1, 5, 6, 6, -1,
+		        					7, 6, 6, -1, 6, 7, 7, -1,
+		        					8, 7, 7, -1, 7, 8, 8, -1,
+		        					9, 8, 8, -1, 8, 9, 9, -1,
+		        					10, 9, 9, -1, 9, 10, 10, -1,
+		        					11, 10, 11, -1, 10, 11, 10, -1,
+		        					12, 11, 12, -1, 11, 12, 11, -1,
+		        					13, 12, 13, -1, 12, 13, 12, -1,
+		        					14, 13, 14, -1, 13, 14, 13, -1,
+		        					15, 14, 15, -1, 14, 15, 14, -1,
+		        					1, 15, 1, -1, 15, 1, 15, -1,
+		        					14, 15, 16, -1, 13, 14, 16, -1,
+		        					12, 13, 16, -1, 12, 16, 11, -1,
+		        					11, 16, 10, -1, 10, 16, 9, -1,
+		        					9, 16, 8, -1, 8, 16, 7, -1,
+		        					16, 6, 7, -1, 16, 5, 6, -1,
+		        					16, 4, 5, -1, 16, 3, 4, -1,
+		        					16, 2, 3, -1, 16, 0, 2, -1,
+		        					16, 1, 0, -1, 15, 1, 16, -1,
+		        					16, 0, 1, -1, 16, 2, 0, -1,
+		        					16, 3, 2, -1, 16, 4, 3, -1,
+		        					16, 5, 4, -1, 16, 6, 5, -1,
+		        					16, 7, 6, -1, 8, 7, 16, -1,
+		        					9, 8, 16, -1, 10, 9, 16, -1,
+		        					11, 10, 16, -1, 12, 11, 16, -1,
+		        					12, 16, 13, -1, 13, 16, 14, -1,
+		        					14, 16, 15, -1, 15, 16, 1, -1 ]
+	    					}
+
+						}
+
+						translation	0.657465 0.365954 0.0400589
+						rotation	0.57735 0.57735 -0.577351  2.0944
+					}
+					DEF Bohrung Transform {
+						children	Shape {
+	    					appearance	Appearance {
+	    						material	Material {
+									ambientIntensity	0.229508
+									diffuseColor IS diffColor
+									#specularColor IS specColor
+									shininess	0.9
+	    						}
+
+	    						texture	ImageTexture {
+									url	"templates/tvrcAntriebTex/dullchrome.jpg"
+	    						}
+
+	    					}
+
+	    					geometry	DEF _22 IndexedFaceSet {
+	    						coord	Coordinate {
+									point	[ 0.0765366 0.00999997 -0.184776,
+										1.74434e-008 -0.01 -0.2,
+										0.0765366 -0.01 -0.184776,
+										1.67e-008 0.01 -0.2,
+										0.141421 0.00999999 -0.141421,
+										0.141421 -0.00999999 -0.141421,
+										0.184776 -0.00999998 -0.0765366,
+										0.184776 0.01 -0.0765366,
+										0.2 -0.00999999 1.46899e-008,
+										0.2 0.00999999 -5.06891e-009,
+										0.184776 -0.01 0.0765368,
+										0.184776 0.00999997 0.0765368,
+										0.141421 -0.00999998 0.141421,
+										0.141421 0.01 0.141421,
+										0.0765366 -0.01 0.184776,
+										0.0765366 0.01 0.184776,
+										4.29046e-008 -0.01 0.2,
+										4.21614e-008 0.01 0.2,
+										-0.0765366 -0.00999997 0.184776,
+										-0.0765366 0.01 0.184776,
+										-0.141421 -0.00999999 0.141421,
+										-0.141421 0.00999999 0.141421,
+										-0.184776 0.00999998 0.0765368,
+										-0.184776 -0.01 0.0765368,
+										-0.2 0.00999999 -1.46899e-008,
+										-0.2 -0.00999999 5.06891e-009,
+										-0.184776 0.01 -0.0765368,
+										-0.184776 -0.00999997 -0.0765368,
+										-0.141421 0.00999998 -0.141421,
+										-0.141421 -0.01 -0.141421,
+										-0.0765366 0.01 -0.184776,
+										-0.0765366 -0.01 -0.184776,
+										-3.71418e-010 0.00999999 5.02174e-009,
+										3.71418e-010 -0.00999999 -5.02174e-009 ]
+	    						}
+
+	    						coordIndex	[ 0, 1, 2, -1, 1, 0, 3, -1,
+		        					4, 2, 5, -1, 2, 4, 0, -1,
+		        					6, 4, 5, -1, 4, 6, 7, -1,
+		        					8, 7, 6, -1, 7, 8, 9, -1,
+		        					10, 9, 8, -1, 9, 10, 11, -1,
+		        					12, 11, 10, -1, 11, 12, 13, -1,
+		        					14, 13, 12, -1, 13, 14, 15, -1,
+		        					16, 15, 14, -1, 15, 16, 17, -1,
+		        					18, 17, 16, -1, 17, 18, 19, -1,
+		        					20, 19, 18, -1, 19, 20, 21, -1,
+		        					22, 20, 23, -1, 20, 22, 21, -1,
+		        					24, 23, 25, -1, 23, 24, 22, -1,
+		        					26, 25, 27, -1, 25, 26, 24, -1,
+		        					28, 27, 29, -1, 27, 28, 26, -1,
+		        					30, 29, 31, -1, 29, 30, 28, -1,
+		        					3, 31, 1, -1, 31, 3, 30, -1,
+		        					28, 30, 32, -1, 26, 28, 32, -1,
+		        					24, 26, 32, -1, 24, 32, 22, -1,
+		        					22, 32, 21, -1, 21, 32, 19, -1,
+		        					19, 32, 17, -1, 17, 32, 15, -1,
+		        					32, 13, 15, -1, 32, 11, 13, -1,
+		        					32, 9, 11, -1, 32, 7, 9, -1,
+		        					32, 4, 7, -1, 32, 0, 4, -1,
+		        					32, 3, 0, -1, 30, 3, 32, -1,
+		        					33, 2, 1, -1, 33, 5, 2, -1,
+		        					33, 6, 5, -1, 33, 8, 6, -1,
+		        					33, 10, 8, -1, 33, 12, 10, -1,
+		        					33, 14, 12, -1, 16, 14, 33, -1,
+		        					18, 16, 33, -1, 20, 18, 33, -1,
+		        					23, 20, 33, -1, 25, 23, 33, -1,
+		        					25, 33, 27, -1, 27, 33, 29, -1,
+		        					29, 33, 31, -1, 31, 33, 1, -1 ]
+	    						texCoord	TextureCoordinate {
+									point	[ 0.691342 0.003806,
+										0.5 0,
+										0.853553 0.0146447,
+										0.96194 0.0308658,
+										0.99 0.05,
+										0.96194 0.0691342,
+										0.853553 0.0853553,
+										0.691342 0.096194,
+										0.5 0.099,
+										0.308658 0.096194,
+										0.146447 0.0853553,
+										0.03806 0.0691342,
+										0 0.05,
+										0.03806 0.0308658,
+										0.146447 0.0146447,
+										0.308658 0.003806,
+										0.5 0.05 ]
+	    						}
+
+	    						ccw	FALSE
+	    						creaseAngle	0.506145
+	    						normalIndex	[  ]
+	    						texCoordIndex	[ 0, 1, 0, -1, 1, 0, 1, -1,
+		        					2, 0, 2, -1, 0, 2, 0, -1,
+		        					3, 2, 2, -1, 2, 3, 3, -1,
+		        					4, 3, 3, -1, 3, 4, 4, -1,
+		        					5, 4, 4, -1, 4, 5, 5, -1,
+		        					6, 5, 5, -1, 5, 6, 6, -1,
+		        					7, 6, 6, -1, 6, 7, 7, -1,
+		        					8, 7, 7, -1, 7, 8, 8, -1,
+		        					9, 8, 8, -1, 8, 9, 9, -1,
+		        					10, 9, 9, -1, 9, 10, 10, -1,
+		        					11, 10, 11, -1, 10, 11, 10, -1,
+		        					12, 11, 12, -1, 11, 12, 11, -1,
+		        					13, 12, 13, -1, 12, 13, 12, -1,
+		        					14, 13, 14, -1, 13, 14, 13, -1,
+		        					15, 14, 15, -1, 14, 15, 14, -1,
+		        					1, 15, 1, -1, 15, 1, 15, -1,
+		        					14, 15, 16, -1, 13, 14, 16, -1,
+		        					12, 13, 16, -1, 12, 16, 11, -1,
+		        					11, 16, 10, -1, 10, 16, 9, -1,
+		        					9, 16, 8, -1, 8, 16, 7, -1,
+		        					16, 6, 7, -1, 16, 5, 6, -1,
+		        					16, 4, 5, -1, 16, 3, 4, -1,
+		        					16, 2, 3, -1, 16, 0, 2, -1,
+		        					16, 1, 0, -1, 15, 1, 16, -1,
+		        					16, 0, 1, -1, 16, 2, 0, -1,
+		        					16, 3, 2, -1, 16, 4, 3, -1,
+		        					16, 5, 4, -1, 16, 6, 5, -1,
+		        					16, 7, 6, -1, 8, 7, 16, -1,
+		        					9, 8, 16, -1, 10, 9, 16, -1,
+		        					11, 10, 16, -1, 12, 11, 16, -1,
+		        					12, 16, 13, -1, 13, 16, 14, -1,
+		        					14, 16, 15, -1, 15, 16, 1, -1 ]
+	    					}
+
+						}
+
+						translation	0.689913 0.365531 0.0400589
+						rotation	0.57735 0.57735 -0.577351  2.0944
+					}
+    			]
+    			translation	-1.3389 -0.351081 -0.0279249
+    			rotation	0 0 1  0
+    		}
+		]
+		translation	0.058655 0 -0.0628271
+	}
+}
+
+	#@ <Name><ger>Das Antrieb-Objekt</ger><eng>The drive object</eng><spa>The drive object</spa></Name>	  
+
+	#@ <summary><ger>Das Objekt kann genutzt werden, um einen Antrieb darzustellen. Der Zustand des Objektes wird &uuml;ber den Proze&szlig;anschlu&szlig; gesteuert.	
+	#@ </ger><eng>For visualize an drive, one can use this object. The state of the drive is controlled by its process connection.
+	#@ </eng></summary>
+	#@<category>TvrcBasic</category>
+  #@<NeedGeometryInterface>true</NeedGeometryInterface>
+	#@<icon>obj_Antrieb.ico</icon>
+  #@<tag>drive</tag>
+  #@<tag>tvrc</tag>
+PROTO tvrcDrive [
+
+
+	#@ <summary><ger>Farbe des Antriebs im Ruhezustand.	
+	#@ </ger><eng>Color of the drive at rest.
+	#@ </eng></summary>	
+	#@ <Name><ger>Farbe bei Status inaktiv</ger><eng>Color Status Low</eng><spa>Color Activo</spa></Name>	  
+	#@ <Visible>true</Visible>
+	exposedField SFColor diffColorLow	0.61 0.61 0.61
+
+	#@ <summary><ger>Farbe des Antriebs im Betrieb.	
+	#@ </ger><eng>Color of the drive in action.
+	#@ </eng></summary>	
+	#@ <Name><ger>Farbe bei Status aktiv</ger><eng>Color Status High</eng><spa>Color Inactivo</spa></Name>	  
+	#@ <Visible>true</Visible>
+	exposedField SFColor diffColorHigh	0 1 0
+
+	#@ <summary><ger>Proze&szlig;anschlu&szlig; des Antriebs, je nach Status erfolgt eine Farb&auml;nderung des Antriebs.	
+	#@ </ger><eng>Process connection of drive; drive changes color depending on status.
+	#@ </eng></summary>	
+	#@ <Name><ger>Status (aktiv)</ger><eng>Status Signal</eng><spa>Señal Estado</spa></Name>	  
+	#@ <Visible>true</Visible>
+	#@ <Default>false</Default>
+	exposedField SFBool status_in FALSE
+
+	### Geometrietransformationen ->ausgeblendet
+
+	#@ <summary><ger>Position des Antriebs in Bezug auf das lokale Koordinatensystem.	
+	#@ </ger><eng>Position of the drive in reference to the local coordinate system.
+	#@ </eng></summary>
+	#@ <Name><ger>Position</ger><eng>Position</eng><spa>Posición</spa></Name>
+	#@ <Interface>Geometry</Interface>	  
+	#@ <Visible>false</Visible>
+	exposedField SFVec3f objPosTrl 0 0 0
+
+	#@ <summary><ger>Drehung des Antriebs in Bezug auf das lokale Koordinatensystem.	
+	#@ </ger><eng>Rotation of the drive in reference to the local coordinate system.
+	#@ </eng></summary>	
+	#@ <Name><ger>Drehung</ger><eng>Rotation</eng><spa>Rotación</spa></Name>
+	#@ <Interface>Geometry</Interface>	  
+	#@ <Visible>false</Visible>
+	exposedField SFRotation objPosRot 0 0 1 0
+
+	#@ <summary><ger>Skalierung des Antriebs in Bezug auf das lokale Koordinatensystem.	
+	#@ </ger><eng>Scaling of the drive in reference to the local coordinate system.
+	#@ </eng></summary>	
+	#@ <Name><ger>Skalierung</ger><eng>Scale</eng><spa>Escala</spa></Name>
+	#@ <Interface>Geometry</Interface>	  
+	#@ <Visible>false</Visible>
+	# <Default>0.25 0.25 0.25</Default>
+	exposedField SFVec3f objScale 0.25 0.25 0.25
+	
+	exposedField SFBool flgTouchBtEnabled TRUE
+	eventOut SFTime touchTime
+	
+	]
+{
+	PROTO interface [
+		exposedField SFColor diffColorLow IS diffColorLow
+		exposedField SFColor diffColorHigh IS diffColorHigh
+		exposedField SFBool status_in IS status_in
+	]{}	
+	
+	DEF	objInt interface {
+		diffColorLow IS	diffColorLow
+		diffColorHigh IS diffColorHigh
+		status_in IS status_in
+
+	}
+	
+	
+	
+	Transform {
+		children [
+	
+			DEF	touch_bauteil TouchSensor {
+				enabled	IS flgTouchBtEnabled
+				touchTime IS touchTime
+			}
+	
+	
+			Transform {
+		
+				scale IS objScale
+				rotation IS	objPosRot
+				translation IS objPosTrl
+		
+				children	[
+					DEF	shpDrive tvrcShpDrive {
+					}
+	
+			
+				]
+			}
+		]
+	}
+	
+	
+	DEF	scDrive Script {
+		
+		field SFNode objInt USE	objInt
+		eventIn	SFBool status_in
+		eventIn	SFColor diffColorLow_in
+		eventIn	SFColor diffColorHigh_in
+
+		field SFNode shpObj USE	shpDrive
+
+		directOutput TRUE
+
+
+		url	"vrmlscript:
+
+		function initialize () {
+			status_in(0);
+		}
+		
+		
+		
+		function status_in (value, time) {
+			if (value) {
+				shpObj.diffColor = objInt.diffColorHigh ;
+			}
+			else {
+				shpObj.diffColor = objInt.diffColorLow ;
+			}
+		}
+
+
+		function diffColorLow_in (value, time) {
+			//neue Farbe zuweisen
+			objInt.diffColorLow = value;
+			//evtl. Sensorfarbe sofort setzen			
+			if (!status_in) {
+				shpObj.diffColor = objInt.diffColorLow;
+			}
+		}
+
+
+		function diffColorHigh_in (value, time) {
+			//neue Farbe zuweisen
+			objInt.diffColorHigh = value;
+			//evtl. Sensorfarbe sofort setzen			
+			if (status_in) {
+				shpObj.diffColor = objInt.diffColorHigh;
+			}
+		}
+
+
+		"
+	}
+	ROUTE objInt.status_in	TO scDrive.status_in
+	ROUTE objInt.diffColorLow TO scDrive.diffColorLow_in
+	ROUTE objInt.diffColorHigh TO scDrive.diffColorHigh_in
+}
+
+
+#------------------------------------------------------------
+
+DEF	drive_01 tvrcDrive {
+}
+
+#DEF siggi signalgeber {
+#	scale .2 .2 .2
+#	translation	1 1 1
+#	schaltFunktion TRUE
+#	ROUTE siggi.SFBool_schalt_out TO drive_01.status_in
+#}
+
+
+

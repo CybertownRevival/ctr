@@ -1,0 +1,278 @@
+#VRML V2.0 utf8
+		
+	#@ <Name><ger>Das Box-Objekt</ger><eng>The box objekt</eng><spa>The box objekt</spa></Name> 
+	#@ <summary><ger>Mit dem Objekt Box k&ouml;nnen bei Auftreten einer St&ouml;rung in der 3D-Szene, z.B. Fehlerorte, mit einer halbtransparenten, wahlweise blinkenden Box umgeben werden. In Kombination mit dem Objekt Fahne kann der Standort in der 3D-Szene bei Auftreten einer St&ouml;rung automatisch zum betreffenden Ort ver&auml;ndert werden.
+	#@ </ger><eng>Should a malfunction occur within the 3D scene, the box object allows the default location, for example, to be surrounded by a semi-transparent box with optional flash feature. In conjunction with the Flag object, the 3D scene viewpoint can be altered automatically and relocated to the site in question.
+	#@ </eng></summary>
+	#@<category>TvrcBasic</category>
+  #@<NeedGeometryInterface>true</NeedGeometryInterface>
+#@  <connection>
+#@  <tag>selectbox</tag>
+#@  <point x="objPosTrl[0]+0" y="objPosTrl[1]+0" z="objPosTrl[2]+objScale[2]" />
+#@  <point x="objPosTrl[0]+0" y="objPosTrl[1]+0" z="objPosTrl[2]-objScale[2]" />
+#@  <point x="objPosTrl[0]+objScale[0]" y="objPosTrl[1]+0" z="objPosTrl[2]" />
+#@  <point x="objPosTrl[0]-objScale[0]" y="objPosTrl[1]+0" z="objPosTrl[2]" />
+#@  <point x="objPosTrl[0]+0" y="objPosTrl[1]+objScale[1]" z="objPosTrl[2]" />
+#@  <point x="objPosTrl[0]+0" y="objPosTrl[1]-objScale[1]" z="objPosTrl[2]" />
+#@  <field name="objScale" value="objScale" />
+#@  <field name="boxColor" value="boxColor" />
+#@  <field name="transparency" value="transparency" />
+#@  <field name="objPosTrl" value="new SFVec3f(0, 0, 0)" />
+#@  </connection>
+#@  <connection>
+#@  <tag>this</tag>
+#@  <field name="objScale" value="new SFVec3f(1.05*${BBOX_SCALE_X}, 1.05*${BBOX_SCALE_Y}, 1.05*${BBOX_SCALE_Z});" />
+#  <field name="objPosTrl" value="new SFVec3f(${BBOX_CENTER_X}, ${BBOX_CENTER_Y} -0.525*${BBOX_SCALE_Y} , ${BBOX_CENTER_Z});" />
+#@  <field name="objPosTrl" value="new SFVec3f(${BBOX_CENTER_X}, ${BBOX_CENTER_Y} , ${BBOX_CENTER_Z});" />
+#@  <field name="transparency" value="0.6" />
+#@  <field name="boxColor" value="new SFColor(1,1,1)" />
+#@  </connection>
+#@  <tag>selectbox</tag>
+#@  <tag>tvrc</tag>
+	#@<icon>obj_SelectBox.ico</icon>
+PROTO tvrcSelectBox [
+
+	#@ <summary><ger>Farbe der Box.
+	#@ </ger>
+	#@ <eng>Color of the box.
+	#@ </eng></summary>
+	#@ <Name><ger>Farbe</ger><eng>Color</eng><spa>Color</spa></Name> 
+	#@ <Visible>true</Visible>
+	exposedField SFColor boxColor 1 1 1
+
+	#@ <summary><ger>Gibt die Blinkfrequenz in Sekunden an.
+	#@ </ger>
+	#@ <eng>Indicates the flash/second frequency.
+	#@ </eng></summary>
+	#@ <Name><ger>Blinkfrequenz</ger><eng>Cycle Interval</eng><spa>Frecuencia</spa></Name> 
+	#@ <Visible>true</Visible>
+	exposedField SFTime cycleInterval 1
+
+	#@ <summary><ger>Gibt an, ob die Box blinken soll.
+	#@ </ger>
+	#@ <eng>Indicates whether the box should flash.
+	#@ </eng></summary>
+	#@ <Name><ger>Blinken</ger><eng>Cycle</eng><spa>Intermitencia</spa></Name>  
+	#@ <Visible>true</Visible>
+	#@ <Default> false </Default>
+	exposedField SFBool	blink FALSE
+
+	#@ <summary><ger>Proze&szlig;anschlu&szlig; zum Einblenden der Box.
+	#@ </ger>
+	#@ <eng>Process connection to display box.
+	#@ </eng></summary>
+	#@ <Name><ger>Sichtbar</ger><eng>Visible</eng><spa>Mostrar</spa></Name>
+	#@ <Visible>true</Visible>
+	exposedField SFBool	boxVisibility TRUE
+
+	### Geometrietransformationen im lokalen Koordinatensystem.->ausgeblendet
+
+	#@ <summary><ger>Position der Box in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Position of box in reference to the local coordinate system.
+	#@ </eng></summary>	
+	#@ <Name><ger>Position</ger><eng>Translation</eng><spa>Posición</spa></Name> 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>true</Visible>
+	exposedField SFVec3f objPosTrl 0 0 0
+
+	#@ <summary><ger>Drehung der Box in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Rotation of box in reference to the local coordinate system.
+	#@ </eng></summary>
+	#@ <Name><ger>Drehung</ger><eng>Rotation</eng><spa>Rotación</spa></Name> 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>
+	exposedField SFRotation objPosRot 0 0 1 0
+
+	#@ <summary><ger>Skalierung der Box in Bezug auf das lokale Koordinatensystem.
+	#@ </ger><eng>Scaling of box in reference to the local coordinate system.
+	#@ </eng></summary>
+	#@ <Name><ger>Skalierung</ger><eng>Scale</eng><spa>EScala</spa></Name> 
+	#@ <Interface>Geometry</Interface>
+	exposedField SFVec3f objScale 0.25 0.25 0.25
+
+	eventOut SFTime touchTime
+	exposedField SFInt32 whichChoice -1
+	exposedField SFBool flgTouchBtEnabled TRUE
+
+
+	#@ <summary><ger>Transparenz der Box. Wert zwischen 0 und 1.
+	#@ </ger><eng>Transparency of Box. Range between 0 and 1.
+	#@ </eng></summary>		
+	#@ <Name><ger>Transparenz</ger><eng>Transparency</eng><spa>Transparencia</spa></Name> 
+	#@ <Visible>true</Visible>
+	#@ <Range Min="0" Max="1"></Range>
+	exposedField SFFloat transparency 0.6		
+
+
+	
+]
+{
+	DEF	timer TimeSensor {
+		cycleInterval IS cycleInterval
+		enabled	TRUE
+		loop TRUE
+	}
+
+	
+	
+	DEF swStatus Switch {
+		whichChoice	IS whichChoice
+		choice [
+			Transform {
+				rotation IS	objPosRot
+				translation	IS objPosTrl
+				scale IS objScale
+				children [
+					
+					DEF touch_bauteil TouchSensor	{
+						enabled	IS flgTouchBtEnabled
+						touchTime IS touchTime
+					}
+					
+
+					DEF	switchDraht Switch {
+					 whichChoice 0
+					 choice	[
+					DEF shDraht Shape {
+						appearance Appearance {
+							material Material {
+								diffuseColor IS boxColor
+								emissiveColor IS boxColor
+							}
+						}
+						
+						geometry IndexedLineSet {
+							colorPerVertex TRUE
+							coord Coordinate {
+								point [
+									.51 .51 .51,
+									.51 -.51 .51,
+									-.51 -.51 .51,
+									-.51 .51 .51,
+									.51 0.51 -.51,
+									.51 -.51 -.51,
+									-.51 -.51 -.51,
+									-.51 .51 -.51
+								]
+							}
+							coordIndex [
+								0 1 2 3 0 -1,
+								4 5 6 7 4 -1,
+								0 4 -1,
+								1 5 -1,
+								2 6 -1,
+								3 7 -1
+							]
+						}
+					}
+				]
+			}
+
+					Transform {
+						translation 0 0 0
+					    children
+						DEF shBox Shape {
+	    					appearance Appearance {
+								material DEF matBox Material {
+									diffuseColor IS boxColor
+		    						transparency	IS transparency
+								}
+							}
+							geometry Box {
+							   size 1 1 1
+						   }
+						}
+					}
+				]
+			}
+		]
+	}
+
+
+	### Statusbox schalten, abhaengig von Sensor
+	DEF scSelectbox Script	{
+		exposedField	SFFloat	transparency IS	transparency
+		field	SFFloat	tempTransparency 0.6
+
+		field SFNode matBox USE	matBox
+
+		field SFNode swStatus USE swStatus
+		eventIn	SFTime cycletime
+
+		exposedField SFBool blink IS blink
+		exposedField SFBool boxVisibility IS boxVisibility
+
+		directOutput TRUE
+
+field	SFNode switchDraht USE switchDraht
+
+		url	"vrmlscript:
+		
+		function initialize	 ()	{
+			
+			//sichtbar, unsichtbar initialisieren...
+			if (boxVisibility == true) {
+				swStatus.whichChoice = 0;
+			}
+			else {
+				swStatus.whichChoice = -1;
+			}
+
+	if(transparency<0.4) {
+				switchDraht.whichChoice=-1;
+			} else {
+				switchDraht.whichChoice=0;
+			}
+				if(transparency<0.98)
+			tempTransparency=transparency;
+		}
+		
+
+		function transparency(value) {
+    	if(value<0.4) {
+				switchDraht.whichChoice=-1;
+       // Linien unsichtbar machen
+			} else {
+				switchDraht.whichChoice=0;
+			}
+			if(value<0.98)
+				tempTransparency=transparency;
+		}
+		
+		
+//		in Blinkmodus schalten... , darauf achten, das Box angezeigt wird
+		function blink(value, time) {
+			if (!value) {
+			   matBox.transparency = tempTransparency;
+			 }
+		}
+		
+		
+		
+		function boxVisibility(value, time) {
+			if (value == false) 
+				swStatus.whichChoice = -1;
+			else swStatus.whichChoice = 0;
+		}
+
+
+		
+		function cycletime (value, time) {
+			if ((value) && (blink == true)) { 
+				if (matBox.transparency >0.98) matBox.transparency = tempTransparency;
+				else matBox.transparency = 1;
+			}
+		}
+		"
+	}
+	ROUTE timer.cycleTime TO scSelectbox.cycletime
+}
+
+
+
+
+#------------------------------------------------------------------------------------#
+
+tvrcSelectBox {
+	boxVisibility	TRUE
+}

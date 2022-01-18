@@ -1,0 +1,120 @@
+#VRML V2.0 utf8
+		
+ 
+PROTO tvrcCollision [ 
+
+	# Enthaelt alle übergeordneten Knoten der Lichtschranke
+exposedField MFNode shapeHir []
+# Verweis auf die Verwendete Lichtschranke
+exposedField SFNode shapeObject NULL
+# Gruppenknoten dessen Kinder auf Kollision getest werden sollen
+exposedField SFNode transformNode NULL
+eventOut SFNode out
+exposedField	SFBool start_in FALSE
+] {
+
+	DEF TimeSensor_tvcObject122  TimeSensor{
+	cycleInterval	0.1
+loop TRUE
+}
+DEF s1 Script {
+exposedField MFNode shapeHir IS shapeHir
+field MFNode internShapeHir []
+exposedField SFNode shapeObject IS	shapeObject
+exposedField SFNode transformNode IS transformNode
+field SFBool isInitialized FALSE
+eventIn SFTime trigger
+eventOut SFNode out IS out
+field	 SFNode TimeSensor_tvcObject122 USE TimeSensor_tvcObject122
+exposedField	SFBool start_in IS	start_in
+
+directOutput TRUE
+ url "vrmlscript:            
+
+ function initialize(t) {
+	 print('s1 initialize');
+	 var l = shapeHir.length;
+ }
+
+
+
+ function start_in(v,t) {
+    print('s1 start');
+ TimeSensor_tvcObject122.startTime=t;
+ }
+
+
+ function init() {
+	 if(!isInitialized) {
+		 print('init');
+		 if(shapeObject!=null) {
+			  print('init 1');
+			 if(shapeObject.collisionPathNode.choice.length>1) {
+				  print('init 2');
+				 isInitialized=true;
+				 if(shapeObject!=null) {
+					  print('init 3');
+      		 if(shapeObject.getType()=='tvrcPhotoSensor') {
+						  print('init 4');
+						 if(shapeObject.collisionPathNode!=null) {
+							  print('init 5');
+				  		 var l1 = shapeObject.collisionPathNode.choice.length;
+							 print('xax shapeObject.collisionPathNode.choice.length='+shapeObject.collisionPathNode.choice.length);
+							 print('xax shapeHir.length='+shapeHir.length);
+							 for (i=0; i <l1; i++) {
+								 shapeHir.add(shapeObject.collisionPathNode.choice[i]);
+    	    		 }
+               print('shapeHir.length='+shapeHir.length);
+						 }
+					 } 
+				 }
+			 }
+		 }
+	 }
+ }
+
+
+ function trigger(v,t) {
+	 init();
+	 if(!isInitialized) {
+return;
+	 }
+	 var m1=null;
+	 var t=0;
+   var l = shapeHir.length;
+	 //print('shapeHir.length='+shapeHir.length);
+	 var shapeNode=null;
+	 for (i=0; i <l; i++) {
+		 if(shapeHir[i].getType()=='Transform') {
+			 if(t == 0) {
+				 t=1;
+				 m1=shapeHir[i].getMatrix();
+			 } else {
+				 m1=shapeHir[i].getMatrix().multRight(m1);
+			 }
+		 } else if(shapeHir[i].getType()=='Box') {
+			 shapeNode=shapeHir[i];
+		 } 				
+	 }
+
+	 if(shapeNode!=null) {
+		 thisNode = Browser.computeCollision(shapeNode,m1,transformNode);
+	 } else {
+		 shapeObject.signal=false;
+		 thisNode =null;
+	 }
+	 if (thisNode) { 
+		 shapeObject.signal=true;
+		 path = thisNode.hitPath; // MFNode
+		 l = thisNode.hitPath.length;
+		 out = path[l-1]; 
+	 }
+	 else {
+		 shapeObject.signal=false;
+		 return;
+	 }
+ }"
+ }
+
+ ROUTE TimeSensor_tvcObject122.cycleTime TO s1.trigger
+}

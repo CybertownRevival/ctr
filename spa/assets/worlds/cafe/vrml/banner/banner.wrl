@@ -1,0 +1,104 @@
+#VRML V2.0 utf8
+
+#Polygon for banner images 
+
+Group{
+children[
+
+Transform {
+scale 2 2 2
+children [
+
+DEF WholePanel Transform {
+translation  -1.755 0 -.3377
+children [
+
+#begin banner panel
+Transform {
+children [
+DEF anch Anchor {
+url ""
+description ""
+parameter "target=new"
+children [
+Transform {
+translation 0 0 .3377
+children [
+Shape {
+geometry DEF panelGeom IndexedFaceSet {
+coord Coordinate {
+point [
+-2.34  -0.3 0.0,
+2.34  -0.3 0.0,
+2.34 0.3  0.0,
+-2.34  0.3  0.0,
+]
+}
+coordIndex [ 0, 1, 2, 3, 
+-1, 2, 1, 0, 3 
+]
+texCoordIndex [ 0, 1, 2, 3, 
+-1, 3, 0, 1, 2
+]
+texCoord TextureCoordinate {
+point [
+0.0 0.0,
+1.0 0.0,
+1.0 1.0,
+0.0 1.0,
+]
+}
+solid TRUE
+}
+appearance Appearance {
+        texture DEF tex ImageTexture {url ""}
+}
+}
+]
+}
+
+]
+}
+]
+}
+#end banner panel
+]
+}
+]
+}
+
+DEF banner_script Script{
+
+field MFString texUrl   ["../../../../ad/avstudio.jpg","../../../../ad/iwos.jpg"]
+field MFString anchUrl  ["https://www.secureorderprocess.com/blaxxun/default.asp?ref=ct","http://intelweboutfitter.com/content/cie/gb/preview_fr.htm"]
+field MFString descript ["blaxxun Avatar Studio","Intel Web Outfitters"]
+
+eventOut MFString tex_changed
+eventOut MFString anch_changed
+eventOut SFString des_changed
+url "vrmlscript:
+
+function initialize(){
+
+r = Math.random() ;
+
+if(r < .5){
+  tex_changed= new MFString(texUrl[0]);
+  anch_changed=new MFString(anchUrl[0]);
+  des_changed= new SFString(descript[0]);
+} 
+else{
+  tex_changed= new MFString(texUrl[1]);
+  anch_changed=new MFString(anchUrl[1]);
+  des_changed= new SFString(descript[1]);
+}
+
+}
+
+"}
+
+]}
+
+ROUTE banner_script.tex_changed  TO tex.set_url
+ROUTE banner_script.anch_changed TO anch.set_url
+ROUTE banner_script.des_changed  TO anch.set_description

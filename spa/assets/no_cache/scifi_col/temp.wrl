@@ -1,0 +1,6 @@
+#VRML V2.0 utf8
+
+Transform{translation 7.12621 1.93238 -0.325881 rotation 0 -1 0 1.70012
+children Inline{url"http://www.colonycity.com/events/morph2/vrml/gs/gs.wrl"}}
+
+

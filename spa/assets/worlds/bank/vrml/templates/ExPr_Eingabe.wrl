@@ -1,0 +1,501 @@
+#VRML V2.0 utf8
+
+EXTERNPROTO KeySensor[ 
+	eventIn SFBool eventsProcessed  
+	exposedField SFBool enabled  
+	eventOut SFInt32 keyPress  
+	eventOut SFInt32 keyRelease  
+	eventOut SFInt32 actionKeyPress  
+	eventOut SFInt32 actionKeyRelease  
+	eventOut SFBool shiftKey_changed  
+	eventOut SFBool controlKey_changed  
+	eventOut SFBool altKey_changed  
+	eventOut SFBool isActive 
+]["urn:inet:blaxxun.com:node:KeySensor",
+	"http://www.blaxxun.com/vrml/protos/nodes.wrl#KeySensor"]
+
+
+PROTO button [
+	eventOut SFBool toS_Button_out
+	eventIn SFBool toS_Button_in
+	exposedField MFString string []
+	exposedField SFVec3f objTrl 0 0 0
+	exposedField SFRotation	objRot 0 0 1 0
+	exposedField SFColor btnDiffColor .5 .5 .5
+	exposedField SFColor txtDiffColor 1 0 0
+	exposedField SFVec3f txtTrl 0 0 0.1
+	exposedField SFFloat btnTrp .5
+	field SFFloat textSize 1
+	field SFVec3f btnSize 1 1 0.05
+]
+{
+
+	DEF	trfAll Transform {
+		translation	IS objTrl
+		rotation IS	objRot
+		children [
+		 	
+			DEF	shpButton Shape	{
+				geometry Box {
+					size IS	btnSize
+				}
+				appearance Appearance {
+					material Material {
+						diffuseColor IS	btnDiffColor
+						transparency IS	btnTrp
+					}
+				}
+			}
+	
+
+			DEF	toS_Button TouchSensor {
+			}
+
+		
+			DEF	trfText Transform {
+				translation	IS txtTrl
+				children [
+					DEF	shpText Shape {
+		
+						geometry Text {
+							string IS string
+							fontStyle FontStyle	{
+								size IS	textSize
+								justify	"MIDDLE"
+							}
+						}
+						appearance Appearance {
+							material Material {
+								diffuseColor IS	txtDiffColor
+							}
+						}
+					}
+				]
+			}
+		]
+	}
+	
+	DEF	scButton Script	{
+
+		eventIn SFBool	toS_Button_in IS toS_Button_in
+		eventOut SFBool	toS_Button_out IS toS_Button_out
+		field SFNode proto USE scButton
+	
+		directOutput TRUE
+
+		url	"javascript:
+
+		function toS_Button_in (value, time) {
+			toS_Button_out = value;
+		}
+
+
+
+		"
+	}
+	ROUTE toS_Button.isActive TO  scButton.toS_Button_in
+}
+
+
+PROTO display [
+	eventIn MFString displayString 
+	eventIn MFString txtHeaderString_in	#Header veraendern...
+	
+	exposedField SFVec3f objTrl 0 0 0
+	exposedField SFRotation	objRot 0 0 1 0
+	exposedField SFColor displayDiffColor .5 .5 .5
+	exposedField SFColor txtDiffColor 1 1 1
+	exposedField SFColor txtHeaderDiffColor 1 1 1
+	exposedField SFVec3f txtTrl 0 0 0.1
+	exposedField SFVec3f txtHeaderTrl 0 0 0.1
+	
+	exposedField SFFloat displayTrp .5
+	field SFFloat textSize 1
+	field SFFloat txtHeaderSize 1
+	field SFVec3f displaySize 1 1 0.05
+	field MFString textJustify ["MIDDLE"]
+	field MFString txtHeaderJustify ["MIDDLE"]
+	field MFString displayTxtHeader ["displayTxtHeader"]
+]
+{
+	DEF	trfAll Transform {
+		translation	IS objTrl
+		rotation IS	objRot
+		children [
+		 
+	
+			DEF	shpDisplay Shape	{
+				geometry Box {
+					size IS	displaySize
+				}
+				appearance Appearance {
+					material Material {
+						diffuseColor IS	displayDiffColor
+						transparency IS	displayTrp
+					}
+				}
+			}
+	
+ 		
+			DEF	trfText Transform {
+				translation	IS txtTrl
+				children [
+					DEF	shpText Shape {
+		
+						geometry Text {
+							string IS displayString
+							fontStyle FontStyle	{
+								size IS	textSize
+								justify	IS textJustify
+							}
+						}
+						appearance Appearance {
+							material Material {
+								diffuseColor IS	txtDiffColor
+							}
+						}
+					}
+				]
+			}
+
+			### Ueberschrift ###
+			DEF	trfTxtHeader Transform {
+				translation	IS txtHeaderTrl
+				children [
+					DEF	shpTxtHeader Shape {
+		
+						geometry Text {
+							string IS displayTxtHeader
+							fontStyle FontStyle	{
+								size IS	txtHeaderSize
+								justify	IS txtHeaderJustify
+							}
+						}
+						appearance Appearance {
+							material Material {
+								diffuseColor IS	txtHeaderDiffColor
+							}
+						}
+					}
+				]
+			}
+	
+	
+			DEF	scDisplay Script	{
+
+				field SFNode shpText USE shpText
+				eventIn MFString displayString_in IS displayString
+
+				field SFNode shpTxtHeader USE shpTxtHeader
+				eventIn MFString txtHeaderString_in IS txtHeaderString_in
+
+				directOutput TRUE
+
+
+				url	"javascript:
+		
+				function displayString_in  (value, time) {
+					//debug
+					//print ('ExPr_Eingabe.wrl; fct displayString_in: ' + value);
+					shpText.geometry.string = value;
+				}
+		
+				function txtHeaderString_in (value, time) {
+					//debug
+					//print ('ExPr_Eingabe.wrl; fct txtHeaderString_in: ' + value);
+					shpTxtHeader.geometry.string = value;
+				}
+				"
+			}
+		]
+	}
+}
+
+
+PROTO tvrcEingabe [
+	exposedField SFInt32 whichChoice -1
+	eventOut SFFloat step_out
+	eventIn	MFString displayTxtHeader_in		   #Titelzeile aendern...
+	eventIn SFBool btnClearPress_in
+	field SFFloat stepInit	0	#Startwert nur Null!!! (noch Baustelle)
+	exposedField SFVec3f trlAll 0 0 0
+	field MFString displayTxtHeader "txtHeader"
+	eventIn SFBool init_in
+]{
+
+
+
+
+	######
+	### Aufbau der Eingabe
+	######
+	DEF	trfAll Transform {
+		translation	IS trlAll
+		children [
+			DEF	swEingabe Switch {
+
+				whichChoice	IS whichChoice
+				choice [
+	
+					Transform {
+						children [
+							### KeySensor; loggt Tastatureingaben mit
+							DEF	kS KeySensor {
+								enabled	TRUE
+							}
+
+							### Enter
+							DEF	btnEnter button	{
+								objTrl 0.65 0 0
+								string "Enter"
+								txtDiffColor 0 1 0 
+								txtTrl 0 -0.05 0.05
+								btnTrp 0
+								textSize .3
+								btnSize	.7 .4 0.05
+							}	
+		
+							### Komma
+							DEF	btnKomma button	{
+								objTrl 0 0 0
+								string ","
+								txtDiffColor 1 1 1
+								txtTrl 0 -0.05 0.05
+								btnTrp 0
+								textSize .3
+								btnSize	.4 .4 0.05
+							}
+
+							### Clear
+							DEF	btnClear button	{
+								objTrl -0.65 0 0
+								string "Clear"
+								txtDiffColor 1 0 0
+								txtTrl 0 -0.05 0.05
+								btnTrp 0
+								textSize .3
+								btnSize	.7 .4 0.05
+							}
+
+							### Display
+							DEF	display display {
+								### Display
+								displaySize	2 .4 0.05
+								displayDiffColor 1 1 1
+								displayTrp 1
+								objTrl 0 .5 0
+
+								### Text
+								textSize .3
+								textJustify	["LEFT"]
+								txtDiffColor 1 1 0
+								txtTrl -.9 -.2 0.05
+								
+								### Ueberschrift
+								txtHeaderSize .15
+								txtHeaderJustify ["LEFT"]
+								displayTxtHeader IS	displayTxtHeader
+								txtHeaderTrl -.9 0.05 0.1
+								
+							}
+
+							### Rahmen
+							DEF	trfRahmen Transform	{
+								translation	0 .25 0
+								children [
+									DEF	shpRahmen Shape	{
+										geometry Box {
+											size 2.1 1 .02
+										}
+										appearance Appearance {
+											material Material {
+												diffuseColor 0 0 1
+												transparency .6
+											}
+										}
+									}
+								]
+							}
+
+							### Script
+							DEF	scMain Script	{
+
+								eventIn	MFString displayTxtHeader_in IS	displayTxtHeader_in	#Titelzeile aendern...
+								field SFNode display USE display
+
+								eventIn	SFBool btnEnterPress_in		#Signal Button 'Enter'
+								eventIn	SFBool btnKommaPress_in		#Signal Button 'Komma'
+								eventIn	SFBool btnClearPress_in	IS	btnClearPress_in #Signal Button 'Clear'
+								eventIn	SFInt32	keyPress_in			#Tastatureingabe verarbeiten
+
+								eventOut MFString display_out		#String zur Anzeige der Schrittweite
+								eventOut MFString displayInit_out	#String zur Init. Anzeige der Schrittweite
+								
+								eventOut SFFloat step_out IS	step_out #Schrittweite zur Weiterverarbeitung
+
+								field SFInt32 zifferTmp 0	#bekommt Eingabe als Zahl zugewiesen...
+
+								field SFNode kS USE	kS
+
+								field SFInt32 myCharCode 999
+	
+								field SFFloat stepTmp 0
+								field SFFloat stepNew 0
+
+								field SFBool flgKomma FALSE
+								field SFInt32 anzKommaStellen 0
+								field SFBool flgInit TRUE #Display Startanzeige (0) evtl. durch andere Ziffer ersetzen...
+								
+								field SFNode swEingabe USE swEingabe
+								
+								field SFFloat stepInit IS stepInit
+
+								eventIn	SFBool init_in IS init_in #Display initialisieren
+								
+								directOutput TRUE
+								
+
+								url	"javascript:
+								
+								function initialize () {
+		
+									display_out[0] = stepInit;
+									stepTmp = stepInit;
+									flgInit = true;
+								}
+	
+								
+								//Header veraendern...
+								function displayTxtHeader_in (value, time) {
+									
+									//print ('da war wat...' + value);
+									display.txtHeaderString_in = value;
+								}
+								
+								
+								function init_in (value, time) {
+								
+									if (value) {
+										
+										//debug
+										//print('fct: ExPr_Eingabe, init_in: ' + value);
+										
+										flgInit = true;
+										flgKomma = false;
+										stepTmp = stepInit;
+										display_out[0] = stepInit;
+									}
+								}
+								
+								
+								
+								//Achtung: Werte kommen in Dezimal rein, werden aber in Hex benoetigt...
+								function keyPress_in (value, time) {
+		
+									myCharCode = 999;
+
+									if (value == 48) myCharCode = '30';		//0
+									if (value == 49) myCharCode = '31';
+									if (value == 50) myCharCode = '32';
+									if (value == 51) myCharCode = '33';
+									if (value == 52) myCharCode = '34';
+									if (value == 53) myCharCode = '35';		//5
+									if (value == 54) myCharCode = '36';
+									if (value == 55) myCharCode = '37';
+									if (value == 56) myCharCode = '38';
+									if (value == 57) myCharCode = '39';
+		
+		
+									//wenn Eingabe im gueltigen Bereich liegt
+									if (myCharCode != 999) {
+			
+										zifferTmp = parseInt(unescape('%' + myCharCode));
+		
+										//wenn kein Komma gesetzt...
+										if (flgKomma == false) {
+												stepTmp = stepTmp * 10 + zifferTmp;
+										}
+			
+										//wenn Komma gesetzt...
+										else {
+											++anzKommaStellen;
+											stepTmp = stepTmp + Math.pow(10, -anzKommaStellen)* zifferTmp;
+										}
+			
+										//DisplayString zusammenbasteln
+										if (flgInit == true) {
+											display_out[0] = unescape('%' + myCharCode);
+											flgInit = false;
+										}
+										//neue Eingaben anhaengen
+										else {
+											display_out[0] = display_out[0] + unescape('%' + myCharCode);
+										}
+									}
+									else {
+										//print ('Fehler: kein gueltiges Zeichen eingegeben...');
+									}
+								}
+
+
+								function btnClearPress_in (value, time) {
+									if (value) {
+										flgKomma = false;
+										anzKommaStellen = 0;
+										stepTmp = stepInit;
+										display_out[0] = '0';
+										flgInit = true;
+									}
+								}
+
+
+								function btnEnterPress_in (value, time) {
+									if (value) {
+										if (flgInit == true) {
+											//print ('keine Veraenderung...');
+										}
+										else {
+											step_out = stepTmp;
+											flgInit = true;
+											//print('Neue Schrittweite: ' + parseFloat(stepTmp));
+										}
+										
+										swEingabe.whichChoice = -1;
+									}
+								}
+
+
+								function btnKommaPress_in (value, time) {
+									if (value) {
+										if (flgKomma == false) {
+											flgKomma = true;
+											anzKommaStellen = 0;
+											display_out[0] = display_out[0] + '.';
+											flgInit = false;
+										}
+									}
+								}
+
+								"
+
+
+							}
+						]
+			
+						ROUTE kS.keyRelease	TO scMain.keyPress_in
+						ROUTE btnEnter.toS_Button_out TO scMain.btnEnterPress_in
+						ROUTE btnClear.toS_Button_out TO scMain.btnClearPress_in
+						ROUTE btnKomma.toS_Button_out TO scMain.btnKommaPress_in
+						ROUTE scMain.display_out TO	display.displayString
+					}
+				]
+			}
+		]
+	}
+}
+
+#----------------------------------------------------------------------------
+
+tvrcEingabe	{
+	whichChoice	0
+}

@@ -1,0 +1,203 @@
+#VRML V2.0 utf8
+#in basis.wrl added sensors
+
+EXTERNPROTO tvrcFlag [
+	exposedField SFVec3f objPosTrl
+	exposedField SFRotation objPosRot
+	exposedField SFVec3f objScale
+	exposedField MFString textHeader
+	exposedField MFString textBody
+	eventOut SFTime touchTime
+	eventIn SFBool show_in
+	eventIn SFTime havTouch
+	exposedField SFVec3f position
+	exposedField SFColor headerColor
+	exposedField SFColor linesColor
+	exposedField SFColor borderColor
+	exposedField SFBool show
+	exposedField SFBool useOwnView
+	exposedField MFString textLines
+	exposedField SFBool flgTouchBtEnabled
+]
+"templates/tvrcFlag.wrl#tvrcFlag"
+
+EXTERNPROTO tvrcSelectBox [
+	exposedField SFVec3f objScale
+	exposedField SFInt32 whichChoice
+	exposedField SFVec3f objPosTrl
+	exposedField SFTime cycleInterval
+	exposedField SFColor boxColor
+	exposedField SFBool blink_init
+	exposedField SFBool status_init
+	eventIn SFBool blink_in
+	eventIn SFBool boxVisibility_in
+	exposedField SFRotation objPosRot
+	eventOut SFTime touchTime
+	exposedField SFBool flgTouchBtEnabled
+]
+"templates/tvrcSelectBox.wrl#tvrcSelectBox"
+
+
+EXTERNPROTO tvrcPhotoSensor [
+	eventIn SFBool signal_in
+	exposedField SFFloat flgEinzelsensor
+	exposedField SFColor lblTextColor
+	exposedField SFColor lblColor
+	exposedField SFFloat lblTextTransparency
+	exposedField SFString lblTextSF
+	exposedField SFFloat lblTransparency
+	exposedField SFInt32 objDetail
+	exposedField SFVec3f objPosTrl
+	exposedField SFRotation objPosRot
+	exposedField SFVec3f objScale
+	exposedField SFInt32 objVisible
+	exposedField SFColor signalLowCol
+	exposedField SFColor signalHighCol
+	exposedField SFFloat objAbstand
+	exposedField SFInt32 swRay
+	exposedField SFVec3f raySize
+	eventOut SFTime touchTime
+	exposedField SFBool flgTouchBtEnabled
+]
+"templates/tvrcPhotoSensor.wrl#tvrcPhotoSensor"
+
+EXTERNPROTO tvrcDrive [
+	exposedField SFVec3f objPosTrl
+	exposedField SFRotation objPosRot
+	exposedField SFVec3f objScale
+	exposedField SFColor diffColorLow
+	exposedField SFColor diffColorHigh
+	eventOut SFTime touchTime
+	exposedField SFBool status_in
+	exposedField SFBool flgTouchBtEnabled
+]
+"templates/tvrcDrive.wrl#tvrcDrive"
+
+
+EXTERNPROTO tvrcMover [
+	exposedField SFVec3f scale
+	exposedField SFVec3f translation
+	exposedField SFInt32 whichPlane
+	exposedField MFNode nodes
+	eventOut SFRotation rotAll_out
+	eventOut SFVec3f translation_out
+	eventOut SFVec3f scale_out
+	field SFVec3f planeSize
+	exposedField SFFloat planeTrp
+	exposedField SFInt32 chModeSensX
+	exposedField SFInt32 chModeSensY
+	exposedField SFInt32 chModeSensZ
+	field SFColor matToS_SwitchScale
+]
+"templates/tvrcMover.wrl#tvrcMover"
+
+
+EXTERNPROTO tvrcTouchSensor [
+	exposedField SFBool schaltFunktion
+	exposedField SFColor diffuseColor
+	exposedField SFVec3f objPosTrl
+	exposedField SFRotation objPosRot
+	exposedField SFFloat transparency
+	exposedField SFString nameSensorSF
+	field SFFloat radiusSensor
+	exposedField SFVec3f objScale
+	eventIn SFBool initStatus
+	eventOut SFTime startTime
+	eventOut SFInt32 swOnOff
+	eventOut SFBool testOutput
+	eventOut SFBool timerEnabled
+	eventOut SFBool SFBool_takt_out
+	field SFBool SFBool_schalt_low
+	field SFBool SFBool_schalt_high
+	eventOut SFBool SFBool_schalt_out
+	field SFInt32 SFInt32_schalt_low
+	field SFInt32 SFInt32_schalt_high
+	eventOut SFInt32 SFInt32_schalt_out
+	field SFBool SFBool_low
+	field SFBool SFBool_high
+	eventOut SFBool SFBool_out
+	eventOut SFTime touchTime
+	exposedField SFBool test_out
+	exposedField SFBool flgTouchBtEnabled
+	exposedField SFFloat textSize
+	field SFFloat textSizeFld
+]
+"templates/tvrcTouchSensor.wrl#tvrcTouchSensor"
+
+
+
+EXTERNPROTO tvrcTrafficLight [
+	exposedField SFVec3f objPosTrl
+	exposedField SFRotation objPosRot
+	exposedField SFRotation neigung
+	exposedField SFString name
+	exposedField SFVec3f objScale
+	exposedField SFVec3f pos_box
+	field SFVec3f size
+	field MFFloat range
+	eventIn MFInt32 abmessungen_in
+	eventIn MFInt32 skalierung_in
+	eventIn MFInt32 position_in
+	eventIn SFFloat drehung_in
+	eventIn SFFloat neigung_in
+	eventIn SFString name_in
+	eventIn MFInt32 range_in
+	eventOut SFString name_out
+	eventOut SFInt32 schalter_index_out
+	eventIn SFBool schalter_animation_in
+	eventIn SFInt32 status_in
+	eventIn SFColor farbe_ampel_in
+	eventIn MFColor farben_lichter_in
+	eventIn SFFloat transparenz_ampel_in
+	eventIn SFTime touch_objekt_in
+	exposedField SFColor farbe_ampel
+	exposedField SFFloat transparenz_ampel
+	exposedField MFColor farben_lichter
+	exposedField SFVec3f abmessungen
+	exposedField SFInt32 status
+	eventOut SFTime touchTime
+	exposedField SFBool flgTouchBtEnabled
+]
+"templates/tvrcTrafficLight.wrl#tvrcTrafficLight"
+
+
+EXTERNPROTO tvrcDisplay [
+	exposedField SFVec3f objPosTrl
+	exposedField SFRotation objPosRot
+	exposedField SFRotation neigung
+	exposedField SFString name
+	exposedField SFVec3f objScale
+	exposedField SFVec3f pos_box
+	field SFVec3f size
+	field MFFloat range
+	eventIn MFInt32 abmessungen_in
+	eventIn MFInt32 skalierung_in
+	eventIn MFInt32 position_in
+	eventIn SFFloat drehung_in
+	eventIn SFFloat neigung_in
+	eventIn SFString name_in
+	eventIn MFInt32 range_in
+	eventOut SFString name_out
+	eventOut SFInt32 schalter_index_out
+	eventIn SFBool schalter_animation_in
+	exposedField SFVec3f translation
+	exposedField SFColor farbe_text_in
+	exposedField SFColor farbe_tafel_in
+	exposedField SFFloat transparenz_text_in
+	exposedField SFFloat transparenz_tafel_in
+	exposedField SFVec3f abmessungen
+	eventIn MFString font_family_in
+	eventIn SFString font_style_in
+	eventIn SFString text_in
+	eventIn SFString file_textur_in
+	exposedField SFString myText1Z
+	exposedField MFString familie
+	exposedField SFString stil
+	exposedField SFString textur_file
+	eventOut SFTime touchTime
+	exposedField SFBool flgTouchBtEnabled
+]
+"templates/tvrcDisplay.wrl#tvrcDisplay"
+
+
+

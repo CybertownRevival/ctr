@@ -1,0 +1,526 @@
+#VRML V2.0 utf8
+WorldInfo {
+ title "Mr. Bunny"
+ info [
+  "This VRML World was created with Spazz3D, a VRML 97 authoring tool"
+  "www.spazz3d.com"
+  "This VRML World was created with Spazz3D a VRML 2 authoring tool"
+  "www.spazz3d.com"
+  "crafted by Mr. Phillip"
+  "mr_phillip@msn.com"
+  "http//www.geocities.com/BourbonStreet/1855"
+ ]
+}
+DEF dad_GROUND Transform {
+ children [
+  DEF GROUND Group {
+   children [
+    DEF dad_Group3 Transform {
+     translation -0.01351 -3.33765 0.0
+     children [
+      DEF Group3 Group {
+       children [
+        DEF dad_Bunny Transform {
+         translation 0.15695 1.91351 0.0
+         scale 0.27594 0.27594 0.27594
+         children [
+          DEF Bunny Group {
+           children [
+            DEF dad_Body Transform {
+             translation -0.06695 0.114 -0.03612
+             scale 1.5 0.8 0.75
+             children [
+              DEF Body Shape {
+               appearance Appearance {
+                material DEF Shinny_White_mat Material {
+                 ambientIntensity 0.200
+                 shininess 0.200
+                 diffuseColor 1.0 1.0 1.0
+                 emissiveColor 0.0 0.0 0.0
+                 specularColor 1.0 1.0 1.0
+                }
+               }
+               geometry Sphere {
+                radius 1.000
+               }
+              }
+             ]
+            }
+            DEF dad_Tail Transform {
+             translation 1.40905 0.12 -0.03612
+             scale 0.3 0.3 0.3
+             children [
+              DEF Tail Shape {
+               appearance Appearance {
+                material USE Shinny_White_mat
+               }
+               geometry Sphere {
+                radius 1.000
+               }
+              }
+             ]
+            }
+            DEF dad_nose Transform {
+             translation -1.8245 0.69199 -0.0882
+             scale 0.08 0.08 0.08
+             children [
+              DEF nose Shape {
+               appearance Appearance {
+                material DEF Red_mat Material {
+                 ambientIntensity 0.200
+                 shininess 0.200
+                 diffuseColor 1.0 0.0 0.0
+                 emissiveColor 0.0 0.0 0.0
+                 specularColor 0.0 0.0 0.0
+                }
+               }
+               geometry Sphere {
+                radius 1.000
+               }
+              }
+             ]
+            }
+            DEF dad_legs_front Transform {
+             translation -0.98895 0.068 0.03988
+             children [
+              DEF legs_front Group {
+               children [
+                DEF dad_Paw_front_l Transform {
+                 translation -0.246 -0.318 0.41167
+                 rotation -0.033 0.0 -0.999 0.696
+                 scale 0.3 1.0 0.3
+                 children [
+                  DEF Paw_front_l Shape {
+                   appearance Appearance {
+                    material USE Shinny_White_mat
+                   }
+                   geometry Sphere {
+                    radius 1.000
+                   }
+                  }
+                 ]
+                }
+                DEF dad_Paw_front_r Transform {
+                 translation -0.209 -0.28 -0.521
+                 rotation -0.033 0.0 -0.999 0.696
+                 scale 0.3 1.0 0.3
+                 children [
+                  DEF Paw_front_r Shape {
+                   appearance Appearance {
+                    material USE Shinny_White_mat
+                   }
+                   geometry Sphere {
+                    radius 1.000
+                   }
+                  }
+                 ]
+                }
+               ]
+              }
+             ]
+            }
+            DEF dad_Ears Transform {
+             translation -0.48165 1.26703 0.11223
+             children [
+              DEF Ears Group {
+               children [
+                DEF dad_Ear_l Transform {
+                 translation 0.0167 0.79938 0.19427
+                 scale 0.2 1.0 0.3
+                 children [
+                  DEF Ear_l Shape {
+                   appearance Appearance {
+                    material USE Shinny_White_mat
+                   }
+                   geometry Sphere {
+                    radius 1.000
+                   }
+                  }
+                 ]
+                }
+                DEF dad_Ear_r Transform {
+                 translation 0.0167 0.85297 -0.50235
+                 scale 0.2 1.0 0.3
+                 children [
+                  DEF Ear_r Shape {
+                   appearance Appearance {
+                    material USE Shinny_White_mat
+                   }
+                   geometry Sphere {
+                    radius 1.000
+                   }
+                  }
+                 ]
+                }
+               ]
+              }
+             ]
+            }
+            DEF dad_Head Transform {
+             translation -0.94695 0.84 0.07288
+             children [
+              DEF Head Group {
+               children [
+                DEF dad_Head0 Transform {
+                 translation 0.093 -0.218 -0.109
+                 scale 1.0 0.75 0.75
+                 children [
+                  DEF Head0 Shape {
+                   appearance Appearance {
+                    material USE Shinny_White_mat
+                   }
+                   geometry Sphere {
+                    radius 1.000
+                   }
+                  }
+                 ]
+                }
+                DEF dad_Eye_l Transform {
+                 translation -0.25876 0.27175 0.36936
+                 scale 0.15 0.15 0.15
+                 children [
+                  DEF Eye_l Shape {
+                   appearance Appearance {
+                    material DEF Shinny_Blue_mat Material {
+                     ambientIntensity 0.200
+                     shininess 0.200
+                     diffuseColor 0.0 0.0 1.0
+                     emissiveColor 0.0 0.0 0.0
+                     specularColor 0.0 0.0 1.0
+                    }
+                   }
+                   geometry Sphere {
+                    radius 1.000
+                   }
+                  }
+                 ]
+                }
+                DEF dad_Eye_r Transform {
+                 translation -0.22516 0.26019 -0.58128
+                 scale 0.15 0.15 0.15
+                 children [
+                  DEF Eye_r Shape {
+                   appearance Appearance {
+                    material USE Shinny_Blue_mat
+                   }
+                   geometry Sphere {
+                    radius 1.000
+                   }
+                  }
+                 ]
+                }
+               ]
+              }
+             ]
+            }
+            DEF dad_legs_rear Transform {
+             translation 0.81305 0.158 0.12788
+             children [
+              DEF legs_rear Group {
+               children [
+                DEF dad_leg_r Transform {
+                 translation -0.05 0.024 -0.003
+                 children [
+                  DEF leg_r Group {
+                   children [
+                    DEF dad_Paw_back_r Transform {
+                     translation -0.763 -0.954 -0.866
+                     rotation 0.007 -0.044 -0.999 1.693
+                     scale 0.35 0.8 0.3
+                     children [
+                      DEF Paw_back_r Shape {
+                       appearance Appearance {
+                        material USE Shinny_White_mat
+                       }
+                       geometry Sphere {
+                        radius 1.000
+                       }
+                      }
+                     ]
+                    }
+                    DEF dad_Leg_up_r Transform {
+                     translation -0.324 -0.4238 -0.824
+                     rotation -0.011 -0.004 -1.0 2.333
+                     scale 1.0 0.7 0.3
+                     children [
+                      DEF Leg_up_r Shape {
+                       appearance Appearance {
+                        material USE Shinny_White_mat
+                       }
+                       geometry Sphere {
+                        radius 1.000
+                       }
+                      }
+                     ]
+                    }
+                   ]
+                  }
+                 ]
+                }
+                DEF dad_leg_l Transform {
+                 translation -0.092 0.044 -0.039
+                 children [
+                  DEF leg_l Group {
+                   children [
+                    DEF dad_Paw_back_l Transform {
+                     translation -0.689 -0.965 0.529
+                     rotation -0.22 -0.214 -0.952 1.616
+                     scale 0.35 0.8 0.3
+                     children [
+                      DEF Paw_back_l Shape {
+                       appearance Appearance {
+                        material USE Shinny_White_mat
+                       }
+                       geometry Sphere {
+                        radius 1.000
+                       }
+                      }
+                     ]
+                    }
+                    DEF dad_Leg_up_l Transform {
+                     translation -0.282 -0.445 0.534
+                     rotation -0.011 -0.004 -1.0 2.333
+                     scale 1.0 0.7 0.3
+                     children [
+                      DEF Leg_up_l Shape {
+                       appearance Appearance {
+                        material USE Shinny_White_mat
+                       }
+                       geometry Sphere {
+                        radius 1.000
+                       }
+                      }
+                     ]
+                    }
+                   ]
+                  }
+                 ]
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+        DEF Sensor1 TouchSensor {
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
+DEF timer TimeSensor {
+ cycleInterval 60.000
+ loop FALSE
+ startTime  -1
+}
+DEF Animation1 TimeSensor {
+ cycleInterval 10.000
+ loop TRUE
+ startTime  -1
+}
+DEF Animation1_pos0 PositionInterpolator {
+ key [
+  0.0 0.125 0.25 0.375 0.5
+  0.625 0.75 0.875 1.0 
+ ]
+ keyValue [
+  -0.98895 0.068 0.03988
+  -0.625 -0.297 0.038
+  -0.98895 0.068 0.03988
+  -0.625 -0.297 0.038
+  -0.98895 0.068 0.03988
+  -0.625 -0.297 0.038
+  -0.98895 0.068 0.03988
+  -0.625 -0.297 0.038
+  -0.98895 0.068 0.03988
+ ]
+}
+DEF Animation1_rot0 OrientationInterpolator {
+ key [
+  0.0 0.125 0.25 0.375 0.5
+  0.625 0.75 0.875 1.0 
+ ]
+ keyValue [
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 1.134
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 1.134
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 1.134
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 1.134
+  0.0 0.0 1.0 0.0
+ ]
+}
+DEF Animation1_rot1 OrientationInterpolator {
+ key [
+  0.0 0.125 0.25 0.375 0.5
+  0.625 0.75 0.875 1.0 
+ ]
+ keyValue [
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 1.134
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 1.134
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 1.134
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 1.134
+  0.0 0.0 1.0 0.0
+ ]
+}
+DEF Animation1_rot2 OrientationInterpolator {
+ key [
+  0.0 0.125 0.25 0.375 0.5
+  0.625 0.75 0.875 1.0 
+ ]
+ keyValue [
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 -1.134
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 -1.134
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 -1.134
+  0.0 0.0 1.0 0.0
+  0.0 0.0 1.0 -1.134
+  0.0 0.0 1.0 0.0
+ ]
+}
+DEF Animation1_pos3 PositionInterpolator {
+ key [
+  0.0 0.125 0.25 0.375 0.5
+  0.625 0.75 0.875 1.0 
+ ]
+ keyValue [
+  0.0416 1.87624 0.0
+  -1.051 2.412 -0.936
+  -0.12799 1.92094 -2.115
+  0.978 2.341 -1.079
+  0.19002 1.91995 -0.044
+  -1.196 2.40011 1.017
+  -0.10699 1.93192 2.017
+  1.01 2.402 1.024
+  0.05402 1.90342 0.0
+ ]
+}
+DEF Animation1_rot3 OrientationInterpolator {
+ key [
+  0.0 0.125 0.25 0.375 0.5
+  0.625 0.75 0.875 1.0 
+ ]
+ keyValue [
+  -0.0 1.0 0.0 0.0
+  0.0 1.0 0.0 -1.571
+  0.0 1.0 0.0 -3.142
+  0.0 1.0 0.0 1.571
+  -0.0 1.0 0.0 0.0
+  -0.0 1.0 0.001 1.571
+  0.0 1.0 0.0 3.142
+  0.0 1.0 0.0 -1.571
+  -0.0 1.0 0.0 0.0
+ ]
+}
+DEF Script_timer Script {
+  field    SFNode      tproc     USE  timer
+ field    SFBool state     FALSE
+ field    SFTime pause     0
+ eventIn  SFTime startAt0
+ eventOut SFTime triggerStart
+ eventOut SFTime triggerStop
+ eventOut SFTime triggerStartInt
+ eventIn  SFBool activated
+ eventIn  SFTime cycle
+ directOutput TRUE
+ url "vrmlscript:
+ function activated( active, curtime ) {
+  if( active ) {
+   triggerStart = curtime;
+   state = TRUE;
+  }
+  else {
+   triggerStop = curtime;
+   state = FALSE;
+  }
+ }
+ function cycle( curtime ) {
+  triggerStartInt = curtime;
+ }
+ function startAt0( stime ) {
+  state = TRUE;
+  tproc.set_startTime = stime;
+  tproc.enabled = TRUE;
+  pause = 0;
+ }
+ "
+}
+DEF Script_Animation1 Script {
+  field    SFNode      tproc     USE  Animation1
+ field    SFBool state     FALSE
+ field    SFTime pause     0
+ eventIn  SFTime startAt0
+ eventIn  SFTime stop
+ eventOut SFTime triggerStart
+ eventOut SFTime triggerStop
+ eventOut SFTime triggerStartInt
+ eventIn  SFBool activated
+ eventIn  SFTime cycle
+ directOutput TRUE
+ url "vrmlscript:
+ function activated( active, curtime ) {
+  if( active ) {
+   triggerStart = curtime;
+   state = TRUE;
+  }
+  else {
+   triggerStop = curtime;
+   state = FALSE;
+  }
+ }
+ function cycle( curtime ) {
+  triggerStartInt = curtime;
+ }
+ function startAt0( stime ) {
+  state = TRUE;
+  tproc.set_startTime = stime;
+  tproc.enabled = TRUE;
+  pause = 0;
+ }
+ function stop( stime ) {
+  if( state )
+  {
+   state = FALSE;
+   pause = stime - tproc.startTime_changed;
+   tproc.enabled = FALSE;
+  }
+ }
+ "
+}
+ROUTE Sensor1.touchTime TO Script_Animation1.startAt0
+ROUTE timer.isActive TO Script_timer.activated
+
+ROUTE timer.cycleTime TO Script_timer.cycle
+
+ROUTE Script_timer.triggerStop TO Script_Animation1.stop
+ROUTE Animation1.fraction_changed TO Animation1_pos0.set_fraction
+ROUTE Animation1_pos0.value_changed TO dad_legs_front.set_translation
+ROUTE Animation1.fraction_changed TO Animation1_rot0.set_fraction
+ROUTE Animation1_rot0.value_changed TO dad_legs_front.set_rotation
+ROUTE Animation1.fraction_changed TO Animation1_rot1.set_fraction
+ROUTE Animation1_rot1.value_changed TO dad_legs_rear.set_rotation
+ROUTE Animation1.fraction_changed TO Animation1_rot2.set_fraction
+ROUTE Animation1_rot2.value_changed TO dad_Ears.set_rotation
+ROUTE Animation1.fraction_changed TO Animation1_pos3.set_fraction
+ROUTE Animation1_pos3.value_changed TO dad_Bunny.set_translation
+ROUTE Animation1.fraction_changed TO Animation1_rot3.set_fraction
+ROUTE Animation1_rot3.value_changed TO dad_Bunny.set_rotation
+ROUTE Animation1.isActive TO Script_Animation1.activated
+
+ROUTE Animation1.cycleTime TO Script_Animation1.cycle
+
+ROUTE Script_Animation1.triggerStart TO Script_timer.startAt0

@@ -1,0 +1,3759 @@
+#VRML V2.0 utf8
+WorldInfo {
+ title "gameShowWithControlBooth"
+ info [
+  "This VRML World was created with Spazz3D, a VRML 97 authoring tool"
+  "www.spazz3d.com"		"By Epistomolus"
+ ]
+}
+
+NavigationInfo { type ["WALK" "ANY"] }
+
+PROTO BlaxxunZone [ 
+ eventIn         MFNode   addEvents 
+ eventIn         MFNode   removeEvents 
+ exposedField    MFNode   events [] 
+ exposedField    MFNode   avatars [] 
+ eventOut        MFNode   events_added 
+ eventOut        MFNode   events_removed 
+
+ eventIn         SFInt32  set_myAvatarGesture 
+ eventIn         SFInt32  myAvatarGestureFromServer 
+ eventOut        SFInt32  myAvatarGesture_changed 
+ eventOut        SFInt32  myAvatarGestureToServer 
+  
+
+ exposedField    MFString sendToChat "" 
+ exposedField    SFFloat  beamToDistance 3 
+ exposedField    MFString groupChatName "" 
+ exposedField    MFString groupChat "" 
+ exposedField    SFString myAvatarName "" 
+ exposedField    MFNode   avatarLOD [] 
+ exposedField    MFFloat  avatarRange [] 
+ eventIn         MFNode   addAvatars 
+ eventOut  MFNode   avatars_added 
+ eventIn   MFNode   removeAvatars 
+ eventOut  MFNode   avatars_removed 
+] 
+
+{ 
+ DEF S Script { 
+  eventOut MFNode avatars_added IS avatars_added 
+  eventOut MFNode avatars_removed IS avatars_removed 
+  eventIn SFInt32  set_myAvatarGesture IS set_myAvatarGesture 
+  eventIn SFInt32  myAvatarGestureFromServer IS myAvatarGestureFromServer 
+  eventOut SFInt32  myAvatarGesture_changed IS myAvatarGesture_changed 
+  eventOut SFInt32  myAvatarGestureToServer IS myAvatarGestureToServer 
+  eventIn MFNode addAvatars IS addAvatars 
+  eventIn MFNode removeAvatars IS removeAvatars 
+
+  url "vrmlscript: 
+  function addAvatars(value, time) { avatars_added = value; } 
+  function removeAvatars(value, time) { avatars_removed = value; } 
+  function set_myAvatarGesture(value, time) { myAvatarGestureToServer = value; } 
+  function myAvatarGestureFromServer(value, time) { myAvatarGesture_changed = value; } 
+
+  " 
+ } 
+} 
+
+PROTO SharedEvent [ 
+ exposedField SFString    name "event" 
+ exposedField SFString    type      "SFTime" 
+ exposedField SFString    toNickname     "" 
+ exposedField SFString    toGroup   "" 
+ eventIn   SFBool    boolFromServer 
+ eventIn   SFColor   colorFromServer 
+ eventIn   SFFloat   floatFromServer 
+ eventIn   SFInt32   int32FromServer 
+ eventIn   SFRotation     rotationFromServer 
+ eventIn   SFString  stringFromServer 
+ eventIn   SFTime    timeFromServer 
+ eventIn   SFVec2f   vec2fFromServer 
+ eventIn   SFVec3f   vec3fFromServer 
+ eventOut  SFBool    boolToServer 
+ eventOut  SFColor   colorToServer 
+ eventOut  SFFloat   floatToServer 
+ eventOut  SFInt32   int32ToServer 
+ eventOut  SFRotation     rotationToServer 
+ eventOut  SFString  stringToServer 
+ eventOut  SFTime    timeToServer 
+ eventOut  SFVec2f   vec2fToServer 
+ eventOut  SFVec3f   vec3fToServer 
+ eventIn   SFBool    set_bool 
+ eventIn   SFColor   set_color 
+ eventIn   SFFloat   set_float 
+ eventIn   SFInt32   set_int32 
+ eventIn   SFRotation     set_rotation 
+ eventIn   SFString  set_string 
+ eventIn   SFTime    set_time 
+ eventIn   SFVec2f   set_vec2f 
+ eventIn   SFVec3f   set_vec3f 
+ eventOut  SFBool    bool_changed 
+ eventOut  SFColor   color_changed 
+ eventOut  SFFloat   float_changed 
+ eventOut  SFInt32   int32_changed 
+ eventOut  SFRotation     rotation_changed 
+ eventOut  SFString  string_changed 
+ eventOut  SFTime    time_changed 
+ eventOut  SFVec2f   vec2f_changed 
+ eventOut  SFVec3f   vec3f_changed 
+ eventOut  SFBool    initialized 
+] 
+{ 
+ Script { 
+  eventIn   SFBool    boolFromServer IS   boolFromServer 
+  eventIn   SFColor   colorFromServer     IS   colorFromServer 
+  eventIn   SFFloat   floatFromServer     IS   floatFromServer 
+  eventIn   SFInt32   int32FromServer     IS   int32FromServer 
+  eventIn   SFRotation     rotationFromServer  IS   rotationFromServer 
+  eventIn   SFString  stringFromServer    IS   stringFromServer 
+  eventIn   SFTime    timeFromServer      IS   timeFromServer 
+  eventIn   SFVec2f   vec2fFromServer     IS   vec2fFromServer 
+  eventIn   SFVec3f   vec3fFromServer     IS   vec3fFromServer 
+  eventOut  SFBool    boolToServer   IS   boolToServer 
+  eventOut  SFColor   colorToServer  IS   colorToServer 
+  eventOut  SFFloat   floatToServer  IS   floatToServer 
+  eventOut  SFInt32   int32ToServer  IS   int32ToServer 
+  eventOut  SFRotation     rotationToServer    IS   rotationToServer 
+  eventOut  SFString  stringToServer      IS   stringToServer 
+  eventOut  SFTime    timeToServer   IS   timeToServer 
+  eventOut  SFVec2f   vec2fToServer  IS   vec2fToServer 
+  eventOut  SFVec3f   vec3fToServer  IS   vec3fToServer 
+  eventIn   SFBool    set_bool  IS   set_bool 
+  eventIn   SFColor   set_color      IS   set_color 
+  eventIn   SFFloat   set_float      IS   set_float 
+  eventIn   SFInt32   set_int32      IS   set_int32 
+  eventIn   SFRotation     set_rotation   IS   set_rotation 
+  eventIn   SFString  set_string     IS   set_string 
+  eventIn   SFTime    set_time  IS   set_time 
+  eventIn   SFVec2f   set_vec2f      IS   set_vec2f 
+  eventIn   SFVec3f   set_vec3f      IS   set_vec3f 
+  eventOut  SFBool    bool_changed   IS   bool_changed 
+  eventOut  SFColor   color_changed  IS   color_changed 
+  eventOut  SFFloat   float_changed  IS   float_changed 
+  eventOut  SFInt32   int32_changed  IS   int32_changed 
+  eventOut  SFRotation     rotation_changed    IS   rotation_changed 
+  eventOut  SFString  string_changed      IS   string_changed 
+  eventOut  SFTime    time_changed   IS   time_changed 
+  eventOut  SFVec2f   vec2f_changed  IS   vec2f_changed 
+  eventOut  SFVec3f   vec3f_changed  IS   vec3f_changed 
+  eventOut  SFBool    initialized    IS   initialized 
+  url "vrmlscript: 
+  function initialize( time ) { initialized = TRUE;} 
+  function boolFromServer (value, time) { bool_changed = value; } 
+  function colorFromServer (value, time) { color_changed = value; } 
+  function floatFromServer (value, time) { float_changed = value; } 
+  function int32FromServer (value, time) { int32_changed = value; } 
+  function rotationFromServer (value, time) {rotation_changed = value; } 
+  function stringFromServer (value, time) { string_changed = value; } 
+  function timeFromServer (value, time) { time_changed = time; } 
+  function vec2fFromServer (value, time) { vec2f_changed = value; } 
+  function vec3fFromServer (value, time) { vec3f_changed = value; } 
+  function set_bool (value, time) { boolToServer = value; } 
+  function set_color (value, time) { colorToServer = value; } 
+  function set_float (value, time) { floatToServer = value; } 
+  function set_int32 (value, time) { int32ToServer = value; } 
+  function set_rotation (value, time) { rotationToServer = value; } 
+  function set_string (value, time) { stringToServer = value; } 
+  function set_time (value, time) { timeToServer = value; } 
+  function set_vec2f (value, time) { vec2fToServer = value; } 
+  function set_vec3f (value, time) { vec3fToServer = value; } 
+  " 
+ } 
+} 
+
+
+DEF dad_GROUND Transform {
+ children [
+  DEF GROUND Group {
+   children [
+    DEF hide_switch_LODA1 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODA1 Transform {
+       translation -3.0 2.25 0.0
+       children [
+        DEF LODA1 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group6 Transform {
+           children [
+            DEF Group6 Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group7 Transform {
+           children [
+            DEF Group7 Group {
+             children [
+              DEF dad_BoxA1 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxA1 Shape {
+                 appearance Appearance {
+                  material DEF White_mat Material {
+                   ambientIntensity 0.200
+                   shininess 0.200
+                   diffuseColor 1.0 1.0 1.0
+                   emissiveColor 0.0 0.0 0.0
+                   specularColor 0.0 0.0 0.0
+                  }
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODA2 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODA2 Transform {
+       translation -1.0 2.25 0.0
+       children [
+        DEF LODA2 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group8 Transform {
+           children [
+            DEF Group8 Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group9 Transform {
+           children [
+            DEF Group9 Group {
+             children [
+              DEF dad_BoxA2 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxA2 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODA3 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODA3 Transform {
+       translation 1.0 2.25 0.0
+       children [
+        DEF LODA3 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group10 Transform {
+           children [
+            DEF Group10 Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group11 Transform {
+           children [
+            DEF Group11 Group {
+             children [
+              DEF dad_BoxA3 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxA3 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODA4 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODA4 Transform {
+       translation 3.0 2.25 0.0
+       children [
+        DEF LODA4 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group12 Transform {
+           children [
+            DEF Group12 Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group13 Transform {
+           children [
+            DEF Group13 Group {
+             children [
+              DEF dad_BoxA4 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxA4 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODB1 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODB1 Transform {
+       translation -3.0 0.75 0.0
+       children [
+        DEF LODB1 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group14 Transform {
+           children [
+            DEF Group14 Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group15 Transform {
+           children [
+            DEF Group15 Group {
+             children [
+              DEF dad_BoxB1 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxB1 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODB2 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODB2 Transform {
+       translation -1.0 0.75 0.0
+       children [
+        DEF LODB2 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16 Transform {
+           children [
+            DEF Group16 Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17 Transform {
+           children [
+            DEF Group17 Group {
+             children [
+              DEF dad_BoxB2 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxB2 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODB3 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODB3 Transform {
+       translation 1.0 0.75 0.0
+       children [
+        DEF LODB3 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16m Transform {
+           children [
+            DEF Group16m Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17p Transform {
+           children [
+            DEF Group17p Group {
+             children [
+              DEF dad_BoxB3 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxB3 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODB4 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODB4 Transform {
+       translation 3.0 0.75 0.0
+       children [
+        DEF LODB4 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16r Transform {
+           children [
+            DEF Group16r Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17c Transform {
+           children [
+            DEF Group17c Group {
+             children [
+              DEF dad_BoxB4 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxB4 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODC1 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODC1 Transform {
+       translation -3.0 -0.75 0.0
+       children [
+        DEF LODC1 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16l Transform {
+           children [
+            DEF Group16l Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17pz Transform {
+           children [
+            DEF Group17pz Group {
+             children [
+              DEF dad_BoxC1 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxC1 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODC2 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODC2 Transform {
+       translation -1.0 -0.75 0.0
+       children [
+        DEF LODC2 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16w Transform {
+           children [
+            DEF Group16w Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17l Transform {
+           children [
+            DEF Group17l Group {
+             children [
+              DEF dad_BoxC2 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxC2 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODC3 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODC3 Transform {
+       translation 1.0 -0.75 0.0
+       children [
+        DEF LODC3 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16z Transform {
+           children [
+            DEF Group16z Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17pf Transform {
+           children [
+            DEF Group17pf Group {
+             children [
+              DEF dad_BoxC3 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxC3 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODC4 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODC4 Transform {
+       translation 3.0 -0.75 0.0
+       children [
+        DEF LODC4 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16h Transform {
+           children [
+            DEF Group16h Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17r Transform {
+           children [
+            DEF Group17r Group {
+             children [
+              DEF dad_BoxC4 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxC4 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODD1 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODD1 Transform {
+       translation -3.0 -2.25 0.0
+       children [
+        DEF LODD1 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16s Transform {
+           children [
+            DEF Group16s Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17z Transform {
+           children [
+            DEF Group17z Group {
+             children [
+              DEF dad_BoxD1 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxD1 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODD2 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODD2 Transform {
+       translation -1.0 -2.25 0.0
+       children [
+        DEF LODD2 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16v Transform {
+           children [
+            DEF Group16v Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17b Transform {
+           children [
+            DEF Group17b Group {
+             children [
+              DEF dad_BoxD2 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxD2 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODD3 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODD3 Transform {
+       translation 1.0 -2.25 0.0
+       children [
+        DEF LODD3 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group16rx Transform {
+           children [
+            DEF Group16rx Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group17t Transform {
+           children [
+            DEF Group17t Group {
+             children [
+              DEF dad_BoxD3 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxD3 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF hide_switch_LODD4 Switch {
+     whichChoice 0
+     choice [
+      DEF dad_LODD4 Transform {
+       translation 3.0 -2.25 0.0
+       children [
+        DEF LODD4 Switch {
+         whichChoice 1
+         choice [
+          DEF dad_Group4 Transform {
+           children [
+            DEF Group4 Group {
+             children [
+             ]
+            }
+           ]
+          }
+          DEF dad_Group5 Transform {
+           children [
+            DEF Group5 Group {
+             children [
+              DEF dad_BoxD4 Transform {
+               translation -0.013 0.016 0.0
+               children [
+                DEF BoxD4 Shape {
+                 appearance Appearance {
+                  material USE White_mat
+                 }
+                 geometry Box {
+                  size 2.0 1.5 0.25
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF dad_gameBoard Transform {
+     children [
+      DEF gameBoard Group {
+       children [
+        DEF dad_Screen Transform {
+         children [
+          DEF Screen Shape {
+           appearance Appearance {
+            texture DEF gamePicture ImageTexture {
+             url "game1.jpg"
+            }
+            material USE White_mat
+           }
+           geometry Box {
+            size 8.0 6.0 0.1
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF dad_floor Transform {
+     translation 0.0 -4.0 12.0
+     children [
+      DEF floor Shape {
+       appearance Appearance {
+        material DEF Green_mat Material {
+         ambientIntensity 0.200
+         shininess 0.200
+         diffuseColor 0.0 0.5 0.0
+        }
+       }
+       geometry Box {
+        size 16.0 0.25 25.0
+       }
+      }
+     ]
+    }
+    DEF dad_frontWall Transform {
+     translation 0.0 0.0 -0.25
+     children [
+      DEF frontWall Shape {
+       appearance Appearance {
+        material USE Green_mat
+       }
+       geometry Box {
+        size 16.0 8.0 0.5
+       }
+      }
+     ]
+    }
+    DEF dad_Reference1 Transform {
+     translation 0.0 0.0 24.25
+     children [
+      USE frontWall
+     ]
+    }
+    DEF dad_Reference2 Transform {
+     translation 7.75 0.0 12.0
+     rotation 0.0 1.0 0.0 1.571
+     scale 1.55 1.0 1.0
+     children [
+      USE frontWall
+     ]
+    }
+    DEF dad_Reference3 Transform {
+     translation -7.75 0.0 12.0
+     rotation 0.0 1.0 0.0 1.571
+     scale 1.55 1.0 1.0
+     children [
+      USE frontWall
+     ]
+    }
+    DEF dad_Viewpoint1 Transform {
+     translation 0.0 0.0 17.682
+     children [
+      DEF Viewpoint1 Viewpoint {
+       description "Viewpoint1"
+       jump TRUE
+       fieldOfView 0.79
+       position   0.0  0.0  0.0
+      }
+     ]
+    }
+    DEF dad_blueBleachers Transform {
+     translation 4.0 -0.25 13.0
+     children [
+      DEF blueBleachers Group {
+       children [
+        DEF dad_blueBleacher Transform {
+         translation 0.0 -2.75 4.75
+         children [
+          DEF blueBleacher Shape {
+           appearance Appearance {
+            material DEF Blue_mat Material {
+             ambientIntensity 0.200
+             shininess 0.200
+             diffuseColor 0.0 0.0 1.0
+            }
+           }
+           geometry Box {
+            size 8.0 2.0 3.0
+           }
+          }
+         ]
+        }
+        DEF dad_blueBleacher5 Transform {
+         translation 0.0 -3.25 -1.25
+         scale 1.0 0.5 1.0
+         children [
+          USE blueBleacher
+         ]
+        }
+        DEF dad_blueBleacher6 Transform {
+         translation 0.0 -3.0 1.75
+         scale 1.0 0.75 1.0
+         children [
+          USE blueBleacher
+         ]
+        }
+        DEF dad_blueBleacher7 Transform {
+         translation 0.0 -3.5 -4.25
+         scale 1.0 0.25 1.0
+         children [
+          USE blueBleacher
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF dad_redBleachers Transform {
+     translation -4.0 -0.25 13.0
+     children [
+      DEF redBleachers Group {
+       children [
+        DEF dad_redBleacher Transform {
+         translation 0.0 -2.75 4.75
+         children [
+          DEF redBleacher Shape {
+           appearance Appearance {
+            material DEF Red_mat Material {
+             ambientIntensity 0.200
+             shininess 0.200
+             diffuseColor 1.0 0.0 0.0
+            }
+           }
+           geometry Box {
+            size 8.0 2.0 3.0
+           }
+          }
+         ]
+        }
+        DEF dad_blueBleacher3 Transform {
+         translation 0.0 -3.25 -1.25
+         scale 1.0 0.5 1.0
+         children [
+          USE redBleacher
+         ]
+        }
+        DEF dad_blueBleacher2 Transform {
+         translation 0.0 -3.0 1.75
+         scale 1.0 0.75 1.0
+         children [
+          USE redBleacher
+         ]
+        }
+        DEF dad_blueBleacher4 Transform {
+         translation 0.0 -3.5 -4.25
+         scale 1.0 0.25 1.0
+         children [
+          USE redBleacher
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF overallLight DirectionalLight {
+     ambientIntensity 0.000
+     intensity 0.500
+     direction 0.0 -1.0 0.0
+     color 1.0 1.0 1.0
+     on TRUE
+    }
+    DEF dad_leftSpot Transform {
+     translation -5.0 -3.0 4.5
+     rotation 0.602 -0.586 0.542 0.64
+     children [
+      DEF leftSpot SpotLight {
+       ambientIntensity 0.000
+       intensity 1.000
+       radius 100.000
+       cutOffAngle 1.047
+       beamWidth 1.571
+       attenuation 1.0 0.0 0.0
+       color 1.0 1.0 1.0
+       on TRUE
+      }
+     ]
+    }
+    DEF dad_rightSpot Transform {
+     translation 5.0 -3.0 4.5
+     rotation 0.911 0.358 0.204 0.541
+     children [
+      DEF rightSpot SpotLight {
+       ambientIntensity 0.000
+       intensity 1.000
+       radius 100.000
+       cutOffAngle 1.047
+       beamWidth 1.571
+       attenuation 1.0 0.0 0.0
+       color 1.0 1.0 1.0
+       on TRUE
+      }
+     ]
+    }
+    DEF dad_Reference4 Transform {
+     translation 0.0 4.0 12.0
+     children [
+      USE floor
+     ]
+    }
+    DEF dad_dividingWall Transform {
+     translation 0.0 -4.0 12.285
+     rotation 0.577 0.577 -0.578 2.094
+     children [
+      DEF dividingWall Shape {
+       appearance Appearance {
+        material USE Green_mat
+       }
+       geometry Extrusion {
+        creaseAngle 1.571
+        crossSection [
+          -4.0 -2.0
+          -4.0 0.0
+          5.0 0.0
+          5.0 -1.0
+          -4.0 -2.0
+        ]
+        spine [
+          0.0 0.0 0.0
+          0.0 0.25 0.0
+        ]
+       }
+      }
+     ]
+    }
+    DEF dad_controlBoothPlatform Transform {
+     translation 0.0 -1.5 21.75
+     children [
+      DEF controlBoothPlatform Shape {
+       appearance Appearance {
+        material USE Green_mat
+       }
+       geometry Box {
+        size 16.0 5.0 5.0
+       }
+      }
+     ]
+    }
+    DEF dad_Control_Booth Transform {
+     translation 0.0 3.4587 23.1029
+     rotation 1.0 0.0 0.0 -0.349
+     children [
+      DEF Control_Booth Viewpoint {
+       description "Control_Booth"
+       jump TRUE
+       fieldOfView 0.79
+       position   0.0  0.0  0.0
+      }
+     ]
+    }
+    DEF dad_controlBoothWindow Transform {
+     translation 0.024 2.525 19.5
+     children [
+      DEF controlBoothWindow Shape {
+       appearance Appearance {
+        material DEF Cyan_mat Material {
+         ambientIntensity 0.200
+         shininess 0.200
+         transparency 0.900
+         diffuseColor 0.0 1.0 1.0
+        }
+       }
+       geometry Box {
+        size 16.0 3.0 0.25
+       }
+      }
+     ]
+    }
+    DEF dad_controlPanel Transform {
+     translation 1.5 1.0 20.0
+     rotation 0.577 -0.578 0.577 2.094
+     children [
+      DEF controlPanel Shape {
+       appearance Appearance {
+        material USE Green_mat
+       }
+       geometry Extrusion {
+        creaseAngle 0.524
+        crossSection [
+          0.6 -0.4
+          0.0 -0.8
+          0.0 0.0
+          0.6 0.0
+          0.6 -0.4
+        ]
+        spine [
+          0.0 0.0 0.0
+          0.0 3.0 0.0
+        ]
+       }
+      }
+     ]
+    }
+    DEF dad_controlBoardGroup Transform {
+     translation 0.0 1.5 20.375
+     rotation -1.0 0.0 0.0 1.047
+     children [
+      Transform {
+      translation 0 .2 .1
+      children [
+        Shape {
+          appearance Appearance { material USE White_mat }
+          geometry Text {
+            string "1   2   3   4"
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .125
+            }
+          }
+        }
+       ]
+      }
+      Transform {
+      translation -.35 .1 .1
+      children [
+        Shape {
+          appearance Appearance { material USE White_mat }
+          geometry Text {
+            string ["A" "B" "C" "D"]
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .11
+            }
+          }
+        }
+       ]
+      }
+
+      Transform {
+      translation .65 -.1 .1
+      children [
+        Shape {
+          appearance Appearance { material USE White_mat }
+          geometry Text {
+            string ["Reset Board"]
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .11
+            }
+          }
+        }
+       ]
+      }
+
+      Transform {
+      translation -1.125 0 .1
+      children [
+        Shape {
+          appearance Appearance { material USE White_mat }
+          geometry Text {
+            string ["Wrong" "Answer"]
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .11
+            }
+          }
+        }
+       ]
+      }
+
+      Transform {
+      translation -.65 0 .1
+      children [
+        Shape {
+          appearance Appearance { material USE White_mat }
+          geometry Text {
+            string ["Right" "Answer"]
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .11
+            }
+          }
+        }
+       ]
+      }
+      Transform {
+      translation 1 0 .1
+       children [
+        Shape {
+          appearance Appearance { material USE White_mat }
+          geometry DEF gameNameText Text {
+            string ["1: Black Sun Club"]
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .11
+            }
+          }
+        }
+       ]
+      }
+
+
+      DEF controlBoardGroup Group {
+       children [
+        DEF dad_controlBoard Transform {
+         children [
+          DEF controlBoard Shape {
+           appearance Appearance {
+            material USE Green_mat
+           }
+           geometry Box {
+            size 3.0 0.5 0.1
+           }
+          }
+         ]
+        }
+        DEF dad_buttonGroupA1 Transform {
+         translation -0.225 0.125 0.0
+         children [
+          DEF buttonGroupA1 Group {
+           children [
+            DEF SensorA1 TouchSensor {
+            }
+            DEF dad_controlButtonA1 Transform {
+             translation 0.0 0.0 0.074
+             children [
+              DEF controlButtonA1 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupA2 Transform {
+         translation -0.075 0.125 0.074
+         children [
+          DEF buttonGroupA2 Group {
+           children [
+            DEF dad_controlButtonA2 Transform {
+             children [
+              DEF controlButtonA2 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorA2 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupA3 Transform {
+         translation 0.075 0.125 0.074
+         children [
+          DEF buttonGroupA3 Group {
+           children [
+            DEF dad_controlButtonA3 Transform {
+             children [
+              DEF controlButtonA3 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorA3 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupA4 Transform {
+         translation 0.225 0.125 0.074
+         children [
+          DEF buttonGroupA4 Group {
+           children [
+            DEF dad_controlButtonA4 Transform {
+             children [
+              DEF controlButtonA4 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorA4 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupB1 Transform {
+         translation -0.225 0.025 0.074
+         children [
+          DEF buttonGroupB1 Group {
+           children [
+            DEF dad_controlButtonB1 Transform {
+             children [
+              DEF controlButtonB1 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorB1 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupB2 Transform {
+         translation -0.075 0.025 0.074
+         children [
+          DEF buttonGroupB2 Group {
+           children [
+            DEF dad_controlButtonB2 Transform {
+             children [
+              DEF controlButtonB2 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorB2 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupB3 Transform {
+         translation 0.075 0.025 0.074
+         children [
+          DEF buttonGroupB3 Group {
+           children [
+            DEF dad_controlButtonB3 Transform {
+             children [
+              DEF controlButtonB3 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorB3 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupB4 Transform {
+         translation 0.225 0.025 0.074
+         children [
+          DEF buttonGroupB4 Group {
+           children [
+            DEF dad_controlButtonB4 Transform {
+             children [
+              DEF controlButtonB4 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorB4 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupC1 Transform {
+         translation -0.225 -0.076 0.074
+         children [
+          DEF buttonGroupC1 Group {
+           children [
+            DEF dad_controlButtonC1 Transform {
+             children [
+              DEF controlButtonC1 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorC1 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupC2 Transform {
+         translation -0.075 -0.076 0.074
+         children [
+          DEF buttonGroupC2 Group {
+           children [
+            DEF dad_controlButtonC2 Transform {
+             children [
+              DEF controlButtonC2 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorC2 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupC3 Transform {
+         translation 0.075 -0.076 0.074
+         children [
+          DEF buttonGroupC3 Group {
+           children [
+            DEF dad_controlButtonC3 Transform {
+             children [
+              DEF controlButtonC3 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorC3 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupC4 Transform {
+         translation 0.225 -0.076 0.074
+         children [
+          DEF buttonGroupC4 Group {
+           children [
+            DEF dad_controlButtonC4 Transform {
+             children [
+              DEF controlButtonC4 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorC4 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupD1 Transform {
+         translation -0.225 -0.175 0.074
+         children [
+          DEF buttonGroupD1 Group {
+           children [
+            DEF dad_controlButtonD1 Transform {
+             children [
+              DEF controlButtonD1 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorD1 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupD2 Transform {
+         translation -0.075 -0.175 0.074
+         children [
+          DEF buttonGroupD2 Group {
+           children [
+            DEF dad_controlButtonD2 Transform {
+             children [
+              DEF controlButtonD2 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorD2 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupD3 Transform {
+         translation 0.075 -0.175 0.074
+         children [
+          DEF buttonGroupD3 Group {
+           children [
+            DEF dad_controlButtonD3 Transform {
+             children [
+              DEF controlButtonD3 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorD3 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_buttonGroupD4 Transform {
+         translation 0.225 -0.175 0.074
+         children [
+          DEF buttonGroupD4 Group {
+           children [
+            DEF dad_controlButtonD4 Transform {
+             children [
+              DEF controlButtonD4 Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.145 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF SensorD4 TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF dad_winButtonGroup Transform {
+         translation -.65 -0.175 0.06
+         children [
+          DEF winButtonGroup Group {
+           children [
+            DEF dad_WinButton Transform {
+             children [
+              DEF WinButton Shape {
+               appearance Appearance {
+                material USE White_mat
+               }
+               geometry Box {
+                size 0.375 0.095 0.05
+               }
+              }
+             ]
+            }
+            DEF winButtonSensor TouchSensor {
+            }
+           ]
+          }
+         ]
+        }
+        DEF redScoreLabel Transform {
+         translation -1.2 0.3 .1
+         children [
+           DEF redScoreLabel Shape {
+             appearance Appearance { material USE Red_mat }
+             geometry Text {
+               string "Red Score:"
+               fontStyle FontStyle {
+                 style "BOLD"
+                 justify "MIDDLE"
+                 size .125
+               }
+             }
+           }
+         ]
+        }
+        DEF redScoreZeroButtonGroup Transform {
+         translation -.85 0.35 .1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreZeroButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "0"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreZeroSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreOneButtonGroup Transform {
+         translation -.775 0.35 .1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreOneButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "1"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreOneSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreTwoButtonGroup Transform {
+         translation -.7 0.35 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreTwoButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "2"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreTwoSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreThreeButtonGroup Transform {
+         translation -.625 0.35 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreThreeButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "3"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreThreeSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreFourButtonGroup Transform {
+         translation -.55 0.35 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreFourButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "4"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreFourSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreFiveButtonGroup Transform {
+         translation -.475 0.35 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreFiveButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "5"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreFiveSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreSixButtonGroup Transform {
+         translation -.85 .2 .1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreSixButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "6"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreSixSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreSevenButtonGroup Transform {
+         translation -.775 .2 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreSevenButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "7"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreSevenSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreEightButtonGroup Transform {
+         translation -.7 .2 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreEightButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "8"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreEightSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreNineButtonGroup Transform {
+         translation -.625 .2 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreNineButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "9"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF redScoreNineSensor TouchSensor { }
+         ]
+        }
+        DEF redScoreTenButtonGroup Transform {
+         translation -.5125 .2 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF redScoreTenButton Shape {
+                 appearance Appearance { material USE Red_mat }
+                 geometry Text {
+                   string "10"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .12 .1 .025
+             }
+           }
+          DEF redScoreTenSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreLabel Transform {
+         translation .675 0.3 .1
+         children [
+           DEF blueScoreLabel Shape {
+             appearance Appearance { material USE Blue_mat }
+             geometry Text {
+               string "Blue Score:"
+               fontStyle FontStyle {
+                 style "BOLD"
+                 justify "MIDDLE"
+                 size .125
+               }
+             }
+           }
+         ]
+        }
+        DEF blueScoreZeroButtonGroup Transform {
+         translation 1 0.35 .1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreZeroButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "0"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreZeroSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreOneButtonGroup Transform {
+         translation 1.075 0.35 .1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreOneButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "1"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreOneSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreTwoButtonGroup Transform {
+         translation 1.15 0.35 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreTwoButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "2"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreTwoSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreThreeButtonGroup Transform {
+         translation 1.225 0.35 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreThreeButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "3"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreThreeSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreFourButtonGroup Transform {
+         translation 1.3 0.35 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreFourButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "4"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreFourSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreFiveButtonGroup Transform {
+         translation 1.375 0.35 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreFiveButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "5"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreFiveSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreSixButtonGroup Transform {
+         translation 1 .2 .1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreSixButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "6"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreSixSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreSevenButtonGroup Transform {
+         translation 1.075 .2 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreSevenButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "7"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreSevenSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreEightButtonGroup Transform {
+         translation 1.15 .2 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreEightButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "8"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreEightSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreNineButtonGroup Transform {
+         translation 1.225 .2 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreNineButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "9"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .06 .1 .025
+             }
+           }
+          DEF blueScoreNineSensor TouchSensor { }
+         ]
+        }
+        DEF blueScoreTenButtonGroup Transform {
+         translation 1.3275 .2 0.1
+         children [
+           Transform {
+             translation 0 -.031 .02
+             children [
+               DEF blueScoreTenButton Shape {
+                 appearance Appearance { material USE Blue_mat }
+                 geometry Text {
+                   string "10"
+                   fontStyle FontStyle {
+                     style "BOLD"
+                     justify "MIDDLE"
+                     size .125
+                   }
+                 }
+               }
+             ]
+           }
+           Shape {
+             appearance Appearance {material USE White_mat }
+             geometry Box {
+	         size .12 .1 .025
+             }
+           }
+          DEF blueScoreTenSensor TouchSensor { }
+         ]
+        }
+
+        DEF dad_Applause Transform {
+         translation .65 -0.171 0.062
+         children [
+          DEF Applause Shape {
+           appearance Appearance {
+            material USE White_mat
+           }
+           geometry Box {
+            size 0.375 0.095 0.05
+           }
+          }
+          DEF applauseSensor TouchSensor { }
+          DEF resetSensor TouchSensor { }
+
+         ]
+        }
+        DEF gameOneButtonGroup Transform {
+         translation 1 -.1 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameOneButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "1"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance {
+            material DEF Black_mat Material {
+             diffuseColor 0.135 0.138 0.183
+             ambientIntensity 0.243
+             specularColor 0.362 0.369 0.49
+             shininess 0.07
+            }
+           }
+           geometry Box {
+            size .06 .1 .025
+           }
+          }
+          DEF gameOneSensor TouchSensor { }
+         ]
+        }
+        DEF gameTwoButtonGroup Transform {
+         translation 1.075 -.1 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameTwoButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "2"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance { material USE Black_mat }
+           geometry Box {
+            size .06 .1 .025
+           }
+          }
+          DEF gameTwoSensor TouchSensor { }
+         ]
+        }
+        DEF gameThreeButtonGroup Transform {
+         translation 1.15 -.1 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameThreeButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "3"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance { material USE Black_mat }
+           geometry Box {
+            size .06 .1 .025
+           }
+          }
+          DEF gameThreeSensor TouchSensor { }
+         ]
+        }
+        DEF gameFourButtonGroup Transform {
+         translation 1.225 -.1 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameFourButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "4"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance { material USE Black_mat }
+           geometry Box {
+            size .06 .1 .025
+           }
+          }
+          DEF gameFourSensor TouchSensor { }
+         ]
+        }
+        DEF gameFiveButtonGroup Transform {
+         translation 1.3 -.1 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameFiveButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "5"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance { material USE Black_mat }
+           geometry Box {
+            size .06 .1 .025
+           }
+          }
+          DEF gameFiveSensor TouchSensor { }
+         ]
+        }
+        DEF gameSixButtonGroup Transform {
+         translation 1 -.21 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameSixButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "6"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance {
+            material DEF Black_mat Material {
+             diffuseColor 0.135 0.138 0.183
+             ambientIntensity 0.243
+             specularColor 0.362 0.369 0.49
+             shininess 0.07
+            }
+           }
+           geometry Box {
+            size .06 .1 .025
+           }
+          }
+          DEF gameSixSensor TouchSensor { }
+         ]
+        }
+        DEF gameSevenButtonGroup Transform {
+         translation 1.075 -.21 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameSevenButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "7"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance {
+            material DEF Black_mat Material {
+             diffuseColor 0.135 0.138 0.183
+             ambientIntensity 0.243
+             specularColor 0.362 0.369 0.49
+             shininess 0.07
+            }
+           }
+           geometry Box {
+            size .06 .1 .025
+           }
+          }
+          DEF gameSevenSensor TouchSensor { }
+         ]
+        }
+        DEF gameEightButtonGroup Transform {
+         translation 1.15 -.21 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameEightButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "8"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance {
+            material DEF Black_mat Material {
+             diffuseColor 0.135 0.138 0.183
+             ambientIntensity 0.243
+             specularColor 0.362 0.369 0.49
+             shininess 0.07
+            }
+           }
+           geometry Box {
+            size .06 .1 .025
+           }
+          }
+          DEF gameEightSensor TouchSensor { }
+         ]
+        }
+        DEF gameNineButtonGroup Transform {
+         translation 1.225 -.21 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameNineButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "9"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance {
+            material DEF Black_mat Material {
+             diffuseColor 0.135 0.138 0.183
+             ambientIntensity 0.243
+             specularColor 0.362 0.369 0.49
+             shininess 0.07
+            }
+           }
+           geometry Box {
+            size .06 .1 .025
+           }
+          }
+          DEF gameNineSensor TouchSensor { }
+         ]
+        }
+        DEF gameTenButtonGroup Transform {
+         translation 1.325 -.21 .1
+         children [
+          Transform {
+           translation 0 -.04 .02
+           children[
+            DEF gameTenButton Shape {
+             appearance Appearance { material USE White_mat }
+             geometry Text {
+              string "10"
+              fontStyle FontStyle {
+               style "BOLD"
+               justify "MIDDLE"
+               size .125
+              }
+             }
+            }
+           ]
+          }
+          Shape {
+           appearance Appearance {
+            material DEF Black_mat Material {
+             diffuseColor 0.135 0.138 0.183
+             ambientIntensity 0.243
+             specularColor 0.362 0.369 0.49
+             shininess 0.07
+            }
+           }
+           geometry Box {
+            size .12 .1 .025
+           }
+          }
+          DEF gameTenSensor TouchSensor { }
+         ]
+        }
+
+
+        DEF dad_wrongAnswer Transform {
+         translation -1.125 -0.171 0.062
+         children [
+          DEF wrongAnswer Shape {
+           appearance Appearance {
+            material USE White_mat
+           }
+           geometry Box {
+            size 0.375 0.095 0.05
+           }
+          }
+          DEF wrongSensor TouchSensor {
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
+Transform {
+  translation  -6 3 1
+  children[
+    Shape {
+     appearance Appearance {  material USE Red_mat }
+      
+         geometry DEF redScoreTitleText Text {
+      	string ["Red Team"]
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .75
+            }
+        }
+    }
+  ]
+}
+Transform {
+  translation  -6 2.25 1
+  children[
+    Shape {
+     appearance Appearance {  material USE Red_mat }
+      
+         geometry DEF redScoreText Text {
+      	string ["0"]
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .75
+            }
+        }
+    }
+  ]
+}
+Transform {
+ translation  5.5 -2 1
+ children[
+  Anchor {
+   url "help.htm"
+   description "Link to help.htm"
+   parameter "target='_blank'"
+   children [
+    Shape {
+     appearance Appearance {  material Material{ diffuseColor 1 1 0 } }
+     geometry DEF blueScoreTitle Text {
+      string "Help"
+      fontStyle FontStyle {
+       style "BOLDITALIC"
+       justify "MIDDLE"
+       size 1
+      }
+     }
+    }	
+   ]
+  }
+ ]
+}
+
+Transform {
+  translation  6 3 1
+  children[
+    Shape {
+     appearance Appearance {  material USE Blue_mat }
+      
+         geometry DEF blueScoreTitle Text {
+      	string "Blue Team"
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .75
+            }
+        }
+    }
+ ]
+}
+Transform {
+  translation  6 2.25 1
+  children[
+    Shape {
+     appearance Appearance {  material USE Blue_mat }
+      
+         geometry DEF blueScoreText Text {
+      	string "0"
+            fontStyle FontStyle {
+              style "BOLD"
+              justify "MIDDLE"
+              size .75
+            }
+        }
+    }
+ ]
+}
+Transform {
+ translation -3 3 .5
+ children [
+   Shape {
+     appearance Appearance { material USE White_mat }
+     geometry Text {
+       string "1"
+       fontStyle FontStyle {
+         style "BOLD"
+         justify "MIDDLE"
+         size 1
+       }
+     }
+   }
+ ]
+}
+Transform {
+ translation -1 3 .5
+ children [
+   Shape {
+     appearance Appearance { material USE White_mat }
+     geometry Text {
+       string "2"
+       fontStyle DEF BoardStyle FontStyle {
+         style "BOLD"
+         justify "MIDDLE"
+         size 1
+       }
+     }
+   }
+ ]
+}
+Transform {
+ translation 1 3 .5
+ children [
+   Shape {
+     appearance Appearance { material USE White_mat }
+     geometry Text {
+       string "3"
+       fontStyle USE BoardStyle
+     }
+   }
+ ]
+}
+Transform {
+ translation 3 3 .5
+ children [
+   Shape {
+     appearance Appearance { material USE White_mat }
+     geometry Text {
+       string "4"
+       fontStyle FontStyle {
+         style "BOLD"
+         justify "MIDDLE"
+         size 1
+       }
+     }
+   }
+ ]
+}
+Transform {
+ translation -4.5 2 .5
+ children [
+   Shape {
+     appearance Appearance { material USE White_mat }
+     geometry Text {
+       string "A"
+       fontStyle FontStyle {
+         style "BOLD"
+         justify "MIDDLE"
+         size 1
+       }
+     }
+   }
+ ]
+}
+Transform {
+ translation -4.5 .375 .5
+ children [
+   Shape {
+     appearance Appearance { material USE White_mat }
+     geometry Text {
+       string "B"
+       fontStyle FontStyle {
+         style "BOLD"
+         justify "MIDDLE"
+         size 1
+       }
+     }
+   }
+ ]
+}
+Transform {
+ translation -4.5 -1 .5
+ children [
+   Shape {
+     appearance Appearance { material USE White_mat }
+     geometry Text {
+       string "C"
+       fontStyle FontStyle {
+         style "BOLD"
+         justify "MIDDLE"
+         size 1
+       }
+     }
+   }
+ ]
+}
+Transform {
+ translation -4.5 -2.5 .5
+ children [
+   Shape {
+     appearance Appearance { material USE White_mat }
+     geometry Text {
+       string "D"
+       fontStyle FontStyle {
+         style "BOLD"
+         justify "MIDDLE"
+         size 1
+       }
+     }
+   }
+ ]
+}
+
+Shape 
+{
+   appearance Appearance {
+      texture DEF rightSound MovieTexture {
+      	loop FALSE
+      	speed 1
+      	startTime 0
+      	stopTime 0  
+      	url "right.mid"
+      }
+   }
+   geometry Box {
+      size .001 .001 .001
+   }
+}
+Shape 
+{
+   appearance Appearance {
+      texture DEF applauseSound MovieTexture {
+      	loop FALSE
+      	speed 1
+      	startTime 0
+      	stopTime 0  
+      	url "applause.mid"
+      }
+   }
+   geometry Box {
+      size .001 .001 .001
+   }
+}
+
+Shape 
+{
+   appearance Appearance {
+      texture DEF wrongSound MovieTexture {
+      	loop FALSE
+      	speed 1
+      	startTime 0
+      	stopTime 0  
+      	url "wrong.mid"
+      }
+   }
+   geometry Box {
+      size .001 .001 .001
+   }
+}
+
+
+DEF Script_LODA1 Script {
+  field    SFNode      swch     USE  LODA1
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODA2 Script {
+  field    SFNode      swch     USE  LODA2
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODA3 Script {
+  field    SFNode      swch     USE  LODA3
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODA4 Script {
+  field    SFNode      swch     USE  LODA4
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODB1 Script {
+  field    SFNode      swch     USE  LODB1
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODB2 Script {
+  field    SFNode      swch     USE  LODB2
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODB3 Script {
+  field    SFNode      swch     USE  LODB3
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODB4 Script {
+  field    SFNode      swch     USE  LODB4
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODC1 Script {
+  field    SFNode      swch     USE  LODC1
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODC2 Script {
+  field    SFNode      swch     USE  LODC2
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODC3 Script {
+  field    SFNode      swch     USE  LODC3
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODC4 Script {
+  field    SFNode      swch     USE  LODC4
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODD1 Script {
+  field    SFNode      swch     USE  LODD1
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODD2 Script {
+  field    SFNode      swch     USE  LODD2
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODD3 Script {
+  field    SFNode      swch     USE  LODD3
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+DEF Script_LODD4 Script {
+  field    SFNode      swch     USE  LODD4
+  eventIn  SFTime      set0
+  eventIn  SFTime      set1
+  directOutput         TRUE
+  url "vrmlscript:
+      function set0( ) {
+          swch.set_whichChoice = 0;
+      }
+      function set1( ) {
+          swch.set_whichChoice = 1;
+      }
+      "
+}
+
+DEF BlueScoreScript Script {
+  eventIn  SFTime      scoreZero
+  eventIn  SFTime      scoreOne
+  eventIn  SFTime      scoreTwo
+  eventIn  SFTime      scoreThree
+  eventIn  SFTime      scoreFour
+  eventIn  SFTime      scoreFive
+  eventIn  SFTime      scoreSix
+  eventIn  SFTime      scoreSeven
+  eventIn  SFTime      scoreEight
+  eventIn  SFTime      scoreNine
+  eventIn  SFTime      scoreTen
+  
+  eventOut MFString    blue_score
+  url "vrmlscript:
+      function scoreZero( ) {
+          blue_score = new MFString(0);
+      }
+      function scoreOne( ) {
+          blue_score = new MFString(1);
+      }
+      function scoreTwo( ) {
+          blue_score = new MFString(2);
+      }
+      function scoreThree( ) {
+          blue_score = new MFString(3);
+      }
+      function scoreFour( ) {
+          blue_score = new MFString(4);
+      }
+      function scoreFive( ) {
+          blue_score = new MFString(5);
+      }
+      function scoreSix( ) {
+          blue_score = new MFString(6);
+      }
+      function scoreSeven( ) {
+          blue_score = new MFString(7);
+      }
+      function scoreEight( ) {
+          blue_score = new MFString(8);
+      }
+      function scoreNine( ) {
+          blue_score = new MFString(9);
+      }
+      function scoreTen( ) {
+          blue_score = new MFString(10);
+      }
+
+      "
+}
+
+DEF RedScoreScript Script {
+ eventIn SFTime scoreZero
+ eventIn SFTime scoreOne
+ eventIn SFTime scoreTwo
+ eventIn SFTime scoreThree
+ eventIn SFTime scoreFour
+ eventIn SFTime scoreFive
+ eventIn SFTime scoreSix
+ eventIn SFTime scoreSeven
+ eventIn SFTime scoreEight
+ eventIn SFTime scoreNine
+ eventIn SFTime scoreTen
+ eventOut MFString red_score
+ url "vrmlscript:
+   function scoreZero( ) {
+     red_score = new MFString(0);
+     }
+   function scoreOne( ) {
+     red_score = new MFString(1);
+     }
+   function scoreTwo( ) {
+     red_score = new MFString(2);
+     }
+        function scoreThree( ) {
+          red_score = new MFString(3);
+      }
+      function scoreFour( ) {
+          red_score = new MFString(4);
+      }
+      function scoreFive( ) {
+          red_score = new MFString(5);
+      }
+      function scoreSix( ) {
+          red_score = new MFString(6);
+      }
+      function scoreSeven( ) {
+          red_score = new MFString(7);
+      }
+      function scoreEight( ) {
+          red_score = new MFString(8);
+      }
+      function scoreNine( ) {
+          red_score = new MFString(9);
+      }
+      function scoreTen( ) {
+          red_score = new MFString(10);
+      }
+ "
+}
+
+
+
+DEF SharedZone BlaxxunZone { 
+	events [ 
+		DEF sensorA1ShowEvent SharedEvent{
+			name "SSEA1"	
+         	} 
+		DEF sensorA2ShowEvent SharedEvent{
+			name "SSEA2"	
+         	} 
+		DEF sensorA3ShowEvent SharedEvent{
+			name "SSEA3"	
+         	} 
+		DEF sensorA4ShowEvent SharedEvent{
+			name "SSEA4"	
+         	} 
+		DEF sensorB1ShowEvent SharedEvent{
+			name "SSEB1"	
+         	} 
+		DEF sensorB2ShowEvent SharedEvent{
+			name "SSEB2"	
+         	} 
+		DEF sensorB3ShowEvent SharedEvent{
+			name "SSEB3"	
+         	} 
+		DEF sensorB4ShowEvent SharedEvent{
+			name "SSEB4"	
+         	} 
+		DEF sensorC1ShowEvent SharedEvent{
+			name "SSEC1"	
+         	} 
+		DEF sensorC2ShowEvent SharedEvent{
+			name "SSEC2"	
+         	} 
+		DEF sensorC3ShowEvent SharedEvent{
+			name "SSEC3"	
+         	} 
+		DEF sensorC4ShowEvent SharedEvent{
+			name "SSEC4"	
+         	} 
+		DEF sensorD1ShowEvent SharedEvent{
+			name "SSED1"	
+         	} 
+		DEF sensorD2ShowEvent SharedEvent{
+			name "SSED2"	
+         	} 
+		DEF sensorD3ShowEvent SharedEvent{
+			name "SSED3"	
+         	} 
+		DEF sensorD4ShowEvent SharedEvent{
+			name "SSED4"	
+         	} 
+		DEF sensorA1HideEvent SharedEvent{
+			name "SHEA1"	
+         	} 
+		DEF sensorA2HideEvent SharedEvent{
+			name "SHEA2"	
+         	} 
+		DEF sensorA3HideEvent SharedEvent{
+			name "SHEA3"	
+         	} 
+		DEF sensorA4HideEvent SharedEvent{
+			name "SHEA4"	
+         	} 
+		DEF sensorB1HideEvent SharedEvent{
+			name "SHEB1"	
+         	} 
+		DEF sensorB2HideEvent SharedEvent{
+			name "SHEB2"	
+         	} 
+		DEF sensorB3HideEvent SharedEvent{
+			name "SHEB3"	
+         	} 
+		DEF sensorB4HideEvent SharedEvent{
+			name "SHEB4"	
+         	} 
+		DEF sensorC1HideEvent SharedEvent{
+			name "SHEC1"	
+         	} 
+		DEF sensorC2HideEvent SharedEvent{
+			name "SHEC2"	
+         	} 
+		DEF sensorC3HideEvent SharedEvent{
+			name "SHEC3"	
+         	} 
+		DEF sensorC4HideEvent SharedEvent{
+			name "SHEC4"	
+         	} 
+		DEF sensorD1HideEvent SharedEvent{
+			name "SHED1"	
+         	} 
+		DEF sensorD2HideEvent SharedEvent{
+			name "SHED2"	
+         	} 
+		DEF sensorD3HideEvent SharedEvent{
+			name "SHED3"	
+         	} 
+		DEF sensorD4HideEvent SharedEvent{
+			name "SHED4"	
+         	} 
+		DEF resetSensorEvent SharedEvent{
+			name "RSE"	
+         	}
+            DEF redScoreZeroEvent SharedEvent {
+                  name "rs0"
+            }
+            DEF redScoreOneEvent SharedEvent {
+                  name "rs1"
+            }
+            DEF redScoreTwoEvent SharedEvent {
+                  name "rs2"
+            }
+            DEF redScoreThreeEvent SharedEvent {
+                  name "rs3"
+            }
+            DEF redScoreFourEvent SharedEvent {
+                  name "rs4"
+            }
+            DEF redScoreFiveEvent SharedEvent {
+                  name "rs5"
+            }
+            DEF redScoreSixEvent SharedEvent {
+                  name "rs6"
+            }
+            DEF redScoreSevenEvent SharedEvent {
+                  name "rs7"
+            }
+            DEF redScoreEightEvent SharedEvent {
+                  name "rs8"
+            }
+            DEF redScoreNineEvent SharedEvent {
+                  name "rs9"
+            }
+            DEF redScoreTenEvent SharedEvent {
+                  name "rs10"
+            }
+            DEF blueScoreZeroEvent SharedEvent {
+                  name "bs0"
+            }
+            DEF blueScoreOneEvent SharedEvent {
+                  name "bs1"
+            }
+            DEF blueScoreTwoEvent SharedEvent {
+                  name "bs2"
+            }
+            DEF blueScoreThreeEvent SharedEvent {
+                  name "bs3"
+            }
+            DEF blueScoreFourEvent SharedEvent {
+                  name "bs4"
+            }
+            DEF blueScoreFiveEvent SharedEvent {
+                  name "bs5"
+            }
+            DEF blueScoreSixEvent SharedEvent {
+                  name "bs6"
+            }
+            DEF blueScoreSevenEvent SharedEvent {
+                  name "bs7"
+            }
+            DEF blueScoreEightEvent SharedEvent {
+                  name "bs8"
+            }
+            DEF blueScoreNineEvent SharedEvent {
+                  name "bs9"
+            }
+            DEF blueScoreTenEvent SharedEvent {
+                  name "bs10"
+            }
+            DEF gameOneEvent SharedEvent {
+                  name "game1"
+            }
+            DEF gameTwoEvent SharedEvent {
+                  name "game2"
+            }
+            DEF gameThreeEvent SharedEvent {
+                  name "game3"
+            }
+            DEF gameFourEvent SharedEvent {
+                  name "game4"
+            }
+            DEF gameFiveEvent SharedEvent {
+                  name "game5"
+            }
+            DEF gameSixEvent SharedEvent {
+                  name "game6"
+            }
+            DEF gameSevenEvent SharedEvent {
+                  name "game7"
+            }
+            DEF gameEightEvent SharedEvent {
+                  name "game8"
+            }
+            DEF gameNineEvent SharedEvent {
+                  name "game9"
+            }
+            DEF gameTenEvent SharedEvent {
+                  name "game10"
+            }
+            DEF applauseSoundEvent SharedEvent {
+                  name "ASSE"
+            }
+            DEF wrongAnswerSoundEvent SharedEvent {
+                  name "WASE"
+            }
+            DEF rightAnswerSoundEvent SharedEvent {
+                  name "RASE"
+            }
+] 
+} 
+DEF GameSelectionScript Script {
+  eventIn  SFTime       selectGame1
+  eventIn  SFTime       selectGame2
+  eventIn  SFTime       selectGame3
+  eventIn  SFTime       selectGame4
+  eventIn  SFTime       selectGame5
+  eventIn  SFTime       selectGame6
+  eventIn  SFTime       selectGame7
+  eventIn  SFTime       selectGame8
+  eventIn  SFTime       selectGame9
+  eventIn  SFTime       selectGame10
+  eventOut MFString     selectedGameText
+  eventOut MFString     selectedGameImage
+  url "vrmlscript:
+      function selectGame1( ) {
+            selectedGameText = new MFString('1: Black Sun Club');
+            selectedGameImage = new MFString('game1.jpg');
+      }
+      function selectGame2( ) {
+            selectedGameText = new MFString('2: Water Park');
+            selectedGameImage = new MFString('game2.jpg');
+      }
+      function selectGame3( ) {
+            selectedGameText = new MFString('3: City Hall');
+            selectedGameImage = new MFString('game3.jpg');
+      }
+      function selectGame4( ) {
+            selectedGameText = new MFString('4: Virtual Worlds');
+            selectedGameImage = new MFString('game4.jpg');
+      }
+      function selectGame5( ) {
+            selectedGameText = new MFString('5: Inner Realms');
+            selectedGameImage = new MFString('game5.jpg');
+      }
+      function selectGame6( ) {
+            selectedGameText = new MFString('6: Jail');
+            selectedGameImage = new MFString('game6.jpg');
+      }
+      function selectGame7( ) {
+            selectedGameText = new MFString('7: Employment');
+            selectedGameImage = new MFString('game7.jpg');
+      }
+      function selectGame8( ) {
+            selectedGameText = new MFString('8: SciFi Plaza');
+            selectedGameImage = new MFString('game8.jpg');
+      }
+      function selectGame9( ) {
+            selectedGameText = new MFString('9: Mall');
+            selectedGameImage = new MFString('game9.jpg');
+      }
+      function selectGame10( ) {
+            selectedGameText = new MFString('10: Sunset Beach');
+            selectedGameImage = new MFString('game10.jpg');
+      }
+  "
+}
+
+ROUTE resetSensor.touchTime TO sensorA1ShowEvent.set_time
+ROUTE sensorA1ShowEvent.time_changed TO Script_LODA1.set1
+ROUTE resetSensor.touchTime TO sensorA2ShowEvent.set_time
+ROUTE sensorA2ShowEvent.time_changed TO Script_LODA2.set1
+ROUTE resetSensor.touchTime TO sensorA3ShowEvent.set_time
+ROUTE sensorA3ShowEvent.time_changed TO Script_LODA3.set1
+ROUTE resetSensor.touchTime TO sensorA4ShowEvent.set_time
+ROUTE sensorA4ShowEvent.time_changed TO Script_LODA4.set1
+ROUTE resetSensor.touchTime TO sensorB1ShowEvent.set_time
+ROUTE sensorB1ShowEvent.time_changed TO Script_LODB1.set1
+ROUTE resetSensor.touchTime TO sensorB2ShowEvent.set_time
+ROUTE sensorB2ShowEvent.time_changed TO Script_LODB2.set1
+ROUTE resetSensor.touchTime TO sensorB3ShowEvent.set_time
+ROUTE sensorB3ShowEvent.time_changed TO Script_LODB3.set1
+ROUTE resetSensor.touchTime TO sensorB4ShowEvent.set_time
+ROUTE sensorB4ShowEvent.time_changed TO Script_LODB4.set1
+ROUTE resetSensor.touchTime TO sensorC1ShowEvent.set_time
+ROUTE sensorC1ShowEvent.time_changed TO Script_LODC1.set1
+ROUTE resetSensor.touchTime TO sensorC2ShowEvent.set_time
+ROUTE sensorC2ShowEvent.time_changed TO Script_LODC2.set1
+ROUTE resetSensor.touchTime TO sensorC3ShowEvent.set_time
+ROUTE sensorC3ShowEvent.time_changed TO Script_LODC3.set1
+ROUTE resetSensor.touchTime TO sensorC4ShowEvent.set_time
+ROUTE sensorC4ShowEvent.time_changed TO Script_LODC4.set1
+ROUTE resetSensor.touchTime TO sensorD1ShowEvent.set_time
+ROUTE sensorD1ShowEvent.time_changed TO Script_LODD1.set1
+ROUTE resetSensor.touchTime TO sensorD2ShowEvent.set_time
+ROUTE sensorD2ShowEvent.time_changed TO Script_LODD2.set1
+ROUTE resetSensor.touchTime TO sensorD3ShowEvent.set_time
+ROUTE sensorD3ShowEvent.time_changed TO Script_LODD3.set1
+ROUTE resetSensor.touchTime TO sensorD4ShowEvent.set_time
+ROUTE sensorD4ShowEvent.time_changed TO Script_LODD4.set1
+
+
+ROUTE winButtonSensor.touchTime TO sensorA1HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorA2HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorA3HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorA4HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorB1HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorB2HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorB3HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorB4HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorC1HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorC2HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorC3HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorC4HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorD1HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorD2HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorD3HideEvent.set_time
+ROUTE winButtonSensor.touchTime TO sensorD4HideEvent.set_time
+
+
+ROUTE SensorA1.touchTime TO sensorA1HideEvent.set_time
+ROUTE SensorA2.touchTime TO sensorA2HideEvent.set_time
+ROUTE SensorA3.touchTime TO sensorA3HideEvent.set_time
+ROUTE SensorA4.touchTime TO sensorA4HideEvent.set_time
+ROUTE SensorB1.touchTime TO sensorB1HideEvent.set_time
+ROUTE SensorB2.touchTime TO sensorB2HideEvent.set_time
+ROUTE SensorB3.touchTime TO sensorB3HideEvent.set_time
+ROUTE SensorB4.touchTime TO sensorB4HideEvent.set_time
+ROUTE SensorC1.touchTime TO sensorC1HideEvent.set_time
+ROUTE SensorC2.touchTime TO sensorC2HideEvent.set_time
+ROUTE SensorC3.touchTime TO sensorC3HideEvent.set_time
+ROUTE SensorC4.touchTime TO sensorC4HideEvent.set_time
+ROUTE SensorD1.touchTime TO sensorD1HideEvent.set_time
+ROUTE SensorD2.touchTime TO sensorD2HideEvent.set_time
+ROUTE SensorD3.touchTime TO sensorD3HideEvent.set_time
+ROUTE SensorD4.touchTime TO sensorD4HideEvent.set_time
+
+ROUTE sensorA1HideEvent.time_changed TO Script_LODA1.set0
+ROUTE sensorA2HideEvent.time_changed TO Script_LODA2.set0
+ROUTE sensorA3HideEvent.time_changed TO Script_LODA3.set0
+ROUTE sensorA4HideEvent.time_changed TO Script_LODA4.set0
+ROUTE sensorB1HideEvent.time_changed TO Script_LODB1.set0
+ROUTE sensorB2HideEvent.time_changed TO Script_LODB2.set0
+ROUTE sensorB3HideEvent.time_changed TO Script_LODB3.set0
+ROUTE sensorB4HideEvent.time_changed TO Script_LODB4.set0
+ROUTE sensorC1HideEvent.time_changed TO Script_LODC1.set0
+ROUTE sensorC2HideEvent.time_changed TO Script_LODC2.set0
+ROUTE sensorC3HideEvent.time_changed TO Script_LODC3.set0
+ROUTE sensorC4HideEvent.time_changed TO Script_LODC4.set0
+ROUTE sensorD1HideEvent.time_changed TO Script_LODD1.set0
+ROUTE sensorD2HideEvent.time_changed TO Script_LODD2.set0
+ROUTE sensorD3HideEvent.time_changed TO Script_LODD3.set0
+ROUTE sensorD4HideEvent.time_changed TO Script_LODD4.set0
+
+ROUTE winButtonSensor.touchTime TO rightAnswerSoundEvent.set_time
+ROUTE rightAnswerSoundEvent.time_changed TO rightSound.startTime
+
+ROUTE applauseSensor.touchTime TO applauseSoundEvent.set_time
+ROUTE applauseSoundEvent.time_changed TO applauseSound.startTime
+
+ROUTE wrongSensor.touchTime TO wrongAnswerSoundEvent.set_time
+ROUTE wrongAnswerSoundEvent.time_changed TO wrongSound.startTime
+
+ROUTE redScoreZeroSensor.touchTime TO redScoreZeroEvent.set_time
+ROUTE redScoreZeroEvent.time_changed TO RedScoreScript.scoreZero
+ROUTE redScoreOneSensor.touchTime TO redScoreOneEvent.set_time
+ROUTE redScoreOneEvent.time_changed TO RedScoreScript.scoreOne
+ROUTE redScoreTwoSensor.touchTime TO redScoreTwoEvent.set_time
+ROUTE redScoreTwoEvent.time_changed TO RedScoreScript.scoreTwo
+ROUTE redScoreThreeSensor.touchTime TO redScoreThreeEvent.set_time
+ROUTE redScoreThreeEvent.time_changed TO RedScoreScript.scoreThree
+ROUTE redScoreFourSensor.touchTime TO redScoreFourEvent.set_time
+ROUTE redScoreFourEvent.time_changed TO RedScoreScript.scoreFour
+ROUTE redScoreFiveSensor.touchTime TO redScoreFiveEvent.set_time
+ROUTE redScoreFiveEvent.time_changed TO RedScoreScript.scoreFive
+ROUTE redScoreSixSensor.touchTime TO redScoreSixEvent.set_time
+ROUTE redScoreSixEvent.time_changed TO RedScoreScript.scoreSix
+ROUTE redScoreSevenSensor.touchTime TO redScoreSevenEvent.set_time
+ROUTE redScoreSevenEvent.time_changed TO RedScoreScript.scoreSeven
+ROUTE redScoreEightSensor.touchTime TO redScoreEightEvent.set_time
+ROUTE redScoreEightEvent.time_changed TO RedScoreScript.scoreEight
+ROUTE redScoreNineSensor.touchTime TO redScoreNineEvent.set_time
+ROUTE redScoreNineEvent.time_changed TO RedScoreScript.scoreNine
+ROUTE redScoreTenSensor.touchTime TO redScoreTenEvent.set_time
+ROUTE redScoreTenEvent.time_changed TO RedScoreScript.scoreTen
+
+ROUTE RedScoreScript.red_score TO redScoreText.set_string
+
+ROUTE blueScoreZeroSensor.touchTime TO blueScoreZeroEvent.set_time
+ROUTE blueScoreZeroEvent.time_changed TO BlueScoreScript.scoreZero
+ROUTE blueScoreOneSensor.touchTime TO blueScoreOneEvent.set_time
+ROUTE blueScoreOneEvent.time_changed TO BlueScoreScript.scoreOne
+ROUTE blueScoreTwoSensor.touchTime TO blueScoreTwoEvent.set_time
+ROUTE blueScoreTwoEvent.time_changed TO BlueScoreScript.scoreTwo
+ROUTE blueScoreThreeSensor.touchTime TO blueScoreThreeEvent.set_time
+ROUTE blueScoreThreeEvent.time_changed TO BlueScoreScript.scoreThree
+ROUTE blueScoreFourSensor.touchTime TO blueScoreFourEvent.set_time
+ROUTE blueScoreFourEvent.time_changed TO BlueScoreScript.scoreFour
+ROUTE blueScoreFiveSensor.touchTime TO blueScoreFiveEvent.set_time
+ROUTE blueScoreFiveEvent.time_changed TO BlueScoreScript.scoreFive
+ROUTE blueScoreSixSensor.touchTime TO blueScoreSixEvent.set_time
+ROUTE blueScoreSixEvent.time_changed TO BlueScoreScript.scoreSix
+ROUTE blueScoreSevenSensor.touchTime TO blueScoreSevenEvent.set_time
+ROUTE blueScoreSevenEvent.time_changed TO BlueScoreScript.scoreSeven
+ROUTE blueScoreEightSensor.touchTime TO blueScoreEightEvent.set_time
+ROUTE blueScoreEightEvent.time_changed TO BlueScoreScript.scoreEight
+ROUTE blueScoreNineSensor.touchTime TO blueScoreNineEvent.set_time
+ROUTE blueScoreNineEvent.time_changed TO BlueScoreScript.scoreNine
+ROUTE blueScoreTenSensor.touchTime TO blueScoreTenEvent.set_time
+ROUTE blueScoreTenEvent.time_changed TO BlueScoreScript.scoreTen
+
+ROUTE BlueScoreScript.blue_score TO blueScoreText.set_string
+
+
+ROUTE gameOneSensor.touchTime TO gameOneEvent.set_time
+ROUTE gameOneEvent.time_changed TO GameSelectionScript.selectGame1
+
+ROUTE gameTwoSensor.touchTime TO gameTwoEvent.set_time
+ROUTE gameTwoEvent.time_changed TO GameSelectionScript.selectGame2
+
+ROUTE gameThreeSensor.touchTime TO gameThreeEvent.set_time
+ROUTE gameThreeEvent.time_changed TO GameSelectionScript.selectGame3
+
+ROUTE gameFourSensor.touchTime TO gameFourEvent.set_time
+ROUTE gameFourEvent.time_changed TO GameSelectionScript.selectGame4
+
+ROUTE gameFiveSensor.touchTime TO gameFiveEvent.set_time
+ROUTE gameFiveEvent.time_changed TO GameSelectionScript.selectGame5
+
+ROUTE gameSixSensor.touchTime TO gameSixEvent.set_time
+ROUTE gameSixEvent.time_changed TO GameSelectionScript.selectGame6
+
+ROUTE gameSevenSensor.touchTime TO gameSevenEvent.set_time
+ROUTE gameSevenEvent.time_changed TO GameSelectionScript.selectGame7
+
+ROUTE gameEightSensor.touchTime TO gameEightEvent.set_time
+ROUTE gameEightEvent.time_changed TO GameSelectionScript.selectGame8
+
+ROUTE gameNineSensor.touchTime TO gameNineEvent.set_time
+ROUTE gameNineEvent.time_changed TO GameSelectionScript.selectGame9
+
+ROUTE gameTenSensor.touchTime TO gameTenEvent.set_time
+ROUTE gameTenEvent.time_changed TO GameSelectionScript.selectGame10
+
+ROUTE GameSelectionScript.selectedGameText TO gameNameText.set_string
+ROUTE GameSelectionScript.selectedGameImage TO gamePicture.set_url
+

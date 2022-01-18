@@ -1,0 +1,53 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="https://create3000.github.io/code/x_ite/4.6.23/dist/x_ite.css"/>
+    <script type="text/javascript" src="https://create3000.github.io/code/x_ite/4.6.23/dist/x_ite.min.js"></script>
+</head>
+<body>
+<div id="world"></div>
+<!--
+<X3DCanvas id="browser" class="browser" src="assets/worlds/enter/vrml/enter.wrl">
+    <p class="fallback">Sorry!<br/>
+        <br/>
+        Your browser may not support all features required by <a href="https://github.com/create3000/x_ite/wiki">X_ITE!</a>
+        Please use the latest release of Chrome, Firefox, Safari, Opera, or Edge.
+        Make sure to regulary update your browser to make your Internet experience more secure and pleasant.
+    </p>
+</X3DCanvas>
+-->
+
+<script>
+    X3D(() => {
+            console.log('here we go...');
+            //this.worldURL = '/assets/worlds' + this.worldData.url;
+            //console.log(this.worldURL);
+            // Create a new X3DCanvas element.
+            var x3dcanvas = X3D.createBrowser();
+            //x3dcanvas.setAttribute("src", "/my/world.x3d");
+            document.querySelector('#world').appendChild(x3dcanvas);
+            let browseObj = X3D.getBrowser();
+            //console.log(browseObj);
+            browseObj.loadURL(new X3D.MFString('assets/worlds/enter/vrml/enter.wrl'),"");
+            /*
+            this.room = this.worldData.room + (this.subroom ? "|" + this.subroom : "");
+            console.log(this.$store.data);
+            let browser = X3D.createBrowser();
+            document.querySelector("#world").appendChild(browser);
+            let browseObj = X3D.getBrowser('#world');
+            console.log(browseObj);
+            console.log('/assets/worlds' + this.worldURL);
+            //browseObj.setAttribute("src", '/assets/worlds'+this.worldURL);
+            //browseObj.src = '/assets/worlds'+this.worldURL;
+            */
+        },
+        (error) => {
+            console.log('some sort of err');
+            console.error(error);
+
+
+        });
+
+</script>
+
+</body>
+</html>

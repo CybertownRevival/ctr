@@ -1,0 +1,525 @@
+#VRML V2.0 utf8
+
+#Copyright by tarakos GmbH
+
+
+	#@ <Name><ger>Das Anzeige-Objekt</ger><eng>The display object</eng><spa>The display object</spa></Name>
+	#@ <summary><ger>Mit dem Anzeige-Objekt lassen sich Informationen statisch oder dynamisch als Anzeigetafel in der 3D-Szene visualisieren. Es k&ouml;nnen zum Beispiel verschiedene Anlagenteile beschriftet oder auch dynamisch Proze&szlig;werte angezeigt werden. Das Anzeige-Objekt richtet sich nach dem Standort des Betrachters aus. Dadurch ist die Information immer gut ablesbar. 	
+	#@ </ger><eng>The Display object permits data to be shown in graphic form, either statically or dynamically, within the 3D scene. For example, various parts of the assembly may be provided with captions, or process measurements may be displayed dynamically. The Display object is aligned in relation to the observer’s location, so the information is always legible.
+	#@ </eng></summary>
+	#@<category>TvrcBasic</category>
+  #@<NeedGeometryInterface>true</NeedGeometryInterface>
+	#@<icon>obj_Anzeige.ico</icon>
+PROTO tvrcDisplay  [
+
+	#@ <summary><ger>Gibt die zu visualisierende Information an.	
+	#@ </ger><eng>The data which is to be displayed.
+	#@ </eng></summary>	
+	#exposedField MFString myText1Z [""]
+	#@ <Name><ger>Text</ger><eng>Text</eng><spa>Texto</spa></Name>	  
+	#@ <Visible>true</Visible>
+	exposedField SFString myText1Z "text"
+
+	#@ <summary><ger>Farbe des Textes.	
+	#@ </ger><eng>Color of the text.
+	#@ </eng></summary>	
+	#@ <Name><ger>Text Farbe</ger><eng>Color Text</eng><spa>Color texto</spa></Name>	  
+	#@ <Visible>true</Visible>
+	exposedField	SFColor farbe_text_in 1 1 1
+
+	#@ <summary><ger>Transparenz des Textes (stufenlos zwischen 0 (nicht transparent) und 1 (nicht sichtbar) w&auml;hlbar.	
+	#@ </ger><eng>Transparency of the text - selectable on sliding scale from 0 (solid) to 1 (invisible).
+	#@ </eng></summary>	
+	#@ <Name><ger>Transparenz Text </ger><eng>Transparency Text</eng><spa>Transparencia texto</spa></Name>	  
+	#@ <Visible>true</Visible>
+	#@ <Range Min="0" Max="1"></Range>
+	exposedField	SFFloat transparenz_text_in 0
+
+	#@ <summary><ger>Farbe der Anzeigetafel.	
+	#@ </ger><eng>Color of the display box.
+	#@ </eng></summary>	
+	#@ <Name><ger>Tafel Farbe</ger><eng>Display Color</eng><spa>Color panel</spa></Name>	  
+	#@ <Visible>true</Visible>	
+	exposedField	SFColor farbe_tafel_in 1 0 0
+
+	#@ <summary><ger>Transparenz der Anzeigetafel (stufenlos zwischen 0 (nicht transparent) und 1 (nicht sichtbar) w&auml;hlbar.	
+	#@ </ger><eng>Transparency of the display box - selectable on sliding scale from 0 (solid) to 1 (invisible).
+	#@ </eng></summary>	
+	#@ <Name><ger>Transparenz Tafel </ger><eng>Transparency</eng><spa>Transparencia panel</spa></Name>	  
+	#@ <Visible>true</Visible>
+	#@ <Default>0.8</Default>
+	#@ <Range Min="0" Max="1"></Range>
+	exposedField	SFFloat transparenz_tafel_in 0
+
+	#@ <summary><ger>Gibt die Breite, H&ouml;he und Dicke der Anzeigetafel an.	
+	#@ </ger><eng>The width, height and depth of the display box.
+	#@ </eng></summary>	
+	#@ <Name><ger>Anzeige Abmessungen</ger><eng>Display Size</eng><spa>Tamaño panel</spa></Name>	  
+	#@ <Visible>true</Visible>
+	#@ <Default>1.2 0.1 0</Default>
+	exposedField	SFVec3f abmessungen 1 1 1
+
+	### Geometrietransformationen->ausgeblendet
+
+	#@ <summary><ger>Position der Anzeige in Bezug auf das lokale Koordinatensystem.	
+	#@ </ger><eng>Position of the display in reference to the local coordinate system.
+	#@ </eng></summary>
+	#@ <Name><ger>Position</ger><eng>Position</eng><spa>Posición</spa></Name>	 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>    
+	exposedField SFVec3f objPosTrl 0 0 0
+
+	#@ <summary><ger>Drehung der Anzeige in Bezug auf das lokale Koordinatensystem.	
+	#@ </ger><eng>Rotation of the display in reference to the local coordinate system.
+	#@ </eng></summary>
+	#@ <Name><ger>Drehung</ger><eng>Rotation</eng><spa>Rotación</spa></Name>	 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>
+	exposedField SFRotation objPosRot 0 1 0 0
+
+	#@ <summary><ger>Skalierung der Anzeige in Bezug auf das lokale Koordinatensystem.	
+	#@ </ger><eng>Scaling of the display in reference to the local coordinate system.
+	#@ </eng></summary>	
+	#@ <Name><ger>Skalierung</ger><eng>Scale</eng><spa>Escala</spa></Name>	 
+	#@ <Interface>Geometry</Interface>
+	#@ <Visible>false</Visible>
+	exposedField SFVec3f objScale  1 1 1
+	
+
+	###############    HIER ABMASSE FUER ABSTRAKTES MODELL EINTRAGEN, laenge, hoehe, breite
+	field	SFVec3f	size 5.5 4 0.25
+	field MFFloat range	5
+	eventIn MFInt32 abmessungen_in
+	eventIn MFInt32 skalierung_in
+	eventIn MFInt32 position_in
+	eventIn SFFloat drehung_in
+	eventIn SFFloat neigung_in
+	eventIn SFString name_in
+	eventIn MFInt32 range_in
+	eventOut SFString name_out
+	eventOut SFInt32 schalter_index_out
+	eventIn SFBool schalter_animation_in
+	
+	exposedField MFString familie [""]
+	exposedField SFString stil ""
+	exposedField SFString textur_file ""
+	eventOut SFTime touchTime
+	exposedField SFBool flgTouchBtEnabled TRUE
+	exposedField SFRotation neigung	1 0 0 0
+	exposedField SFString name	   ""
+	eventIn MFString font_family_in
+	eventIn SFString font_style_in
+	eventIn SFString text_in
+	eventIn SFString file_textur_in
+	exposedField	SFVec3f	pos_box 0 0 0
+	exposedField SFVec3f translation 0 0 0
+
+
+]
+
+{
+	DEF alles Group	{
+		children [
+			DEF Wand Transform {
+				translation IS objPosTrl   
+				scale IS	objScale
+				rotation IS objPosRot
+				children [
+					DEF	neigen Transform {
+						rotation IS neigung 
+						children [
+
+							DEF	touch_bauteil TouchSensor{
+								enabled	IS flgTouchBtEnabled
+								touchTime IS touchTime
+							}
+							Group {
+	
+								children[
+
+									Billboard {
+										axisOfRotation 0 1 0
+										children [
+											DEF Tafel_Text Transform {translation 0 0.5 0
+												children [
+													DEF Tafel Transform {translation	0 0 0
+														children[		Shape {
+    															appearance Appearance {
+																	texture	DEF ImgTexture ImageTexture {
+																	}
+    																material	Material {
+																		ambientIntensity	0.25
+																		diffuseColor IS	farbe_tafel_in
+																		shininess	0.2
+																		transparency IS transparenz_tafel_in
+    																}
+																}
+
+    															geometry DEF TafelGeo Box {
+																	size 2 1 0.02
+    															}
+															}
+														]
+													}
+
+													DEF Text Transform {translation	0 -0.3 0.011
+														children[		Shape {
+    															appearance	Appearance {
+    																material	Material {
+																		ambientIntensity	0.25
+																		diffuseColor IS	farbe_text_in
+																		emissiveColor	IS farbe_text_in
+																		specularColor	IS farbe_text_in
+																		shininess	0.2
+																		transparency IS	transparenz_text_in
+    																}
+																}
+
+    															geometry DEF TextGeo Text {
+																	string ["A"]
+																	maxExtent 2
+																	fontStyle DEF myFontStyle FontStyle {
+																		#											family IS font_family_in
+																		#											style IS font_style_in
+																		justify "MIDDLE"
+																		size 1
+																		spacing	1
+																	}
+    															}
+															}
+														]
+													}
+												]
+											}
+										] #Ende Children
+										# TRENNUNG LOD
+
+									} #Ende Billboard
+
+		
+									#--- Elemente ausserhalb des Billboards ---
+									#		DEF	nah Group {
+									#			children[
+									#						DEF Saeule Transform {translation	0 0.5 0
+									#							children[		Shape {
+									#    								appearance	Appearance {
+									#    									material	Material {
+									#											ambientIntensity	0.25
+									#											diffuseColor	0 0 1 
+									#											shininess	0.2
+									#											transparency	0
+									#    									}
+									#									}
+
+									#    								geometry DEF SaeuleGeo	Cylinder {
+									#    									radius 0.05
+									#										height 1
+									#    								}
+									#								}
+									#							]
+									#						}
+
+									#						DEF Scheibe Transform {translation	0 0.01 0
+
+									#							children[		Shape {
+									#    								appearance	Appearance {
+									#    									material	Material {
+									#											ambientIntensity	0.25
+									#											diffuseColor	0 0 1
+									#											shininess	0.2
+									#											transparency	0
+									#    									}
+									#									}
+
+									#    								geometry DEF ScheibeGeo Cylinder {
+									#    									radius 0.1
+									#										height 0.02
+									#    								}
+									#								}
+									#							]
+									#						}
+
+									#			] #Ende Children
+									#		}#ende group
+								]					
+							}
+
+						] #Ende Children
+					}
+				]
+			}  #ende alles
+		]}
+	################################################################################################
+
+	DEF	sensorscript Script	{
+		eventIn	SFBool sensor_click
+		eventOut SFString	name_out IS	name_out
+		field MFNode tragmittel []
+		eventIn	SFString name_in IS name_in
+		field SFString name	""
+   	
+    	url "vrmlscript:
+
+		function initialize(){
+			// tragmittel[0] = new SFNode (riemen_mitte) ;
+		}
+		function name_in(value){
+			name=value;
+		}
+	
+		function sensor_click(value){
+			if (value==1) {name_out=name;}
+    	}
+  
+		"
+	}
+
+	DEF  positionierung Script  {
+
+		directOutput TRUE
+
+		eventIn	MFInt32	position_in IS position_in
+		eventIn	SFFloat	drehung_in	IS drehung_in
+		eventIn	SFFloat	neigung_in	IS neigung_in
+		eventIn	SFString name_in	IS name_in
+		eventIn	MFInt32	range_in IS	range_in
+		eventIn MFInt32 skalierung_in IS skalierung_in
+		eventIn MFInt32 abmessungen_in IS abmessungen_in
+		eventIn	SFString text_in IS	text_in
+		eventIn	MFString font_family_in IS font_family_in
+		eventIn	SFString font_style_in IS font_style_in
+		eventIn SFString file_textur_in IS file_textur_in
+
+		field SFNode textGeo USE	TextGeo
+		field SFNode textNode USE Text
+		field SFNode TafelGeo USE TafelGeo
+		field SFNode TafelText USE Tafel_Text
+		field SFNode ImgTexture USE	ImgTexture
+		field SFNode myFontStyle USE	myFontStyle
+
+    	eventOut SFVec3f pos_out
+    	eventOut SFVec3f center_out
+		eventOut MFNode tragmittel_out
+    	eventOut SFRotation neigung_out
+    	eventOut SFRotation drehung_out
+    	eventOut SFVec3f scale_laenge_out
+    	eventOut MFFloat range_out
+		eventOut SFVec3f scale_out
+		eventOut SFVec3f pos_out_bounding
+	
+		field SFFloat scale_laenge 1
+		field SFFloat neigungswinkel 0
+		field SFFloat laenge 50
+		field SFFloat hoehe 20
+		field MFFloat range IS range
+		field MFFloat range_temp [] 
+		field MFNode tragmittel []
+		field SFVec3f pos_temp 0 0 0
+		field SFVec3f scale_temp 0 0 0
+		field SFVec3f size 0 0 0
+		field SFVec3f size_temp 0 0 0
+		field MFString myText []
+	
+	
+		exposedField SFString myText1Z IS myText1Z
+		exposedField MFString familie IS familie
+		exposedField SFString stil IS stil
+		exposedField SFString textur_file IS textur_file
+		exposedField SFVec3f abmessungen IS abmessungen
+
+		exposedField SFVec3f objPosTrl IS objPosTrl
+		exposedField SFRotation objPosRot	IS objPosRot
+		exposedField SFRotation neigung	IS neigung
+		exposedField SFString name	   IS name
+		exposedField SFVec3f scale  IS objScale
+		exposedField SFVec3f pos_box IS pos_box
+#		""
+
+		url	"vrmlscript:
+
+        function initialize(){
+		
+			//	    center_out = new SFVec3f (-laenge/2, 0, 0);
+			pos_temp = objPosTrl;
+			//		 print(myText1Z);
+			/////////// text
+			text_out();
+			//////////// Abmessungen
+			//		print ('Textur: ' + textur_file);
+
+			textGeo.fontStyle.family = familie[0];
+			textGeo.fontStyle.style = stil;
+		
+			ImgTexture.url=new MFString(textur_file);
+
+			TafelGeo.size =abmessungen;
+		
+			TafelText.translation=new SFVec3f(0,TafelGeo.size[1]/2,0);
+			textGeo.maxExtent=TafelGeo.size[0];
+			myFontStyle.size = abmessungen[1];
+			textNode.translation = new SFVec3f(0, -abmessungen[1]/3.5, 0.011);
+		}
+
+		function position_in(value){
+			//		print('objPosTrl'+value);
+			pos_temp[0] = value[0]/1000;
+			pos_temp[1] = value[1]/1000;
+			pos_temp[2] = value[2]/1000;
+			//		pos_out = new SFVec3f((pos_temp[0]+laenge/2), (pos_temp[1]-hoehe/2), pos_temp[2]);
+			pos_out = pos_temp;
+			//		pos_out = new SFVec3f((pos_temp[0]), (pos_temp[1]-hoehe/2), pos_temp[2]);
+			//	    pos_out_bounding =	new SFVec3f(pos_temp[0], (pos_temp[1]+hoehe/2), pos_temp[2]);
+
+	
+		}
+
+		function drehung_in (value){
+			drehung_out=new SFRotation(0, 1, 0, value);
+			//		print('drehung_in'+drehung_out);
+	
+		}
+
+		function neigung_in (value){
+			//		center_out = new SFVec3f (-laenge/2, 0, 0);
+			neigungswinkel=value; 
+			neigung_out=new SFRotation(0, 0, 1, neigungswinkel);
+			//		scale_laenge = 1/(Math.cos(neigungswinkel));
+			//		scale_laenge_out = new SFVec3f(scale_laenge ,1 ,1);
+			////		print('scale_laenge_out= '+scale_laenge_out);
+	
+		}
+		
+		function skalierung_in(value){
+//			print('skalierung'+value);
+			scale_temp[0] = value[0]/100;
+			scale_temp[1] = value[1]/100;
+			scale_temp[2] = value[2]/100;
+			scale_out = scale_temp;
+		}
+
+		function abmessungen(value){
+			//			print('abmessungen'+value);
+//			abmessungen=new SFVec3f(value[0]/1000,value[1]/1000,0);
+			TafelGeo.size = abmessungen;
+			//			bounding_size.size=TafelGeo.size;
+			TafelText.translation=new SFVec3f(0,TafelGeo.size[1]/2,0);
+			textGeo.maxExtent=TafelGeo.size[0];
+		}
+
+		function myText1Z(value){	   
+//			myText1Z=value;
+			
+			text_out();
+		}
+
+		function text_out(){
+			//			 myText='';
+			myTeilString='';
+			myZaehler=0;
+			for (i=0; i<myText1Z.length;++i){
+				if (myText1Z.charCodeAt(i)==92){
+					myText[myZaehler]=myTeilString;
+					myTeilString='';
+					++myZaehler;
+				}
+				else{
+					myTeilString=myTeilString + myText1Z.charAt(i);
+				}
+			}
+			if (myTeilString!=''){
+				myText[myZaehler]=myTeilString;
+			}
+
+			++myZaehler;
+			textGeo.string=myText;
+			textGeo.fontStyle.size=TafelGeo.size[1] / myZaehler;
+			textNode.translation[1]=TafelGeo.size[1]*((myZaehler-1)/myZaehler - 0.5) + 0.2*textGeo.fontStyle.size;
+		}
+
+		function font_family_in(value){
+			//print('Schriftart: ' + textGeo.fontStyle.family);
+			//print('value: ' + value);
+			familie[0]=value[0];
+			textGeo.fontStyle.family = value[0];
+			// ACHTUNG: jetzt kommt ein Trick!
+			textGeo.string=textGeo.string;
+			//print('Schriftart: ' + textGeo.fontStyle.family);
+		}
+
+		function font_style_in(value){
+			//print('Schrifttyp: ' + textGeo.fontStyle.style);
+			//print('value: ' + value);
+			stil=value;
+			textGeo.fontStyle.style = value;
+			// ACHTUNG: jetzt kommt ein Trick!
+			textGeo.string=textGeo.string;
+			//print('Schrifttyp: ' + textGeo.fontStyle.style);
+		}
+
+		function file_textur_in(value){
+			//print ('Textur: ' + value);
+			//			print ('URL vorher: ' + ImgTexture.url);
+			textur_file=value;
+
+			if (value==''){
+				//				print ('LEER');
+				ImgTexture.url='[]';
+				//				ImgTexture=NULL;
+			}
+			else{
+				//				print ('NICHT LEER');
+				//ImgTexture.url=new MFString(value);
+				ImgTexture.url=new MFString(textur_file);
+			}
+
+			//			print ('URL nachher: ' + ImgTexture.url);
+		}
+
+		function range_in(value){
+			//		print('range'+value);
+			range_temp[0] = value[0]*100;
+			range = range_temp;	 
+			//		detail_an_aus.range = range;	// setzt wert fur range, dafuer notwendig SFNode detail_an_aus in Scriptvariablen 
+		}
+		
+		"
+	}
+
+
+	##############################   script ende #################
+	
+	ROUTE positionierung.pos_out TO	Wand.translation
+	ROUTE positionierung.center_out	TO Wand.center
+	ROUTE positionierung.drehung_out TO	Wand.rotation
+	ROUTE positionierung.neigung_out TO	neigen.rotation
+	ROUTE touch_bauteil.isActive TO	sensorscript.sensor_click
+	ROUTE positionierung.scale_out TO Wand.scale
+	#ROUTE positionierung.pos_out_bounding TO boundingbox.translation
+
+
+
+
+}#ende proto
+
+#---------------------------------------------------------------------------------------------------------
+
+#Billyboard {range 2 myText1Z ["Egon\ Olsen"]}
+
+DEF Anzeige tvrcDisplay {
+#	objPosTrl 0 0 0
+#	objPosRot 0 1 0 0
+#	objScale 1 1 1
+#	neigung 0 0 1 0
+#	farbe_text_in 0 0 0
+#	farbe_tafel_in 0 1 0
+	transparenz_text_in 0
+	transparenz_tafel_in 0.5
+	myText1Z "Egon Olsen"
+	farbe_tafel_in 0 0 1
+	flgTouchBtEnabled FALSE
+#	familie "SANS"
+#	stil "PLAIN"
+#	textur_file ""
+	abmessungen .3 0.1 0
+}
+

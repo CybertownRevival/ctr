@@ -1,0 +1,42 @@
+#VRML V2.0 utf8
+
+EXTERNPROTO Avatar[
+eventIn SFTime set_touch
+]"lefty.wrl#Avatar"
+
+Transform{translation -1.69952 1.7501 -17.2785 rotation 0 -1 0 1.56183
+
+children[
+
+DEF TOUCH TouchSensor{}
+
+DEF pop Script{
+eventIn SFTime set_pop
+eventIn SFBool set_over
+
+field SFString linkURL "http://www.colonycity.com/events/morph2/html/spies/lefty.html"
+field SFInt32  height 200
+field SFInt32  width 500
+field SFString description "Lefty"
+field MFString param ["target=action"]
+url"vrmlscript:
+function new_url(v,t){
+ linkURL = v;
+}
+function set_pop(v,t){
+ u = new MFString('javascript:loadCustom(\"'+linkURL+'\",'+width+','+height+')');
+ Browser.loadURL(u,param);
+ Browser.setDescription('');
+}
+function set_over(v,t){
+ if(v){ Browser.setDescription(description);}
+ else{Browser.setDescription('');}
+}
+"}
+
+DEF A Avatar{}
+
+]}
+ROUTE TOUCH.touchTime TO pop.set_pop
+ROUTE TOUCH.touchTime TO A.set_touch
+ROUTE TOUCH.isOver TO pop.set_over

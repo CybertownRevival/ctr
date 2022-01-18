@@ -1,0 +1,1005 @@
+#VRML V2.0 utf8
+
+# EXTERNAL Prototype fallback implementations for builtin blaxxunCC3D extension nodes
+# last updated 04/17/2001 for Contact 5.0
+#
+# 4.01
+
+PROTO BspTree [
+	exposedField SFRotation plane 0 0 1 0
+	
+	field SFNode front NULL
+	field SFNode overlap NULL
+	field SFNode back NULL
+
+	#	eventIn SFNode set_front
+	#	eventIn SFNode set_overlap
+	#	eventIn SFNode set_back
+]
+{
+	DEF G Group {}
+
+	Script {
+		directOutput TRUE			# problem in pure VRML Script does not support exposedField & IS
+		field SFNode group USE G
+		field SFNode a IS front
+		field SFNode b IS overlap
+		field SFNode c IS back
+	
+		url "javascript:
+		function initialize() {
+			group.set_children = new MFNode(a,b,c);
+		}
+		"
+	}
+}
+
+PROTO BspGroup[
+ 	field SFVec3f bboxSize -1 -1 -1
+	field SFVec3f bboxCenter 0 0 0
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+	eventOut SFNode bspTree
+]
+{
+	Group {
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO Occlusion[
+ 	field SFVec3f bboxSize -1 -1 -1
+	field SFVec3f bboxCenter 0 0 0
+	exposedField SFBool enabled TRUE
+	exposedField SFNode proxy NULL
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+	eventOut SFBool isActive
+	eventOut SFTime enterTime
+	eventOut SFTime exitTime
+]
+{
+	Group {
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO Inclusion[
+ 	field SFVec3f bboxSize -1 -1 -1
+	field SFVec3f bboxCenter 0 0 0
+	exposedField SFBool enabled TRUE
+	exposedField SFNode proxy NULL
+	exposedField MFNode portals []
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+	eventOut SFBool isActive
+	eventOut SFBool isInside
+	eventOut SFTime enterTime
+	eventOut SFTime exitTime
+]
+{
+	Group {
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO MenuSensor[
+	exposedField SFBool enabled TRUE
+	exposedField SFString title ""
+	exposedField MFInt32 choices []
+	exposedField MFString descriptions []
+	exposedField SFString position ""
+	eventOut SFBool isActive
+	eventOut SFInt32 choice
+]
+{
+	Group {}
+}
+
+PROTO CullGroup[
+ 	field SFVec3f bboxSize -1 -1 -1
+	field SFVec3f bboxCenter 0 0 0
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+	# 4.3
+	exposedField SFBool lod FALSE 
+	exposedField MFNode level []
+	exposedField MFFloat range []
+]
+{
+	Group {
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO Fog2 [
+	exposedField SFColor color 1 1 1
+	exposedField SFString fogType "LINEAR"
+	exposedField SFFloat visibilityRange 0
+	exposedField SFFloat visibilityStart 0
+	exposedField SFFloat density 1
+	eventIn SFBool set_bind
+	eventOut SFBool isBound
+]
+{
+	Fog {
+		color IS color
+		fogType IS fogType
+		visibilityRange IS visibilityRange
+		set_bind IS set_bind
+		isBound IS isBound
+
+	}
+}
+
+# CC3D 3.07
+
+PROTO Selection[
+ 	field SFVec3f bboxSize -1 -1 -1
+	field SFVec3f bboxCenter 0 0 0
+	exposedField SFBool collide TRUE
+	exposedField SFBool select TRUE	# if false, children are not existing for Anchor selection
+	exposedField SFNode proxy NULL
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+]
+{
+	Collision {
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		collide IS collide
+		#proxy IS proxy ## not exposed ? 
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+# CC3D 4.0
+PROTO HUD[
+ 	field SFVec3f bboxSize -1 -1 -1
+	field SFVec3f bboxCenter 0 0 0
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+]
+{
+
+ 	Collision {
+      	collide FALSE
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		children [
+	    	DEF UserPosition ProximitySensor {
+            	center 0 0 0
+            	size 1.E36 1.E36 1.E36
+         	}
+
+			DEF HUD Transform {
+				children IS children
+				addChildren	IS addChildren
+				removeChildren IS removeChildren
+			}
+		]
+	}
+    ROUTE UserPosition.position_changed TO HUD.translation
+    ROUTE UserPosition.orientation_changed TO HUD.rotation
+
+}
+
+# 4.2
+PROTO NurbsSurface[
+	exposedField SFInt32 uDimension 0
+	exposedField SFInt32 vDimension	0
+	exposedField MFVec3f controlPoint []
+	exposedField MFFloat weight []
+	exposedField SFNode texCoord NULL
+	exposedField SFInt32 uOrder	3
+	exposedField SFInt32 vOrder	3
+	exposedField MFFloat uKnot	[]
+	exposedField MFFloat vKnot	[]
+	exposedField SFInt32 uTessellation 0
+	exposedField SFInt32 vTessellation 0
+	exposedField SFBool solid TRUE
+	exposedField SFBool ccw	FALSE
+]
+{ 
+	PointSet {}
+}
+
+# Cosmo is strict about		field IS exposedField, is this correct ??
+
+PROTO NurbsGroup[
+	field SFVec3f bboxSize -1 -1 -1
+	field SFVec3f bboxCenter 0 0 0
+	exposedField SFFloat tessellationScale 1.0
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+]
+{
+	Group {
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO NurbsCurve[
+	exposedField SFInt32 dimension 0
+	exposedField SFInt32 tessellation 0
+	exposedField MFFloat knot []
+	exposedField SFInt32 order 3
+	exposedField MFVec3f controlPoint []
+	exposedField MFFloat weight []
+]
+{ 
+	PointSet {}
+}
+
+
+PROTO Inline2[
+ 	exposedField SFVec3f bboxSize -1 -1 -1
+	exposedField SFVec3f bboxCenter 0 0 0
+	exposedField MFString url []
+	
+	#extra
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+	eventIn SFBool set_unload
+	eventOut SFBool isLoaded 
+
+]
+{
+	Inline {
+		#bboxSize IS bboxSize
+		#bboxCenter IS bboxCenter
+		url	IS url
+	}
+}
+
+# 4.3
+
+PROTO NurbsCurve2D[
+	exposedField SFInt32 tessellation 0
+	exposedField MFFloat knot []
+	exposedField SFInt32 order 3
+	exposedField MFVec2f controlPoint []
+	exposedField MFFloat weight []
+]
+{ 
+	PointSet {}
+}
+
+PROTO Polyline2D[
+	exposedField MFVec2f point []
+]
+{ 
+	PointSet {}
+}
+
+PROTO NurbsPositionInterpolator[
+	exposedField MFFloat knot []
+	exposedField SFInt32 order 3
+	exposedField SFBool fractionAbsolute FALSE
+	exposedField MFFloat keyWeight []
+	exposedField MFVec3f keyValue  []
+	eventIn SFFloat fraction
+	eventOut SFVec3f value
+]
+{
+	PositionInterpolator { keyValue IS keyValue 
+		set_fraction IS fraction 
+		value_changed IS value
+	}
+}
+PROTO TrimmedSurface[
+	exposedField MFNode trimmingContour	 []
+	exposedField SFNode surface	NULL
+	eventIn MFNode addTrimmingContour 
+	eventIn MFNode removeTrimmingContour
+]
+{
+	PointSet {}
+}
+
+PROTO Contour2D[
+	field SFVec3f bboxSize -1 -1 -1 
+	field SFVec3f bboxCenter	0 0 0
+	exposedField SFBool fill FALSE
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+]
+{
+	Group {
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO CoordinateDeformer[
+	field SFVec3f bboxSize -1 -1 -1
+	field SFVec3f bboxCenter 0 0 0
+	exposedField SFInt32 uDimension 0
+	exposedField SFInt32 vDimension	0
+	exposedField SFInt32 wDimension	0
+	exposedField MFFloat uKnot []
+	exposedField MFFloat vKnot []
+	exposedField MFFloat wKnot []
+	exposedField SFInt32 uOrder	2
+	exposedField SFInt32 vOrder	2
+	exposedField SFInt32 wOrder	2
+	exposedField MFVec3f controlPoint []
+	exposedField MFFloat weight []
+	exposedField MFNode inputCoord []
+	exposedField MFNode inputTransform []
+	exposedField MFNode outputCoord	[]
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+]
+{
+	Group {
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO Layer3D[
+	exposedField SFVec3f bboxSize  -1 -1 -1	  # not MPEG-4
+	exposedField SFVec3f bboxCenter	0 0 0	  # not MPEG-4
+	eventIn MFNode addChildrenLayer		   # no more MPEG-4
+	eventIn MFNode removeChildrenLayer	   # no more MPEG-4
+	exposedField MFNode childrenLayer []   # no more MPEG-4
+	exposedField SFVec2f translation 0 0   # not MPEG-4
+	exposedField SFInt32 depth 0		   # no more MPEG-4
+	exposedField SFVec2f size -1 -1
+	exposedField SFNode background NULL
+	exposedField SFNode fog NULL
+	exposedField SFNode navigationInfo NULL
+	exposedField SFNode viewpoint NULL
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+]
+{ 
+	Group {} 
+}
+
+
+PROTO Polygon[
+	exposedField SFNode color NULL
+	exposedField SFNode coord  NULL
+	exposedField SFNode normal  NULL
+	exposedField MFNode texCoord []
+
+	field		 SFBool ccw	TRUE
+	field		 MFInt32 coordIndex []
+	field        SFBool solid TRUE
+]
+{ 
+	IndexedFaceSet { 
+		color IS color 
+		coord IS coord 
+		normal IS normal 
+		ccw IS ccw	 
+		coordIndex IS coordIndex 
+		# texCoord = texCoord [0]
+		solid IS solid 
+ 	}
+}
+
+# 4.4 / 5.0 
+PROTO DrawGroup[
+	exposedField SFVec3f bboxSize -1 -1 -1
+	exposedField SFVec3f bboxCenter	0 0 0
+	exposedField SFBool sortedAlpha	TRUE
+	exposedField MFNode drawOp []
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+]
+{
+	Group {
+		#bboxSize IS bboxSize
+		#bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO Cell[
+	exposedField SFVec3f bboxSize -1 -1 -1
+	exposedField SFVec3f bboxCenter	0 0 0
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+	exposedField MFNode portals	[]
+]
+{
+	Group {
+		#bboxSize IS bboxSize
+		#bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO Portal[
+	exposedField SFBool enabled TRUE
+	exposedField SFBool ccw	TRUE
+	exposedField SFNode coord NULL
+	exposedField SFNode cell NULL
+]
+{
+}
+
+
+PROTO CellGroup[
+	exposedField SFVec3f bboxSize -1 -1 -1
+	exposedField SFVec3f bboxCenter 0 0 0
+	exposedField SFInt32 range -50
+	exposedField MFNode cells []
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+	eventOut MFNode activeCells
+]
+{
+	Group {
+		#bboxSize IS bboxSize
+		#bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO Particles[
+	exposedField SFVec3f bboxSize -1 -1 -1
+	exposedField SFVec3f bboxCenter 0 0 0
+	exposedField SFFloat lodRange 100
+	exposedField SFBool enabled TRUE
+	exposedField SFFloat particleRadius 0.1
+	exposedField SFFloat particleRadiusVariation 0
+	exposedField SFFloat particleRadiusRate	0
+	exposedField SFNode geometry NULL
+	exposedField SFVec3f emitterPosition 0 3 0
+	exposedField SFFloat emitterRadius 0
+	exposedField SFFloat emitterSpread 0.25
+	exposedField SFVec3f emitVelocity 2.5 5 2.5
+	exposedField SFFloat emitVelocityVariation 0.5
+	exposedField SFRotation emitterOrientation 0 1 0 0
+	exposedField SFFloat creationRate 500
+	exposedField SFFloat creationRateVariation 0
+	exposedField SFInt32 maxParticles 500
+	exposedField SFTime maxLifeTime	5
+	exposedField SFFloat maxLifeTimeVariation 0
+	exposedField SFVec3f gravity  0 -9.8 0
+	exposedField SFVec3f acceleration 0 0 0
+	exposedField SFColor emitColor 1 1 1
+	exposedField SFFloat emitColorVariation 0 # 5.0
+
+	exposedField SFColor fadeColor 0.25 0.25 0.25
+	exposedField SFFloat fadeAlpha 1.0
+	exposedField SFFloat fadeRate  0.25
+	exposedField SFInt32 numTrails 0
+	exposedField SFInt32 numSparks 0
+	exposedField SFVec3f sparkGravity 0 -5 0
+	exposedField SFColor sparkFadeColor 0 0 0
+]
+{ PointSet {} } 
+
+# 5.0 
+
+PROTO MultiTexture[
+	exposedField SFBool materialColor FALSE
+	exposedField SFBool materialAlpha FALSE
+
+	exposedField SFBool transparent FALSE
+	exposedField SFBool nomipmap FALSE
+
+	exposedField MFString mode []
+	exposedField MFString type []
+
+	exposedField MFNode texture []
+	exposedField MFNode textureTransform []
+	exposedField MFInt32 textureOp []
+	exposedField SFColor color 1 1 1
+	exposedField SFFloat alpha  1
+
+]
+
+{ PixelTexture {} 
+} 
+
+PROTO TextureCoordGen[
+	exposedField SFString mode ""
+	exposedField MFFloat parameter []
+]  
+{
+	TextureCoordinate {} 
+}
+
+
+PROTO MultiTextureCoordinate[
+	exposedField MFNode coord []
+]
+{
+	TextureCoordinate {} 
+}
+
+PROTO DrawOp[
+	exposedField MFInt32 op []
+	exposedField MFFloat args []
+]
+{
+	Group {}
+}
+
+PROTO SubdivisionSurface[
+	exposedField SFInt32 tesselation 0
+	exposedField SFNode surface NULL
+]
+{
+	PointSet {} 
+}
+
+PROTO CompositeTexture3D[
+	exposedField SFInt32 pixelWidth -1
+	exposedField SFInt32 pixelHeight -1
+	exposedField SFNode background NULL
+	exposedField SFNode fog NULL
+	exposedField SFNode navigationInfo NULL
+	exposedField SFNode viewpoint NULL
+
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+] 
+{
+	PixelTexture {} 
+}
+
+PROTO MovieTexture2 [ 
+	exposedField SFBool	loop             FALSE
+	exposedField SFFloat	speed            1.0 
+	exposedField SFTime		startTime        0    
+	exposedField SFTime		stopTime         0    
+	exposedField MFString 	url              []
+	field        SFBool	repeatS          TRUE
+	field        SFBool	repeatT          TRUE
+	eventOut     SFTime	duration_changed
+	eventOut     SFBool	isActive
+
+	#extra
+	eventIn		SFBool	set_pause
+	eventOut	SFTime  mediaTime
+	eventOut	SFVec2f imageSize
+
+] {
+	MovieTexture {
+		loop  IS loop
+		speed  IS speed 
+		startTime        IS	startTime
+		stopTime         IS stopTime   
+		url              IS	url
+		repeatS          IS	repeatS
+		repeatT          IS	repeatT
+		duration_changed IS	duration_changed
+		isActive		IS isActive
+
+	}
+}
+
+
+
+# 5.0 event nodes 
+
+
+PROTO Camera[
+  eventIn        SFBool     set_bind
+  eventIn        SFVec3f    xyz
+  eventIn        SFVec3f    ypr
+  eventIn        SFVec2f    yp 
+  eventIn        SFVec3f    moveTo
+  eventIn        SFVec3f    orientTo
+  eventIn        SFVec3f    examineCenter
+  eventIn        SFBool     straighten
+  exposedField   SFTime     duration        0    
+  exposedField   SFInt32    examineRadius   0
+  exposedField   SFVec3f    offset          0 0 0        			
+  exposedField   SFBool     collide         TRUE 
+  exposedField   SFBool     gravity         TRUE
+  field          SFString   description     ""
+  field          SFVec3f    upVector        0 1 0
+  eventOut       SFRotation orientation   
+  eventOut       SFVec3f    position
+  eventOut       SFTime     bindTime
+  eventOut       SFBool     isBound
+	]
+	{}
+
+
+
+
+PROTO KeySensor [
+  eventIn      SFBool     eventsProcessed
+  exposedField SFBool     enabled          TRUE
+  eventOut     SFInt32    keyPress
+  eventOut     SFInt32    keyRelease
+  eventOut     SFInt32    actionKeyPress
+  eventOut     SFInt32    actionKeyRelease
+  eventOut     SFBool     shiftKey_changed
+  eventOut     SFBool     controlKey_changed
+  eventOut     SFBool     altKey_changed
+  eventOut     SFBool     isActive
+]
+
+{
+	Group {}
+}
+
+
+
+PROTO MouseSensor [
+  eventIn      SFBool      eventsProcessed
+  exposedField SFBool      enabled TRUE  
+  eventOut     SFVec2f     client
+  eventOut     SFVec2f     position
+  eventOut     SFBool      lButton
+  eventOut     SFBool      mButton
+  eventOut     SFBool      rButton
+  eventOut     SFFloat     mouseWheel
+  eventOut     SFBool      isActive 
+]
+
+{
+	Group {}	
+}
+
+
+PROTO DeviceSensor[
+	exposedField    SFBool      enabled	    TRUE
+	exposedField    SFString    device      ""
+	exposedField    SFString    eventType   ""
+	exposedField    SFNode      event       NULL
+	eventOut        SFBool      isActive
+]
+{
+	Group {}
+}
+
+PROTO Event [  
+  eventIn  SFBool     cancelBubble
+  eventIn  SFBool     returnValue
+
+  eventOut SFString   type 
+  eventOut SFVec2f    screen
+  eventOut SFVec2f    client
+  eventOut SFVec2f    position
+  eventOut SFVec3f    xyz 
+  eventOut SFVec3f    ypr
+  eventOut SFBool     altKey
+  eventOut SFBool     ctrlKey
+  eventOut SFBool     shiftKey
+  eventOut SFInt32    keyCode
+  eventOut SFString	  character # 5.1
+
+  eventOut SFString   dataType
+  eventOut SFString   data
+  eventOut SFInt32    button
+
+  eventOut SFNode	  target 
+  eventOut SFVec3f	  translation
+  eventOut SFRotation  rotation
+
+]
+{}
+
+
+
+
+PROTO StringSensor[
+	exposedField SFBool enabled TRUE 
+	exposedField SFString terminationText ""
+	exposedField SFInt32 deletionCharacter	-1
+	eventOut SFBool isActive
+	eventOut SFString enteredText
+	eventOut SFString finalText
+]
+{
+	Group {}
+
+}
+
+PROTO Object[
+	exposedField MFString url []
+	exposedField SFString type ""
+	exposedField SFString title	""
+	exposedField MFString description []
+	exposedField MFString properties  []
+	exposedField MFNode children []
+	eventIn SFBool set_open
+	eventOut SFBool isOpen
+]
+{
+	Anchor {
+		url	IS url
+		description IS title
+		#bboxSize IS bboxSize
+		#bboxCenter IS bboxCenter
+		children IS children
+	}
+}
+
+
+#2D Nodes 
+
+
+PROTO Layer2D  [ 
+	eventIn         MFNode		addChildren
+	eventIn         MFNode		removeChildren
+	exposedField 	MFNode		children	    []
+
+	exposedField	SFVec2f 	translation 0 0     # not MPEG-4
+
+	exposedField	SFVec2f 	size		    -1 -1	
+	exposedField	SFNode  	background      NULL
+	exposedField	SFNode   	viewport        NULL
+] {
+}
+
+PROTO LineProperties [
+	exposedField	SFColor		lineColor	0 0 0
+	exposedField	SFInt32		lineStyle	0  	
+	exposedField	SFFloat		width		1  	
+]{
+}
+
+PROTO Material2D [
+	exposedField	SFColor			emissiveColor 0.8 0.8 0.8 
+	exposedField	SFBool			filled		FALSE
+	exposedField	SFNode			lineProps	NULL
+	exposedField	SFFloat			transparency 0
+]{
+	Material { 
+		emissiveColor IS emissiveColor
+		transparency IS	transparency
+		diffuseColor 0 0 0
+	}
+}
+
+PROTO Bitmap [ 
+	exposedField SFVec2f  scale  -1 -1 
+] 
+{
+	IndexedFaceSet {} 
+}
+
+PROTO Rectangle [ 
+	exposedField	SFVec2f	size	2 2	
+]
+{
+	IndexedFaceSet {} 
+
+}
+
+PROTO Background2D [ 
+	eventIn		    SFBool	set_bind
+	exposedField	SFColor	backColor      0 0 0 
+	exposedField	MFString	url	[]
+	eventOut	    SFBool	isBound
+] 
+{
+	Background {}
+}
+PROTO Curve2D [ 
+	exposedField	SFNode			point	 NULL
+	exposedField	SFFloat			fineness 0.5
+	exposedField	MFInt32			type	 []	
+] 
+{
+		IndexedFaceSet {} 
+}
+
+PROTO OrderedGroup [ 
+	eventIn     MFNode  addChildren
+	eventIn      MFNode  removeChildren
+	exposedField MFNode  children       []
+	exposedField MFFloat   order       []   
+] {
+	Group  {
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+
+}
+
+PROTO Transform2D [ 
+	eventIn		    MFNode	addChildren
+	eventIn		    MFNode	removeChildren
+	exposedField	MFNode	children	[]
+	exposedField	SFVec2f		center		0 0	
+	exposedField	SFFloat		rotationAngle	0	
+	exposedField	SFVec2f		scale		1 1	
+	exposedField	SFFloat		scaleOrientation 0	
+	exposedField	SFVec2f		translation	0 0	
+] {
+	Transform  {
+		## to do 
+		#bboxSize IS bboxSize
+		#bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+
+PROTO PositionInterpolator2D [	
+	eventIn		SFFloat	set_fraction
+	exposedField	MFFloat	key		[]	
+	exposedField	MFVec2f	keyValue	[]	
+	eventOut	SFVec2f	value_changed
+] 
+{
+	PositionInterpolator {
+		key	IS key
+		set_fraction IS	set_fraction
+	}
+	Script {
+		eventIn	SFVec3f	value3
+		eventOut	SFVec2f	value_changed IS value_changed
+		##field	MFVec2f keyValue IS keyValue
+
+	}
+}
+
+PROTO CoordinateInterpolator2D [	
+	eventIn      SFFloat set_fraction
+	exposedField MFFloat key           [] 
+	exposedField MFVec2f keyValue      []  
+	eventOut     MFVec2f value_changed
+] 
+{
+	CoordinateInterpolator {
+		key	IS key
+		set_fraction IS	set_fraction
+	}
+	Script {
+		eventIn		MFVec3f	value3
+		eventOut	MFVec2f	value_changed IS value_changed
+		# field		MFVec2f keyValue IS keyValue
+
+	}
+}
+PROTO PlaneSensor2D [ 
+	exposedField SFBool  autoOffset          TRUE
+	exposedField SFBool  enabled             TRUE
+	exposedField SFVec2f maxPosition         0 0   
+	exposedField SFVec2f minPosition         0 0   
+	exposedField SFVec2f offset              0 0   
+	eventOut     SFBool  isActive
+	eventOut     SFVec2f trackPoint_changed
+	eventOut     SFVec2f translation_changed
+] 
+{
+	PlaneSensor	{
+		autoOffset IS autoOffset
+		enabled	IS enabled
+		isActive IS	isActive
+	}
+}
+# 5.1
+PROTO ShadowGroup[
+
+ 	field SFVec3f bboxSize -1 -1 -1
+	field SFVec3f bboxCenter 0 0 0
+	exposedField SFBool enabled TRUE
+	exposedField SFNode proxy NULL
+	exposedField MFNode children []
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+
+	exposedField MFNode light []
+	exposedField MFNode plane []
+	exposedField MFNode appearance []
+	exposedField MFNode emitter []
+	exposedField SFString mode ""
+
+]
+{
+	Group {
+		bboxSize IS bboxSize
+		bboxCenter IS bboxCenter
+		children IS children
+		addChildren	IS addChildren
+		removeChildren IS removeChildren
+	}
+}
+
+PROTO TextureMatrixTransform[
+	exposedField MFFloat matrix []
+	##exposedField SFMatrix matrix
+]
+{
+	TextureTransform {}
+}
+
+
+# Emulators
+
+PROTO MultiApperance[
+
+	exposedField SFNode material NULL 
+
+	exposedField SFBool materialColor FALSE
+	exposedField SFBool materialAlpha FALSE
+
+	exposedField MFString mode []
+	exposedField MFString type []
+
+	exposedField MFNode texture []
+	exposedField MFNode textureTransform []
+	exposedField MFInt32 textureOp []
+	exposedField SFColor color 1 1 1
+	exposedField SFFloat alpha  1
+
+]
+
+{ 
+	Appearance {
+		material IS	material
+		texture	MultiTexture 
+		{
+			texture	IS texture
+			textureTransform IS	textureTransform
+
+			materialColor IS materialColor
+			materialAlpha IS materialAlpha
+
+			mode IS	mode
+			type IS	type
+
+			textureOp IS textureOp
+			color IS color
+			alpha IS  alpha
+		}
+	}
+} 
+

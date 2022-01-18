@@ -1,0 +1,424 @@
+#VRML V2.0 utf8
+
+PROTO NurbsSurface [
+	field        SFInt32  uDimension        0     
+	field        SFInt32  vDimension        0    
+	field        MFFloat  uKnot             []    
+	field        MFFloat  vKnot             []    
+	field        SFInt32  uOrder            3     
+	field        SFInt32  vOrder            3     
+  
+	exposedField MFVec3f  controlPoint      []    
+	exposedField MFFloat  weight            []    
+	exposedField SFInt32  uTessellation     0    
+	exposedField SFInt32  vTessellation     0    
+
+	exposedField SFNode   texCoord          NULL
+
+	field        SFBool   ccw               TRUE
+	field        SFBool   solid             TRUE
+]
+{
+	DEF ils IndexedLineSet
+	{ coord Coordinate { point IS controlPoint}
+		coordIndex [1, 2, 3, -1, 5, 6, 7, -1]
+	}
+
+
+	DEF s Script { 
+		directOutput TRUE
+
+    	# Declarations of what's in this Script node:
+		field        SFInt32  uDimension        IS  uDimension    
+		field        SFInt32  vDimension        IS   vDimension     
+		field SFNode ils USE ils	# the ILS for visualization 
+
+    	url "javascript:
+        function initialize() {
+			//Browser.print('Sorry, your browser does not support NURBS nodes');
+			var u,v, counter, number;
+			counter = 0;
+			number = 0;
+			var ind = new MFInt32();
+			ind.length = 2*vDimension * uDimension + uDimension + vDimension;
+
+			for(v=0; v<vDimension;v++)
+			{
+				for(u=0; u<uDimension;u++)
+				{
+					ind[counter] = number;
+					counter++;
+					number++;
+				}
+				ind[counter] = -1; counter++;
+			}
+		
+			for(u=0; u<uDimension;u++)
+			{
+				for(v=0; v<vDimension;v++)
+				{
+					ind[counter] = v*uDimension + u;
+					counter++;
+					number++;
+				}
+				ind[counter] = -1; counter++;
+			}
+			
+			ils.set_coordIndex = ind;
+
+		}
+      
+    	"
+	}
+
+}
+
+PROTO NurbsPositionInterpolator [
+	eventIn      SFFloat  set_fraction
+	eventIn      MFFloat  set_knot
+	eventIn      MFFloat  set_order
+	eventIn      MFFloat  set_keyValue
+	exposedField SFBool   fractionAbsolute TRUE 
+	field MFFloat  knot					 []     
+	field SFInt32  order					 3 
+	field MFVec3f  keyValue				 []
+	exposedField MFFloat  keyWeight        []
+	eventOut     SFVec3f  value_changed 
+]
+{
+	DEF pi PositionInterpolator
+	{ 
+		set_fraction IS set_fraction
+		keyValue [0 0 0, 1 1 1]
+		key [0,1]
+		value_changed IS value_changed
+	}
+
+	DEF s Script { 
+		directOutput TRUE
+
+    	# Declarations of what's in this Script node:
+		field SFNode pi USE pi
+		field MFVec3f  keyValue IS keyValue     
+		field MFFloat  knot IS knot              
+		field SFInt32  order IS order            
+
+    	url "javascript:
+        function initialize() {
+			//Browser.print('Sorry, your browser does not support NURBS nodes');
+			var i;
+			i=0;
+			pi.set_keyValue = keyValue;
+			var keys = new MFFloat();
+			for(i=0; i<keyValue.length; i++)
+			{
+				keys[i] = knot[i + order - 1];
+				//Browser.print('keyValue' + keyValue[i]);
+				//Browser.print('key' + keys[i]);
+			}
+			pi.set_key = keys;
+		}
+      
+    	"
+	}
+}
+
+
+PROTO NurbsCurve [
+	field             MFFloat   knot             []    
+	field             SFInt32   order            3    
+
+	exposedField      MFVec3f   controlPoint     []    
+	exposedField      MFFloat   weight           []    
+	exposedField      SFInt32   tessellation     10     
+] 
+{
+	DEF ils IndexedLineSet
+	{ 
+		coord Coordinate { point IS controlPoint}
+		coordIndex [1, 2, 3, -1, 5, 6, 7, -1]
+	}
+
+
+	DEF s Script { 
+		directOutput TRUE
+
+    	# Declarations of what's in this Script node:
+		field SFNode ils USE ils	# the ILS for visualization 
+
+    	url "javascript:
+        function initialize() {
+			//Browser.print('Sorry, your browser does not support NURBS nodes');
+			var u,v, counter, number, Dimension;
+			counter = 0;
+			number = 0;
+			Dimension = ils.coord.point.length;
+			//Browser.print('Dimension ' + Dimension);
+			var ind = new MFInt32();
+			ind.length = Dimension + 1;
+
+			for(counter=0; counter<Dimension;counter++)
+			{
+				//Browser.print('ils.point ' + ils.coord.point[counter]);
+				ind[counter] = counter;
+				//Browser.print('ils.ind ' + ind[counter]);
+			}
+			counter++;
+			ind[counter] = -1;
+			
+			ils.set_coordIndex = ind;
+
+		}
+      
+    	"
+	}
+
+}
+
+PROTO NurbsGroup [ 
+
+	eventIn      MFNode  addChildren
+	eventIn      MFNode  removeChildren
+	exposedField MFNode  children          []
+	field        SFVec3f bboxCenter        0 0 0     
+	field        SFVec3f bboxSize          -1 -1 -1  
+	exposedField SFFloat tessellationScale 1.0
+]
+{
+	Group {
+		children IS children
+	}
+}
+
+
+
+
+
+
+##################################################################################################################
+##################################################################################################################
+
+#					just for visualization of the corresponding ILS in blaxxun Contact	
+
+##################################################################################################################
+##################################################################################################################
+
+PROTO NurbsCurve2ILS [
+	field             MFFloat   knot             []    
+	field             SFInt32   order            3    
+
+	exposedField      MFVec3f   controlPoint     []    
+	exposedField      MFFloat   weight           []    
+	exposedField      SFInt32  tessellation      10     
+] 
+{
+	DEF ils IndexedLineSet
+	{ 
+		coord Coordinate { point IS controlPoint}
+		coordIndex [1, 2, 3, -1, 5, 6, 7, -1]
+	}
+
+	DEF	mtr Transform {
+		children Shape { 
+			appearance	Appearance {material Material {diffuseColor	1 0 0}}
+			#geometry Box	{}
+		}
+	}
+
+	DEF s Script { 
+		directOutput TRUE
+
+    	# Declarations of what's in this Script node:
+		field SFNode ils USE ils	# the ILS for visualization 
+		field SFNode mtr USE mtr
+		exposedField MFVec3f cvs IS controlPoint
+		eventOut MFNode	set_Children
+
+    	url "javascript:
+        function initialize() {
+			//Browser.print('Sorry, your browser does not support NURBS nodes');
+			var u,v, counter, number, Dimension;
+			counter = 0;
+			number = 0;
+			Dimension = ils.coord.point.length;
+			//Browser.print('Dimension ' + Dimension);
+			var ind = new MFInt32();
+			ind.length = Dimension + 1;
+
+			for(counter=0; counter<Dimension;counter++)
+			{
+				//Browser.print('ils.point ' + ils.coord.point[counter]);
+				ind[counter] = counter;
+			}
+			counter++;
+			ind[counter] = -1;
+			
+			ils.set_coordIndex = ind;
+
+
+
+			//------------------------------------------------------------------------------------------
+			//					the little spheres
+			//------------------------------------------------------------------------------------------
+			var nodes = new MFNode();
+			var mSphereString1 = new MFString('
+			Transform {
+				scale .1 .1 .1
+				translation  
+				');
+				var mTranslation = new SFVec3f(1,1,1);
+				var mSphereString2 = new MFString('
+				children Shape { 
+					appearance	Appearance {material Material {diffuseColor	1 0 0}}
+					geometry Sphere	{}
+				}
+			}
+			');
+
+			var megaString = new MFString('');
+
+			for (counter=0;counter<Dimension;counter++)
+			{
+				mTranslation = cvs[counter];
+				Browser.print(mTranslation);
+				megaString += mSphereString1;
+				megaString += mTranslation;
+				megaString += mSphereString2;
+			}
+			
+			nodes = Browser.createVrmlFromString(megaString);			 
+			set_Children = nodes;
+		}
+      
+    	"
+	}
+
+	ROUTE s.set_Children TO	mtr.addChildren
+
+}
+
+
+
+
+
+
+PROTO NurbsSurface2ILS [
+	field        SFInt32  uDimension        0     
+	field        SFInt32  vDimension        0    
+	field        MFFloat  uKnot             []    
+	field        MFFloat  vKnot             []    
+	field        SFInt32  uOrder            3     
+	field        SFInt32  vOrder            3     
+  
+	exposedField MFVec3f  controlPoint      []    
+	exposedField MFFloat  weight            []    
+	exposedField SFInt32  uTessellation     0    
+	exposedField SFInt32  vTessellation     0    
+
+	exposedField SFNode   texCoord          NULL
+
+	field        SFBool   ccw               TRUE
+	field        SFBool   solid             TRUE
+]
+{
+
+	Transform {
+		children Shape { 
+			appearance	Appearance {material Material {diffuseColor	1 0 0 emissiveColor 1 0 0}}
+			geometry DEF ils IndexedLineSet
+			{ coord Coordinate { point IS controlPoint}
+				coordIndex [1, 2, 3, -1, 5, 6, 7, -1]
+			}
+		}
+	}
+
+	DEF	mtr Transform {
+		children Shape { 
+			appearance	Appearance {material Material {diffuseColor	1 0 0}}
+			#geometry Box	{}
+		}
+	}
+
+	DEF s Script { 
+		directOutput TRUE
+
+    	# Declarations of what's in this Script node:
+		field        SFInt32  uDimension        IS  uDimension    
+		field        SFInt32  vDimension        IS   vDimension
+		field SFNode mtr USE mtr
+		exposedField MFVec3f cvs IS controlPoint     
+		field SFNode ils USE ils	# the ILS for visualization 
+		eventOut MFNode	set_Children
+
+    	url "javascript:
+        function initialize() {
+			//Browser.print('Sorry, your browser does not support NURBS nodes');
+			var u,v, counter, number;
+			counter = 0;
+			number = 0;
+			var ind = new MFInt32();
+			ind.length = 2*vDimension * uDimension + uDimension + vDimension;
+
+			for(v=0; v<vDimension;v++)
+			{
+				for(u=0; u<uDimension;u++)
+				{
+					ind[counter] = number;
+					counter++;
+					number++;
+				}
+				ind[counter] = -1; counter++;
+			}
+		
+			for(u=0; u<uDimension;u++)
+			{
+				for(v=0; v<vDimension;v++)
+				{
+					ind[counter] = v*uDimension + u;
+					counter++;
+					number++;
+				}
+				ind[counter] = -1; counter++;
+			}
+			
+			ils.set_coordIndex = ind;
+
+			//------------------------------------------------------------------------------------------
+			//					the little spheres
+			//------------------------------------------------------------------------------------------
+			var nodes = new MFNode();
+			var mSphereString1 = new MFString('
+			Transform {
+				scale .03 .03 .03
+				translation  
+				');
+				var mTranslation = new SFVec3f(1,1,1);
+				var mSphereString2 = new MFString('
+				children Shape { 
+					appearance	Appearance {material Material {diffuseColor	1 0 0}}
+					geometry Sphere	{}
+				}
+			}
+			');
+
+			var megaString = new MFString('');
+
+			for (counter=0;counter<uDimension*vDimension;counter++)
+			{
+				mTranslation = cvs[counter];
+				Browser.print(mTranslation);
+				megaString += mSphereString1;
+				megaString += mTranslation;
+				megaString += mSphereString2;
+			}
+			
+			nodes = Browser.createVrmlFromString(megaString);			 
+			set_Children = nodes;	
+
+
+		}
+      
+    	"
+	}
+	ROUTE s.set_Children TO	mtr.addChildren
+}

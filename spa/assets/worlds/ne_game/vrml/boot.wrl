@@ -1,0 +1,5 @@
+#VRML V2.0 utf8
+
+
+
+Script{url "vrmlscript: function initialize(){Browser.loadURL(new MFString('/cgi-bin/cybertown/place?plc=ne_game'),new MFString('target=_top'));}"}

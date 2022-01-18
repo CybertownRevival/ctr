@@ -1,0 +1,387 @@
+#VRML V2.0 utf8
+
+
+DEF tvrcTempDropNodeTransform Transform	{
+	children [
+		Selection {
+			 collide FALSE
+       select FALSE
+			children [
+		DEF tvrcTempDropNodeSwitch Switch	{
+		}
+	]
+}
+	]
+}
+
+
+#fuer interaktive Selection eines Knotens
+DEF tcrvSelectMouseSensor MouseSensor{
+	#enabled FALSE 
+	enabled TRUE
+}
+
+
+
+DEF	tcrvSelectMouseScript Script	{
+	exposedField  SFVec3f hitPos 0 0 0
+
+	eventIn SFBool leftButtonPressed
+	eventIn SFBool rightButtonPressed
+
+	eventIn	SFVec2f	mousePositionChanged 
+	eventIn	SFVec2f	mousePositionChangedInApplication
+	eventOut SFString selectedNode
+
+	field SFVec2f currentMousePos 0 0
+	field SFVec2f tempMousePos 0 0
+	field SFString tempselectedNode ""
+
+	eventOut SFString tempselectedNodeOut
+
+	eventOut SFString	hitPath
+
+  eventOut SFRotation	hitPathOrientation
+
+exposedField  SFVec3f hitNormal 0 0 0
+
+	exposedField SFBool	drop FALSE
+
+	exposedField SFString testNode ""
+
+	  field        SFVec3f    defLosVec 0 0 -1
+
+		   field    SFVec3f    yAxis         0 1 0
+
+			 	field        SFVec3f    up  0 1 0
+
+
+			# Drei-Punkt Berechnung, da Ermittlung über Normalen nicht funktioniert
+			field  SFVec3f hitPos1 0 0 0
+field  SFVec3f hitPos2 0 0 0
+field  SFVec3f hitPos3 0 0 0
+field SFVec2f tempPos 0 0
+
+#	 	field        SFVec3f    sel1  0 1 0
+#	field        SFVec3f    sel2  0 1 0
+#		field        SFVec3f    sel3  0 1 0
+
+	url	"vrmlscript:
+
+
+	function   rightButtonPressed(value) {
+	// Wird nocht nicht genutzt
+}
+
+
+	function   leftButtonPressed(value) {
+
+		if (value==1) {
+		   tempMousePos= currentMousePos;
+		}
+		if (value==0) {
+			if (  tempMousePos[0]== currentMousePos[0]&&	tempMousePos[1]== currentMousePos[1]) {
+				node1 = Browser.mouseSelect(currentMousePos); 
+				if (node1) {   
+					tempselectedNode='';
+					for (i =1;i< node1.hitPath.length-1;i++) {
+						tempselectedNode=node1.hitPath[i].getName()+' '+	tempselectedNode;
+					}
+					selectedNode= tempselectedNode;
+				}
+			} 
+		}		  
+	}
+
+function mousePositionChangedInApplication (value, timestamp) {
+	if(drop) {
+		print('#### drop  ####  ### ');
+		currentMousePos=value;
+
+		// TODO: UEberpruefen, ob eventuell Geschwindigkeitsproblem auftritt.
+		// FALLS ja, dann diese Methode nur bei Drag-Ereignissen aufrufen (flag muesste dann von
+		// der Anwendung gesetzt werden).
+	        node1 = Browser.mouseSelect(currentMousePos); 
+				if (node1) {   
+					tempselectedNode='';
+					for (i =1;i< node1.hitPath.length-1;i++) {
+							print('i='+i);
+						print('node='+node1.hitPath[i].getName());
+				   	tempselectedNode=node1.hitPath[i].getName()+' '+	tempselectedNode;
+						tempselectedNodeOut=tempselectedNode;
+							print('tempselectedNode='+tempselectedNode);
+
+						var sel1=Browser.mouseSelect(value);
+				    if (sel1!=null) {
+							var path=sel1.hitPath;
+								var	l= path.length;
+hitPath='';
+					while (l>0) {
+						l--;
+            // hitPath=hitPath+' '+path[l].getType()+' '+path[l].getName();
+			         hitPath=hitPath+' '+path[l].getName();
+			        		print('hitPath='+hitPath);
+						 }
+   hitPos = sel1.hitPoint;
+	 tempPos=value;
+
+	// hitNormal=sel1.hitNormal;
+	// print('hitNormal='+hitNormal);
+	tempPos[0]=value[0]-0.0001;
+	 
+	 
+	var sel2=Browser.mouseSelect(tempPos);
+	 if (sel2!=null) {
+	hitPos2=sel2.hitPoint;
+	  tempPos[1]=value[1]-0.0001;
+
+	
+var sel3=Browser.mouseSelect(tempPos);
+ if (sel3!=null) {
+	hitPos3=sel3.hitPoint;
+
+	
+var vec1=hitPos.subtract(hitPos2);
+var vec2=hitPos.subtract(hitPos3);
+	
+ hitNormal=vec1.cross(vec2);
+	 
+	 computeRot();
+		
+ }
+}
+	 
+					 }
+
+					}
+				} else {
+					tempselectedNodeOut='';
+				}
+				testNode='fuenf';
+			}
+	}
+
+ 
+	
+	function mousePositionChanged (value, timestamp) {
+		currentMousePos=value;
+	}
+
+
+	        function rot2quat(rot) {
+                  s=Math.sin(rot[3]/2);
+                  return new MFFloat(rot[0]*s, rot[1]*s, rot[2]*s, Math.cos(rot[3]/2));
+               }           
+               function quat2rot(quat) {
+                  s=Math.sqrt(quat[0]*quat[0] + quat[1]*quat[1] + quat[2]*quat[2]);
+                  if(s<0.01) { return new SFRotation(1, 0, 0, 0); }
+                  else       { return new SFRotation(quat[0]/s, quat[1]/s, quat[2]/s, 2*Math.acos(quat[3]));}
+               }
+               function quatMult(a,b) {
+                  return new MFFloat(
+                  a[3]*b[0] + a[0]*b[3] + a[1]*b[2] - a[2]*b[1],
+                  a[3]*b[1] + a[1]*b[3] + a[2]*b[0] - a[0]*b[2],
+                  a[3]*b[2] + a[2]*b[3] + a[0]*b[1] - a[1]*b[0],
+                  a[3]*b[3] - a[0]*b[0] - a[1]*b[1] - a[2]*b[2]
+                  );
+               }
+
+
+               function computeRot() {
+	               // compute orientation of camera
+								 print('hitNormal='+hitNormal);
+	               var rotA = new SFRotation(defLosVec, hitNormal);
+ print('rotA='+rotA);
+	               var cameraUp = rotA.multVec(yAxis);
+	               var N2 = hitNormal.cross(up);
+								 print('N2='+N2);
+						//		 if(N2[0]>-0.0001 && N2[0]<0.00000000001 && N2[1]>-0.00000000001 && N2[1]<0.00000000001 && N2[2]>-0.00000000001 && N2[2]<0.00000000001 )  {
+								 if(N2[0]==0 && N2[1]==0 &&	N2[2]==0 ) {
+							 	hitPathOrientation =new SFRotation(0, 0, 1, 0);
+									return;
+								 } 
+								 print('weiter');
+	               var N1 = hitNormal.cross(cameraUp);
+								 	 print('N1='+N1);
+	               var rotB = new SFRotation(N1, N2);
+								 print('rotB='+rotB);
+	               //orientation_changed = rotA.multiply(rotB);
+                  hitPathOrientation = quat2rot( quatMult(rot2quat(rotB), rot2quat(rotA)) );
+									 print('hitPathOrientation='+hitPathOrientation);
+
+               }
+
+
+
+		
+	"
+}  
+ROUTE  tcrvSelectMouseSensor.position	TO tcrvSelectMouseScript.mousePositionChanged
+ROUTE  tcrvSelectMouseSensor.lButton TO  tcrvSelectMouseScript.leftButtonPressed
+ROUTE  tcrvSelectMouseSensor.rButton TO  tcrvSelectMouseScript.rightButtonPressed
+
+
+	DEF	tvrc_ds DeviceSensor #senses the drop event
+	{
+		enabled TRUE
+		eventType "drop"
+	}
+
+	DEF tvrcInputHandler Script # checks the drop event
+	{
+		field	SFNode  tcrvSelectMouseScript USE	tcrvSelectMouseScript
+		field	SFNode tvrcTempDropNodeSwitch USE tvrcTempDropNodeSwitch
+		eventIn SFNode onEvent
+
+		field SFVec3f HitPos 0 0 0
+
+		eventOut SFString DropInfo
+
+	
+
+		url "javascript:
+
+		// handle the event callback 
+		function onEvent(e,t)
+		{
+
+			if (e.type == 'drop') { // ***** handle a DROP event  
+        // Einfuegeelement ausblenden
+				tvrcTempDropNodeSwitch.whichChoice=-1;
+        tcrvSelectMouseScript.drop=false;
+				HitPos[0]=0;
+HitPos[1]=0;
+HitPos[2]=0;
+
+				if (Browser.mouseSelect(e.position)!=null)
+			HitPos = Browser.mouseSelect(e.position).hitPoint;
+		print('e.data    ='+e.data);
+				DropInfo=e.data+' '+HitPos;	
+
+				/*
+				// get index where file name starts 
+				var i1 = e.data.lastIndexOf('/');
+				var i2 = e.data.lastIndexOf(backslash);
+
+				var url ='';
+				var ext ='';
+
+
+				if (i2>i1) i1=i2;
+
+				// check the data type
+				var worldUrl = Browser.getWorldURL();
+
+				if (e.dataType == 'File') {// it's an local file
+					url= e.data;
+				}	
+				else if (e.dataType == 'URL') // it's an URL dragged 
+					url = e.data;
+				else print('Drop:Cant deal with this yet.'); ;	// some special data like HTML Text 
+
+				// get extension 
+				i1 = e.data.lastIndexOf('.');
+				if (i1>0)  {
+					ext = e.data.substring(i1+1);
+					ext = ext.toLowerCase();
+				}
+
+
+				// search what below mouse 
+				var hit = Browser.mouseSelect(e.position);
+				var cone=rootShape;
+
+				if (hit)  {
+					path = hit.hitPath; // MFNode
+					l= path.length;
+					//print('Hit');
+					while (l>0) {
+						l--;
+						if (path[l].getType() == 'Shape') {
+							cone = path[l];
+							break;
+						}
+					}
+
+				}
+		
+				var baseUrl=Browser.getBaseURL();
+
+				print(url);
+				print(ext);
+				//print(baseUrl); 
+				if (url.length > baseUrl.length) {
+					// make url relative ?
+				}
+
+				// check extensions 
+				if (ext == 'wrl') {
+					target = cone;
+					if (e.ctrlKey)
+						addInline(url);
+					else 
+					   Browser.createVrmlFromURL(url,Browser.getScript(),'addVrml');
+			
+				}
+				else if ( audioExtensions.indexOf(ext) >=0) {
+						setAudio(rootSound,url,false);
+				} else {
+					// assume image ?? 
+					if (cone) {
+						if (imageExtensions.indexOf(ext) >=0)
+							setTexture(cone,url,false);
+						else if (movieExtensions.indexOf(ext) >=0)
+							setTexture(cone,url,true);
+					}
+					else Browser.loadURL(url,frameParameters);
+				}
+
+*/
+				// ok done, we have handled the drop event
+				e.returnValue = 0;
+
+			}
+
+		}
+
+		"
+	}
+
+	ROUTE tvrc_ds.event TO tvrcInputHandler.onEvent
+
+
+
+#}
+
+
+#DEF tvrcDropHandlerInstance tvrcDropHandler {}
+
+
+
+DEF tvrcKeySensor  KeySensor{
+
+}
+
+
+
+DEF tvrcBBoxScript Script {
+	eventIn	SFNode nodeIn 
+	eventOut MFVec3f bboxOut
+	field MFVec3f tempBox 0 0 0
+	
+	url "vrmlscript: 
+
+	function nodeIn(value) 
+	{ 
+		//bboxOut=new MFVec3f(/*SFVec3f v1, SFVec3f v2, ...*/);
+		tempBox = new MFVec3f(new SFVec3f(0,0,0),new SFVec3f(-1,-1,-1));
+    	tempBox = value.getBBox();
+		bboxOut = tempBox;
+		print('bbox='+ value.getBBox());
+		print('tempBox='+ tempBox);
+		print('bboxOut='+ bboxOut);
+	}
+
+"
+
+}

@@ -1,0 +1,1383 @@
+#VRML V2.0 utf8
+
+
+# dient zur Speicherung globaler Variablen
+PROTO tvrcMerker [
+	exposedField SFInt32 intValue 0
+	exposedField SFVec3f posStart 0 0 0		
+]
+{
+}
+
+
+
+######
+### Mover
+######
+PROTO tvrcMover [
+	eventIn	SFInt32	setAxis 
+	exposedField SFInt32 currentAxis 0
+	exposedField SFVec3f scale .2 .2 .2
+	exposedField SFVec3f translation 0 0 0
+	exposedField SFInt32 whichPlane 0
+	exposedField MFNode	nodes  [ ]
+	eventOut SFRotation rotAll_out
+	eventOut SFVec3f translation_out
+	eventOut SFVec3f scale_out
+	field SFVec3f planeSize	3.3 3.3 .02	#Groesse der Ebenen
+	exposedField SFFloat planeTrp	.8	#Transparenz der Ebenen
+	exposedField SFInt32 chModeSensX 0	#AnzeigeMode X-Achse (Ausrichtung fein/step)
+	exposedField SFInt32 chModeSensY 0	#AnzeigeMode Y-Achse (Ausrichtung fein/step)
+	exposedField SFInt32 chModeSensZ 0	#AnzeigeMode Z-Achse (Ausrichtung fein/step)
+	field SFColor matToS_SwitchScale 0 0 0
+	exposedField SFVec3f posStart 0 0 0
+	eventOut SFVec3f moverTransTmp_out # Zur Übernahme als Center
+
+] {	   
+	
+	#PROTO interface [
+	#	exposedField SFVec3f scale IS scale
+	#]{}	
+	
+	#DEF	objInt interface {
+	#	scale IS scale
+	#}
+
+	DEF tvrcMerkerInstance tvrcMerker {
+		posStart IS	posStart
+	} 	
+	
+	DEF trfMover Transform	{
+		translation	IS translation
+		#scale IS scale
+    	children [
+			### Bewegungsebene an/-ausschalten...
+			DEF swMover Switch {
+    			whichChoice IS whichPlane # set by Script
+    			choice [
+	    			
+					### choice 0 ###	z-Achse selektiert xy-Ebene
+					DEF trfMoverXY Transform  {
+						children [
+							
+							### Objekt???
+							Transform {
+								scale IS scale
+								children IS nodes
+							}
+							
+							
+							Transform {
+								scale IS scale
+								children [
+									DEF shpPlaneXY Shape {
+										geometry Box {
+											size IS	planeSize
+										}
+										appearance Appearance {
+											material Material {
+												transparency IS	planeTrp
+											}
+										}
+									}
+								]
+							}
+
+							DEF planeSensorXY PlaneSensor {	  #noch aendern
+								autoOffset	TRUE
+							} 
+		    			]
+	    			}
+					,
+					### choice 1 ###	x-Achse selektiert yz-Ebene
+					DEF trfMoverYZ Transform  {
+						rotation 0 1 0 -1.570796325
+		    			children [
+							#							Transform {
+							#								rotation 0 1 0 -1.570796325
+							#								children IS nodes
+							#							}
+							
+							Transform {
+								scale IS scale
+								children [
+									DEF shpPlaneYZ Shape {
+										geometry Box {
+											size IS	planeSize
+										}
+										appearance Appearance {
+											material Material {
+												transparency IS	planeTrp
+											}
+										}
+									}
+								]
+							}
+							
+							
+							DEF planeSensorYZ PlaneSensor {		 #noch aendern
+								autoOffset	TRUE
+							}  
+		    			]
+	    			}
+					,
+					### choice 2 ###	y-Achse selektiert xz-Ebene
+					DEF trfMoverXZ Transform  {
+		    			#rotation 1 0 0 0.78  #-1.570796325
+						children [
+							#							Transform {
+							#								rotation 1 0 0 -1.570796325
+							#								children IS nodes
+							#							}
+							
+							Transform {
+								rotation 1 0 0 1.570796325
+								children [
+								
+									
+									Transform {
+										scale IS scale
+										children [
+											DEF shpPlaneXZ Shape {
+												geometry Box {
+													size IS	planeSize
+												}
+												appearance Appearance {
+													material Material {
+														transparency IS	planeTrp
+													}
+												}
+											}
+										]
+									}
+									
+									
+
+									DEF planeSensorXZ PlaneSensor {		 # noch aendern
+										autoOffset	TRUE
+									}
+								]
+							}
+		    			]
+	    			}
+        		]
+    		}
+			
+			
+			
+			Transform {
+				scale IS scale
+				children [
+			
+					### Zylinder und Kegel fuer X-Achse...
+					DEF	swModeSensX Switch {
+						whichChoice IS chModeSensX
+						choice [
+							### Grobausrichtung ###
+							Transform { 
+								scale 0.1 0.1 0.1
+								rotation 1 0 0 1.570796325
+								children [
+									DEF shpCylSensX_Raw Shape {
+		    							geometry Cylinder {
+											height 40
+										}
+										appearance Appearance {
+											material	DEF matCylSensX Material {
+												diffuseColor 1 1 1
+												transparency .3
+											}
+										}
+     								}
+									Transform {
+										translation	0 22 0
+										children [
+					    					DEF shpConeSensX_Raw Shape	{
+												geometry Cone {
+													bottomRadius 3
+													height 6
+												}
+												appearance Appearance {
+													material DEF matConSensX Material {
+														diffuseColor 1 1 1
+													}
+												}
+											}
+										]
+									}
+							
+									DEF toS_Z_Raw TouchSensor {
+									}
+    							]
+    						}
+							,
+							### Feinausrichtung X ###					
+							Transform {
+								scale .1 .1 .1
+								rotation 1 0 0 1.570796325
+								children [
+									### add/sub ###
+									Transform { 
+										children [
+											### add ###
+											Transform {
+												translation	0 10 0
+												children [
+													DEF shpAddX Shape {
+		    											geometry Cylinder {
+															height 20
+														}
+														appearance Appearance {
+															material Material {
+																diffuseColor 0 1 0
+																transparency .3
+															}
+														}
+     												}
+
+													DEF	toS_AddX TouchSensor {
+													}
+												]
+											}
+							
+											### subtract ###
+											Transform {
+												translation	0 -10 0
+												children [
+													DEF shpSubX Shape {
+		    											geometry Cylinder {
+															height 20
+														}
+														appearance Appearance {
+															material Material {
+																diffuseColor 1 0 0
+																transparency .3
+															}
+														}
+     												}
+													DEF	toS_SubX TouchSensor {
+													}
+												]
+											}
+										]
+									}
+
+									### cone ###
+									Transform {
+										translation	0 22 0
+										children [
+					    					DEF shpConeX Shape	{
+												geometry Cone {
+													bottomRadius 3
+													height 6
+												}
+												appearance Appearance {
+													material Material {
+														diffuseColor 0 1 0
+														transparency 0
+													}
+												}
+											}
+											DEF toS_ConeX TouchSensor {
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+			
+					### Zylinder und Kegel fuer Y-Achse...
+					DEF	swModeSensY Switch {
+						whichChoice IS chModeSensY
+						choice [
+							### Grobausrichtung ###
+							Transform { 
+								scale 0.1 0.1 0.1
+								rotation 0 0 1 -1.570796325
+								children [
+									DEF shpCylSensY_Raw Shape {
+		    							geometry Cylinder {
+											height 40
+										}
+										appearance Appearance {
+											material	DEF matCylSensY Material {
+												diffuseColor 1 1 1
+												transparency .3
+											}
+										}
+     								}
+									Transform {
+										translation	0 22 0
+										children [
+					    					DEF shpConeSensY_Raw Shape	{
+												geometry Cone {
+													bottomRadius 3
+													height 6
+												}
+												appearance Appearance {
+													material DEF matConSensY Material {
+														diffuseColor 1 1 1
+													}
+												}
+											}
+										]
+									}
+									DEF toS_X_Raw TouchSensor {
+									}
+    							]
+    						}
+							,
+							### Feinausrichtung Y ###					
+							Transform {
+								scale .1 .1 .1
+								rotation 0 0 1 -1.570796325
+								children [
+									### add/sub ###
+									Transform { 
+										children [
+											### add ###
+											Transform {
+												translation	0 10 0
+												children [
+													DEF shpAddY Shape {
+		    											geometry Cylinder {
+															height 20
+														}
+														appearance Appearance {
+															material Material {
+																diffuseColor 0 1 0
+																transparency .3
+															}
+														}
+     												}
+
+													DEF	toS_AddY TouchSensor {
+													}
+												]
+											}
+							
+											### subtract ###
+											Transform {
+												translation	0 -10 0
+												children [
+													DEF shpSubY Shape {
+		    											geometry Cylinder {
+															height 20
+														}
+														appearance Appearance {
+															material Material {
+																diffuseColor 1 0 0
+																transparency .3
+															}
+														}
+     												}
+													DEF	toS_SubY TouchSensor {
+													}
+												]
+											}
+										]
+									}
+
+									### cone ###
+									Transform {
+										translation	0 22 0
+										children [
+					    					DEF shpConeY Shape	{
+												geometry Cone {
+													bottomRadius 3
+													height 6
+												}
+												appearance Appearance {
+													material Material {
+														diffuseColor 0 1 0
+														transparency 0
+													}
+												}
+											}
+											DEF toS_ConeY TouchSensor {
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+			
+					### Zylinder und Kegel fuer Z-Achse...
+					DEF	swModeSensZ Switch {
+						whichChoice IS chModeSensX
+						choice [
+							### Grobausrichtung ###
+							Transform { 
+								scale 0.1 0.1 0.1
+								#rotation 1 0 0 1.570796325
+								children [
+									DEF shpCylSensZ_Raw Shape {
+		    							geometry Cylinder {
+											height 40
+										}
+										appearance Appearance {
+											material	DEF matCylSensZ Material {
+												diffuseColor 1 1 1
+												transparency .3
+											}
+										}
+     								}
+									Transform {
+										translation	0 22 0
+										children [
+					    					DEF shpConeSensZ_Raw Shape	{
+												geometry Cone {
+													bottomRadius 3
+													height 6
+												}
+												appearance Appearance {
+													material DEF matConSensZ Material {
+														diffuseColor 1 1 1
+													}
+												}
+											}
+										]
+									}
+									DEF toS_Y_Raw TouchSensor {
+									}
+    							]
+    						}
+							,
+							### Feinausrichtung Z ###					
+							Transform {
+								scale .1 .1 .1
+								#rotation 1 0 0 1.570796325
+								children [
+									### add/sub ###
+									Transform { 
+										children [
+											### add ###
+											Transform {
+												translation	0 10 0
+												children [
+													DEF shpAddZ Shape {
+		    											geometry Cylinder {
+															height 20
+														}
+														appearance Appearance {
+															material Material {
+																diffuseColor 0 1 0
+																transparency .3
+															}
+														}
+     												}
+
+													DEF	toS_AddZ TouchSensor {
+													}
+												]
+											}
+							
+											### subtract ###
+											Transform {
+												translation	0 -10 0
+												children [
+													DEF shpSubZ Shape {
+		    											geometry Cylinder {
+															height 20
+														}
+														appearance Appearance {
+															material Material {
+																diffuseColor 1 0 0
+																transparency .3
+															}
+														}
+     												}
+													DEF	toS_SubZ TouchSensor {
+													}
+												]
+											}
+										]
+									}
+
+									### cone ###
+									Transform {
+										translation	0 22 0
+										children [
+					    					DEF shpConeZ Shape	{
+												geometry Cone {
+													bottomRadius 3
+													height 6
+												}
+												appearance Appearance {
+													material Material {
+														diffuseColor 0 1 0
+														transparency 0
+													}
+												}
+											}
+											DEF toS_ConeZ TouchSensor {
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+			
+
+					### Schalter loesen/feststellen
+					Transform {
+						scale .1 .1 .1
+						translation	-1.65 1.65 0
+						children [
+							Shape	{
+								geometry Sphere {
+									radius 1
+								}
+								appearance Appearance {
+									material DEF matToS_ProtoMove Material {
+										diffuseColor	1 1 1
+									}
+								}
+							}
+
+							DEF toSProtoMove TouchSensor {
+							}
+						]
+					}
+			
+					### Schalter Skalierung Mover
+					#			Transform {
+					#				scale .1 .1 .1
+					#				translation	-1.45 1.65 0
+					#				children [
+					#					Shape	{
+					#						geometry Sphere {
+					#							radius 1
+					#						}
+					#						appearance Appearance {
+					#							material DEF matToS_SwitchScaleMover Material {
+					#								diffuseColor 1 0 1
+					#							}
+					#						}
+					#					}
+
+					#					DEF toS_SwitchScaleMover TouchSensor {
+					#					}
+					#				]
+					#			}
+
+				]
+			}
+
+
+		]
+	}
+	
+				DEF scMover Script {
+
+				### 
+				eventIn	SFInt32	setAxis IS setAxis
+
+				field SFNode tvrcMerkerInstance USE tvrcMerkerInstance
+
+				### Grobpositionierung, Behandlung der TouchSensoren...
+				eventIn SFBool toS_SetZ
+				eventIn SFBool toS_SetX
+				eventIn SFBool toS_SetY
+
+				### Feinpositionierung, Behandlung der TouchSensoren...
+				eventIn SFBool toS_FineAddX_in	#Feinpos. inc-Sensor
+				eventIn SFBool toS_FineSubX_in	#Feinpos. dec-Sensor
+				eventIn SFBool toS_FineConeX_in	#Feinpos. Cone
+
+				eventIn SFBool toS_FineAddY_in	#Feinpos. inc-Sensor
+				eventIn SFBool toS_FineSubY_in	#Feinpos. dec-Sensor
+				eventIn SFBool toS_FineConeY_in	#Feinpos. Cone
+
+				eventIn SFBool toS_FineAddZ_in	#Feinpos. inc-Sensor
+				eventIn SFBool toS_FineSubZ_in	#Feinpos. dec-Sensor
+				eventIn SFBool toS_FineConeZ_in	#Feinpos. Cone
+				
+				eventIn	SFTime setRotX	#derzeit nicht benutzt
+				eventIn	SFTime setRotY	#derzeit nicht benutzt
+				eventIn	SFTime setRotZ	#derzeit nicht benutzt
+				
+				#@ Sensor wurde auf x-Ebene bewegt.
+				eventIn	SFVec3f	setXYSmooth
+				#@ Sensor wurde auf y-Ebene bewegt.
+				eventIn	SFVec3f	setYZSmooth
+				#@ Sensor wurde auf z-Ebene bewegt.
+				eventIn	SFVec3f	setXZSmooth
+				#@ Dient zum Debugging, liefert current Position...
+				eventIn	SFBool	printPos
+				
+				### Grobausrichtung, X-Achse ###
+				field SFNode shpCylSensX_Raw USE shpCylSensX_Raw
+				field SFNode shpConeSensX_Raw USE shpConeSensX_Raw
+
+				### Grobausrichtung, Y-Achse ###
+				field SFNode shpCylSensY_Raw USE shpCylSensY_Raw
+				field SFNode shpConeSensY_Raw USE shpConeSensY_Raw
+
+				### Grobausrichtung, Z-Achse ###
+				field SFNode shpCylSensZ_Raw USE shpCylSensZ_Raw
+				field SFNode shpConeSensZ_Raw USE shpConeSensZ_Raw
+				
+				#field SFNode matSensAll USE	matSensAll
+
+				#				field SFNode matRotX USE matRotX
+				#				field SFNode matRotY USE matTouchRotY
+				#				field SFNode matRotZ USE matTouchRotZ
+				
+				field SFNode swMover USE swMover
+				field SFNode trfMover USE trfMover
+				
+				field SFNode planeSensorXY USE planeSensorXY
+				field SFNode planeSensorYZ USE planeSensorYZ
+				field SFNode planeSensorXZ USE planeSensorXZ
+				
+				field SFNode shpPlaneXY USE	shpPlaneXY
+				field SFNode shpPlaneYZ USE	shpPlaneYZ
+				field SFNode shpPlaneXZ USE	shpPlaneXZ
+				
+				field SFInt32 currentSwitch 0
+				
+				#				field SFNode touchRotX USE touchRotX
+				#				field SFNode trfSphRotX USE	trfSphRotX
+
+				eventIn SFRotation rotAll_in
+				eventOut SFRotation rotAll_out IS rotAll_out
+
+				eventIn SFBool swProtoMove_in	#feststellen und loesen des Protos (translatorisch)
+				field SFBool flgProtoMove FALSE #neue Ausrichtung des Protos, keine Auswirkung auf Objekt
+				field SFNode matToS_ProtoMove USE matToS_ProtoMove
+
+				eventIn SFBool swModeFine_in	#Positionierungsmodus des Protos (translatorisch)				
+				field SFBool flgModeFine FALSE #Anordnungsmodus fein; default FALSE...
+				#				field SFNode matToS_ModeFine USE matToS_ModeFine	#grob: blau; fein: gruen
+				
+				eventOut SFVec3f translation_out IS	translation_out	#Objektmanipulation...
+				eventOut SFVec3f moverTransTmp_out IS moverTransTmp_out #Objektmanipulation...	
+				
+				eventIn	SFVec3f	moverTrans_in #weitergeben in Abh. vom flgProtoMove...
+				
+				field SFVec3f moverTransTmp 0 0 0
+				field SFVec3f moverTrlStart 0 0 0	   #Startpunkt speichern bei Ausrichung Proto
+				field SFVec3f moverTrlEnd 0 0 0		   ##Endpunkt speichern bei Ausrichung Proto
+				
+				eventIn	SFBool sensRotAllIsActive_in	#fuer Farbwechsel RotAll-Sensor
+				
+				eventIn	SFBool PS_XY_IsActive_in
+				eventIn	SFBool PS_YZ_IsActive_in
+				eventIn	SFBool PS_XZ_IsActive_in
+
+				field SFNode swModeSensX USE swModeSensX
+				field SFNode swModeSensY USE swModeSensY
+				field SFNode swModeSensZ USE swModeSensZ
+
+				### Feinausrichtung, X-Achse ###
+				field SFNode shpAddX USE shpAddX
+				field SFNode shpSubX USE shpSubX
+				field SFNode shpConeX USE shpConeX
+
+				### Feinausrichtung, Y-Achse ###
+				field SFNode shpAddY USE shpAddY
+				field SFNode shpSubY USE shpSubY
+				field SFNode shpConeY USE shpConeY
+
+				### Feinausrichtung, Z-Achse ###
+				field SFNode shpAddZ USE shpAddZ
+				field SFNode shpSubZ USE shpSubZ
+				field SFNode shpConeZ USE shpConeZ
+				
+				field SFInt32 flgAxisActive	0	#1 -> X-Achse; 2 -> Y-Achse; 3 -> Z-Achse aktiv
+
+				### alle Positionierungen ###
+				field SFColor colSensNotActive 1 1 1 #Farbe fuer nichtaktive Teile
+				field SFFloat trpSensNotActive .3	#Transparenz fuer nichtaktive Teile
+				field SFFloat trpConeSensNotActive 0	#Transparenz Enden der Achsen, nicht aktiv - looks better...
+				field SFFloat trpConeSensActive 0	#Transparenz Enden der Achsen, aktiv - looks better...
+
+				### Grobpositionierung ###
+				field SFColor colSensRawActive 0 0 1 #Farbe, wenn Achse Grobpositionierung angewaehlt (blau)
+				field SFFloat trpSensRawActive 0	#Transparenz Achse aktiv
+
+				### Feinpositionierung ###
+				field SFColor colSensFineAddActive 0 1 0 #Farbe inc von Feinpositionierung
+				field SFColor colSensFineSubActive 1 0 0 #Farbe, dec von Feinpositionierung
+				field SFColor colSensFineActive 0 1 0 #Farbe, Sonstige von Feinpositionierung
+				field SFFloat trpSensFineActive 0	#Transparenz Achse aktiv
+
+				field SFFloat fineStepX 1	#Schrittweite X-Achse
+				field SFFloat fineStepY 1	#Schrittweite Y-Achse
+				field SFFloat fineStepZ 1	#Schrittweite Z-Achse
+				
+				field SFVec3f vecFineStepX 0 0 1	#Vector fuer Feinpositionierung
+				field SFVec3f vecFineStepY 1 0 0	#Vector fuer Feinpositionierung
+				field SFVec3f vecFineStepZ 0 1 0	#Vector fuer Feinpositionierung
+
+				eventIn	SFBool swChangeStep_in #Ausdruck Konsole
+				
+				### Variablen Test Eingabe...
+				#field SFNode EingabeStep USE EingabeStep
+				field MFString	displayTxtHeaderTmp [""]
+
+				eventIn	SFFloat	displayStep_in #neue Schrittweite vom Display...
+
+				field SFString displayStringTmp ""
+
+				
+				### Variablen fuer Feature Skalierung...
+				field SFBool flgModeScale	FALSE #Skalierung? --> sonst Translation; (default: false)
+				
+				field SFFloat stepScaleX .1	#Schrittweite Skalierung X-Achse
+				field SFFloat stepScaleY .1	#Schrittweite Skalierung Y-Achse
+				field SFFloat stepScaleZ .1	#Schrittweite Skalierung Z-Achse
+				eventIn SFBool swScale_in	#Umschalten zu Skalierung...
+				#				field SFNode matToS_SwitchScale USE matToS_SwitchScale #Farbe Schalter Translation/Scale
+				field SFVec3f scaleTmp 1 1 1	#Friemelvector Skalierung
+				eventOut SFVec3f scale_out IS scale_out	#Skalierung Objekt
+
+				
+				#Skalierung Mover gesamt
+				eventIn	SFBool swScaleMover_in #Skalierung Mover gesamt...
+				field SFFloat scaleMover 1	#alle Achsen gleich, Absolutwert...
+				field SFBool flgScaleMover FALSE #Wert vom Display abfangen...
+				
+				#				field SFNode mattoS_ChangeStep USE mattoS_ChangeStep
+
+				#debug-Variablen
+				eventIn	SFVec3f debugScale_in
+				field SFBool flgScaleChanged FALSE
+				field SFVec3f moverSavePos 0 0 0	#aktuelle Position des Movers abspeichern		
+
+
+				field SFVec3f tmpPos 0 0 0		#Position Mover speichern, flexible Scalierung Mover
+
+				eventIn	SFVec3f offset_in	#debugging
+								
+				#directOutput TRUE
+				mustEvaluate FALSE
+				directOutput FALSE
+				
+				url "vrmlscript:
+
+				function initialize() {
+
+					
+					
+					//planeSensorXY.offset = trfMover.translation;
+					
+					//planeSensorYZ.offset = new SFVec3f(-planeSensorXY.offset[2], planeSensorXY.offset[1], planeSensorXY.offset[0]);
+					
+					
+					//planeSensorYZ.offset = new SFVec3f(-planeSensorXY.offset[2] * trfMover.scale[2], planeSensorXY.offset[1] * trfMover.scale[1], planeSensorXY.offset[0] * trfMover.scale[0]);
+					//planeSensorXZ.offset = new SFVec3f(planeSensorXY.offset[0], planeSensorXY.offset[0], planeSensorXY.offset[1]);
+					
+					
+					//planeSensorXZ.offset = new SFVec3f(planeSensorXY.offset[0] * trfMover.scale[0], planeSensorXY.offset[0] * trfMover.scale[0], planeSensorXY.offset[1] * trfMover.scale[1]);
+					//X-Achse per default setzen...
+
+
+					//print('tvrcMerkerInstance.intValue='+tvrcMerkerInstance.intValue);
+						
+					moverTrlStart=tvrcMerkerInstance.posStart;
+					//print('tvrcMerkerInstance.posStart='+tvrcMerkerInstance.posStart);
+					moverTrlEnd = trfMover.translation;
+
+					//moverTrlEnd =	tvrcMerkerInstance.posStart;
+					moverTransTmp = moverTrlEnd.subtract(moverTrlStart);
+					//trfMover.translation=moverTrlStart;	
+					
+					if (tvrcMerkerInstance.intValue==0)
+						toS_SetZ();
+					if (tvrcMerkerInstance.intValue==1)
+						toS_SetX();
+					if (tvrcMerkerInstance.intValue==2)
+						toS_SetY();
+
+					//toS_SetX();
+				
+					//Farbe Button ProtoMove, je nach Anfangsstatus
+					if (flgProtoMove) {
+						matToS_ProtoMove.diffuseColor = new SFColor(0, 0, 1);
+					}
+					else {
+						matToS_ProtoMove.diffuseColor = new SFColor(1, 1, 1);
+					}
+
+					//Farbe Button ModeFine, je nach Anfangsstatus
+					//					if (flgModeFine) {
+					//						matToS_ModeFine.diffuseColor = new SFColor(0, 1, 0);
+					//					}
+					//					else {
+					//						matToS_ModeFine.diffuseColor = new SFColor(0, 0, 1);
+					//					}
+
+					//im Ebenenmode Schrittweitenbutton ausblenden...
+					//					if (!flgModeFine) {
+					//						mattoS_ChangeStep.transparency = 1;
+					//					}
+				}
+				
+				
+				
+				//debug-Ausgaben scale, ... <ch>
+				function debugScale_in (value, time) {
+					
+					moverSavePos = trfMover.translation;
+					//print ('debugScale_in: scale changed; moverSavePos: ' + moverSavePos);
+				}
+				
+				
+				
+				//Farben und Transparenz initialisieren...
+				function resetRaw() {
+					
+					shpCylSensX_Raw.appearance.material.diffuseColor = colSensNotActive;
+					shpCylSensX_Raw.appearance.material.transparency = trpSensNotActive;
+					shpConeSensX_Raw.appearance.material.diffuseColor = colSensNotActive;
+					shpConeSensX_Raw.appearance.material.transparency = trpConeSensNotActive;
+					
+					shpCylSensY_Raw.appearance.material.diffuseColor = colSensNotActive;
+					shpCylSensY_Raw.appearance.material.transparency = trpSensNotActive;
+					shpConeSensY_Raw.appearance.material.diffuseColor = colSensNotActive;
+					shpConeSensY_Raw.appearance.material.transparency = trpConeSensNotActive;
+					
+					shpCylSensZ_Raw.appearance.material.diffuseColor = colSensNotActive;
+					shpCylSensZ_Raw.appearance.material.transparency = trpSensNotActive;
+					shpConeSensZ_Raw.appearance.material.diffuseColor = colSensNotActive;
+					shpConeSensZ_Raw.appearance.material.transparency = trpConeSensNotActive;
+				}
+
+				function resetFine () {
+					
+					shpAddX.appearance.material.diffuseColor = colSensNotActive;
+					shpAddX.appearance.material.transparency = trpSensNotActive;
+					shpSubX.appearance.material.diffuseColor = colSensNotActive;
+					shpSubX.appearance.material.transparency = trpSensNotActive;
+					shpConeX.appearance.material.diffuseColor = colSensNotActive;
+					shpConeX.appearance.material.transparency = trpConeSensNotActive;
+
+					shpAddY.appearance.material.diffuseColor = colSensNotActive;
+					shpAddY.appearance.material.transparency = trpSensNotActive;
+					shpSubY.appearance.material.diffuseColor = colSensNotActive;
+					shpSubY.appearance.material.transparency = trpSensNotActive;
+					shpConeY.appearance.material.diffuseColor = colSensNotActive;
+					shpConeY.appearance.material.transparency = trpConeSensNotActive;
+
+					shpAddZ.appearance.material.diffuseColor = colSensNotActive;
+					shpAddZ.appearance.material.transparency = trpSensNotActive;
+					shpSubZ.appearance.material.diffuseColor = colSensNotActive;
+					shpSubZ.appearance.material.transparency = trpSensNotActive;
+					shpConeZ.appearance.material.diffuseColor = colSensNotActive;
+					shpConeZ.appearance.material.transparency = trpConeSensNotActive;
+				}
+				
+				
+				
+				function resetRot() {
+					matRotX.diffuseColor = colSensNotActive;
+					matRotY.diffuseColor = colSensNotActive;
+					matRotZ.diffuseColor = colSensNotActive;
+				}
+
+				function swFineAxisActiveX () {
+					shpAddX.appearance.material.diffuseColor = colSensFineAddActive;
+					shpAddX.appearance.material.transparency = trpSensFineActive;
+					shpSubX.appearance.material.diffuseColor = colSensFineSubActive;
+					shpSubX.appearance.material.transparency = trpSensFineActive;
+					shpConeX.appearance.material.diffuseColor = colSensFineActive;
+					shpConeX.appearance.material.transparency = trpConeSensActive;
+				}
+
+				function swFineAxisActiveY () {
+					shpAddY.appearance.material.diffuseColor = colSensFineAddActive;
+					shpAddY.appearance.material.transparency = trpSensFineActive;
+					shpSubY.appearance.material.diffuseColor = colSensFineSubActive;
+					shpSubY.appearance.material.transparency = trpSensFineActive;
+					shpConeY.appearance.material.diffuseColor = colSensFineActive;
+					shpConeY.appearance.material.transparency = trpConeSensActive;
+				}
+
+				function swFineAxisActiveZ () {
+					shpAddZ.appearance.material.diffuseColor = colSensFineAddActive;
+					shpAddZ.appearance.material.transparency = trpSensFineActive;
+					shpSubZ.appearance.material.diffuseColor = colSensFineSubActive;
+					shpSubZ.appearance.material.transparency = trpSensFineActive;
+					shpConeZ.appearance.material.diffuseColor = colSensFineActive;
+					shpConeZ.appearance.material.transparency = trpConeSensActive;				
+				}
+
+				function swRawAxisActiveX () {
+					shpCylSensX_Raw.appearance.material.diffuseColor = colSensRawActive;
+					shpCylSensX_Raw.appearance.material.transparency = trpSensRawActive;
+					shpConeSensX_Raw.appearance.material.diffuseColor = colSensRawActive;
+					shpConeSensX_Raw.appearance.material.transparency = trpConeSensActive;
+				}
+
+				function swRawAxisActiveY () {
+					shpCylSensY_Raw.appearance.material.diffuseColor = colSensRawActive;
+					shpCylSensY_Raw.appearance.material.transparency = trpSensRawActive;
+					shpConeSensY_Raw.appearance.material.diffuseColor = colSensRawActive;
+					shpConeSensY_Raw.appearance.material.transparency = trpConeSensActive;
+				}
+
+				function swRawAxisActiveZ () {
+					shpCylSensZ_Raw.appearance.material.diffuseColor = colSensRawActive;
+					shpCylSensZ_Raw.appearance.material.transparency = trpSensRawActive;
+					shpConeSensZ_Raw.appearance.material.diffuseColor = colSensRawActive;
+					shpConeSensZ_Raw.appearance.material.transparency = trpConeSensActive;
+				}
+
+
+				function setAxis(value,time) {
+
+					print('setAxis:'+value);
+//currentAxis
+					if (value==0)
+						toS_SetZ(value,time);
+					if (value==1)
+						toS_SetX(value,time);
+					if (value==2)
+						toS_SetY(value,time);
+
+
+				}
+				
+				function toS_SetZ (value, time) {
+					
+					tvrcMerkerInstance.intValue=0;
+					
+					//print('set currentAxis='+tvrcMerkerInstance.intValue);
+					//print ('setZ, XY-Ebene');
+					
+					//wenn schon ausgewaehlt, dann keine Veraenderung...
+					if (flgAxisActive != 1) {
+					
+						//evtl. offene Eingabe ausschalten
+						//if (EingabeStep.whichChoice == 0) swEingabeOff();
+					
+						//alle Achs-Sensoren weiss faerben...
+						resetRaw();
+					
+						flgAxisActive = 1;
+					
+						//X-Achs-Sensor blau faerben...
+						shpCylSensX_Raw.appearance.material.diffuseColor = colSensRawActive;
+						shpCylSensX_Raw.appearance.material.transparency = 0;
+						shpConeSensX_Raw.appearance.material.diffuseColor = colSensRawActive;
+				
+						//YZ-Ebene einblenden...
+						swMover.whichChoice = 0;
+						
+						//mapping von Planesensor auf translatin stimmen hier ueberein, deshalb kein Gefriemel notwendig
+						planeSensorXY.offset = new SFVec3f (trfMover.translation[0], trfMover.translation[1], trfMover.translation[2]);
+						//heuschi alt...
+						//planeSensorXY.offset = new SFVec3f (trfMover.translation[0] / trfMover.scale[0], trfMover.translation[1] / trfMover.scale[1], trfMover.translation[2] / trfMover.scale[2]);
+						
+						currentSwitch = 0;
+					}
+				}
+			
+			
+				function toS_SetX (value, time) {
+						tvrcMerkerInstance.intValue=1;
+
+					//	print('set currentAxis='+tvrcMerkerInstance.intValue);
+					//print ('setX, YZ-Ebene');
+					
+					//wenn schon ausgewaehlt, dann keine Veraenderung...
+					if (flgAxisActive != 2) {
+					
+						//evtl. offene Eingabe ausschalten
+						//if (EingabeStep.whichChoice == 0) swEingabeOff();
+					
+						resetRaw();
+					
+						flgAxisActive = 2;
+
+						shpCylSensY_Raw.appearance.material.diffuseColor = colSensRawActive;
+						shpCylSensY_Raw.appearance.material.transparency = 0;
+						shpConeSensY_Raw.appearance.material.diffuseColor = colSensRawActive;
+				
+						swMover.whichChoice = 1;
+						
+						//translation muss wieder auf offset gemappt werden, sonst wuerde offset der letzten Bewegung dieser Achse
+						//angefahren werden
+						planeSensorYZ.offset = new SFVec3f (trfMover.translation[2], trfMover.translation[1], trfMover.translation[0]);
+
+						//heuschi alt
+						//planeSensorYZ.offset = new SFVec3f (trfMover.translation[2] / trfMover.scale[0], trfMover.translation[1] / trfMover.scale[1], trfMover.translation[0] / trfMover.scale[2]);
+						
+						currentSwitch = 1;
+					}
+				}
+				
+				
+				
+				function toS_SetY (value, time) {
+
+				
+
+						tvrcMerkerInstance.intValue=2;
+
+					//		print('set currentAxis='+tvrcMerkerInstance.intValue);
+					//print ('setY, XZ-Ebene');
+
+					//wenn schon ausgewaehlt, dann keine Veraenderung...
+					if (flgAxisActive != 3) {
+					
+						//evtl. offene Eingabe ausschalten
+						//if (EingabeStep.whichChoice == 0) swEingabeOff();
+					
+						resetRaw();
+					
+						flgAxisActive = 3;
+					
+						shpCylSensZ_Raw.appearance.material.diffuseColor = colSensRawActive;
+						shpCylSensZ_Raw.appearance.material.transparency = 0;
+						shpConeSensZ_Raw.appearance.material.diffuseColor = colSensRawActive;
+					
+						swMover.whichChoice = 2;
+						
+						//translation muss wieder auf offset gemappt werden, sonst wuerde offset der letzten Bewegung dieser Achse
+						//angefahren werden
+						planeSensorXZ.offset = new SFVec3f (trfMover.translation[0], trfMover.translation[2], trfMover.translation[1]);
+
+						//heuschi alt
+						//planeSensorXZ.offset = new SFVec3f (trfMover.translation[0] / trfMover.scale[0], trfMover.translation[2] / trfMover.scale[1], trfMover.translation[1] / trfMover.scale[2]);
+
+						currentSwitch = 2;
+					}
+				}
+
+
+				function setXYSmooth (value, time) {
+					
+					//heuschi alt
+					//trfMover.translation = new SFVec3f(value[0] * trfMover.scale[0], value[1] * trfMover.scale[1], value[2] * trfMover.scale[2]);
+					
+					trfMover.translation = new SFVec3f(value[0], value[1], value[2]);
+					//print ('setXYSmooth: ' + value + ', trfMover.translation: ' + trfMover.translation );
+					
+				}
+				
+				
+				
+				function setYZSmooth(value, time) {
+					
+					//heuschi alt
+					//trfMover.translation = new SFVec3f(value[2] * trfMover.scale[0], value[1] * trfMover.scale[1], value[0] * trfMover.scale[2]);
+					
+					trfMover.translation = new SFVec3f(value[2], value[1], value[0]);
+					//print ('setYZSmooth: ' + value + ', trfMover.translation: ' + trfMover.translation );
+				}
+				
+				
+				
+				function setXZSmooth(value, time) {
+					
+					//heuschi alt
+					//trfMover.translation = new SFVec3f(value[0] * trfMover.scale[0], value[2] * trfMover.scale[1], value[1] * trfMover.scale[2]);
+					
+					trfMover.translation = new SFVec3f(value[0], value[2], value[1]);
+					//print ('setXZSmooth: ' + value + ', trfMover.translation: ' + trfMover.translation );
+				}
+				
+				
+				
+				function PS_XY_IsActive_in (value, time) {
+					if (value) {
+						shpPlaneXY.appearance.material.diffuseColor = colSensRawActive;
+					}
+					else {
+						shpPlaneXY.appearance.material.diffuseColor = colSensNotActive;
+					}
+				}
+
+				
+				
+				function PS_YZ_IsActive_in (value, time) {
+					if (value) {
+						shpPlaneYZ.appearance.material.diffuseColor = colSensRawActive;
+					}
+					else {
+						shpPlaneYZ.appearance.material.diffuseColor = colSensNotActive;
+					}
+				}
+
+
+				
+				function PS_XZ_IsActive_in (value, time) {
+					if (value) {
+						shpPlaneXZ.appearance.material.diffuseColor = colSensRawActive;
+					}
+					else {
+						shpPlaneXZ.appearance.material.diffuseColor = colSensNotActive;
+					}
+				}
+
+
+				
+				//bekommt Signal von trfMover.translation_changed (nur Grobmodus!!!)
+				function moverTrans_in (value, time) {
+					
+					if (flgProtoMove == false) {
+						translation_out = value.subtract(moverTransTmp);
+						//print ('moverTrans_in: ' + translation_out);
+					}
+				}
+				
+				
+				
+				//////
+				//Behandlung TouchSensor zum Verschieben des AnordnungsProtos...
+				//////
+				function swProtoMove_in (value, time) {
+					
+					if (value) {
+					
+						if (flgProtoMove == false) {
+							flgProtoMove = true;
+							matToS_ProtoMove.diffuseColor = new SFColor(1, 0, 0);
+					    	moverTrlStart = trfMover.translation;
+							//print ('moverTrlStart: ' + moverTrlStart); 
+						}
+						else {
+							flgProtoMove = false;
+							matToS_ProtoMove.diffuseColor = new SFColor(1, 1, 1);
+							moverTrlEnd = trfMover.translation;
+							moverTransTmp = moverTransTmp.add(moverTrlEnd.subtract(moverTrlStart));
+							moverTransTmp_out=moverTransTmp;
+							print ('set moverTransTmp_out: ' + moverTransTmp); 
+						}
+					}
+				}
+				
+				//////
+				//Behandlung TouchSensor Modus fein/grob
+				//////
+				function swModeFine_in (value, time) {
+					
+					if (value) {
+					
+						//////
+						/// in den Feinpos.-Modus schalten...
+						//////
+						if (flgModeFine == false) {
+						
+							//Modus Feinausrichtung
+							flgModeFine = true;
+
+							//Button Schrittweite einblenden
+							mattoS_ChangeStep.transparency = 0;
+
+							matToS_ModeFine.diffuseColor = new SFColor(0, 1, 0);
+						
+							swModeSensX.whichChoice = 1;
+							swModeSensY.whichChoice = 1;
+							swModeSensZ.whichChoice = 1;
+						
+							resetFine();
+						
+							if (flgAxisActive == 1) {
+								swFineAxisActiveX();
+							}
+
+							if (flgAxisActive == 2) {
+								swFineAxisActiveY();
+							}
+
+							if (flgAxisActive == 3) {
+								swFineAxisActiveZ();
+							}
+						}
+						else {
+							//////
+							/// in den Grobpos.-Modus schalten...
+							//////
+							flgModeFine = false;
+						
+							//Button Schrittweite ausblenden
+							mattoS_ChangeStep.transparency = 1;
+
+							matToS_ModeFine.diffuseColor = new SFColor(0, 0, 1);
+						
+							swModeSensX.whichChoice = 0;
+							swModeSensY.whichChoice = 0;
+							swModeSensZ.whichChoice = 0;						
+						
+							resetRaw();
+
+							swMover.whichChoice = flgAxisActive - 1;	//Ebenen im Switch (1-3 auf 0-2)
+
+							if (flgAxisActive == 1) {
+								swRawAxisActiveX();
+							}
+
+							if (flgAxisActive == 2) {
+								swRawAxisActiveY();
+							}
+
+							if (flgAxisActive == 3) {
+								swRawAxisActiveZ();
+							}
+						}
+					}
+				}
+
+				
+				//Umschalten Scale / Translation
+				function swScale_in (value, time) {
+				
+					if (value) {
+					
+						if (flgModeScale == false) {
+							flgModeScale = true;
+						
+							matToS_SwitchScale.diffuseColor = new SFColor(0, 1, 0);
+						}
+						else {
+							flgModeScale = false;
+							matToS_SwitchScale.diffuseColor = new SFColor(1, 1, 1);
+						}
+					}
+				}	
+			
+			
+				function swChangeStep_in (value, time) {
+				
+					//Sensor geklickt und FeinModus aktiviert...
+					if ((value) && (flgModeFine == true)) {
+						
+						//////
+						/// Zweig, Eingabe einschalten...	
+						//////
+						if (EingabeStep.whichChoice == -1) {
+							EingabeStep.whichChoice = 0;
+							EingabeStep.init_in = true;
+							
+							
+							// Modus Translation
+							if (flgModeScale == false) {
+							
+								//DisplayString zusammenbasteln
+								displayTxtHeaderTmp = 'Schrittweite ';
+								if (flgAxisActive == 1) {
+									displayTxtHeaderTmp += 'X-Achse: (';
+								
+									//Ausdruck zunaechst auf 8 Zeichen begrenzen...
+									displayStringTmp = new String(fineStepX);
+									displayTxtHeaderTmp += displayStringTmp.substring (0,8);
+								}
+								if (flgAxisActive == 2) {
+									displayTxtHeaderTmp += 'Y-Achse: (';
+								
+									displayStringTmp = new String(fineStepY);
+									displayTxtHeaderTmp += displayStringTmp.substring (0,8);								
+								}
+								if (flgAxisActive == 3) {
+									displayTxtHeaderTmp += 'Z-Achse: (';
+								
+									displayStringTmp = new String(fineStepZ);
+									displayTxtHeaderTmp += displayStringTmp.substring (0,8);
+								}
+								displayTxtHeaderTmp += ')';
+
+								EingabeStep.displayTxtHeader_in = displayTxtHeaderTmp;	
+							}
+							/// Modus Skalierung
+							else {
+								//print ('Hier Eingabe neue Schritte Scale...');
+
+								//DisplayString zusammenbasteln
+								displayTxtHeaderTmp[0] = 'Schrittweite Skalierung ';
+								if (flgAxisActive == 1) {
+									displayTxtHeaderTmp[0] += 'X-Achse: (';
+								
+									//Ausdruck zunaechst auf 8 Zeichen begrenzen...
+									displayStringTmp = new String(stepScaleX);
+									displayTxtHeaderTmp[0] += displayStringTmp.substring (0,8);
+								}
+								if (flgAxisActive == 2) {
+									displayTxtHeaderTmp[0] += 'Y-Achse: (';
+								
+									displayStringTmp = new String(stepScaleY);
+									displayTxtHeaderTmp[0] += displayStringTmp.substring (0,8);								
+								}
+								if (flgAxisActive == 3) {
+									displayTxtHeaderTmp += 'Z-Achse: (';
+								
+									displayStringTmp = new String(stepScaleZ);
+									displayTxtHeaderTmp[0] += displayStringTmp.substring (0,8);
+								}
+								displayTxtHeaderTmp[0] += ')';
+
+								EingabeStep.displayTxtHeader_in = displayTxtHeaderTmp;	
+							}
+						}
+						
+						
+						
+						//////
+						/// Zweig, Eingabe ausschalten...	
+						//////
+						else {
+							swEingabeOff();
+						}
+					}
+				}
+
+				
+				function swEingabeOff () {
+					
+					//debug
+					//print ('Eingabe ausschalten...');
+					EingabeStep.whichChoice = -1;	
+				}
+				
+				
+
+
+				
+				"
+			}
+	
+	### Grobpositionierung
+	### Verschiebungsebene schalten
+	ROUTE toS_Z_Raw.isActive TO scMover.toS_SetZ
+	ROUTE toS_X_Raw.isActive TO scMover.toS_SetX
+	ROUTE toS_Y_Raw.isActive TO scMover.toS_SetY
+
+	### sofortiges Nachziehen des Protos beim Verschieben, ohne dies nur bei Loslassen Sensor
+	ROUTE planeSensorXY.translation_changed TO scMover.setXYSmooth 
+	ROUTE planeSensorYZ.translation_changed TO scMover.setYZSmooth 
+	ROUTE planeSensorXZ.translation_changed TO scMover.setXZSmooth 	
+
+	### Farbumschlag Ebenen
+	ROUTE planeSensorXY.isActive	TO scMover.PS_XY_IsActive_in
+	ROUTE planeSensorYZ.isActive	TO scMover.PS_YZ_IsActive_in
+	ROUTE planeSensorXZ.isActive	TO scMover.PS_XZ_IsActive_in
+	
+	### SwitchProtoMove
+	ROUTE toSProtoMove.isActive TO	scMover.swProtoMove_in
+	ROUTE trfMover.translation_changed TO scMover.moverTrans_in
+	#ROUTE touchRotAll.isActive TO scMover.sensRotAllIsActive_in
+
+#	ROUTE EingabeStep.step_out	TO scMover.displayStep_in	#Rueckgabe neue Schrittweite von Eingabe...
+	#ROUTE toS_SwitchScale.isActive TO scMover.swScale_in #Umschalten Translation /Skalierung
+	#ROUTE toS_SwitchScaleMover.isActive	TO scMover.swScaleMover_in #Gesamtgroesse Mover
+
+	#	Routen zum Debuggen
+	#ROUTE trfMover.scale TO	scMover.debugScale_in		   #nur print und debugging
+	#ROUTE planeSensorYZ.offset TO  scMover.offset_in	   #nur print und debugging
+
+}
+
+#---TEST--------------------------------------------------------------
+
+DEF mover_01 tvrcMover {
+	scale .2 .2 .2
+#	whichPlane 0
+}
+
+

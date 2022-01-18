@@ -1,0 +1,13 @@
+#VRML V2.0 utf8
+
+PROTO info[
+ exposedField MFString banner1 "" 
+ exposedField MFString banner2 "" 
+ exposedField MFString banner3 "" 
+]{}
+
+info{
+ banner1 "/places/theatre/vrml/banners/ctbanner2.gif" 
+ banner2 "/places/theatre/vrml/banners/avstudio.gif" 
+ banner3 "/places/theatre/vrml/banners/iwos.jpg"
+}
