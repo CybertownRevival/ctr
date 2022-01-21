@@ -7,7 +7,8 @@ Introduction about Cybertown Revival project and this repository
 
 tbc - forking, pull request, issues
 
-## Dev Stack
+
+## Dev Stack
 
 * Node.js
 * MySQL
