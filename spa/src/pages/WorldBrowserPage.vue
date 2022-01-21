@@ -251,11 +251,7 @@
 				}
 			},
 			addSharedObject(obj, browser) {
-				obj.url =
-					process.env.VUE_APP_ASSETS_URL + 'object/' +
-					obj.object_id +
-					"/" +
-					obj.filename;
+				obj.url = `/assets/object/${obj.object_id}/${obj.filename}`;
 				console.log(obj.position);
 				console.log(obj.rotation);
 				if (obj.position == null) {
@@ -391,11 +387,8 @@
 					!this.users[eventData.id].loading &&
 					!this.users[eventData.id].loaded
 				) {
-					let avURL =
-						process.env.VUE_APP_ASSETS_URL + 'avatars/' +
-						eventData.avatar.id +
-						"/" +
-						eventData.avatar.filename;
+					const { id, filename } = eventData.avatar;
+					const avURL = `/assets/avatars/${id}/${filename}`;
 
 					this.users[eventData.id].loading = true;
 					loadInlineAsync(browser, avURL).then((avInline) => {
@@ -524,11 +517,8 @@
 		},
 		computed: {
 			worldUrl() {
-				return (
-					process.env.VUE_APP_ASSETS_URL + 'worlds/' +
-					this.place.assets_dir +
-					this.place.world_filename
-				);
+				const { assets_dir, world_filename } = this.place;
+				return `/assets/worlds/${assets_dir}${world_filename}`;
 			},
 		},
 		watch: {
