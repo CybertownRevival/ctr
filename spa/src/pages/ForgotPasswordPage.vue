@@ -11,19 +11,6 @@
 					/>
 			</div>
 			<div class="flex-1 text-center">
-						<img src="/assets/img/login/bestchat.gif" class="inline-block" /><BR /><FONT
-							FACE="arial"
-							SIZE="-1"
-							COLOR="#00DD00"
-							>Chosen by YAHOO! as coolest chat site for
-							2001
-							</FONT>
-							<br/>
-						<FONT COLOR="#80FF00" SIZE="+2">E</FONT
-						><FONT COLOR="#80FF00" SIZE="+1">NTER</FONT
-						><FONT COLOR="#80FF00" SIZE="+2"> C</FONT
-						><FONT COLOR="#80FF00" SIZE="+1">YBERTOWN</FONT>
-						<br />
 						<img
 						class="inline-block"
 							src="/assets/img/login/enter.jpeg"
@@ -59,47 +46,23 @@
 
 		<div class="flex w-full flex-row items-center">
 				<div style="width:100px" class="text-center self-start">
-					<img
-						NAME="forgot"
-						SRC="/assets/img/login/resend.jpeg"
-						ALT="forgot your password"
-						border="0"
-						class="inline-block"
-					/>
 				</div>
 				<div style="width:120px" class="text-left">
-					If you forgot your Password, click
-						<router-link to="/forgot">here</router-link> and we will <router-link to="/forgot">email</router-link> instructions
-						to you.
-						<font color="red"><strong>NEVER, EVER give your password to anyone else,
-								no matter who they claim to be or what jobs they
-								offer you!</strong></font>
 				</div>
 				<div class="flex-1 px-8">
+                    <h2 class="mb-2">Forgot Password</h2>
+
+                    <p class="mb-2">Enter your account's email address to receive instructions to reset your password.</p><br/>
 					<table border="0">
 						<tr align="center">
-							<td align="center">Nickname</td>
+							<td align="center">Email Address</td>
 							<td align="center">
 								<input
-									v-model="username"
+									v-model="email"
 									type="text"
 									size="16"
 									maxlength="16"
 									tabindex="1"
-									class="input-text"
-								/>
-							</td>
-						</tr>
-						<tr align="center">
-							<td align="center">Password</td>
-							<td align="center">
-								<input
-									v-model="password"
-									type="password"
-									size="16"
-									maxlength="16"
-									tabindex="2"
-									@keypress.exact.enter="login"
 									class="input-text"
 								/>
 							</td>
@@ -110,67 +73,37 @@
 									type="button"
 									tabindex="3"
 									class="btn"
-									@click="login"
+									@click="reset"
 								>
-									Enter
+									Request Reset Link
 								</button>
 							</td>
 						</tr>
 					</table>
 				</div>
 				<div style="width:120px" class="text-right">
-						If you want to <router-link to="/forgot">change</router-link> your Password,
-						click <router-link to="/forgot">here</router-link> and we will email you instructions.
-						<font color="yellow"
-							><strong
-								>ALWAYS make your password something that it
-								would be VERY HARD for anyone to guess!</strong
-							></font>
 				</div>
 				<div class="text-center self-start" style="width:100px">
-					<img
-						name="chpass"
-						type="Image"
-						src="/assets/img/login/change_enter.jpeg"
-						alt="change password"
-						align="middle"
-						border="0"
-						class="inline-block"
-					/>
 				</div>
 		</div>
 		<div v-if="showError" class="text-red-500">{{ error }}</div>
-
-		<p>
-	<strong>Immigration or Login Problems?</strong> Check the
-<a href="" target="_self">Quick Help</a>!<br /><br />
-			<font size="+1" color="#FFFF00">
-				<strong>Please note:</strong> to enter the site your browser
-				must accept cookies.
-			</font>
-				<font color="#FFFF00">
-					<br />Netscape 4.x: menu 'edit-preferences-advanced-accept
-					cookies' IE 4.x: menu 'view-internet options-advanced-accept
-					cookies'
-				</font>
-		</p>
 	</div>
 </template>
 
 <script>
 	export default {
-		name: "LoginPage",
+		name: "ForgotPasswordPage",
 		data: () => {
 			return {
-				username: "",
-				password: "",
+				email: "",
 				showError: false,
 				error: "",
 			};
 		},
 		methods: {
-			async login() {
+			async reset() {
 				this.showError = false;
+				/*
 				try {
 					let response = await this.$http.post("/member/login", {
 						username: this.username,
@@ -193,6 +126,7 @@
 						this.showError = true;
 					}
 				}
+				 */
 			},
 		},
 	};

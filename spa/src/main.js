@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
         document.title = 'Cybertown';
     }
 
-    if(to.name !== 'login' && to.name !== 'signup' && to.name !== 'logout') {
+    if(to.name !== 'login' && to.name !== 'signup' && to.name !== 'logout' && to.name !== 'forgot') {
         api.get('/member/session')
             .then(response => {
                 appStore.data.user = response.data.user;
