@@ -8,7 +8,7 @@ axios.interceptors.request.use(function (config) {
 
 const api = {
     get: function(endpoint, data) {
-        return axios.get(process.env.VUE_APP_API_URL + endpoint, {
+        return axios.get('/api' + endpoint, {
             params: data
         });
     },
@@ -16,7 +16,7 @@ const api = {
         //var postData = new FormData;
         //Object.keys(data).forEach(key => postData.append(key, data[key]));
         //return axios.post(process.env.VUE_APP_API_URL + endpoint, postData);
-        return axios.post(process.env.VUE_APP_API_URL + endpoint, data);
+        return axios.post('/api' + endpoint, data);
     }
 
 };

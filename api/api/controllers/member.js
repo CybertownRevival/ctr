@@ -3,6 +3,7 @@ const memberLibs = require("../libs/member.js");
 const avatarLibs = require("../libs/avatar.js");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 exports.signup = (req, res, next) => {
     function _checkDupEmail() {
@@ -342,6 +343,122 @@ exports.updateAvatar = (req, res, next) => {
                                         username: token.userName,
                                     });
                                 });
+                        }
+                    }
+                );
+            }
+        }
+    );
+};
+
+exports.sendPasswordReset = (req, res, next) => {
+    if (
+        typeof req.body.email === 'undefined' ||
+        validator.isEmpty(req.body.email) ||
+        !validator.isEmail(req.body.email)
+    ) {
+        console.log("email is invalid");
+        res.status(400).json({
+            error: "Provide a valid email address.",
+        });
+        return;
+    }
+
+    // validate the password
+    db.query(
+        "SELECT id FROM member WHERE email = ? AND status = 1 LIMIT 1",
+        [req.body.email],
+        async (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(400).json({
+                    error: "A problem occurred while trying to fetch your account.",
+                });
+            } else if (results.length <= 0) {
+                //todo: send a 'not found email'
+                res.status(200).json({
+                    message: "success",
+                });
+            } else {
+                var resetToken = crypto.randomBytes(16).toString('hex');
+
+                db.query(
+                    "UPDATE member SET password_reset_token = ?, password_reset_expire = DATE_ADD(NOW(), INTERVAL 15 MINUTE) WHERE id = ?",
+                    [resetToken, results[0].id],
+                    (err, results) => {
+                        if (err) {
+                            console.log(err);
+                            res.status(400).json({
+                                error: "A problem occurred during resetting password.",
+                            });
+                        } else {
+                            // return a success
+                            //todo send a reset link email
+                            res.status(200).json({
+                                message: "success",
+                            });
+                        }
+                    }
+                );
+            }
+        }
+    );
+};
+
+exports.resetPassword = (req, res, next) => {
+
+    if(typeof req.body.resetToken === 'undefined' ||
+        validator.isEmpty(req.body.resetToken)
+    ) {
+        res.status(400).json({
+            error: "Invalid or expired reset token"
+        });
+        return;
+    }
+
+    if (
+        req.body.newPassword !== req.body.newPassword2 ||
+        req.body.newPassword.trim() === ""
+    ) {
+        res.status(400).json({
+            error: "Please enter your new password the same twice.",
+        });
+        return;
+    }
+
+    db.query(
+        "SELECT id FROM member WHERE status = 1 AND password_reset_token = ? AND password_reset_expire > NOW() LIMIT 1",
+        [req.body.resetToken],
+        async (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(400).json({
+                    error: "A problem occurred while trying to fetch your account.",
+                });
+            } else if (results.length <= 0) {
+                res.status(400).json({
+                    error: "Invalid or expired reset token. Please request a new password reset.",
+                });
+            } else {
+
+                var hashedPassword = await memberLibs.encryptPassword(
+                    req.body.newPassword
+                );
+
+                db.query(
+                    "UPDATE member SET password = ? WHERE id = ?",
+                    [hashedPassword, results[0].id],
+                    (err, results) => {
+                        if (err) {
+                            console.log(err);
+                            res.status(400).json({
+                                error: "A problem occurred during password update.",
+                            });
+                        } else {
+                            // return a success
+                            res.status(200).json({
+                                message: "success",
+                            });
                         }
                     }
                 );

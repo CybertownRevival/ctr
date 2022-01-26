@@ -50,21 +50,33 @@
             <div style="width:120px" class="text-left">
             </div>
             <div class="flex-1 px-8">
-                <h2 class="mb-2">Forgot Password</h2>
+                <h2 class="mb-2">Password Reset</h2>
 
-                <p class="mb-2">Enter your account's email address to receive instructions to reset your password.</p><br/>
+                <p class="mb-2">To reset your password, please choose a new password and enter it below.</p><br/>
                 <table border="0" v-show="!success">
                     <tr align="center">
-                        <td align="center">Email Address</td>
+                        <td align="center">New Password</td>
                         <td align="center">
                             <input
-                                v-model="email"
-                                type="text"
+                                v-model="newPassword"
+                                type="password"
                                 size="16"
                                 maxlength="255"
                                 tabindex="1"
                                 class="input-text"
-                                @keyup.exact.enter="reset"
+                            />
+                        </td>
+                    </tr>
+                    <tr align="center">
+                        <td align="center">New Password (again)</td>
+                        <td align="center">
+                            <input
+                                v-model="newPassword2"
+                                type="password"
+                                size="16"
+                                maxlength="255"
+                                tabindex="1"
+                                class="input-text"
                             />
                         </td>
                     </tr>
@@ -76,12 +88,12 @@
                                 class="btn"
                                 @click="reset"
                             >
-                                Request Reset Link
+                               Reset Password
                             </button>
                         </td>
                     </tr>
                 </table>
-                <p v-if="success">Please check your email inbox for instructions. <router-link to="/login">Back to Login</router-link></p>
+                <p v-if="success">Your account password has been updated. <router-link to="/login">Back to Login</router-link></p>
             </div>
             <div style="width:120px" class="text-right">
             </div>
@@ -97,7 +109,8 @@ export default {
     name: "ForgotPasswordPage",
     data: () => {
         return {
-            email: "",
+            newPassword: "",
+            newPassword2: "",
             showError: false,
             error: "",
             success: false
@@ -107,15 +120,18 @@ export default {
         async reset() {
             this.showError = false;
             try {
-                if(this.email === '') {
-                    this.error = 'Please enter your email address for your account.';
+                if(this.newPassword === '' || this.newPassword2 === '' || this.newPassword !== this.newPassword2) {
+                    this.error = 'Please enter your new password in exactly the same twice.';
                     this.showError = true;
                     return;
                 }
 
-                let response = await this.$http.post("/member/send_password_reset", {
-                    email: this.email,
+                await this.$http.post("/member/reset_password", {
+                    resetToken: this.$route.query.token,
+                    newPassword: this.newPassword,
+                    newPassword2: this.newPassword2,
                 });
+
                 this.success = true;
             } catch (errorResponse) {
                 if (errorResponse.response.data.error) {
