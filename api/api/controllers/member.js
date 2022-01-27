@@ -1,6 +1,7 @@
 const db = require("../libs/db.js");
 const memberLibs = require("../libs/member.js");
 const avatarLibs = require("../libs/avatar.js");
+const mailLibs = require("../libs/mail.js");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -375,7 +376,15 @@ exports.sendPasswordReset = (req, res, next) => {
                     error: "A problem occurred while trying to fetch your account.",
                 });
             } else if (results.length <= 0) {
-                //todo: send a 'not found email'
+
+                await mailLibs.sendEmail({
+                    to: req.body.email,
+                    subject:  'Cybertown Revival Password Reset',
+                    body: '<p>Hello,</p><p>Sorry, we were unable to find an account attached to this email address.</p>'
+                })
+                    .catch(console.error);
+
+
                 res.status(200).json({
                     message: "success",
                 });
@@ -385,7 +394,7 @@ exports.sendPasswordReset = (req, res, next) => {
                 db.query(
                     "UPDATE member SET password_reset_token = ?, password_reset_expire = DATE_ADD(NOW(), INTERVAL 15 MINUTE) WHERE id = ?",
                     [resetToken, results[0].id],
-                    (err, results) => {
+                    async (err, results) => {
                         if (err) {
                             console.log(err);
                             res.status(400).json({
@@ -394,6 +403,13 @@ exports.sendPasswordReset = (req, res, next) => {
                         } else {
                             // return a success
                             //todo send a reset link email
+                            await mailLibs.sendEmail({
+                                to: req.body.email,
+                                subject:  'Cybertown Revival Password Reset',
+                                body: '<p>Hello,</p><p>We have received a request to reset the password on your account. Please click the link below to reset your password. If you did not request this reset, please ignore this email.</p><p><a href="https://s1.cybertown.customerdns.com/#/password_reset?token='+resetToken+'">Reset My Password</a></p><p>This link will expire in 15 minutes.</p>'
+                            })
+                                .catch(console.error);
+
                             res.status(200).json({
                                 message: "success",
                             });

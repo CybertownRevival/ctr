@@ -18,7 +18,8 @@
     "md5": "^2.3.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
-    "validator": "^13.6.0"
+    "validator": "^13.6.0",
+    "nodemailer": "^6.7.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.14"
