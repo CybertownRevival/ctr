@@ -4,6 +4,9 @@
             <div class="flex h-full items-center">
                     <img src="/assets/img/ctMinaBanner.gif" />
             </div>
+            <div class="flex h-full items-center" v-if="showReloadMsg">
+                <strong>New Update Available! <a href="javascript:;" @click="reloadWindow">Please Reload</a></strong>
+            </div>
             <div class="flex h-full text-right items-center">
                 <img src="/assets/img/news.gif" />
             </div>
@@ -62,6 +65,7 @@
 <script>
 
 import WorldBrowserPage from "./pages/WorldBrowserPage.vue";
+import axios from "axios";
 
 /*eslint no-undef: 0*/
 /*eslint no-unused-vars: 0*/
@@ -72,6 +76,8 @@ export default {
     },
     data: () => {
         return {
+            versionApi: null,
+            showReloadMsg: false,
             jumpGateData: [
                 {
                     'title': 'COLONIES:',
@@ -230,10 +236,26 @@ export default {
                 this.$router.push({path: '/place/'+this.jumpGate});
                 this.jumpGate = '';
             }
-        }
+        },
+        checkBuildTs() {
+            this.versionApi.get('version.json?v='+Date.now())
+                .then(response => {
+                    if(response.data.version !== buildTs) {
+                        this.showReloadMsg = true;
+                    }
+                });
+        },
+        reloadWindow() {
+            window.location.reload();
+        },
     },
     mounted() {
-        //todo populate jumpgate with worlds
+        this.versionApi = axios.create({
+            baseURL: ''
+        });
+
+        this.checkBuildTs();
+        setInterval(this.checkBuildTs, 300000);
 
         X3D(() => {
                 console.log('starting X3d');

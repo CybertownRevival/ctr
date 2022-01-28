@@ -176,7 +176,6 @@
 						username: this.username,
 						password: this.password,
 					});
-					console.log(response);
 					localStorage.setItem("token", response.data.token);
 					this.$store.data.user.userName = response.data.username;
 					if (this.$route.query.redirect) {
