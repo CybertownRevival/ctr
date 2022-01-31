@@ -41,7 +41,7 @@
                         <br/>
                         <a href="https://discord.gg/gcgAZ7UuNA" class="btn-ui" target="_blank">Discord</a>
                         <a href="https://www.reddit.com/r/cybertown/" class="btn-ui" target="_blank">Reddit</a>
-                        <a href="https://github.com/CybertownRevival/ct-spa/issues" class="btn-ui" target="_blank">Report a Bug</a>
+                        <a href="https://github.com/CybertownRevival/ctr/issues" class="btn-ui" target="_blank">Report a Bug</a>
                         <br/>
                         <router-link to="/logout" class="btn-ui">Logout</router-link>
                         <br/>
