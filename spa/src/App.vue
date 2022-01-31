@@ -24,7 +24,7 @@
                     </div>
                     <div class="flex justify-center">
                         <div class="menu">
-                            <router-link class="menuLink" to="/myinfo" style="top:78px;"></router-link>
+                            <a href="javascript:;" @click="showMyInfoModal = true;" class="menuLink" style="top:78px;"></a>
                         </div>
                     </div>
                     <div class="flex justify-center">
@@ -56,22 +56,26 @@
                 </div>
             </div>
         </div>
+        <my-info-modal v-if="showMyInfoModal"></my-info-modal>
     </main>
 </template>
 
 <script>
 
 import WorldBrowserPage from "./pages/WorldBrowserPage.vue";
+import MyInfoModal from "./components/myInfoModal/modal.vue"
 
 /*eslint no-undef: 0*/
 /*eslint no-unused-vars: 0*/
 export default {
     name: 'App',
     components: {
-        WorldBrowserPage
+        WorldBrowserPage,
+        MyInfoModal
     },
     data: () => {
         return {
+            showMyInfoModal: false,
             jumpGateData: [
                 {
                     'title': 'COLONIES:',
