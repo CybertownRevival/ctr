@@ -69,7 +69,7 @@
 				</div>
 				<div style="width:120px" class="text-left">
 					If you forgot your Password, click
-						<a href="">here</a> and we will <a href="">email</a> it
+						<router-link to="/forgot">here</router-link> and we will <router-link to="/forgot">email</router-link> instructions
 						to you.
 						<font color="red"><strong>NEVER, EVER give your password to anyone else,
 								no matter who they claim to be or what jobs they
@@ -119,8 +119,8 @@
 					</table>
 				</div>
 				<div style="width:120px" class="text-right">
-						>If you want to <A HREF="">change</A> your Password,
-						click <A href="">here</A>.
+						If you want to <router-link to="/forgot">change</router-link> your Password,
+						click <router-link to="/forgot">here</router-link> and we will email you instructions.
 						<font color="yellow"
 							><strong
 								>ALWAYS make your password something that it
