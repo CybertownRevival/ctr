@@ -1,11 +1,13 @@
 <html>
+
 <head>
-    <link rel="stylesheet" type="text/css" href="https://create3000.github.io/code/x_ite/4.6.23/dist/x_ite.css"/>
+    <link rel="stylesheet" type="text/css" href="https://create3000.github.io/code/x_ite/4.6.23/dist/x_ite.css" />
     <script type="text/javascript" src="https://create3000.github.io/code/x_ite/4.6.23/dist/x_ite.min.js"></script>
 </head>
+
 <body>
-<div id="world"></div>
-<!--
+    <div id="world"></div>
+    <!--
 <X3DCanvas id="browser" class="browser" src="assets/worlds/enter/vrml/enter.wrl">
     <p class="fallback">Sorry!<br/>
         <br/>
@@ -16,8 +18,8 @@
 </X3DCanvas>
 -->
 
-<script>
-    X3D(() => {
+    <script>
+        X3D(() => {
             console.log('here we go...');
             //this.worldURL = '/assets/worlds' + this.worldData.url;
             //console.log(this.worldURL);
@@ -27,7 +29,7 @@
             document.querySelector('#world').appendChild(x3dcanvas);
             let browseObj = X3D.getBrowser();
             //console.log(browseObj);
-            browseObj.loadURL(new X3D.MFString('assets/worlds/enter/vrml/enter.wrl'),"");
+            browseObj.loadURL(new X3D.MFString('assets/worlds/enter/vrml/enter.wrl'), "");
             /*
             this.room = this.worldData.room + (this.subroom ? "|" + this.subroom : "");
             console.log(this.$store.data);
@@ -40,14 +42,15 @@
             //browseObj.src = '/assets/worlds'+this.worldURL;
             */
         },
-        (error) => {
-            console.log('some sort of err');
-            console.error(error);
+            (error) => {
+                console.log('some sort of err');
+                console.error(error);
 
 
-        });
+            });
 
-</script>
+    </script>
 
 </body>
+
 </html>

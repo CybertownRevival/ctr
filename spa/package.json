@@ -48,7 +48,20 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "comma-dangle": [ "error", "always" ],
+      "eol-last": [ "error", "always" ],
+      "eqeqeq": [ "error", "always" ],
+      "prefer-const": "error",
+      "max-len": [ "error", { "code": 100 }],
+      "no-tabs": [ "error", "always" ],
+      "no-multiple-empty-lines": "error",
+      "no-unreachable": "off",
+      "no-unused-vars": "error",
+      "no-var": "error",
+      "prefer-template": "error",
+      "quotes": [ "error", "double" ]
+    }
   },
   "browserslist": [
     "> 1%",
