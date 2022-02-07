@@ -7,12 +7,12 @@ axios.interceptors.request.use(function (config) {
 });
 
 const api = {
-  get: function (endpoint, data) {
+  get: (endpoint: string, data?: any) => {
     return axios.get("/api" + endpoint, {
       params: data,
     });
   },
-  post: function (endpoint, data) {
+  post: (endpoint: string, data?: any) => {
     return axios.post("/api" + endpoint, data);
   }
 };

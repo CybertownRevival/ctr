@@ -1,20 +1,17 @@
 import Vue from "vue"
 import VueRouter from "vue-router";
+
 import App from "./App.vue"
-import routes from "./routes";
 import api from "./api";
 import appStore from "./appStore";
+import routes from "./routes";
 import "./assets/index.scss";
 
 Vue.config.productionTip = false
 
-const router = new VueRouter({
-  routes
-});
-
+const router = new VueRouter({ routes });
 
 Vue.use(VueRouter);
-Vue.use(router, api);
 
 Vue.prototype.$http = api;
 Vue.prototype.$store = appStore;
@@ -31,7 +28,8 @@ router.beforeEach((to, from, next) => {
 
   if (!["login", "logout", "signup", "forgot", "password_reset"].includes(to.name)) {
     api.get("/member/session").then(response => {
-      appStore.data.user = response.data.user;
+      const { user } = <{ user: string }> response.data;
+      appStore.data.user = user;
       appStore.data.isUser = true;
       next();
     }).catch(() => {
@@ -50,7 +48,6 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-// eslint-disable-next-line
 new Vue({
   router,
   render: h => h(App),

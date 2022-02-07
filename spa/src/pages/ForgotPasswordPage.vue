@@ -88,8 +88,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   name: "ForgotPasswordPage",
   data: () => {
     return {
@@ -112,7 +114,7 @@ export default {
           email: this.email,
         });
         this.success = true;
-      } catch (errorResponse) {
+      } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
           this.error = errorResponse.response.data.error;
           this.showError = true;
@@ -123,5 +125,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

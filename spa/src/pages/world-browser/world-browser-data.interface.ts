@@ -1,0 +1,18 @@
+export interface WorldBrowserData {
+  debugLog: boolean,
+  loaded: boolean,
+  worldsData: any,
+  avatarsData: any,
+  browser: any,
+  uniqValue: number,
+  place?: { name: string, assets_dir: string, world_filename: string, },
+  position: [number, number, number],
+  rotation: [number, number, number, number],
+  users: any,
+  ROTATE180: any,
+  TYPES: any,
+  sharedEvent: any,
+  eventNodeMap: any,
+  sharedObjects: [],
+  sharedObjectsMap: Map<any, any>,
+}

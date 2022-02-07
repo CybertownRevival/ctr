@@ -37,11 +37,10 @@
   </div>
 </template>
 
-<script>
-/*eslint no-undef: 0*/
-/*eslint no-unused-vars: 0*/
+<script lang="ts">
+import Vue from 'vue';
 
-export default {
+export default Vue.extend({
   name: "AccountPage",
   data: () => {
     return {
@@ -71,7 +70,7 @@ export default {
           newPassword2: this.newPassword2,
         });
         this.showSuccess = true;
-      } catch (errorResponse) {
+      } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
           this.error = errorResponse.response.data.error;
           this.showError = true;
@@ -83,5 +82,5 @@ export default {
     },
   },
   mounted() {},
-};
+});
 </script>

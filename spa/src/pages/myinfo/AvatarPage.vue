@@ -17,11 +17,10 @@
   </div>
 </template>
 
-<script>
-/*eslint no-undef: 0*/
-/*eslint no-unused-vars: 0*/
+<script lang="ts">
+import Vue from 'vue';
 
-export default {
+export default Vue.extend({
   name: "AvatarPage",
   data: () => {
     return {
@@ -49,7 +48,7 @@ export default {
         localStorage.setItem("token", response.data.token);
         this.$store.data.user.userName = response.data.username;
         this.showSuccess = true;
-      } catch (errorResponse) {
+      } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
           this.error = errorResponse.response.data.error;
           this.showError = true;
@@ -73,5 +72,5 @@ export default {
     //todo set avatarId = user's avatar id
     this.avatarId = this.$store.data.user.avatar.id;
   },
-};
+});
 </script>
