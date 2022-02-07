@@ -104,12 +104,14 @@
   </main>
 </template>
 
-<script>
-import WorldBrowserPage from "./pages/WorldBrowserPage.vue";
+<script lang="ts">
+import Vue from 'vue';
 
-/*eslint no-undef: 0*/
-/*eslint no-unused-vars: 0*/
-export default {
+import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
+
+declare const X3D: any;
+
+export default Vue.extend({
   name: "App",
   components: {
     WorldBrowserPage,
@@ -269,9 +271,9 @@ export default {
     };
   },
   methods: {
-    changeJumpGate() {
-      if (this.jumpGate !== "") {
-        this.$router.push({ path: "/place/" + this.jumpGate });
+    changeJumpGate(): void {
+      if (this.jumpGate?.length) {
+        this.$router.push({ path: `/place/${this.jumpGate}` });
         this.jumpGate = "";
       }
     },
@@ -301,5 +303,5 @@ export default {
     require("./libs/x_ite_mods/bxx_auth.js");
     //require('./libs/x_ite_mods/fix_stairs.js');
   },
-};
+});
 </script>

@@ -9,12 +9,11 @@
   </div>
 </template>
 
-<script>
-/*eslint no-undef: 0*/
-/*eslint no-unused-vars: 0*/
+<script lang="ts">
+import Vue from 'vue';
 
-import Chat from "../components/Chat";
-export default {
+import Chat from "../components/Chat.vue";
+export default Vue.extend({
   name: "ChatTest",
   components: { Chat },
   data: () => {
@@ -48,5 +47,5 @@ export default {
     this.loaded = false;
     this.getPlace();
   },
-};
+});
 </script>

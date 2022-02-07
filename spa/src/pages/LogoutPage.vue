@@ -2,8 +2,10 @@
   <div>Logging out...</div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   name: "LogoutPage",
   data: () => {
     return {};
@@ -12,5 +14,5 @@ export default {
     this.$store.methods.destroySession();
     this.$router.push({ path: "/login" });
   },
-};
+});
 </script>

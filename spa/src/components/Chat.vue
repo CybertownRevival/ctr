@@ -109,10 +109,13 @@
   </div>
 </template>
 
-<script>
-import io from "socket.io-client";
+<script lang="ts">
+import { io, Socket } from "socket.io-client";
+import Vue from 'vue';
 
-export default {
+declare const X3D: any;
+
+export default Vue.extend({
   name: "Chat",
   props: [
     "place",
@@ -175,7 +178,7 @@ export default {
         });
     },
     startSocket() {
-      this.socket = new io();
+      this.socket = io();
       this.debugMsg("starting socket...");
       this.debugMsg(localStorage.getItem("token"));
 
@@ -279,10 +282,11 @@ export default {
       handler(newMessages, oldMessages) {
         if (oldMessages.length > 0 && newMessages[0] !== oldMessages[0]) {
         } else {
+          const chat = this.$refs.chatArea as Element;
           this.$nextTick(function () {
-            this.$refs.chatArea.scrollTop = this.$refs.chatArea.scrollHeight;
+            chat.scrollTop = chat.scrollHeight;
             setTimeout(() => {
-              this.$refs.chatArea.scrollTop = this.$refs.chatArea.scrollHeight;
+              chat.scrollTop = chat.scrollHeight;
             }, 50);
           });
         }
@@ -325,6 +329,6 @@ export default {
     this.debugMsg("disconnecting...");
     this.socket.disconnect();
   },
-};
+});
 </script>
 

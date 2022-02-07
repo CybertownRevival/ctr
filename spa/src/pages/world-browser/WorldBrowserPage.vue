@@ -22,17 +22,20 @@
   </div>
 </template>
 
-<script>
-/*eslint no-undef: 0*/
-/*eslint no-unused-vars: 0*/
-import worldDataJson from "../libs/data/worlds.json";
-import avatarsDataJson from "../libs/data/avatars.json";
-import Chat from "../components/Chat.vue";
+<script lang="ts">
+import Vue from 'vue';
+import * as worldDataJson from "../../libs/data/worlds.json";
+import * as avatarsDataJson from "../../libs/data/avatars.json";
 
-export default {
+import Chat from "../../components/Chat.vue";
+import { WorldBrowserData } from './world-browser-data.interface';
+
+declare const X3D: any;
+
+export default Vue.extend({
   name: "WorldBrowserPage",
   components: { Chat },
-  data: () => {
+  data: (): WorldBrowserData => {
     return {
       debugLog: false,
       loaded: false,
@@ -40,7 +43,7 @@ export default {
       avatarsData: avatarsDataJson,
       browser: null,
       uniqValue: 0,
-      place: {},
+      place: undefined,
       position: [0, 0, 0],
       rotation: [0, 0, 0, 0],
       users: {},
@@ -49,19 +52,19 @@ export default {
       sharedEvent: null,
       eventNodeMap: null,
       sharedObjects: [],
-      sharedObjectsMap: [],
+      sharedObjectsMap: undefined,
     };
   },
   methods: {
-    debugMsg(msg) {
+    debugMsg(msg): void {
       if (this.debugLog) {
         console.log(msg);
       }
     },
-    isSocketConnected() {
+    isSocketConnected(): void {
       this.debugMsg("is socket connected fired");
     },
-    getPlace() {
+    getPlace(): Promise<void> {
       this.debugMsg("get place");
       return Promise.all([
         this.$http.get("/place/" + this.$route.params.id),
@@ -73,18 +76,16 @@ export default {
         this.debugMsg(response[0].data.place);
       });
     },
-    startX3D() {
-      if (this.browser == null) {
+    startX3D(): void {
+      if (!this.browser) {
         this.browser = X3D.createBrowser();
         document.querySelector("#world").appendChild(this.browser);
       }
-
-      var browser = X3D.getBrowser(this.browser);
-      browser.loadURL(new X3D.MFString(this.worldUrl), "");
-
+      X3D.getBrowser(this.browser)
+        .loadURL(new X3D.MFString(this.worldUrl), "");
       this.startListeners();
     },
-    startListeners() {
+    startListeners(): void {
       this.debugMsg("start Listeners...");
       X3D.getBrowser().addBrowserCallback({}, (eventType) => {
         this.debugMsg("browser callback triggered");
@@ -132,7 +133,7 @@ export default {
         }
       });
     },
-    startSharedEvents() {
+    startSharedEvents(): void {
       // shared events code
       let sharedZone;
       this.TYPES = {
@@ -200,18 +201,16 @@ export default {
 
       this.eventNodeMap = new Map();
 
-      for (let i = 0; i < sharedZone.events.length; i++) {
-        let eventNode = sharedZone.events[i];
-        for (let typeName of Object.keys(this.TYPES)) {
-          eventNode.addFieldCallback(typeName + "ToServer", {}, (val) => {
+      for (const eventNode of sharedZone.events) {
+        for (const typeName of Object.keys(this.TYPES)) {
+          eventNode.addFieldCallback(typeName + "ToServer", {}, val => {
             // TODO: confirm validity of adding to possibly non-existent field
-            let eventObj = {
-              name: eventNode.name,
-              type: typeName,
-              value: this.TYPES[typeName].toJSON(val),
-            };
-            this.$refs.chat.sendSharedEvent({
-              detail: eventObj,
+            this.$refs.chat['sendSharedEvent']({
+              detail: {
+                name: eventNode.name,
+                type: typeName,
+                value: this.TYPES[typeName].toJSON(val),
+              },
             });
           });
         }
@@ -222,7 +221,7 @@ export default {
         this.eventNodeMap.get(eventNode.name).push(eventNode);
       }
     },
-    handleSharedEvent(e) {
+    handleSharedEvent(e): void {
       let eventObj = e.detail;
       for (let node of this.eventNodeMap.get(eventObj.name)) {
         node[eventObj.type + "FromServer"] = this.TYPES[eventObj.type].fromJSON(
@@ -230,7 +229,7 @@ export default {
         );
       }
     },
-    addSharedObject(obj, browser) {
+    addSharedObject(obj, browser): void {
       obj.url = `/assets/object/${obj.object_id}/${obj.filename}`;
       console.log(obj.position);
       console.log(obj.rotation);
@@ -280,45 +279,45 @@ export default {
         this.saveObjectLocation(obj.id);
 
         /*
-						BxxEvents.dispatchEvent(
-							new CustomEvent("SO:toServer:position", {
-								detail: {
-									id: sharedObject.id,
-									type: "position",
-									value: {
-										x: pos.x,
-										y: pos.y,
-										z: pos.z,
-									},
-								},
-							})
-						);
-						*/
+            BxxEvents.dispatchEvent(
+              new CustomEvent("SO:toServer:position", {
+                detail: {
+                  id: sharedObject.id,
+                  type: "position",
+                  value: {
+                    x: pos.x,
+                    y: pos.y,
+                    z: pos.z,
+                  },
+                },
+              })
+            );
+            */
       });
 
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
         //todo happens when accepted
         console.log("new so rotation fired");
         /*
-						BxxEvents.dispatchEvent(
-							new CustomEvent("SO:toServer:rotation", {
-								detail: {
-									id: sharedObject.id,
-									type: "rotation",
-									value: {
-										x: rot.x,
-										y: rot.y,
-										z: rot.z,
-										angle: rot.angle,
-									},
-								},
-							})
-						);
-						*/
+            BxxEvents.dispatchEvent(
+              new CustomEvent("SO:toServer:rotation", {
+                detail: {
+                  id: sharedObject.id,
+                  type: "rotation",
+                  value: {
+                    x: rot.x,
+                    y: rot.y,
+                    z: rot.z,
+                    angle: rot.angle,
+                  },
+                },
+              })
+            );
+            */
       });
       this.sharedObjectsMap.set(obj.id, sharedObject);
     },
-    async addAvatar(e) {
+    async addAvatar(e): Promise<void> {
       const ROTATE180 = new X3D.SFRotation(0, 1, 0, Math.PI);
 
       const unique = (prefix) => {
@@ -394,12 +393,13 @@ export default {
         });
       }
     },
-    removeAvatar(e) {
-      let id = e.detail.id;
-      let browser = X3D.getBrowser(this.browser);
+    removeAvatar(e): void {
+      const { id } = e.detail;
 
       if (this.users[id].inline) {
-        browser.currentScene.removeRootNode(this.users[id].inline);
+        X3D.getBrowser(this.browser)
+          .currentScene
+          .removeRootNode(this.users[id].inline);
       }
 
       if (this.users[id].import) {
@@ -408,7 +408,7 @@ export default {
 
       delete this.users[id];
     },
-    avatarMovement(e) {
+    avatarMovement(e): void {
       const ROTATE180 = new X3D.SFRotation(0, 1, 0, Math.PI);
       let eventData = e.detail;
       let browser = X3D.getBrowser(this.browser);
@@ -447,10 +447,10 @@ export default {
         }
       }
     },
-    moveObject(objectId) {
+    moveObject(objectId): void {
       this.sharedObjectsMap.get(objectId).startMove = true;
     },
-    saveObjectLocation(objectId) {
+    saveObjectLocation(objectId): void {
       console.log("save object location");
       console.log(objectId);
       var obj = this.sharedObjectsMap.get(objectId);
@@ -472,7 +472,7 @@ export default {
     },
   },
   computed: {
-    worldUrl() {
+    worldUrl(): string {
       const { assets_dir, world_filename } = this.place;
       return `/assets/worlds/${assets_dir}${world_filename}`;
     },
@@ -497,5 +497,5 @@ export default {
   },
   mounted() {},
   beforeDestroy() {},
-};
+});
 </script>

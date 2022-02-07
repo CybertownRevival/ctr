@@ -364,11 +364,10 @@
   </div>
 </template>
 
-<script>
-/*eslint no-undef: 0*/
-/*eslint no-unused-vars: 0*/
+<script lang="ts">
+import Vue from 'vue';
 
-export default {
+export default Vue.extend({
   name: "Homepage",
   data: () => {
     return {};
@@ -383,7 +382,7 @@ export default {
       this.$router.push({ path: "/place/enter" });
     }
   },
-};
+});
 </script>
 
 <style>

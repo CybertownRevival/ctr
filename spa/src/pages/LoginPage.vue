@@ -153,8 +153,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   name: "LoginPage",
   data: () => {
     return {
@@ -165,22 +167,22 @@ export default {
     };
   },
   methods: {
-    async login() {
+    async login(): Promise<void> {
       this.showError = false;
       try {
-        let response = await this.$http.post("/member/login", {
+        const response = await this.$http.post("/member/login", {
           username: this.username,
           password: this.password,
         });
         console.log(response);
         localStorage.setItem("token", response.data.token);
         this.$store.data.user.userName = response.data.username;
-        if (this.$route.query.redirect) {
-          this.$router.push({ path: this.$route.query.redirect });
-        } else {
-          this.$router.push({ path: "/place/enter" });
-        }
-      } catch (errorResponse) {
+        const { redirect } = this.$route.query;
+        const path: string = redirect
+          ? ((<string[]> redirect)?.join('/') || <string> redirect)
+          : "/place/enter";
+        this.$router.push({ path });
+      } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
           this.error = errorResponse.response.data.error;
           this.showError = true;
@@ -191,5 +193,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

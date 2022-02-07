@@ -145,10 +145,12 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
   name: "SignupPage",
-  data: () => {
+  data() {
     return {
       email: "",
       email2: "",
@@ -171,7 +173,7 @@ export default {
       }
 
       try {
-        let response = await this.$http.post("/member/signup", {
+        const response = await this.$http.post("/member/signup", {
           email: this.email,
           username: this.username,
           password: this.password,
@@ -180,7 +182,7 @@ export default {
         localStorage.setItem("token", response.data.token);
         this.$store.data.user.userName = response.data.username;
         this.$router.push({ path: "/place/enter" });
-      } catch (errorResponse) {
+      } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
           this.error = errorResponse.response.data.error;
           this.showError = true;
@@ -191,5 +193,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
