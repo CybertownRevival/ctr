@@ -46,7 +46,7 @@ and videos online on installation and the basics of node, npm and docker.
 ### Initial Setup
 
 1. Clone this repository to your machine.
-2. Rename `spa/.env.example` to `spa/.env` and `api/.env.example` to `api.env`.
+2. Rename `spa/.env.example` to `spa/.env` and `api/.env.example` to `api/.env`.
 3. In the cloned directory, run `docker-compose up` from command line. This will install the docker environment, install node dependencies via npm and start the servers.
 4. Navigate to the `spa/` directory and run `npm run dev` to compile the SPA.
 5. In your browser, visit http://localhost:8001/ to confirm it's running.
@@ -55,15 +55,15 @@ To run the environment again in the future, simple repeat steps 2 onwards.
 
 ### Importing the Database
 
-We provide two .sql files for setting up your environment's database:
+We provide two .sql files for setting up your environment's database, located in `api/db`:
 
 1. ctr-dev-structure.sql - database and table structure
 2. ctr-dev-seed-data.sql - dummy data to populate the database with
 
 To load the .sql files into your environment's database:
 ```shell
-docker exec -i ctr_db1 mysql -uroot -ppw cybertown < ctr-dev-structure.sql
-docker exec -i ctr_db1 mysql -uroot -ppw cybertown < ctr-dev-seed-data.sql
+docker exec -i ctr_db1 mysql -uroot -ppw cybertown < ./api/db/ctr-dev-structure.sql
+docker exec -i ctr_db1 mysql -uroot -ppw cybertown < ./api/db/ctr-dev-seed-data.sql
 ```
 
 Note: You may also use a DBA software of your choice to import the .sql files.
