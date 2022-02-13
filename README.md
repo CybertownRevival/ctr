@@ -37,7 +37,7 @@ We utilise docker to manage the entire development environment and to make it ea
 You will need to have the following already installed on your machine and a basic understanding in order to 
 run the development environment:
 
-* [node/npm][node]
+* [node/npm][node] (version 14.18.1)
 * [docker][docker-ce]
 
 You may also wish to install Docker for Desktop if you wish. For beginners, there are plenty of tutorials 
@@ -62,8 +62,8 @@ We provide two .sql files for setting up your environment's database, located in
 
 To load the .sql files into your environment's database:
 ```shell
-docker exec -i ctr_db1 mysql -uroot -ppw cybertown < ./api/db/ctr-dev-structure.sql
-docker exec -i ctr_db1 mysql -uroot -ppw cybertown < ./api/db/ctr-dev-seed-data.sql
+docker exec -i ctr_db_1 mysql -uroot -ppw cybertown < ./api/db/ctr-dev-structure.sql
+docker exec -i ctr_db_1 mysql -uroot -ppw cybertown < ./api/db/ctr-dev-seed-data.sql
 ```
 
 Note: You may also use a DBA software of your choice to import the .sql files.
