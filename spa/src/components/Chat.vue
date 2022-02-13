@@ -50,15 +50,15 @@
           font-bold
         "
       >
-        <span v-if="activePanel === 'users'" class="flex-grow"
-          >({{ this.users.length + 1 }}) {{ place.name }}</span
-        >
-        <span v-if="activePanel === 'gestures'" class="flex-grow"
-          >Body Language</span
-        >
-        <span v-if="activePanel === 'sharedObjects'" class="flex-grow"
-          >Objects</span
-        >
+        <span v-if="activePanel === 'users'" class="flex-grow">
+          ({{ this.users.length + 1 }}) {{ place.name }}
+        </span>
+        <span v-if="activePanel === 'gestures'" class="flex-grow">
+          Body Language
+        </span>
+        <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
+          Objects
+        </span>
         <button
           type="button"
           class="
@@ -81,9 +81,8 @@
             {{ this.$store.data.user.userName }}
           </li>
           <li v-for="(user, key) in users" :key="key">
-            <img src="/assets/img/av_invis.gif" class="inline" />{{
-              user.userName
-            }}
+            <img src="/assets/img/av_invis.gif" class="inline" />
+            {{ user.userName }}
           </li>
         </ul>
         <ul v-if="activePanel === 'gestures'">
@@ -110,43 +109,31 @@
 </template>
 
 <script lang="ts">
-import { io, Socket } from "socket.io-client";
 import Vue from 'vue';
 
-declare const X3D: any;
+import { debugMsg } from '@/helpers';
 
 export default Vue.extend({
   name: "Chat",
   props: [
     "place",
-    "browser",
-    "position",
-    "rotation",
     "sharedEvent",
     "sharedObjects",
   ],
   data: () => {
     return {
-      connected: false,
-      socket: null,
       message: "",
       messages: [],
       users: [],
-      debugLog: false,
       activePanel: "users",
     };
   },
   methods: {
-    debugMsg(msg) {
-      if (this.debugLog) {
-        console.log(msg);
-      }
-    },
-
-    sendMessage() {
+    debugMsg,
+    sendMessage(): void {
       this.debugMsg("sending message...");
       if (this.message !== "" && this.connected) {
-        this.socket.emit("CHAT", {
+        this.$socket.emit("CHAT", {
           msg: this.message,
         });
         this.$http
@@ -159,91 +146,27 @@ export default Vue.extend({
         this.message = "";
       }
     },
-    systemMessage(msg) {
+    systemMessage(msg: string): void {
       this.messages.push({
         type: "system",
         msg: msg,
       });
     },
-    startChat() {
+    startNewChat(): void {
+      this.messages = [];
+      this.users = [];
       this.$http
-        .get("/message/place/" + this.place.id, {
+        .get(`/message/place/${this.place.id}`, {
           limit: 10,
           order: "id",
           orderDirection: "desc",
         })
         .then((response) => {
           this.messages = response.data.messages.reverse();
-          this.startSocket();
+          this.systemMessage("Welcome to " + this.place.name);
         });
     },
-    startSocket() {
-      this.socket = io();
-      this.debugMsg("starting socket...");
-      this.debugMsg(localStorage.getItem("token"));
-
-      this.socket.on("connect", () => {
-        this.debugMsg("connecting...");
-        this.socket.emit(
-          "JOIN",
-          {
-            token: localStorage.getItem("token"),
-            room: this.place.id,
-          },
-          () => {
-            // JOIN ACK
-            this.debugMsg("Got JOIN ack");
-            this.connected = true;
-            this.$emit("connected", this.connected);
-            this.systemMessage("Welcome to " + this.place.name);
-            const browser = X3D.getBrowser(this.browser);
-            this.socket.emit("AV", {
-              detail: {
-                pos: [
-                  browser.viewpointPosition.x,
-                  browser.viewpointPosition.y,
-                  browser.viewpointPosition.z,
-                ],
-                rot: [
-                  browser.viewpointOrientation.x,
-                  browser.viewpointOrientation.y,
-                  browser.viewpointOrientation.z,
-                  browser.viewpointOrientation.angle,
-                ],
-              },
-            });
-          }
-        );
-      });
-      this.socket.on("SE", (e) => {
-        this.$emit("se-from-server", { detail: e });
-      });
-      this.socket.on("CHAT", (data) => {
-        this.debugMsg("chat message received...");
-        this.debugMsg(data);
-        this.messages.push(data);
-      });
-      this.socket.on("AV", (e) => {
-        this.$emit("av-from-server", { detail: e });
-      });
-      this.socket.on("AV:del", (e) => {
-        this.systemMessage(e.userName + " has left.");
-        this.users = this.users.filter((u) => u.userName !== e.userName);
-        this.$emit("av-from-server-del", { detail: e });
-      });
-      this.socket.on("AV:new", (e) => {
-        this.systemMessage(e.userName + " has entered.");
-        this.users.push(e);
-        this.$emit("av-from-server-new", { detail: e });
-      });
-      this.socket.on("disconnect", () => this.debugMsg("Disconnected..."));
-      this.socket.on("reconnect", () => this.debugMsg("Reconnecting..."));
-    },
-    endSocket() {
-      this.debugMsg("ENDING socket...");
-      this.socket.disconnect();
-    },
-    changeActivePanel() {
+    changeActivePanel(): void {
       switch (this.activePanel) {
         case "users":
           this.activePanel = "gestures";
@@ -256,27 +179,33 @@ export default Vue.extend({
           break;
       }
     },
-    sendGesture(gestureIndex) {
-      this.socket.emit("AV", {
-        gesture: gestureIndex + 1, // Gestures in avs start at 1 for some reason.
+    sendGesture(gestureIndex): void {
+      this.$socket.emit("AV", {
+        gesture: gestureIndex + 1, // Gestures in ssts start at 1 for some reason.
       });
     },
-    moveObject(objectId) {
+    moveObject(objectId): void {
       this.$emit("move-object", objectId);
     },
-    sendSharedEvent(eventData) {
-      if (this.connected) {
-        this.socket.emit("SE", eventData.detail);
-      }
-    },
+    startSocketListeners(): void {
+      this.$socket.on("CHAT", data => {
+        this.debugMsg("chat message received...", data);
+        this.debugMsg(data);
+        this.messages.push(data);
+      });
+      this.$socket.on("AV:del", event => {
+        this.systemMessage(event.userName + " has left.");
+        this.users = this.users.filter((u) => u.userName !== event.userName);
+      });
+      this.$socket.on("AV:new", event => {
+        this.systemMessage(event.userName + " has entered.");
+        this.users.push(event);
+      });
+    }
   },
   watch: {
     place() {
-      this.debugMsg("place changed");
-      this.messages = [];
-      this.users = [];
-      this.endSocket();
-      this.startChat();
+      this.startNewChat();
     },
     messages: {
       handler(newMessages, oldMessages) {
@@ -293,42 +222,17 @@ export default Vue.extend({
       },
       deep: true,
     },
-    position() {
-      if (this.connected) {
-        this.socket.emit("AV", {
-          pos: this.position,
-        });
-      }
-    },
-    rotation() {
-      if (this.connected) {
-        this.socket.emit("AV", {
-          rot: this.rotation,
-        });
-      }
-    },
-    sharedEvent: {
-      handler() {
-        if (this.connected && this.sharedEvent !== null) {
-          this.socket.emit("SE", this.sharedEvent.detail);
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
   },
-  computed: {},
+  computed: {
+    connected: function() { return this.$socket.connected; },
+  },
   mounted() {
     this.debugMsg("starting chat page...");
-    this.debugMsg(this.place);
-    if (this.place && this.place !== null) {
-      this.startChat();
+    this.startSocketListeners();
+    if (this.place) {
+      this.startNewChat();
     }
-  },
-  beforeDestroy() {
-    this.debugMsg("disconnecting...");
-    this.socket.disconnect();
-  },
+  }
 });
 </script>
 

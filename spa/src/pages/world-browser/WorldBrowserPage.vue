@@ -1,21 +1,22 @@
 <template>
   <div class="h-full w-full bg-black flex flex-col">
+    <div class="flex items-center update-warning" v-if="showUpdateWarning">
+      <strong>
+        New Update Available!
+        &nbsp;
+        <a @click="reloadWindow">
+          Please Reload
+        </a>
+      </strong>
+    </div>
     <div id="world" class="world w-full flex-1" style=""></div>
     <div class="flex flex-none h-1/3 bg-chat">
       <chat
         ref="chat"
         v-if="loaded"
         :place="place"
-        :browser="browser"
-        :position="position"
-        :rotation="rotation"
         :shared-event="sharedEvent"
         :shared-objects="sharedObjects"
-        @connected="isSocketConnected"
-        @av-from-server-new="addAvatar"
-        @av-from-server-del="removeAvatar"
-        @av-from-server="avatarMovement"
-        @se-from-server="handleSharedEvent"
         @move-object="moveObject"
       ></chat>
     </div>
@@ -24,20 +25,21 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as worldDataJson from "../../libs/data/worlds.json";
+
 import * as avatarsDataJson from "../../libs/data/avatars.json";
-
+import * as worldDataJson from "../../libs/data/worlds.json";
 import Chat from "../../components/Chat.vue";
+import {
+  debugMsg,
+  environment,
+} from '@/helpers';
 import { WorldBrowserData } from './world-browser-data.interface';
-
-declare const X3D: any;
 
 export default Vue.extend({
   name: "WorldBrowserPage",
   components: { Chat },
   data: (): WorldBrowserData => {
     return {
-      debugLog: false,
       loaded: false,
       worldsData: worldDataJson,
       avatarsData: avatarsDataJson,
@@ -53,182 +55,10 @@ export default Vue.extend({
       eventNodeMap: null,
       sharedObjects: [],
       sharedObjectsMap: undefined,
+      showUpdateWarning: false,
     };
   },
   methods: {
-    debugMsg(msg): void {
-      if (this.debugLog) {
-        console.log(msg);
-      }
-    },
-    isSocketConnected(): void {
-      this.debugMsg("is socket connected fired");
-    },
-    getPlace(): Promise<void> {
-      this.debugMsg("get place");
-      return Promise.all([
-        this.$http.get("/place/" + this.$route.params.id),
-        this.$http.get("/place/" + this.$route.params.id + "/object_instance"),
-      ]).then((response) => {
-        this.place = response[0].data.place;
-        document.title = this.place.name + " - Cybertown";
-        this.sharedObjects = response[1].data.object_instance;
-        this.debugMsg(response[0].data.place);
-      });
-    },
-    startX3D(): void {
-      if (!this.browser) {
-        this.browser = X3D.createBrowser();
-        document.querySelector("#world").appendChild(this.browser);
-      }
-      X3D.getBrowser(this.browser)
-        .loadURL(new X3D.MFString(this.worldUrl), "");
-      this.startListeners();
-    },
-    startListeners(): void {
-      this.debugMsg("start Listeners...");
-      X3D.getBrowser().addBrowserCallback({}, (eventType) => {
-        this.debugMsg("browser callback triggered");
-        this.debugMsg(eventType);
-        if (eventType === X3D.X3DConstants.INITIALIZED_EVENT) {
-          this.debugMsg("initalized_event matched! " + this.place.name);
-          this.debugMsg(this.place);
-          let browser = X3D.getBrowser();
-          let browserProto = Object.getPrototypeOf(browser);
-          let prox = browser.currentScene.createNode("ProximitySensor");
-          prox.size = new X3D.SFVec3f(1000000, 1000000, 1000000);
-          prox.enabled = true;
-          prox.addFieldCallback("position_changed", {}, (val) => {
-            this.position = [val.x, val.y, val.z];
-          });
-          prox.addFieldCallback("orientation_changed", {}, (val) => {
-            this.rotation = [val.x, val.y, val.z, val.angle];
-          });
-          browser.currentScene.addRootNode(prox);
-          if (!("viewpointPosition" in browserProto)) {
-            Object.defineProperty(browserProto, "viewpointPosition", {
-              get: function () {
-                return prox.position_changed;
-              },
-            });
-          }
-          if (!("viewpointOrientation" in browserProto)) {
-            Object.defineProperty(browserProto, "viewpointOrientation", {
-              get: function () {
-                return prox.orientation_changed;
-              },
-            });
-          }
-          browserProto.getTime = browserProto.getCurrentTime;
-
-          //todo: shared objects
-          this.sharedObjectsMap = new Map();
-          this.sharedObjects.forEach((object) => {
-            this.addSharedObject(object, browser);
-          });
-
-          this.startSharedEvents();
-
-          this.loaded = true;
-        }
-      });
-    },
-    startSharedEvents(): void {
-      // shared events code
-      let sharedZone;
-      this.TYPES = {
-        bool: {
-          toJSON: (e) => e,
-          fromJSON: (e) => e,
-        },
-        color: {
-          toJSON: (color) => ({
-            r: color.r,
-            g: color.g,
-            b: color.b,
-          }),
-          fromJSON: (color) => new X3D.SFColor(color.r, color.g, color.b),
-        },
-        float: {
-          toJSON: (e) => e,
-          fromJSON: (e) => e,
-        },
-        int32: {
-          toJSON: (e) => e,
-          fromJSON: (e) => e,
-        },
-        rotation: {
-          toJSON: (rotation) => ({
-            x: rotation.x,
-            y: rotation.y,
-            z: rotation.z,
-            angle: rotation.angle,
-          }),
-          fromJSON: (rotation) =>
-            new X3D.SFRotation(
-              rotation.x,
-              rotation.y,
-              rotation.z,
-              rotation.angle
-            ),
-        },
-        string: {
-          toJSON: (e) => e,
-          fromJSON: (e) => e,
-        },
-        time: {
-          toJSON: (e) => e,
-          fromJSON: (e) => e,
-        },
-        vec2f: {
-          toJSON: (vec2f) => ({ x: vec2f.x, y: vec2f.y }),
-          fromJSON: (vec2f) => new X3D.SFVec2f(vec2f.x, vec2f.y),
-        },
-        vec3f: {
-          toJSON: (vec3f) => ({
-            x: vec3f.x,
-            y: vec3f.y,
-            z: vec3f.z,
-          }),
-          fromJSON: (vec3f) => new X3D.SFVec2f(vec3f.x, vec3f.y, vec3f.z),
-        },
-      };
-      try {
-        sharedZone = X3D.getBrowser().currentScene.getNamedNode("SharedZone");
-      } catch (e) {
-        return;
-      }
-
-      this.eventNodeMap = new Map();
-
-      for (const eventNode of sharedZone.events) {
-        for (const typeName of Object.keys(this.TYPES)) {
-          eventNode.addFieldCallback(typeName + "ToServer", {}, val => {
-            // TODO: confirm validity of adding to possibly non-existent field
-            this.$refs.chat['sendSharedEvent']({
-              detail: {
-                name: eventNode.name,
-                type: typeName,
-                value: this.TYPES[typeName].toJSON(val),
-              },
-            });
-          });
-        }
-
-        if (!this.eventNodeMap.has(eventNode.name)) {
-          this.eventNodeMap.set(eventNode.name, []);
-        }
-        this.eventNodeMap.get(eventNode.name).push(eventNode);
-      }
-    },
-    handleSharedEvent(e): void {
-      let eventObj = e.detail;
-      for (let node of this.eventNodeMap.get(eventObj.name)) {
-        node[eventObj.type + "FromServer"] = this.TYPES[eventObj.type].fromJSON(
-          eventObj.value
-        );
-      }
-    },
     addSharedObject(obj, browser): void {
       obj.url = `/assets/object/${obj.object_id}/${obj.filename}`;
       console.log(obj.position);
@@ -317,7 +147,52 @@ export default Vue.extend({
       });
       this.sharedObjectsMap.set(obj.id, sharedObject);
     },
-    async addAvatar(e): Promise<void> {
+    debugMsg,
+    getPlace(): Promise<void> {
+      this.debugMsg("get place");
+      return Promise.all([
+        this.$http.get("/place/" + this.$route.params.id),
+        this.$http.get("/place/" + this.$route.params.id + "/object_instance"),
+      ]).then((response) => {
+        this.place = response[0].data.place;
+        document.title = this.place.name + " - Cybertown";
+        this.sharedObjects = response[1].data.object_instance;
+        this.debugMsg(response[0].data.place);
+      });
+    },
+    async loadAndJoinPlace(): Promise<void> {
+      this.loaded = false;
+      if (this.place) this.$socket.leaveRoom(this.place.id);
+      await this.getPlace();
+      const browser = await this.startX3D();
+      this.loaded = true;
+      this.startX3DListeners(browser);
+      this.joinPlace();
+    },
+    async joinPlace(): Promise<void> {
+      await this.$socket.joinRoom(this.place.id, this.$store.data.user.token);
+      this.debugMsg('joined room success', this.place.id);
+      const { viewpointPosition, viewpointOrientation } = X3D.getBrowser(this.browser);
+      this.$socket.emit("AV", {
+        detail: {
+          pos: [
+            viewpointPosition.x,
+            viewpointPosition.y,
+            viewpointPosition.z,
+          ],
+          rot: [
+            viewpointOrientation.x,
+            viewpointOrientation.y,
+            viewpointOrientation.z,
+            viewpointOrientation.angle,
+          ],
+        },
+      });
+    },
+    moveObject(objectId): void {
+      this.sharedObjectsMap.get(objectId).startMove = true;
+    },
+    async onAvatarAdded(event): Promise<void> {
       const ROTATE180 = new X3D.SFRotation(0, 1, 0, Math.PI);
 
       const unique = (prefix) => {
@@ -349,52 +224,89 @@ export default Vue.extend({
 
       let browser = X3D.getBrowser(this.browser);
 
-      var eventData = e.detail;
-      if (!this.users[eventData.id]) {
-        this.users[eventData.id] = {};
+      if (!this.users[event.id]) {
+        this.users[event.id] = {};
       }
 
       if (
-        !this.users[eventData.id].loading &&
-        !this.users[eventData.id].loaded
+        !this.users[event.id].loading &&
+        !this.users[event.id].loaded
       ) {
-        const { id, filename } = eventData.avatar;
+        const { id, filename } = event.avatar;
         const avURL = `/assets/avatars/${id}/${filename}`;
 
-        this.users[eventData.id].loading = true;
+        this.users[event.id].loading = true;
         loadInlineAsync(browser, avURL).then((avInline) => {
           let uniqueID = unique("Av-");
           browser.currentScene.updateImportedNode(avInline, "Avatar", uniqueID);
           var avImport = browser.currentScene.getImportedNode(uniqueID);
           browser.currentScene.addRootNode(avInline);
-          this.users[eventData.id].loading = false;
-          this.users[eventData.id].loaded = true;
-          this.users[eventData.id]["inline"] = avInline;
-          this.users[eventData.id]["import"] = avImport;
+          this.users[event.id].loading = false;
+          this.users[event.id].loaded = true;
+          this.users[event.id]["inline"] = avInline;
+          this.users[event.id]["import"] = avImport;
 
-          if (this.users[eventData.id]["inline"]) {
+          if (this.users[event.id]["inline"]) {
             if (
-              this.users[eventData.id].transform &&
-              this.users[eventData.id].transform.pos
+              this.users[event.id].transform &&
+              this.users[event.id].transform.pos
             ) {
-              this.users[eventData.id]["import"].set_position = new X3D.SFVec3f(
-                ...this.users[eventData.id].transform.pos
+              this.users[event.id]["import"].set_position = new X3D.SFVec3f(
+                ...this.users[event.id].transform.pos
               );
             }
             if (
-              this.users[eventData.id].transform &&
-              this.users[eventData.id].transform.rot
+              this.users[event.id].transform &&
+              this.users[event.id].transform.rot
             ) {
-              this.users[eventData.id]["import"].rotation = ROTATE180.multiply(
-                new X3D.SFRotation(...this.users[eventData.id].transform.rot)
+              this.users[event.id]["import"].rotation = ROTATE180.multiply(
+                new X3D.SFRotation(...this.users[event.id].transform.rot)
               );
             }
           }
         });
       }
     },
-    removeAvatar(e): void {
-      const { id } = e.detail;
+    onAvatarMoved(event): void {
+      const ROTATE180 = new X3D.SFRotation(0, 1, 0, Math.PI);
+      let browser = X3D.getBrowser(this.browser);
+
+      if (!this.users[event.id]) {
+        this.users[event.id] = {};
+      }
+
+      if (!this.users[event.id].transform) {
+        this.users[event.id].transform = {};
+      }
+
+      if (event.pos) {
+        this.users[event.id].transform.pos = event.pos;
+      }
+      if (event.rot) {
+        this.users[event.id].transform.rot = event.rot;
+      }
+
+      if (this.users[event.id]["inline"]) {
+        if (this.users[event.id].transform.pos) {
+          this.users[event.id]["import"].set_position = new X3D.SFVec3f(
+            ...this.users[event.id].transform.pos
+          );
+        }
+        if (this.users[event.id].transform.rot) {
+          this.users[event.id]["import"].rotation = ROTATE180.multiply(
+            new X3D.SFRotation(...this.users[event.id].transform.rot)
+          );
+        }
+
+        if (typeof event.gesture === "number") {
+          this.users[event.id]["import"][
+            "set_gesture" + event.gesture.toString()
+          ] = browser.getCurrentTime();
+        }
+      }
+    },
+    onAvatarRemoved(event): void {
+      const { id } = event;
 
       if (this.users[id].inline) {
         X3D.getBrowser(this.browser)
@@ -408,47 +320,26 @@ export default Vue.extend({
 
       delete this.users[id];
     },
-    avatarMovement(e): void {
-      const ROTATE180 = new X3D.SFRotation(0, 1, 0, Math.PI);
-      let eventData = e.detail;
-      let browser = X3D.getBrowser(this.browser);
-
-      if (!this.users[eventData.id]) {
-        this.users[eventData.id] = {};
-      }
-
-      if (!this.users[eventData.id].transform) {
-        this.users[eventData.id].transform = {};
-      }
-
-      if (eventData.pos) {
-        this.users[eventData.id].transform.pos = eventData.pos;
-      }
-      if (eventData.rot) {
-        this.users[eventData.id].transform.rot = eventData.rot;
-      }
-
-      if (this.users[eventData.id]["inline"]) {
-        if (this.users[eventData.id].transform.pos) {
-          this.users[eventData.id]["import"].set_position = new X3D.SFVec3f(
-            ...this.users[eventData.id].transform.pos
-          );
-        }
-        if (this.users[eventData.id].transform.rot) {
-          this.users[eventData.id]["import"].rotation = ROTATE180.multiply(
-            new X3D.SFRotation(...this.users[eventData.id].transform.rot)
-          );
-        }
-
-        if (typeof eventData.gesture === "number") {
-          this.users[eventData.id]["import"][
-            "set_gesture" + eventData.gesture.toString()
-          ] = browser.getCurrentTime();
-        }
+    onSharedEvent(event): void {
+      let eventObj = event.detail;
+      for (let node of this.eventNodeMap.get(eventObj.name)) {
+        node[eventObj.type + "FromServer"] = this.TYPES[eventObj.type].fromJSON(
+          eventObj.value
+        );
       }
     },
-    moveObject(objectId): void {
-      this.sharedObjectsMap.get(objectId).startMove = true;
+    onVersion(event: { version: string }): void {
+      if (event.version !== environment.packageVersion) {
+        this.showUpdateWarning = true;
+        console.error(
+          "Socket server version mismatch:",
+          `client: ${environment.packageVersion};`,
+          `server: ${event.version}`,
+        );
+      }
+    },
+    reloadWindow(): void {
+      window.location.reload();
     },
     saveObjectLocation(objectId): void {
       console.log("save object location");
@@ -470,6 +361,162 @@ export default Vue.extend({
         },
       });
     },
+    sendSharedEvent(event): void {
+      this.$socket.emit("SE", event.detail);
+    },
+    startSharedEvents(): void {
+      let sharedZone;
+      this.TYPES = {
+        bool: {
+          toJSON: (e) => e,
+          fromJSON: (e) => e,
+        },
+        color: {
+          toJSON: (color) => ({
+            r: color.r,
+            g: color.g,
+            b: color.b,
+          }),
+          fromJSON: (color) => new X3D.SFColor(color.r, color.g, color.b),
+        },
+        float: {
+          toJSON: (e) => e,
+          fromJSON: (e) => e,
+        },
+        int32: {
+          toJSON: (e) => e,
+          fromJSON: (e) => e,
+        },
+        rotation: {
+          toJSON: (rotation) => ({
+            x: rotation.x,
+            y: rotation.y,
+            z: rotation.z,
+            angle: rotation.angle,
+          }),
+          fromJSON: (rotation) =>
+            new X3D.SFRotation(
+              rotation.x,
+              rotation.y,
+              rotation.z,
+              rotation.angle
+            ),
+        },
+        string: {
+          toJSON: (e) => e,
+          fromJSON: (e) => e,
+        },
+        time: {
+          toJSON: (e) => e,
+          fromJSON: (e) => e,
+        },
+        vec2f: {
+          toJSON: (vec2f) => ({ x: vec2f.x, y: vec2f.y }),
+          fromJSON: (vec2f) => new X3D.SFVec2f(vec2f.x, vec2f.y),
+        },
+        vec3f: {
+          toJSON: (vec3f) => ({
+            x: vec3f.x,
+            y: vec3f.y,
+            z: vec3f.z,
+          }),
+          fromJSON: (vec3f) => new X3D.SFVec2f(vec3f.x, vec3f.y, vec3f.z),
+        },
+      };
+      try {
+        sharedZone = X3D.getBrowser().currentScene.getNamedNode("SharedZone");
+      } catch (e) {
+        return;
+      }
+
+      this.eventNodeMap = new Map();
+
+      for (const eventNode of sharedZone.events) {
+        for (const typeName of Object.keys(this.TYPES)) {
+          eventNode.addFieldCallback(typeName + "ToServer", {}, val => {
+            // TODO: confirm validity of adding to possibly non-existent field
+            this.sendSharedEvent({
+              detail: {
+                name: eventNode.name,
+                type: typeName,
+                value: this.TYPES[typeName].toJSON(val),
+              },
+            });
+          });
+        }
+
+        if (!this.eventNodeMap.has(eventNode.name)) {
+          this.eventNodeMap.set(eventNode.name, []);
+        }
+        this.eventNodeMap.get(eventNode.name).push(eventNode);
+      }
+    },
+    startSocketListeners(): void {
+      this.$socket.on("AV", event => this.onAvatarMoved(event));
+      this.$socket.on("AV:del", event => this.onAvatarRemoved(event));
+      this.$socket.on("AV:new", event => this.onAvatarAdded(event));
+      this.$socket.on("SE", event => this.onSharedEvent(event));
+      this.$socket.on("VERSION", event => this.onVersion(event));
+    },
+    async startX3D(): Promise<any> {
+      if (!this.browser) {
+        this.browser = X3D.createBrowser();
+        document.querySelector("#world").appendChild(this.browser);
+      }
+      const browser = X3D.getBrowser(this.browser);
+      browser.loadURL(new X3D.MFString(this.worldUrl), "");
+      return new Promise((resolve, reject) => {
+        browser.addBrowserCallback({}, eventType => {
+          switch (eventType) {
+            case X3D.X3DConstants.INITIALIZED_EVENT:
+              resolve(browser);
+              break;
+            case X3D.X3DConstants.CONNECTION_ERROR:
+            case X3D.X3DConstants.INITIALIZED_ERROR:
+              reject();
+              break;
+          }
+        })
+      })
+    },
+    startX3DListeners(browser: any): void {
+      let browserProto = Object.getPrototypeOf(browser);
+      let prox = browser.currentScene.createNode("ProximitySensor");
+      prox.size = new X3D.SFVec3f(1000000, 1000000, 1000000);
+      prox.enabled = true;
+      prox.addFieldCallback("position_changed", {}, (val) => {
+        this.position = [val.x, val.y, val.z];
+      });
+      prox.addFieldCallback("orientation_changed", {}, (val) => {
+        this.rotation = [val.x, val.y, val.z, val.angle];
+      });
+      browser.currentScene.addRootNode(prox);
+      if (!("viewpointPosition" in browserProto)) {
+        Object.defineProperty(browserProto, "viewpointPosition", {
+          get: function () {
+            return prox.position_changed;
+          },
+        });
+      }
+      if (!("viewpointOrientation" in browserProto)) {
+        Object.defineProperty(browserProto, "viewpointOrientation", {
+          get: function () {
+            return prox.orientation_changed;
+          },
+        });
+      }
+      browserProto.getTime = browserProto.getCurrentTime;
+
+      //todo: shared objects
+      this.sharedObjectsMap = new Map();
+      this.sharedObjects.forEach((object) => {
+        this.addSharedObject(object, browser);
+      });
+
+      this.startSharedEvents();
+
+      this.loaded = true;
+    },
   },
   computed: {
     worldUrl(): string {
@@ -479,23 +526,50 @@ export default Vue.extend({
   },
   watch: {
     "$store.data.x3dReady": function (to, from) {
-      if (to === true && this.$route.name === "world-browser") {
-        this.loaded = false;
-        this.getPlace().then(() => {
-          this.startX3D();
-        });
+      if (to && this.$route.name === "world-browser") {
+        this.loadAndJoinPlace();
       }
     },
     $route(to, from) {
       if (to.name === "world-browser" && this.$store.data.x3dReady) {
-        this.loaded = false;
-        this.getPlace().then(() => {
-          this.startX3D();
-        });
+        this.loadAndJoinPlace();
       }
     },
+    place() {
+      this.debugMsg("place changed");
+    },
+    position() {
+      this.$socket.emit("AV", {
+        pos: this.position,
+      });
+    },
+    rotation() {
+      this.$socket.emit("AV", {
+        rot: this.rotation,
+      });
+    },
+    sharedEvent: {
+      handler() {
+        if (this.sharedEvent) {
+          this.$socket.emit("SE", this.sharedEvent.detail);
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
   },
-  mounted() {},
+  mounted() {
+    this.startSocketListeners();
+  },
   beforeDestroy() {},
+  async beforeCreate() {
+    await this.$socket.start();
+  },
 });
 </script>
+
+<style>
+  .update-warning a {
+    cursor: pointer;
+  }
+</style>

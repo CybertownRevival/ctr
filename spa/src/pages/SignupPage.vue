@@ -173,18 +173,18 @@ export default Vue.extend({
       }
 
       try {
-        const response = await this.$http.post("/member/signup", {
+        const { data } = await this.$http.post("/member/signup", {
           email: this.email,
           username: this.username,
           password: this.password,
         });
         this.showSuccess = true;
-        localStorage.setItem("token", response.data.token);
-        this.$store.data.user.userName = response.data.username;
+        this.$store.data.user.userName = data.username;
+        this.$store.methods.setToken(data.token);
         this.$router.push({ path: "/place/enter" });
-      } catch (errorResponse: any) {
-        if (errorResponse.response.data.error) {
-          this.error = errorResponse.response.data.error;
+      } catch (error: any) {
+        if (error.response.data.error) {
+          this.error = error.response.data.error;
           this.showError = true;
         } else {
           this.error = "An unknown error occurred";

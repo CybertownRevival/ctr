@@ -5,8 +5,10 @@ const https = require('https');
 const io = require('socket.io')(http);
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const package = require('./package.json');
+const USERS = new Map();
 
-function webhook_message(from, message) {
+function webhookMessage(from, message) {
   return;
   if (!process.env.CHAT_WEBHOOK_URL) return;
   let body = JSON.stringify({
@@ -33,7 +35,6 @@ function validJwt(token) {
 }
 
 app.use(express.static("dist"));
-let USERS = new Map();
 
 // serves the SPA
 app.get('/', (req, res) => {
@@ -41,96 +42,71 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, "/dist/index.html"));
 });
 
-/*
-todo: this is like 'users online' i think
-app.get('/population', (req, res) => {
-  res.setHeader("Cache-Control", "no-store");
-  let population = {};
-  for(let avatar of USERS.values()) {
-    if(avatar.room) {
-      if(!population[avatar.room]) {
-        population[avatar.room] = 0;
-      }
-      population[avatar.room] += 1;
-    }
-  }
-  res.send(population);
-});
-
-*/
-
 io.on('connection', async function (socket) {
   console.log('a user connected');
-  //send discord message
-  webhook_message("System", `${socket.id} connected.`);
+  webhookMessage("System", `${socket.id} connected.`);
 
-  let initDetail;
-  let ack;
   //setup socket's default AVATAR map reference
   USERS.set(socket, {
     pos: [0, 0, 0],
     rot: [0, 1, 0, 0]
   });
-  
-  //this joins the socket and sets the data ot initDetail. ask is the callback on the UI
-  try {
-    [initDetail, ack] = await new Promise((resolve, reject) => {
-      socket.on("JOIN", (data, ack) => {
-        
-        //todo: validate the jwt (must be passed with every call)
-        console.log(data);
-        let tokenData = validJwt(data.token);
-        
-        if (!tokenData) {
-          console.error('invalid token!!!')
-          reject("Invalid Token");
-        } else {
-          console.log('token Data!');
-          console.log(tokenData);
-          data.tokenData = tokenData;
-          resolve([data, ack]);
-        }
-        
+
+  // inform the client about the server's version number
+  socket.emit("VERSION", { version: package.version });
+
+  socket.on("JOIN", data => {
+    const tokenData = validJwt(data.token);
+    if (tokenData) {
+      const { room } = data;
+      USERS.get(socket).avatar = tokenData.avatar;
+      USERS.get(socket).room = room;
+      USERS.get(socket).userName = tokenData.userName;
+
+      // inform other members of the room that someone joined
+      socket.to(room).emit("AV:new", {
+        id: socket.id,
+        avatar: tokenData.avatar,
+        userName: tokenData.userName
       });
-      setTimeout(() => reject("Timed out waiting for JOIN"), 10000);
-    });
-  } catch (e) {
-    console.error(e);
-    return;
-  }
-  
-  
-  //tell this user about the other users and positions, tell the other users about this user and position
-  for (let [other_socket, av] of USERS) {
-    if (USERS.get(other_socket).room === initDetail.room) {
-      socket.emit("AV:new", { id: other_socket.id, avatar: av.avatar, userName: av.userName });
-      socket.emit("AV", { id: other_socket.id, pos: av.pos, rot: av.rot });
-      other_socket.emit("AV:new", { id: socket.id, avatar: initDetail.tokenData.avatar, userName: initDetail.tokenData.userName });
+      
+      socket.join(room);
+      // provide the new user with data about the current users in the room
+      const clientsInRoom = io.sockets.adapter.rooms.get(room);
+      for (const clientId of clientsInRoom) {
+        if (clientId == socket.id) continue;
+        const clientSocket = io.sockets.sockets.get(clientId);
+        const user = USERS.get(clientSocket);
+        if (user) {
+          const { avatar, pos, rot, userName } = user;
+          socket.emit("AV:new", {
+            avatar,
+            id: clientId,
+            userName,
+          });
+          socket.emit("AV", {
+            id: clientId,
+            pos,
+            rot,
+          });
+        }
+      }
+    
+      console.log(`User '${tokenData.userName}' entered room ${room}`);
+      webhookMessage("System", `${tokenData.userName} entered room \`${room}\``);
+    } else {
+      console.error("invalid token!");
     }
-  }
-  
-  //set this socket's reference AVATAR map
-  //console.log(USERS);
-  USERS.get(socket).avatar = initDetail.tokenData.avatar;
-  USERS.get(socket).room = initDetail.room;
-  USERS.get(socket).userName = initDetail.tokenData.userName;
-  webhook_message("System", `${USERS.get(socket).userName} entered room \`${initDetail.room}\``);
-  
-  //join the room...
-  socket.join(initDetail.room);
-  
-  // Acknolwedges to Client's JOIN that server is initialized (callback)
-  ack();
+  });
   
   //handle avatar related calls.
   socket.on("AV", function (msg) {
     msg.id = socket.id;
-    console.log(msg);
-    console.log(USERS.get(socket).room);
-    if (USERS.get(socket) && USERS.get(socket).room) {
-      socket.to(USERS.get(socket).room).emit("AV", msg);
+    const user = USERS.get(socket);
+    if (user?.room) {
+      socket.to(user.room).emit("AV", msg);
     }
-    if (USERS.get(socket)) {
+    if (user) {
       if (msg.pos) {
         USERS.get(socket).pos = msg.pos;
       }
@@ -151,22 +127,42 @@ io.on('connection', async function (socket) {
     console.log('chat message...');
     console.log(chatData);
     if (!chatData || !chatData.msg || typeof chatData.msg !== "string") return;
-    
-    if (USERS.get(socket).room) {
-      webhook_message(`${USERS.get(socket).userName} in ${USERS.get(socket).room}`, chatData.msg);
-      io.to(USERS.get(socket).room).emit("CHAT", { userName: USERS.get(socket).userName, msg: chatData.msg });
+    const user = USERS.get(socket);
+    if (user?.room) {
+      webhookMessage(`${user.userName} in ${user.room}`, chatData.msg);
+      io.to(user.room).emit("CHAT", {
+        userName: user.userName,
+        msg: chatData.msg,
+      });
     }
   });
   
+  socket.on("unsubscribe", () => {
+    const user = USERS.get(socket);
+    socket.leave(user.room);
+    socket.to(user.room)
+      .emit("AV:del", {
+        id: socket.id,
+        userName: user.userName,
+      });
+    
+    console.log(`User '${user.userName}' left ${user.room}`);
+    webhookMessage("System", `${user.userName} left ${user.room}`);
+  });
+
   //handle disconnection from the socket.
   socket.on("disconnect", function () {
-    console.log('user disconnecting...');
-    io.to(USERS.get(socket).room).emit("AV:del", { id: socket.id, userName: USERS.get(socket).userName });
-    webhook_message("System", `${USERS.get(socket).userName} disconnected.`);
+    const user = USERS.get(socket);
+    io.to(user?.room)
+    .emit("AV:del", {
+      id: socket.id,
+      userName:user.userName
+    });
     USERS.delete(socket);
+    console.log(`User '${user?.userName}' disconnected`);
   });
 });
 
-const port = process.env.PORT || 8000;
+const port = process.env.WEBSOCKET_PORT || 8000;
 http.listen(port);
 console.log('listening on port:' + port);

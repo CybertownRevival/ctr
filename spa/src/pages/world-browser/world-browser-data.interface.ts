@@ -1,11 +1,15 @@
 export interface WorldBrowserData {
-  debugLog: boolean,
   loaded: boolean,
   worldsData: any,
   avatarsData: any,
   browser: any,
   uniqValue: number,
-  place?: { name: string, assets_dir: string, world_filename: string, },
+  place?: {
+    name: string,
+    assets_dir: string,
+    id: string,
+    world_filename: string,
+  },
   position: [number, number, number],
   rotation: [number, number, number, number],
   users: any,
@@ -15,4 +19,5 @@ export interface WorldBrowserData {
   eventNodeMap: any,
   sharedObjects: [],
   sharedObjectsMap: Map<any, any>,
+  showUpdateWarning: boolean,
 }
