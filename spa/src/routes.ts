@@ -7,10 +7,6 @@ import PasswordResetPage from "./pages/PasswordResetPage.vue";
 
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 
-import MyInfoPage from "./pages/MyInfoPage.vue";
-import MyAccountPage from "./pages/myinfo/AccountPage.vue";
-import MyAvatarPage from "./pages/myinfo/AvatarPage.vue";
-
 export default [
   { path: "/", component: HomePage, name: "home", meta: { title: 'Welcome to Cybertown' } },
   { path: "/place/:id", component: WorldBrowserPage, name: "world-browser" },
@@ -19,8 +15,5 @@ export default [
   { path: "/logout", component: LogoutPage, name: "logout", meta: { title: 'Logout' } },
   { path: "/forgot", component: ForgotPasswordPage, name: "forgot", meta: { title: 'Forgot Password' } },
   { path: "/password_reset", component: PasswordResetPage, name: "password_reset", meta: { title: 'Password Reset' } },
-  { path: "/myinfo", component: MyInfoPage, name: "myinfo", meta: { title: 'My Info' } },
-  { path: "/myinfo/account", component: MyAccountPage, name: "account", meta: { title: 'My Account' } },
-  { path: "/myinfo/avatar", component: MyAvatarPage, name: "avatar", meta: { title: 'My Avatar' } },
 ];
 
