@@ -74,10 +74,8 @@
           "code": 100
         }
       ],
-      "no-tabs": [
-        "error",
-        "always"
-      ],
+      "no-tabs": ["error", { "allowIndentationTabs": true }]
+      ,
       "no-multiple-empty-lines": "error",
       "no-unreachable": "off",
       "no-unused-vars": "error",
