@@ -1,6 +1,6 @@
-(function() {
+(function () {
     // Blaxxun Speed & Avatar Size Defaults
-    X3D.require(["x_ite/Components/Navigation/NavigationInfo"], function(NavigationInfo){
+    X3D.require(["x_ite/Components/Navigation/NavigationInfo"], function (NavigationInfo) {
         var nav = NavigationInfo.prototype.fieldDefinitions.index;
         //nav['speed'].value.set(1);
         //nav['visibilityLimit'].value.set(450);

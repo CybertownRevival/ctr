@@ -2,7 +2,7 @@ BxxEvents.addEventListener("SO:toServer:position", e => console.log(e));
 BxxEvents.addEventListener("SO:toServer:rotation", e => console.log(e));
 
 
-(function() {
+(function () {
     function addSO(browser, obj) {
         let sharedObject = browser.currentScene.createProto("SharedObject");
         sharedObject.name = obj.name;
@@ -13,8 +13,8 @@ BxxEvents.addEventListener("SO:toServer:rotation", e => console.log(e));
         inline.url = new X3D.MFString(obj.url);
         sharedObject.children[0] = inline;
         browser.currentScene.addRootNode(sharedObject);
-        
-        sharedObject.addFieldCallback("newPosition", {}, function(pos) {
+
+        sharedObject.addFieldCallback("newPosition", {}, function (pos) {
             BxxEvents.dispatchEvent(new CustomEvent("SO:toServer:position", {
                 detail: {
                     id: sharedObject.id,
@@ -27,8 +27,8 @@ BxxEvents.addEventListener("SO:toServer:rotation", e => console.log(e));
                 }
             }));
         });
-        
-        sharedObject.addFieldCallback("newRotation", {}, function(rot) {
+
+        sharedObject.addFieldCallback("newRotation", {}, function (rot) {
             BxxEvents.dispatchEvent(new CustomEvent("SO:toServer:rotation", {
                 detail: {
                     id: sharedObject.id,
@@ -42,17 +42,17 @@ BxxEvents.addEventListener("SO:toServer:rotation", e => console.log(e));
                 }
             }));
         });
-        
+
         return sharedObject
     }
-    
-    BxxEvents.addEventListener("INIT", function() {
+
+    BxxEvents.addEventListener("INIT", function () {
         console.log("Browser ready");
         let browser = X3D.getBrowser();
-        browser.addBrowserCallback({}, function(eventType) {
-            if(eventType === X3D.X3DConstants.INITIALIZED_EVENT) {
+        browser.addBrowserCallback({}, function (eventType) {
+            if (eventType === X3D.X3DConstants.INITIALIZED_EVENT) {
                 window.SOs = new Map();
-                BxxEvents.addEventListener("SO:fromServer:existingObject", function(e) {
+                BxxEvents.addEventListener("SO:fromServer:existingObject", function (e) {
                     let sharedObject = e.detail;
                     let sharedObjectInstance = addSO(browser, sharedObject);
                     window.SOs.set(sharedObject.id, sharedObjectInstance);

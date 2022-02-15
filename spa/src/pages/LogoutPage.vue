@@ -1,22 +1,18 @@
 <template>
-    <div>
-        Logging out...
-    </div>
+  <div>Logging out...</div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 
-
-export default {
-    name: 'LogoutPage',
-    data: () => {
-        return {
-        };
-    },
-    mounted() {
-        this.$store.methods.destroySession();
-		this.$router.push({ path: "/login" });
-    }
-
-}
+export default Vue.extend({
+  name: "LogoutPage",
+  data: () => {
+    return {};
+  },
+  mounted() {
+    this.$store.methods.destroySession();
+    this.$router.push({ path: "/login" });
+  },
+});
 </script>
