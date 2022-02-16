@@ -292,7 +292,7 @@ export default Vue.extend({
       },
       (error) => {
         console.error(error);
-      }
+      },
     );
     require("./libs/x_ite_mods/spec_color.js");
     require("./libs/x_ite_mods/relax_route.js");

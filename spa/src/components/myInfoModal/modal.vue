@@ -76,10 +76,9 @@
 </template>
 
 <script lang="ts">
-
 import Vue from "vue";
-import AvatarPage from "@/components/myInfoModal/AvatarPage.vue";
-import AccountPage from "@/components/myInfoModal/AccountPage.vue";
+import AvatarPage from "./AvatarPage.vue";
+import AccountPage from "./AccountPage.vue";
 
 export default Vue.extend({
   name: "MyInfoModal",
@@ -94,9 +93,9 @@ export default Vue.extend({
   },
   methods: {
     closeModal() : void {
-      this.$emit("close",);
+      this.$emit("close");
     },
   },
   mounted() {},
-},);
+});
 </script>

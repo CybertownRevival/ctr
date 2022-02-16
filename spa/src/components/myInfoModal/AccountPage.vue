@@ -53,7 +53,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    async save() {
+    async save(): Promise<void> {
       this.showError = false;
       this.showSuccess = false;
 
@@ -64,11 +64,11 @@ export default Vue.extend({
       }
 
       try {
-        const response = await this.$http.post("/member/update_password", {
+        await this.$http.post("/member/update_password", {
           currentPassword: this.currentPassword,
           newPassword: this.newPassword,
           newPassword2: this.newPassword2,
-        },);
+        });
         this.showSuccess = true;
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
@@ -82,5 +82,5 @@ export default Vue.extend({
     },
   },
   mounted() {},
-},);
+});
 </script>

@@ -44,8 +44,8 @@ export default Vue.extend({
       try {
         const response = await this.$http.post("/member/update_avatar", {
           avatarId: this.avatarId,
-        },);
-        localStorage.setItem("token", response.data.token,);
+        });
+        localStorage.setItem("token", response.data.token);
         this.$store.data.user.userName = response.data.username;
         this.showSuccess = true;
       } catch (errorResponse: any) {
@@ -64,10 +64,10 @@ export default Vue.extend({
     this.$http
       .get("/avatar", {
         limit: 1000,
-      },)
-      .then((response,) => {
+      })
+      .then(response => {
         this.avatars = response.data.avatars;
-      },);
+      });
 
     //todo set avatarId = user's avatar id
     this.avatarId = this.$store.data.user.avatar.id;
