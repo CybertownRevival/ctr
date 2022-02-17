@@ -9,7 +9,7 @@ EXTERNPROTO HUD[
 ]
 ["urn:inet:blaxxun.com:node:HUD","http://www.blaxxun.com/vrml/protos/nodes.wrl#HUD"]
 
-Inline{url"http://www.cybertown.com/places/no_cache/fleamarket/temp.wrl"}
+#Inline{url"http://www.cybertown.com/places/no_cache/fleamarket/temp.wrl"}
 
 
 PROTO SharedObject [
@@ -548,6 +548,7 @@ NavigationInfo {
 avatarSize [
 .25 1.75 .75
 ]
+speed 10
 headlight FALSE
 }
 
