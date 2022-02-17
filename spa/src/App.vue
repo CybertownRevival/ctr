@@ -36,11 +36,11 @@
           </div>
           <div class="flex justify-center">
             <div class="menu">
-              <router-link
+              <a href="#"
                 class="menuLink"
-                to="/myinfo"
+                @click.prevent="showMyInfoModal = true"
                 style="top: 78px"
-              ></router-link>
+              ></a>
             </div>
           </div>
           <div class="flex justify-center">
@@ -101,13 +101,15 @@
         </div>
       </div>
     </div>
+    <my-info-modal v-if="showMyInfoModal" @close="showMyInfoModal = false"></my-info-modal>
   </main>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from "vue";
 
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
+import MyInfoModal from "./components/myInfoModal/modal.vue";
 
 declare const X3D: any;
 
@@ -115,9 +117,11 @@ export default Vue.extend({
   name: "App",
   components: {
     WorldBrowserPage,
+    MyInfoModal,
   },
   data: () => {
     return {
+      showMyInfoModal: false,
       jumpGateData: [
         {
           title: "COLONIES:",
@@ -288,7 +292,7 @@ export default Vue.extend({
       },
       (error) => {
         console.error(error);
-      }
+      },
     );
     require("./libs/x_ite_mods/spec_color.js");
     require("./libs/x_ite_mods/relax_route.js");

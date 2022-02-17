@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from "vue";
 
 export default Vue.extend({
   name: "AvatarPage",
@@ -42,7 +42,7 @@ export default Vue.extend({
       }
 
       try {
-        let response = await this.$http.post("/member/update_avatar", {
+        const response = await this.$http.post("/member/update_avatar", {
           avatarId: this.avatarId,
         });
         localStorage.setItem("token", response.data.token);
@@ -65,12 +65,12 @@ export default Vue.extend({
       .get("/avatar", {
         limit: 1000,
       })
-      .then((response) => {
+      .then(response => {
         this.avatars = response.data.avatars;
       });
 
     //todo set avatarId = user's avatar id
     this.avatarId = this.$store.data.user.avatar.id;
   },
-});
+},);
 </script>

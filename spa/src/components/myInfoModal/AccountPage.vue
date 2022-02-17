@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from "vue";
 
 export default Vue.extend({
   name: "AccountPage",
@@ -53,7 +53,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    async save() {
+    async save(): Promise<void> {
       this.showError = false;
       this.showSuccess = false;
 
@@ -64,7 +64,7 @@ export default Vue.extend({
       }
 
       try {
-        let response = await this.$http.post("/member/update_password", {
+        await this.$http.post("/member/update_password", {
           currentPassword: this.currentPassword,
           newPassword: this.newPassword,
           newPassword2: this.newPassword2,
