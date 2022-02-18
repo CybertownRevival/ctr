@@ -57,7 +57,7 @@
     "rules": {
       "comma-dangle": [
         "error",
-        "always"
+        "always-multiline"
       ],
       "eol-last": [
         "error",
@@ -76,7 +76,9 @@
       ],
       "no-tabs": [
         "error",
-        "always"
+        {
+          "allowIndentationTabs": false
+        }
       ],
       "no-multiple-empty-lines": "error",
       "no-unreachable": "off",
