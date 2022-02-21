@@ -188,6 +188,10 @@ export default Vue.extend({
           slug: "blackmarket"
         },
         {
+          title: "Jail",
+          slug: "jail"
+        },
+        {
           title: "(more coming soon)",
           slug: "",
         },
@@ -211,10 +215,6 @@ export default Vue.extend({
                 {
                     'title': 'Library (missing wrl)',
                     "slug": "library"
-                },
-                {
-                    'title': 'Jail',
-                    "slug": "jail"
                 },
                 {
                     'title': 'Fun Park',
