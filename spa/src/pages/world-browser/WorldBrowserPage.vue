@@ -1,6 +1,6 @@
 <template>
   <div class="h-full w-full bg-black flex flex-col">
-    <div class="flex items-center update-warning" v-if="showUpdateWarning">
+    <div class="flex items-center update-warning bg-lines p-1" v-if="showUpdateWarning">
       <strong>
         New Update Available!
         &nbsp;
