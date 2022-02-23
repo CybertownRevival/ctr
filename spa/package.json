@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --mode development --watch",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev": "vue-cli-service build --mode development --watch",
-    "dev-server": "nodemon -r dotenv/config server.js"
+    "dev-server": "nodemon --inspect=0.0.0.0:9229 -r dotenv/config server.js"
   },
   "dependencies": {
     "axios": "^0.23.0",

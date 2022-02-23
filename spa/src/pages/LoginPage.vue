@@ -170,21 +170,22 @@ export default Vue.extend({
     async login(): Promise<void> {
       this.showError = false;
       try {
-        const response = await this.$http.post("/member/login", {
+        const { data } = await this.$http.post("/member/login", {
           username: this.username,
           password: this.password,
         });
-        console.log(response);
-        localStorage.setItem("token", response.data.token);
-        this.$store.data.user.userName = response.data.username;
+        this.$store.data.user.userName = data.username;
+        this.$store.methods.setToken(data.token);
         const { redirect } = this.$route.query;
-        const path: string = redirect
-          ? ((<string[]> redirect)?.join('/') || <string> redirect)
-          : "/place/enter";
+        // redirect can be a string or an array of strings so we have to handle both
+        const redirectString = typeof redirect === "object"
+          ? redirect.join('/')
+          : redirect;
+        const path: string = redirectString || "/place/enter";
         this.$router.push({ path });
-      } catch (errorResponse: any) {
-        if (errorResponse.response.data.error) {
-          this.error = errorResponse.response.data.error;
+      } catch (error) {
+        if (error.response.data.error) {
+          this.error = error.response.data.error;
           this.showError = true;
         } else {
           this.error = "An unknown error occurred";
