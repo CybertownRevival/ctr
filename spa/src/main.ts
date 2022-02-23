@@ -4,7 +4,9 @@ import VueRouter from "vue-router";
 import App from "./App.vue"
 import api from "./api";
 import appStore from "./appStore";
+import { User } from "./appStore";
 import routes from "./routes";
+import socket from "./socket";
 import "./assets/index.scss";
 
 Vue.config.productionTip = false
@@ -15,6 +17,7 @@ Vue.use(VueRouter);
 
 Vue.prototype.$http = api;
 Vue.prototype.$store = appStore;
+Vue.prototype.$socket = socket;
 
 document.querySelector("html").classList.add("dark")
 
@@ -27,9 +30,9 @@ router.beforeEach((to, from, next) => {
   }
 
   if (!["login", "logout", "signup", "forgot", "password_reset"].includes(to.name)) {
-    api.get("/member/session").then(response => {
-      const { user } = <{ user: string }> response.data;
-      appStore.data.user = user;
+    api.get<{ user: User }>("/member/session").then(response => {
+      const { user } = response.data;
+      appStore.data.user = { ...appStore.data.user, ...user };
       appStore.data.isUser = true;
       next();
     }).catch(() => {

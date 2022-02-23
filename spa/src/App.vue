@@ -18,9 +18,7 @@
     >
       <div class="flex flex-1">
         <router-view v-if="this.$route.name !== 'world-browser'"></router-view>
-        <world-browser-page
-          v-show="this.$route.name === 'world-browser'"
-        ></world-browser-page>
+        <world-browser-page v-show="this.$route.name === 'world-browser'"></world-browser-page>
       </div>
       <div
         class="flex-none w-60 bg-lines overflow-y-auto"
@@ -65,20 +63,22 @@
               href="https://discord.gg/gcgAZ7UuNA"
               class="btn-ui"
               target="_blank"
-              >Discord</a
-            >
+              >Discord
+            </a>
             <a
               href="https://www.reddit.com/r/cybertown/"
               class="btn-ui"
               target="_blank"
-              >Reddit</a
-            >
+              >
+              Reddit
+            </a>
             <a
               href="https://github.com/CybertownRevival/ct-spa/issues"
               class="btn-ui"
               target="_blank"
-              >Report a Bug</a
-            >
+              >
+              Report a Bug
+            </a>
             <br />
             <router-link to="/logout" class="btn-ui">Logout</router-link>
             <br />
