@@ -184,14 +184,14 @@ export default Vue.extend({
           slug: "gameshow",
         },
         {
+          title: 'Black Market',
+          slug: "blackmarket"
+        },
+        {
           title: "(more coming soon)",
           slug: "",
         },
         /* For the curious developers. These worlds need fixing to work (see dev tools console)
-                {
-                    'title': 'Black Market',
-                    "slug": "blackmarket"
-                },
                 {
                     'title': 'Mall',
                     "slug": "mall"
