@@ -43,4 +43,5 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           script: |
             git --version
-            whoami
+            cd ctr
+            git pull origin master
