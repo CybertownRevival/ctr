@@ -3,8 +3,6 @@
 This project is an attempt to resurrect and preserve Cybertown, a VRML based community from the 
 mid-90s/early-00s. This repository contains the entire codebase for the new platform, built by the community.
 
-testin deployment...
-
 
 ## How to Contribute
 
