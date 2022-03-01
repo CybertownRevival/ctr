@@ -81,7 +81,7 @@
             {{ this.$store.data.user.userName }}
           </li>
           <li v-for="(user, key) in users" :key="key">
-            <img src="/assets/img/av_invis.gif" class="inline" />
+            <img src="/assets/img/av_def.gif" class="inline" />
             {{ user.userName }}
           </li>
         </ul>
