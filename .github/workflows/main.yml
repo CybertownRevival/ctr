@@ -29,13 +29,14 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_KEY }}
+          script_stop: true
           script: |
             git --version
             cd ctr
             sudo -u www-data git pull origin master
             cd api
-            npm install
+            sudo -u www-data npm install
             cd ..
             cd spa
-            npm version minor
-            npm install
+            sudo -u www-data npm version minor
+            sudo -u www-data npm install
