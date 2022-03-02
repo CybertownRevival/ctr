@@ -32,6 +32,8 @@ jobs:
           script_stop: true
           script: |
             git --version
+            node --version
+            npm --version
             cd ctr
             sudo -u www-data git pull origin master
             cd api
