@@ -35,10 +35,10 @@ jobs:
             node --version
             npm --version
             cd ctr
-            sudo -u www-data git pull origin master
+            git pull origin master
             cd api
-            sudo -u www-data npm install
+            npm install
             cd ..
             cd spa
-            sudo -u www-data npm version minor
-            sudo -u www-data npm install
+            npm version minor
+            npm install
