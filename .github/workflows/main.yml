@@ -42,3 +42,4 @@ jobs:
             cd spa
             npm version minor
             npm install
+            npm run build
