@@ -35,11 +35,16 @@ jobs:
             node --version
             npm --version
             cd ctr
+            echo -e "\e[1;42m Pulling from github..."
             git pull origin master
             cd api
+            echo -e "\e[1;42m Installing API packages..."
             npm install
             cd ..
             cd spa
+            echo -e "\e[1;42m Increment SPA minor version number..."
             npm version minor
+            echo -e "\e[1;42m Installing SPA packages..."
             npm install
+            echo -e "\e[1;42m Building SPA..."
             npm run build
