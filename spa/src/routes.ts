@@ -1,4 +1,5 @@
 import HomePage from "./pages/HomePage.vue";
+import AboutPage from "./pages/AboutPage.vue";
 import LoginPage from "./pages/LoginPage.vue";
 import SignupPage from "./pages/SignupPage.vue";
 import LogoutPage from "./pages/LogoutPage.vue";
@@ -10,6 +11,9 @@ export default [
   { path: "/", component: HomePage, name: "home", meta: {
     title: "Welcome to Cybertown",
   } },
+  { path: "/about", component: AboutPage, name: "about", meta: {
+      title: "About Cybertown Revival",
+    } },
   { path: "/place/:id", component: WorldBrowserPage, name: "world-browser" },
   { path: "/login", component: LoginPage, name: "login", meta: {
     title: "Login",

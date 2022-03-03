@@ -271,9 +271,11 @@
                     />
                     <a href="#" class="links"> CONTACT</a></span
                   ></b
-                ><br />
+                ><br /><br />
 
-                <a
+                <h2><router-link to="/about">About Cybertown Revival</router-link></h2>
+
+               <a
                   href="https://kdaws.com/"
                   target="_blank"
                   class="text-center inline-block p-5 rounded-sm mt-10"
