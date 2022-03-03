@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
     document.title = "Cybertown";
   }
 
-  if (!["login", "logout", "signup", "forgot", "password_reset"].includes(to.name)) {
+  if (!["login", "logout", "signup", "forgot", "password_reset","about"].includes(to.name)) {
     api.get<{ user: User }>("/member/session").then(response => {
       const { user } = response.data;
       appStore.data.user = { ...appStore.data.user, ...user };
