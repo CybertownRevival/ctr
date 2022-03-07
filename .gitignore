@@ -4,3 +4,4 @@
 .env.prod
 node_modules
 .idea
+dist/

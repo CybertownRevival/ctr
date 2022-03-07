@@ -179,7 +179,7 @@ export default Vue.extend({
           password: this.password,
         });
         this.showSuccess = true;
-        this.$store.data.user.userName = data.username;
+        this.$store.data.user.username = data.username;
         this.$store.methods.setToken(data.token);
         this.$router.push({ path: "/place/enter" });
       } catch (error: any) {

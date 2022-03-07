@@ -8,7 +8,7 @@ export interface User {
     filename: string,
     gestures: string[],
   },
-  userName?: string,
+  username?: string,
   token?: string,
 }
 
