@@ -61,13 +61,13 @@ io.on('connection', async function (socket) {
       const { room } = data;
       USERS.get(socket).avatar = tokenData.avatar;
       USERS.get(socket).room = room;
-      USERS.get(socket).userName = tokenData.userName;
+      USERS.get(socket).username = tokenData.username;
 
       // inform other members of the room that someone joined
       socket.to(room).emit("AV:new", {
         id: socket.id,
         avatar: tokenData.avatar,
-        userName: tokenData.userName
+        username: tokenData.username
       });
       
       socket.join(room);
@@ -78,11 +78,11 @@ io.on('connection', async function (socket) {
         const clientSocket = io.sockets.sockets.get(clientId);
         const user = USERS.get(clientSocket);
         if (user) {
-          const { avatar, pos, rot, userName } = user;
+          const { avatar, pos, rot, username } = user;
           socket.emit("AV:new", {
             avatar,
             id: clientId,
-            userName,
+            username,
           });
           socket.emit("AV", {
             id: clientId,
@@ -92,8 +92,8 @@ io.on('connection', async function (socket) {
         }
       }
     
-      console.log(`User '${tokenData.userName}' entered room ${room}`);
-      webhookMessage("System", `${tokenData.userName} entered room \`${room}\``);
+      console.log(`User '${tokenData.username}' entered room ${room}`);
+      webhookMessage("System", `${tokenData.username} entered room \`${room}\``);
     } else {
       console.error("invalid token!");
     }
@@ -129,9 +129,9 @@ io.on('connection', async function (socket) {
     if (!chatData || !chatData.msg || typeof chatData.msg !== "string") return;
     const user = USERS.get(socket);
     if (user?.room) {
-      webhookMessage(`${user.userName} in ${user.room}`, chatData.msg);
+      webhookMessage(`${user.username} in ${user.room}`, chatData.msg);
       io.to(user.room).emit("CHAT", {
-        userName: user.userName,
+        username: user.username,
         msg: chatData.msg,
       });
     }
@@ -143,11 +143,11 @@ io.on('connection', async function (socket) {
     socket.to(user.room)
       .emit("AV:del", {
         id: socket.id,
-        userName: user.userName,
+        username: user.username,
       });
     
-    console.log(`User '${user.userName}' left ${user.room}`);
-    webhookMessage("System", `${user.userName} left ${user.room}`);
+    console.log(`User '${user.username}' left ${user.room}`);
+    webhookMessage("System", `${user.username} left ${user.room}`);
   });
 
   //handle disconnection from the socket.
@@ -156,10 +156,10 @@ io.on('connection', async function (socket) {
     io.to(user?.room)
     .emit("AV:del", {
       id: socket.id,
-      userName:user.userName
+      username:user.username
     });
     USERS.delete(socket);
-    console.log(`User '${user?.userName}' disconnected`);
+    console.log(`User '${user?.username}' disconnected`);
   });
 });
 
