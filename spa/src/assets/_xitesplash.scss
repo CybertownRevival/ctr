@@ -4,26 +4,21 @@ X3DCanvas {
     z-index: 100;
     position: absolute;
     inset: 0;
-    background: #1b1d21;
-    background: -moz-radial-gradient(center, ellipse cover, #2f3135 0%, #1b1d21 100%);
-    background: -webkit-radial-gradient(center, ellipse cover, #2f3135 0%,#1b1d21 100%);
-    background: radial-gradient(ellipse at center, #2f3135 0%,#1b1d21 100%);
+    background: #000000;
   }
 
   .x_ite-private-spinner {
     position: absolute;
-    top: calc(50% - (138px / 2));
-    left: calc(50% - (134px / 2));
+    top: calc(50% - (200px / 2));
+    left: calc(50% - (138px / 2));
     width: 138px;
-    height: 134px;
-    background: url(/./assets/img/logo-action.gif) no-repeat;
-    -webkit-animation: spinner-animation-spin 32s linear infinite;
-    -moz-animation: spinner-animation-spin 32s linear infinite;
-    animation: spinner-animation-spin 32s linear infinite;
+    height: 49px;
+    background: url("/./assets/img/bxlogo.gif") no-repeat;
+    -webkit-animation: none;
+    -moz-animation: none;
+    animation: none;
   }
-@-moz-keyframes spinner-animation-spin { 100% { -moz-transform: rotate(360deg); } }
-@-webkit-keyframes spinner-animation-spin { 100% { -webkit-transform: rotate(360deg); } }
-@keyframes spinner-animation-spin { 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+
 
   .x_ite-private-progress {
     position: absolute;
