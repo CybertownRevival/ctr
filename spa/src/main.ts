@@ -1,5 +1,6 @@
 import Vue from "vue"
 import VueRouter from "vue-router";
+import VueGtag from "vue-gtag";
 
 import App from "./App.vue"
 import api from "./api";
@@ -14,6 +15,11 @@ Vue.config.productionTip = false
 const router = new VueRouter({ routes });
 
 Vue.use(VueRouter);
+
+Vue.use(VueGtag, {
+  config: { id: "G-BCMREM3LDH" },
+});
+
 
 Vue.prototype.$http = api;
 Vue.prototype.$store = appStore;
