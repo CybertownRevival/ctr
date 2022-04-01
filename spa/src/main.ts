@@ -16,9 +16,6 @@ const router = new VueRouter({ routes });
 
 Vue.use(VueRouter);
 
-Vue.use(VueGtag, {
-  config: { id: "G-BCMREM3LDH" },
-}, router);
 
 Vue.prototype.$http = api;
 Vue.prototype.$store = appStore;
@@ -55,6 +52,16 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
+Vue.use(VueGtag, {
+  pageTrackerTemplate(to) {
+    return {
+      page_title: document.title,
+      page_path: to.path,
+    }
+  },
+  config: { id: "G-BCMREM3LDH" },
+}, router);
 
 new Vue({
   router,
