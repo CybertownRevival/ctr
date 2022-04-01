@@ -20,8 +20,6 @@ Vue.use(VueGtag, {
   config: { id: "G-BCMREM3LDH" },
 }, router);
 
-
-
 Vue.prototype.$http = api;
 Vue.prototype.$store = appStore;
 Vue.prototype.$socket = socket;
