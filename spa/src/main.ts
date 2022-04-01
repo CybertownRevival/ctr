@@ -18,7 +18,7 @@ Vue.use(VueRouter);
 
 Vue.use(VueGtag, {
   config: { id: "G-BCMREM3LDH" },
-});
+}, router);
 
 
 Vue.prototype.$http = api;
