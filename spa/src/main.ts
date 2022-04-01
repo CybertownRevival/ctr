@@ -21,6 +21,7 @@ Vue.use(VueGtag, {
 }, router);
 
 
+
 Vue.prototype.$http = api;
 Vue.prototype.$store = appStore;
 Vue.prototype.$socket = socket;
