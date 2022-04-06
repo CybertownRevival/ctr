@@ -406,7 +406,7 @@ exports.sendPasswordReset = (req, res, next) => {
                             await mailLibs.sendEmail({
                                 to: req.body.email,
                                 subject:  'Cybertown Revival Password Reset',
-                                body: '<p>Hello,</p><p>We have received a request to reset the password on your account. Please click the link below to reset your password. If you did not request this reset, please ignore this email.</p><p><a href="https://s1.cybertown.customerdns.com/#/password_reset?token='+resetToken+'">Reset My Password</a></p><p>This link will expire in 15 minutes.</p>'
+                                body: '<p>Hello,</p><p>We have received a request to reset the password on your account. Please click the link below to reset your password. If you did not request this reset, please ignore this email.</p><p><a href="https://www.cybertownrevival.com/#/password_reset?token='+resetToken+'">Reset My Password</a></p><p>This link will expire in 15 minutes.</p>'
                             })
                                 .catch(console.error);
 
