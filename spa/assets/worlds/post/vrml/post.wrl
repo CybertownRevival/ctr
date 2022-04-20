@@ -3482,7 +3482,7 @@ eventIn SFBool Timer
 url "javascript:
 function Timer(value){
 if (!value){
-window.open('/#/place/enter','_SELF');
+window.location.href='/#/place/enter';
 }
 }
 "
@@ -3506,7 +3506,7 @@ jump FALSE
 }
 DEF exit PositionInterpolator {
 key [0 1]
-keyValue [28 3.7 0, 36 3.7 0]
+keyValue [28 3.7 0, 35 3.7 0]
 }
 ROUTE n.value_changed TO k.set_point
 ROUTE l.touchTime TO Clock.set_startTime
