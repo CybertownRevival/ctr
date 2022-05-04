@@ -11,7 +11,7 @@ exports.sendEmail = async (data) => {
     });
 
     await transporter.sendMail({
-        from: 'Cybertown Revival <donotreply@s1.cybertown.customerdns.com>',
+        from: 'Cybertown Revival <donotreply@cybertownrevival.com>',
         to: data.to,
         subject: data.subject,
         html: data.body
