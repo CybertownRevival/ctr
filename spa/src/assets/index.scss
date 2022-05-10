@@ -103,11 +103,19 @@ table {
         display:block;
     }
 
+  .menuMapLink {
+    position: absolute;
+    height: 40px;
+    width: 100%;
+    bottom:0;
+    display:block;
+  }
+
 
 }
 
 .btn-ui {
-    font-family: arial;
+  font-family: arial;
     font-size: x-small;
     color: #d0dbf7 !important;
     border: 1px solid #8f9bb6;
@@ -143,3 +151,34 @@ table {
 
 }
 
+
+.citymap {
+  display:inline-block;
+  position:relative;
+  background: url("/assets/img/mapcity.jpg") top center no-repeat;
+  width: 520px;
+  height:300px;
+
+  span {
+    position: absolute;
+    color: #ffcc00;
+  }
+
+  a {
+    position: absolute;
+    &:link {
+      text-decoration: underline;
+      color: #99ff33;
+    }
+
+    &:visited {
+      color: #00ff00;
+    }
+
+    &:active {
+      color: #fff;
+    }
+
+
+  }
+}

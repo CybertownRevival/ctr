@@ -6,6 +6,7 @@ import LogoutPage from "./pages/LogoutPage.vue";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.vue";
 import PasswordResetPage from "./pages/PasswordResetPage.vue";
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
+import CityMapPage from "./pages/CityMapPage.vue";
 
 export default [
   { path: "/", component: HomePage, name: "home", meta: {
@@ -30,5 +31,8 @@ export default [
   { path: "/password_reset", component: PasswordResetPage, name: "password_reset", meta: {
     title: "Password Reset",
   } },
+  { path: "/citymap", component: CityMapPage, name: "city_map", meta: {
+      title: "City Map",
+    } },
 ];
 
