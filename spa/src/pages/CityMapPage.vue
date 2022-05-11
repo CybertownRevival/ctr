@@ -12,7 +12,7 @@
       <span style="top: 55px;left: 20px;">THE CYBERHOOD</span>
       <span style="top: 80px;left: 230px;">EPLEX</span>
       <span style="top: 80px;left: 110px;">EMPLOYMENT<br/>OFFICE</span>
-      <span style="top: 90px;right: 60px;">THE MALL</span>
+      <router-link to="/place/mall" style="top: 90px;right: 60px;">THE MALL</router-link>
       <span style="top: 95px;left: 20px;text-align:left">THE<br/>CAMPUS</span>
       <router-link to="/place/enter" style="top: 110px;right: 180px;">THE
         PLAZA</router-link>
