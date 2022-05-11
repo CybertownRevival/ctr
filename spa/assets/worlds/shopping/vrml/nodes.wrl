@@ -964,42 +964,42 @@ PROTO TextureMatrixTransform[
 
 # Emulators
 
-PROTO MultiApperance[
+# PROTO MultiApperance[
 
-	exposedField SFNode material NULL 
+# 	exposedField SFNode material NULL 
+# 
+# 	exposedField SFBool materialColor FALSE
+# 	exposedField SFBool materialAlpha FALSE
+# 
+# 	exposedField MFString mode []
+# 	exposedField MFString type []
+# 
+# 	exposedField MFNode texture []
+# 	exposedField MFNode textureTransform []
+# 	exposedField MFInt32 textureOp []
+# 	exposedField SFColor color 1 1 1
+# 	exposedField SFFloat alpha  1
+# 
+# ]
 
-	exposedField SFBool materialColor FALSE
-	exposedField SFBool materialAlpha FALSE
+# { 
+# 	Appearance {
+# 		material IS	material
+# 		texture	MultiTexture 
+# 		{
+# 			texture	IS texture
+# 			textureTransform IS	textureTransform
 
-	exposedField MFString mode []
-	exposedField MFString type []
-
-	exposedField MFNode texture []
-	exposedField MFNode textureTransform []
-	exposedField MFInt32 textureOp []
-	exposedField SFColor color 1 1 1
-	exposedField SFFloat alpha  1
-
-]
-
-{ 
-	Appearance {
-		material IS	material
-		texture	MultiTexture 
-		{
-			texture	IS texture
-			textureTransform IS	textureTransform
-
-			materialColor IS materialColor
-			materialAlpha IS materialAlpha
-
-			mode IS	mode
-			type IS	type
-
-			textureOp IS textureOp
-			color IS color
-			alpha IS  alpha
-		}
-	}
-} 
+# 			materialColor IS materialColor
+# 			materialAlpha IS materialAlpha
+# 
+# 			mode IS	mode
+# 			type IS	type
+# 
+# 			textureOp IS textureOp
+# 			color IS color
+# 			alpha IS  alpha
+# 		}
+# 	}
+# } 
 
