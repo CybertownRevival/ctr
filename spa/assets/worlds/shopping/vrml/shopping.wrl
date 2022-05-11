@@ -75,7 +75,7 @@ eventIn SFColor   colorFromServer     IS colorFromServer
 eventIn SFFloat   floatFromServer     IS floatFromServer 
 eventIn SFInt32   int32FromServer     IS int32FromServer 
 eventIn SFRotation rotationFromServer IS rotationFromServer 
-eventIn SFString  stringFromServer    IS stringFromServer 
+eventIn SFString  stringFromServer    IS stringFromServer
 eventIn SFTime    timeFromServer      IS timeFromServer 
 eventIn SFVec2f   vec2fFromServer     IS vec2fFromServer 
 eventIn SFVec3f   vec3fFromServer     IS vec3fFromServer 
@@ -1534,6 +1534,8 @@ geometry Sphere{radius 0.3}}}
 PROTO AtriumFloor[
 
 ]{
+Group {
+children [
 DEF fwedge Shape {
 appearance Appearance {texture ImageTexture {url "floor.jpg"}}
 geometry IndexedFaceSet {
@@ -1547,6 +1549,8 @@ texCoordIndex [2 1 0 -1 2 5 4 3 -1 1 2 3 -1 6 2 7 -1]
 Transform{rotation 0 1 0 -1.571 children USE fwedge}
 Transform{rotation 0 1 0 1.571 children USE fwedge}
 Transform{rotation 0 1 0 3.142 children USE fwedge}
+]
+}
 }
 
 PROTO UpperWall[
