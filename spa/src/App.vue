@@ -39,6 +39,9 @@
                 @click.prevent="showMyInfoModal = true"
                 style="top: 78px"
               ></a>
+              <router-link to="/citymap"
+                 class="menuMapLink"
+              ></router-link>
             </div>
           </div>
           <div class="flex justify-center">
@@ -181,6 +184,14 @@ export default Vue.extend({
         {
           title: "Jail",
           slug: "jail"
+        },
+        {
+          title: "Fun Park",
+          slug: "funpark",
+        },
+        {
+          title: "Theatre",
+          slug: "theatre",
         },
         {
           title: "(more coming soon)",
