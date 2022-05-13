@@ -134,6 +134,10 @@ export default Vue.extend({
           slug: "fleamarket",
         },
         {
+                    'title': 'Mall',
+                    "slug": "mall"
+         },
+        {
           title: "Bank",
           slug: "bank",
         },
@@ -194,10 +198,7 @@ export default Vue.extend({
           slug: "",
         },
         /* For the curious developers. These worlds need fixing to work (see dev tools console)
-                {
-                    'title': 'Mall',
-                    "slug": "mall"
-                },
+               
                 {
                     'title': 'Employment Office',
                     "slug": "employment"
