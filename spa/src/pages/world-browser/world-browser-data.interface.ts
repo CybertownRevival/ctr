@@ -20,4 +20,5 @@ export interface WorldBrowserData {
   sharedObjects: [],
   sharedObjectsMap: Map<any, any>,
   showUpdateWarning: boolean,
+  mainComponent: any,
 }

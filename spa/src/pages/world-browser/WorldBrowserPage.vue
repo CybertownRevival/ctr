@@ -9,7 +9,10 @@
         </a>
       </strong>
     </div>
-    <div id="world" class="world w-full flex-1" style=""></div>
+    <div id="world" class="world w-full flex-1" style="" v-show="this.$store.data.view3d"></div>
+    <div v-show="!this.$store.data.view3d" class="w-full flex-1">
+      <component :is="mainComponent"></component>
+    </div>
     <div class="flex flex-none h-1/3 bg-chat">
       <chat
         ref="chat"
@@ -56,6 +59,7 @@ export default Vue.extend({
       sharedObjects: [],
       sharedObjectsMap: undefined,
       showUpdateWarning: false,
+      mainComponent: null,
     };
   },
   methods: {
@@ -164,9 +168,18 @@ export default Vue.extend({
       this.loaded = false;
       if (this.place) this.$socket.leaveRoom(this.place.id);
       await this.getPlace();
-      const browser = await this.startX3D();
-      this.loaded = true;
-      this.startX3DListeners(browser);
+      if(this.$store.data.view3d) {
+        const browser = await this.startX3D();
+        this.loaded = true;
+        this.startX3DListeners(browser);
+      } else {
+        // todo show other component
+        console.log('loading 2d');
+        console.log(this.place.slug);
+        this.mainComponent = () => import("@/components/place/"+this.place.slug+"/main2d.vue");
+        console.log(this.mainComponent);
+        this.loaded = true;
+      }
       this.joinPlace();
     },
     async joinPlace(): Promise<void> {
@@ -530,6 +543,12 @@ export default Vue.extend({
         this.loadAndJoinPlace();
       }
     },
+    "$store.data.view3d": function () {
+      if (this.$route.name === "world-browser") {
+        this.loadAndJoinPlace();
+      }
+    },
+
     $route(to, from) {
       if (to.name === "world-browser" && this.$store.data.x3dReady) {
         this.loadAndJoinPlace();
