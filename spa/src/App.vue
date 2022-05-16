@@ -29,8 +29,10 @@
             <img src="/assets/img/logo-action.gif" />
           </div>
           <div class="flex flex-row justify-center">
-            <img src="/assets/img/b2dchat.gif" />
-            <img src="/assets/img/b3dchat.gif" />
+            <img src="/assets/img/b2dchat.gif" @click="$store.methods.setView3d(false)"
+                 class="cursor-pointer"/>
+            <img src="/assets/img/b3dchat.gif" @click="$store.methods.setView3d(true)"
+                 class="cursor-pointer"/>
           </div>
           <div class="flex justify-center">
             <div class="menu">
