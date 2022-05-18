@@ -60,5 +60,13 @@ services:
       - "9230:9230"
     command: bash -c "npm install && npm run dev-server"
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    logging:
+      driver: 'none'  # disable saving logs
+    ports:
+      - 1025:1025
+      - 8025:8025
+
 volumes:
   data:
