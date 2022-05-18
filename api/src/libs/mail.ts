@@ -4,6 +4,8 @@ export const sendEmail = async (data): Promise<void> => {
   const transporter = nodemailer.createTransport({
     host: '127.0.0.1',
     port: 25,
+    //host: 'mailhog', // used for dev
+    //port: 1025, // used for dev
     secure: false,
     tls: {
       rejectUnauthorized:false,
@@ -23,7 +25,7 @@ export const sendPasswordResetEmail = async (email: string, resetToken: string):
     to: email,
     subject:  'Cybertown Revival Password Reset',
     body:
-      `<p>Hello</p>
+      `<p>Hello,</p>
       <p>
         We have received a request to reset the password on your account.
         Please click the link below to reset your password. If you did not request this,
@@ -43,7 +45,7 @@ export const sendPasswordResetUnknownEmail = async (email: string): Promise<void
     to: email,
     subject: 'Cybertown Revival Password Reset',
     body:
-      `<p>Helo,</p>
+      `<p>Hello,</p>
       <p>Sorry, we were unable to find an account attached to this email address.</p>`,
   });
 };
