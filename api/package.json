@@ -1,10 +1,11 @@
 {
-  "name": "auth-api",
+  "name": "ct-api",
   "version": "1.0.0",
-  "description": "Simple Auth Api using node, express, mysql, jwt",
+  "description": "REST API for Cybertown Revival",
   "main": "api.ts",
   "scripts": {
     "build": "tsc",
+    "build:prod": "tsc --project tsconfig.prod.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -e ts --exec \"node --inspect=0.0.0.0:9229 -r ts-node/register -r dotenv/config src/api.ts\""
   },
