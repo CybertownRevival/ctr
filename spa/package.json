@@ -7,7 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev": "vue-cli-service build --mode development --watch",
-    "dev-server": "nodemon --inspect=0.0.0.0:9229 -r dotenv/config server.js"
+    "dev-server": "nodemon --inspect=0.0.0.0:9230 -r dotenv/config server.js"
   },
   "dependencies": {
     "axios": "^0.23.0",
@@ -68,7 +68,14 @@
         "error",
         "always"
       ],
-      "prefer-const": "error",
+      "indent": [
+        "error",
+        2
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
       "max-len": [
         "error",
         {
@@ -85,10 +92,15 @@
       "no-unreachable": "off",
       "no-unused-vars": "error",
       "no-var": "error",
+      "prefer-const": "error",
       "prefer-template": "error",
       "quotes": [
         "error",
         "double"
+      ],
+      "semi": [
+        "error",
+        "always"
       ],
       "vue/require-v-for-key": "off"
     }

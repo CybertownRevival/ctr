@@ -9,7 +9,7 @@
               class="text-white"
               >{{ msg.msg }}</strong
             >
-            <span v-else>{{ msg.userName }}: {{ msg.msg }}</span>
+            <span v-else>{{ msg.username }}: {{ msg.msg }}</span>
           </li>
         </ul>
       </div>
@@ -78,11 +78,11 @@
         <ul v-if="activePanel === 'users'">
           <li class="text-white">
             <img src="/assets/img/av_me.gif" class="inline" />
-            {{ this.$store.data.user.userName }}
+            {{ this.$store.data.user.username }}
           </li>
           <li v-for="(user, key) in users" :key="key">
             <img src="/assets/img/av_def.gif" class="inline" />
-            {{ user.userName }}
+            {{ user.username }}
           </li>
         </ul>
         <ul v-if="activePanel === 'gestures'">
@@ -194,11 +194,11 @@ export default Vue.extend({
         this.messages.push(data);
       });
       this.$socket.on("AV:del", event => {
-        this.systemMessage(event.userName + " has left.");
-        this.users = this.users.filter((u) => u.userName !== event.userName);
+        this.systemMessage(event.username + " has left.");
+        this.users = this.users.filter((u) => u.username !== event.username);
       });
       this.$socket.on("AV:new", event => {
-        this.systemMessage(event.userName + " has entered.");
+        this.systemMessage(event.username + " has entered.");
         this.users.push(event);
       });
     }
