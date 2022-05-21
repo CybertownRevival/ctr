@@ -168,6 +168,11 @@ export default Vue.extend({
       this.loaded = false;
       if (this.place) this.$socket.leaveRoom(this.place.id);
       await this.getPlace();
+
+      if(this.browser) {
+        const browser = X3D.getBrowser(this.browser);
+        browser.replaceWorld(null);
+      }
       if(this.$store.data.view3d) {
         const browser = await this.startX3D();
         this.loaded = true;
@@ -177,6 +182,11 @@ export default Vue.extend({
         this.loaded = true;
       }
       this.joinPlace();
+    },
+    async unloadPlace(): Promise<void> {
+      if (this.place) this.$socket.leaveRoom(this.place.id);
+      const browser = X3D.getBrowser(this.browser);
+      browser.replaceWorld(null);
     },
     async joinPlace(): Promise<void> {
       await this.$socket.joinRoom(this.place.id, this.$store.data.user.token);
@@ -548,6 +558,8 @@ export default Vue.extend({
     $route(to, from) {
       if (to.name === "world-browser" && this.$store.data.x3dReady) {
         this.loadAndJoinPlace();
+      } else if(from.name === "world-browser" && this.$store.data.x3dReady) {
+        this.unloadPlace();
       }
     },
     place() {
