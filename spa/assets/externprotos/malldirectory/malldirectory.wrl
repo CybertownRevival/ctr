@@ -1,0 +1,391 @@
+#VRML V2.0 utf8
+
+#File written by or edited by Pamela Maloney. 
+# 
+#
+#
+#
+PROTO MallDirectory[
+field SFVec3f position 0 0 0
+field SFRotation rotation 0 1 0 0
+field MFString storeNames [
+ "Homebuilder",
+ "Furniture Shop",
+ "Bedroom Showcase"
+ "Appliance Shop",
+ "Electronics Store",
+ "Kitchen Store",
+ "Grocery Store"
+ "Office Store",
+ "Large Item Shop",	
+ "Antique Shop"
+ "Collectibles"
+ "Bargain Outlet",
+ "Holiday Shop",
+ "Garden Store",
+ "Carpet Shop",
+ "Fine Art Shop",
+ "Poster Store"
+ "Gift Store",
+ "Novelty Store",
+ "Toy Store",
+ "Athletic Shop"
+ "Aquatics Shop"
+ "Pet Shop",
+ "Car Dealer",
+"Weapon Displays"
+]
+field MFString storeUrls [
+ "/cgi-bin/cybertown/place?plc=iwosmall&force=p",#home builder
+	 "/cgi-bin/cybertown/place?ID=0000000000000904&plc=shop&ac=index3d",#Furniture Store
+		"/cgi-bin/cybertown/place?ID=0000000000000915&plc=shop&ac=index3d"#Bedroom Showcase	
+		 "/cgi-bin/cybertown/place?ID=0000000000000903&plc=shop&ac=index3d", #Appliance Shop
+		 "/cgi-bin/cybertown/place?ID=0000000000000907&plc=shop&ac=index3d",#Electtronics Store	
+	 "/cgi-bin/cybertown/place?ID=000000000000090c&plc=shop&ac=index3d",#Kitchen Store
+		"/cgi-bin/cybertown/place?ID=0000000000000916&plc=shop&ac=index3d"#grocery store	
+ "/cgi-bin/cybertown/place?ID=000000000000090d&plc=shop&ac=index3d",#Office Store		
+	"/cgi-bin/cybertown/place?ID=000000000000090e&plc=shop&ac=index3d",#large item shop
+		"/cgi-bin/cybertown/place?ID=0000000000000911&plc=shop&ac=index3d"#Antiques
+	"/cgi-bin/cybertown/place?ID=000000000000090f&plc=shop&ac=index3d"#CT Collectibles
+	"/cgi-bin/cybertown/place?ID=0000000000000913&plc=shop&ac=index3d"#bargain Outlet
+		"/cgi-bin/cybertown/place?ID=0000000000000914&plc=shop&ac=index3d"#Holiday Shop
+	 "/cgi-bin/cybertown/place?ID=0000000000000906&plc=shop&ac=index3d",#Garden Store
+"/cgi-bin/cybertown/place?ID=0000000000000905&plc=shop&ac=index3d",#Carpet Shop
+ "/cgi-bin/cybertown/place?ID=0000000000000901&plc=shop&ac=index3d",# Fine Art Shop
+	"/cgi-bin/cybertown/place?ID=0000000000000917&plc=shop&ac=index3d"# Poster Store
+ "/cgi-bin/cybertown/place?ID=0000000000000902&plc=shop&ac=index3d",#Gift Store
+ "/cgi-bin/cybertown/place?ID=0000000000000908&plc=shop&ac=index3d",#Novelty Store
+	"/cgi-bin/cybertown/place?ID=0000000000000909&plc=shop&ac=index3d",#Toy Store
+	"/cgi-bin/cybertown/place?ID=0000000000000910&plc=shop&ac=index3d"#Athletics Store
+	"/cgi-bin/cybertown/place?ID=0000000000000912&plc=shop&ac=index3d"#Aquatics Store
+ "/cgi-bin/cybertown/place?ID=000000000000090a&plc=shop&ac=index3d",#Pet Shop
+ "/cgi-bin/cybertown/place?ID=000000000000090b&plc=shop&ac=index3d",#Car Dealer Store
+"/cgi-bin/cybertown/place?ID=0000000000000918&plc=shop&ac=index3d"#armaments Displays
+
+]
+field MFString storeParams [
+
+]
+eventOut SFBool isActive
+]{
+Transform{translation IS position rotation IS rotation bboxSize 4 6 4
+children[
+Transform {
+children Shape {
+appearance Appearance {texture ImageTexture {url "wall_9e.jpg"}}
+geometry IndexedFaceSet {
+coord Coordinate{point[-.3 .8 .3 -.5 0 .5 .3 .8 .3 .5 0 .5 .3 .8 -.3 .5 0 -.5 -.3 .8 -.3 -.5 0 -.5]}
+coordIndex[0 1 3 2 -1 4 5 7 6 -1 6 7 1 0 -1 2 3 5 4 -1]
+texCoord TextureCoordinate {point [ 0 .624 0 0 1 .624 1 0 0 .624 0 0 1 .624 1 0 0 .624 0 0 1 .624 1 0 0 .624 0 0 1 .624 1 0]}
+texCoordIndex [ 0 1 3 2 -1 4 5 7 6 -1 8 9 11 10 -1 12 13 15 14 -1 ]
+}}}
+Transform {translation 0 .85 0 scale 1 .35 1
+children Shape {
+appearance DEF dirSteel Appearance {material Material {diffuseColor .37 .37 .37 specularColor .72 .89 .89 shininess .13}}
+geometry Sphere {radius .4}}
+}
+Billboard { children[
+Transform {
+children Shape {
+appearance Appearance{material Material{diffuseColor .44 .1 0 specularColor 1 .68 .51 emissiveColor .15 .13 .06 shininess .07}}
+geometry IndexedFaceSet { ccw FALSE
+coord Coordinate {point[-1 1.1 0 -1 2.3 0 1 2.3 0 1 1.1 0 -1.1 1 .1 -1.1 2.4 .1 1.1 2.4 .1 1.1 1 .1 -1.1 1 -.1 -1.1 2.4 -.1 1.1 2.4 -.1 1.1 1 -.1]}
+coordIndex[4 5 9 8 -1 5 6 10 9 -1 6 7 11 10 -1 7 4 8 11 -1 1 5 4 0 -1 8 9 1 0 -1 0 4 7 3 -1 11 8 0 3 -1 6 5 1 2 -1 1 9 10 2 -1 3 7 6 2 -1 10 11 3 2 -1 ]
+creaseAngle 3.14
+}}}
+Transform {
+children Shape {
+appearance Appearance {material Material{diffuseColor .22 0 .16 
+}}
+geometry IndexedFaceSet {ccw FALSE
+coord Coordinate{point[-1 1.1 -.015 -1 2.3 -.015 1 2.3 -.05 1 1.1 -.015]}
+coordIndex [ 0 1 2 3 -1 ]
+}}}
+Transform {translation 0 2.55 0 scale 1 .25 .25
+children Shape {
+appearance USE dirSteel
+geometry Sphere {radius .4}}
+}
+Transform {translation 0 2.65 0 scale 1 .25 .25
+children Shape {
+appearance USE dirSteel
+geometry Sphere {radius .3}}
+}
+Transform {translation 0 2.9 0
+children Shape {
+appearance Appearance {material Material {diffuseColor .44 .15 0 specularColor .78 .69 .4 shininess .12}}
+geometry Cone {bottomRadius .05 height .5}}
+}
+LOD {range 25
+level [
+Transform {
+children Transform {translation 0 3.1 0
+children Shape {
+appearance Appearance {material Material {diffuseColor .62 .55 .26}}
+geometry Text {
+fontStyle FontStyle {size .3 family "SANS" style "BOLD" justify "MIDDLE"}
+string "Directory"
+
+}}
+}}
+Group{}
+]}
+Transform {children[ 
+DEF up_button TouchSensor{} 
+Shape {
+appearance Appearance {material Material {diffuseColor .88 .15 .01}}
+geometry IndexedFaceSet { solid FALSE
+coord Coordinate {point [ .813 2 .05 .85 2.2 .05 .887 2 .05 .813 2 -.05 .85 2.2 -.05 .887 2 -.05]}
+coordIndex [ 2 0 1 -1 0 1 4 3 -1 2 0 3 5 -1 1 2 5 4 -1 4 5 3 -1 ]
+}}
+DEF up_switch Switch{
+whichChoice -1
+choice[
+Transform {translation 1.05 2 .1
+children Shape {
+appearance Appearance {material Material {diffuseColor .1 1 .1}}
+geometry Text {
+fontStyle FontStyle {size .25 family "SANS" style "ITALIC" justify "LEFT"}
+string "Scroll Up"
+}}}]}
+]}
+Transform {children[ 
+DEF down_button TouchSensor{}
+Shape {
+appearance Appearance {material Material {diffuseColor .88 .15 .01}}
+geometry IndexedFaceSet { solid FALSE
+coord Coordinate {point [ .887 1.5 .05 .85 1.3 .05 .813 1.5 .05 .887 1.5 -.05 .85 1.3 -.05 .813 1.5 -.05]}
+coordIndex [ 2 0 1 -1 0 1 4 3 -1 2 0 3 5 -1 1 2 5 4 -1 4 5 3 -1 ]
+}}
+DEF down_switch Switch{
+whichChoice -1
+choice[
+Transform {translation 1.05 1.3 .1
+children Shape {
+appearance Appearance {material Material {diffuseColor .1 1 .1}}
+geometry Text {
+fontStyle FontStyle {size .25 family "SANS" style "ITALIC" justify "LEFT"}
+string "Scroll Down"
+}}}]}
+]}
+Transform { translation .85 1.75 0 rotation 1 0 0 1.57 children[ 
+DEF go_button TouchSensor{} 
+Shape {
+appearance Appearance {material Material {diffuseColor .0251 .69 .0349 specularColor .36 .54 .522}}
+geometry Cylinder {radius .05 height .1}
+}
+DEF go_switch Switch{
+whichChoice -1
+choice[
+Transform {translation .2 .09 .1 rotation 1 0 0 -1.571
+children Shape {
+appearance Appearance {material Material {diffuseColor .1 1 .1}}
+geometry Text {
+fontStyle FontStyle {size .25 family "SANS" style "ITALIC" justify "LEFT"}
+string "GO"
+}}}]}
+]}
+LOD {range [10]
+level [
+Transform {children [
+Transform {translation -1 1.95 0
+children[
+DEF s0_button TouchSensor{}
+DEF lens Shape{appearance Appearance{material Material{transparency 1}}geometry IndexedFaceSet{coord Coordinate{point[0 .2 .03,0 -.05 .03,1.5 -.05 .03,1.5 .2 .03]}coordIndex[0,1,2,3,-1]}}
+Shape {
+appearance Appearance {material Material {diffuseColor .1 1 .1}}
+geometry DEF store0 Text {
+fontStyle FontStyle {size .22 family "SANS" style "ITALIC" justify "LEFT"}
+string ""
+
+}}
+]}
+Transform {translation -1 1.65 0
+children[
+USE lens
+DEF s1_button TouchSensor{}
+Shape {
+appearance DEF storeText Appearance {material Material {diffuseColor .79 .431 .0255}}
+geometry DEF store1 Text {
+fontStyle FontStyle {size .22 family "SANS" style "ITALIC" justify "LEFT"}
+string ""
+
+}}
+]}
+Transform {translation -1 1.35 0
+children[
+USE lens
+DEF s2_button TouchSensor{}
+Shape {
+appearance USE storeText
+geometry DEF store2 Text {
+fontStyle FontStyle {size .22 family "SANS" style "ITALIC" justify "LEFT"}
+string ""
+
+}}
+]}
+]}
+Transform {children []}
+]} #END Store name text LOD
+]}#END main Billboard
+DEF soundProx ProximitySensor{size 20 8 20 isActive IS isActive}
+Sound{intensity 1
+source DEF enterSound AudioClip{url ["/places/shop/vrml/sounds/enter.wav"]loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+Sound{intensity 1
+source DEF exitSound AudioClip{url ["/places/shop/sounds/exit.wav"]loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+Sound{intensity 1
+source DEF clickSound AudioClip{url ["/places/shop/sounds/16.wav"]loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+Sound{intensity 1
+source DEF goSound AudioClip{url ["/places/shop/sounds/confirmed.wav"]loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+Sound{intensity 1
+source DEF rnd0Sound AudioClip{url ["/places/shop/sounds/10.wav"]loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+Sound{intensity 1
+source DEF rnd1Sound AudioClip{url ["/places/shop/sounds/11.wav"]loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+
+DEF rndc TimeSensor{cycleInterval 5 loop FALSE enabled FALSE}
+DEF DS Script{
+eventIn SFTime set_up
+eventIn SFTime set_down
+eventIn SFTime set_go
+eventIn SFTime set_s0
+eventIn SFTime set_s1
+eventIn SFTime set_s2
+field SFInt32 index 0
+field SFInt32 max 0
+field SFBool isShort FALSE
+field MFString storeNames IS storeNames
+field MFString storeUrls IS storeUrls
+field MFString parameter ["target=_top"]
+eventOut MFString s0_changed
+eventOut MFString s1_changed
+eventOut MFString s2_changed
+eventIn SFBool set_rnd
+eventOut SFTime rnd_changed
+eventOut SFTime rnd0_changed
+eventOut SFTime rnd1_changed
+eventIn SFBool up_over
+eventIn SFBool down_over
+eventIn SFBool go_over
+eventOut SFInt32 up_choice
+eventOut SFInt32 down_choice
+eventOut SFInt32 go_choice
+url"vrmlscript:
+function send(){
+  s0_changed = new MFString(storeNames[index]);
+  s1_changed = new MFString(storeNames[index + 1]);
+  s2_changed = new MFString(storeNames[index + 2]);
+}
+function set_down(v,t){
+ if(isShort){return;}
+ index += 1;
+ if(index > max){index = max;}
+ send();
+}
+function set_up(v,t){
+ if(isShort){return;}
+ index -= 1;
+ if(index <0){index = 0;}
+ send();
+}
+function set_go(v,t){
+ Browser.loadURL(new MFString(storeUrls[index]),parameter);
+}
+function set_s0(v,t){
+ Browser.loadURL(new MFString(storeUrls[index]),parameter);
+}
+function set_s1(v,t){
+ s = index + 1;
+ if(s >= storeUrls.length - 2){return;}
+ Browser.loadURL(new MFString(storeUrls[s]),parameter);
+}
+function set_s2(v,t){
+ s = index + 2;
+ if(s >= storeUrls.length - 2){return;}
+ Browser.loadURL(new MFString(storeUrls[s]),parameter);
+}
+
+function set_rnd(v,t){
+ if(v){return;}
+ x = Math.random();
+ if( x <.3){rnd0_changed = t;}
+ if( x >.7){rnd1_changed = t;}
+ rnd_changed = t;
+}
+function up_over(v,t){
+ if(v){up_choice = 0;}
+ else{up_choice = -1;}
+}
+function down_over(v,t){
+ if(v){down_choice = 0;}
+ else{down_choice = -1;}
+}
+function go_over(v,t){
+ if(v){go_choice = 0;}
+ else{go_choice = -1;}
+}
+function initialize(){
+ max = storeNames.length - 3;
+ if(storeNames.length >= 3){
+  s0_changed = new MFString(storeNames[0]);
+  s1_changed = new MFString(storeNames[1]);
+  s2_changed = new MFString(storeNames[2]);
+  storeNames[storeNames.length] = new SFString('');
+  storeNames[storeNames.length] = new SFString('');
+  max += 2;
+ }
+ else{
+  isShort= true;
+  if(storeNames.length == 0){return;}
+  if(storeNames.length == 1){s0_changed = new MFString(storeNames[0]);}
+  if(storeNames.length == 2){
+   s0_changed = new MFString(storeNames[0]);
+   s1_changed = new MFString(storeNames[1]);
+  }
+ }
+}
+"}
+]}
+ROUTE DS.s0_changed TO store0.set_string
+ROUTE DS.s1_changed TO store1.set_string
+ROUTE DS.s2_changed TO store2.set_string
+ROUTE up_button.touchTime TO DS.set_up
+ROUTE down_button.touchTime TO DS.set_down
+ROUTE go_button.touchTime TO DS.set_go
+ROUTE up_button.touchTime TO clickSound.set_startTime
+ROUTE down_button.touchTime TO clickSound.set_startTime
+ROUTE go_button.touchTime TO goSound.set_startTime
+ROUTE soundProx.enterTime TO enterSound.set_startTime
+ROUTE soundProx.exitTime TO exitSound.set_startTime
+ROUTE soundProx.enterTime TO rndc.set_startTime
+ROUTE soundProx.isActive TO rndc.set_enabled
+ROUTE DS.rnd_changed TO rndc.set_startTime
+ROUTE rndc.isActive TO DS.set_rnd
+ROUTE DS.rnd0_changed TO rnd0Sound.set_startTime
+ROUTE DS.rnd1_changed TO rnd1Sound.set_startTime
+ROUTE up_button.isOver TO DS.up_over
+ROUTE DS.up_choice TO up_switch.set_whichChoice
+ROUTE down_button.isOver TO DS.down_over
+ROUTE DS.down_choice TO down_switch.set_whichChoice
+ROUTE go_button.isOver TO DS.go_over
+ROUTE DS.go_choice TO go_switch.set_whichChoice
+ROUTE s0_button.touchTime TO DS.set_s0
+ROUTE s1_button.touchTime TO DS.set_s1
+ROUTE s2_button.touchTime TO DS.set_s2
+ROUTE s0_button.touchTime TO goSound.set_startTime
+ROUTE s1_button.touchTime TO goSound.set_startTime
+ROUTE s2_button.touchTime TO goSound.set_startTime
+}#END MallDirectory PROTO
+
+MallDirectory{}

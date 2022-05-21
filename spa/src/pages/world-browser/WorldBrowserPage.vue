@@ -173,11 +173,7 @@ export default Vue.extend({
         this.loaded = true;
         this.startX3DListeners(browser);
       } else {
-        // todo show other component
-        console.log('loading 2d');
-        console.log(this.place.slug);
         this.mainComponent = () => import("@/components/place/"+this.place.slug+"/main2d.vue");
-        console.log(this.mainComponent);
         this.loaded = true;
       }
       this.joinPlace();
