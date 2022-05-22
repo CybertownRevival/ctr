@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "build:prod": "tsc --project tsconfig.prod.json",
-    "db:init": "ts-node -r dotenv/config db/scripts/create-db.ts && knex migrate:latest",
+    "db:init": "ts-node -r dotenv/config db/scripts/create-db.ts && knex migrate:latest && knex seed:run",
+    "db:migrate": "knex migrate:latest",
+    "db:seed": "knex seed:run",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -e ts --exec \"node --inspect=0.0.0.0:9229 -r ts-node/register -r dotenv/config src/api.ts\""
   },

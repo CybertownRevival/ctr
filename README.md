@@ -53,20 +53,18 @@ and videos online on installation and the basics of node, npm and docker.
 
 To run the environment again in the future, simple repeat steps 2 onwards.
 
-### Importing the Database
+### Creating the database
 
-We provide two .sql files for setting up your environment's database, located in `api/db`:
+To initialize a database within the mysql container, run the command below from
+within the `api/` directory.
 
-1. ctr-dev-structure.sql - database and table structure
-2. ctr-dev-seed-data.sql - dummy data to populate the database with
+Running this will create a new database using settings configured in `api/knexfile.ts`:
 
-To load the .sql files into your environment's database:
 ```shell
-docker exec -i ctr_db_1 mysql -uroot -ppw cybertown < ./api/db/ctr-dev-structure.sql
-docker exec -i ctr_db_1 mysql -uroot -ppw cybertown < ./api/db/ctr-dev-seed-data.sql
+npm run db:init
 ```
 
-Note: You may also use a DBA software of your choice to import the .sql files.
+After the database is created, the schema and some necessary seed data are created automatically.
 
 ### Automatically Compiling the SPA
 
