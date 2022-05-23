@@ -1,32 +1,15 @@
-import mysql from 'mysql';
+import { knex as _knex } from 'knex';
 
-import * as Tables from './tables';
+import config from '../../knexfile';
+import * as Models from 'models';
 
-class DatabaseManager {
-  public avatar: Tables.AvatarTable;
-  public member: Tables.MemberTable;
-  public message: Tables.MessageTable;
-  public objectInstance: Tables.ObjectInstanceTable;
-  public place: Tables.PlaceTable;
-  private db: mysql.Pool;
+export const knex = _knex(config[process.env.NODE_ENV]);
 
-  constructor() {
-    this.db = this.createPool();
-    this.avatar = new Tables.AvatarTable(this.db);
-    this.member = new Tables.MemberTable(this.db);
-    this.message = new Tables.MessageTable(this.db);
-    this.objectInstance = new Tables.ObjectInstanceTable(this.db);
-    this.place = new Tables.PlaceTable(this.db);
-  }
-
-  private createPool(): mysql.Pool {
-    return mysql.createPool({
-      host: process.env.DB_HOST,
-      port: Number.parseInt(process.env.DB_PORT),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_DATABASE,
-    });
-  }
-}
-export const db = new DatabaseManager();
+/** Object containing knex query builders for each table in the database. */
+export const db = {
+  avatar: knex<Models.Avatar, Models.Avatar[]>('avatar'),
+  member: knex<Models.Member, Models.Member[]>('member'),
+  message: knex<Models.Message, Models.Message[]>('message'),
+  objectInstance: knex<Models.ObjectInstance, Models.ObjectInstance[]>('object_instance'),
+  place: knex<Models.Place, Models.Place[]>('place'),
+};

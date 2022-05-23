@@ -4,11 +4,11 @@ const config: { [key: string]: Knex.Config } = {
   development: {
     client: 'mysql',
     connection: {
-      database: 'ctr_dev',
-      host: '127.0.0.1',
-      password: 'pw',
-      port: 3360,
-      user: 'root',
+      host: process.env.DB_HOST,
+      port: Number.parseInt(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_DATABASE,
     },
     pool: {
       min: 2,
