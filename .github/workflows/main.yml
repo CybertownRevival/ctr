@@ -38,6 +38,7 @@ jobs:
             cd api
             echo -e "\e[1;42m Installing API packages..."
             npm install
+            npm run build:prod
             cd ..
             cd spa
             echo -e "\e[1;42m Increment SPA minor version number..."
