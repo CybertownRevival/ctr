@@ -22,16 +22,11 @@ export async function up(knex: Knex): Promise<void> {
 
       table.text('gestures');
 
-      table.integer('member_id')
-        .unsigned()
-        .defaultTo(0)
-        .notNullable();
-
       table.string('name')
         .notNullable();
 
-      table.tinyint('private')
-        .defaultTo(0)
+      table.boolean('private') // should be bool
+        .defaultTo(false)
         .notNullable();
 
       table.tinyint('status')
@@ -82,12 +77,11 @@ export async function up(knex: Knex): Promise<void> {
       applyCommon(table);
 
       table.string('assets_dir')
-        .defaultTo(null);
+        .notNullable();
 
       table.text('description');
 
       table.string('name')
-        // unique?
         .notNullable();
 
       table.string('slug')
