@@ -39,6 +39,8 @@ jobs:
             echo -e "\e[1;42m Installing API packages..."
             npm install
             npm run build:prod
+            echo -e "\e[1;42m Migrating database to latest schema..."
+            npx knex migrate:latest
             cd ..
             cd spa
             echo -e "\e[1;42m Increment SPA minor version number..."

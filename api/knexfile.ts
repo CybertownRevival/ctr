@@ -36,6 +36,11 @@ const config: { [key: string]: Knex.Config } = {
       min: 2,
       max: 10,
     },
+    migrations: {
+      directory: './db/migrations',
+      extension: 'ts',
+      tableName: 'migrations',
+    },
   },
 };
 export default config;
