@@ -13,10 +13,6 @@ export async function up(knex: Knex): Promise<void> {
       console.log('Creating avatar table');
       applyCommon(table);
 
-      // table.timestamp('added_ts')
-      //   .defaultTo(knex.raw('CURRENT_TIMESTAMP'))
-      //   .notNullable();
-
       table.string('filename')
         .notNullable();
 
@@ -25,7 +21,7 @@ export async function up(knex: Knex): Promise<void> {
       table.string('name')
         .notNullable();
 
-      table.boolean('private') // should be bool
+      table.boolean('private')
         .defaultTo(false)
         .notNullable();
 
