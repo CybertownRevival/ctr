@@ -1,4 +1,8 @@
+import dotenv from 'dotenv';
 import type { Knex } from 'knex';
+
+// Ensure process.env is populated with values from .env file
+dotenv.config();
 
 const config: { [key: string]: Knex.Config } = {
   development: {
