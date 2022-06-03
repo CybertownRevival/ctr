@@ -5,11 +5,21 @@ import * as Models from 'models';
 
 export const knex = _knex(config[process.env.NODE_ENV]);
 
-/** Object containing knex query builders for each table in the database. */
+/** Object for providing knex query builders for each table in the database. */
 export const db = {
-  avatar: knex<Models.Avatar, Models.Avatar[]>('avatar'),
-  member: knex<Models.Member, Models.Member[]>('member'),
-  message: knex<Models.Message, Models.Message[]>('message'),
-  objectInstance: knex<Models.ObjectInstance, Models.ObjectInstance[]>('object_instance'),
-  place: knex<Models.Place, Models.Place[]>('place'),
+  get avatar() {
+    return knex<Models.Avatar, Models.Avatar[]>('avatar');
+  },
+  get member() {
+    return knex<Models.Member, Models.Member[]>('member');
+  },
+  get message() {
+    return knex<Models.Message, Models.Message[]>('message');
+  },
+  get objectInstance() {
+    return knex<Models.ObjectInstance, Models.ObjectInstance[]>('object_instance');
+  },
+  get place() {
+    return knex<Models.Place, Models.Place[]>('place');
+  },
 };
