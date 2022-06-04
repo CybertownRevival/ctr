@@ -84,7 +84,7 @@ export class MemberTable {
   public async byUsername(username: string): Promise<Member> {
     return new Promise((resolve, reject) => {
       this.db.query(
-        'SELECT * FROM member WHERE username = ?',
+        'SELECT * FROM member WHERE binary username = ?',
         [username],
         (error, [result]) => {
           if (error) {
