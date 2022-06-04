@@ -37,30 +37,54 @@ class MessageController {
       });
       return;
     }
-    
+
     if(validator.isEmpty(request.body.body)) {
       response.status(400).json({
         error: 'Message body is required.',
       });
       return;
     }
-    
-    try {
-      const { id } = session;
-      const { body } = request.body;
-      const placeId = Number.parseInt(request.params.placeId);
-      const [messageId] = await db.message
-        .insert({
-          body,
-          member_id: id,
-          place_id: placeId,
+
+    const bannedwords = /(nigger)|(chinc)/i;
+    if (bannedwords.test(request.body.body)) {
+      try {
+        const { id } = session;
+        const { body } = request.body;
+        const placeId = Number.parseInt(request.params.placeId);
+        const [messageId] = await db.message
+          .insert({
+            body,
+            member_id: id,
+            place_id: placeId,
+            status: 2,
+          });
+        response.status(200).json({ messageId });
+      } catch (error) {
+        console.error(error);
+        response.status(400).json({
+          error: 'A problem occurred creating message.',
         });
-      response.status(200).json({ messageId });
-    } catch (error) {
-      console.error(error);
-      response.status(400).json({
-        error: 'A problem occurred creating message.',
-      });
+      }
+    }
+    else{
+      try {
+        const { id } = session;
+        const { body } = request.body;
+        const placeId = Number.parseInt(request.params.placeId);
+        const [messageId] = await db.message
+          .insert({
+            body,
+            member_id: id,
+            place_id: placeId,
+            status: 1,
+          });
+        response.status(200).json({ messageId });
+      } catch (error) {
+        console.error(error);
+        response.status(400).json({
+          error: 'A problem occurred creating message.',
+        });
+      }
     }
   }
 
@@ -89,6 +113,7 @@ class MessageController {
         .select('message.id', 'message.body as msg', 'member.username as username')
         .from<Message, Message[]>('message')
         .where('message.place_id', placeId)
+        .where('message.status', '1')
         .innerJoin('member', 'message.member_id', 'member.id')
         .orderBy(queryOrder, queryOrderDirection)
         .limit(queryLimit);
