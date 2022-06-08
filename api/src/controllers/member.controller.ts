@@ -239,7 +239,7 @@ class MemberController {
       if (!validPassword) throw new Error('Incorrect login details.');
       const { avatar_id, id } =  user;
       const avatarData = await db.avatar.byId(avatar_id);
-      const token = member.createToken(id, username, avatarData);
+      const token = member.createToken(id, user.username, avatarData);
       return token;
     } catch(error) {
       console.error(error);
