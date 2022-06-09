@@ -6,6 +6,9 @@
   "scripts": {
     "build": "tsc",
     "build:prod": "tsc --project tsconfig.prod.json",
+    "db:init": "ts-node -r dotenv/config db/scripts/create-db.ts && knex migrate:latest && knex seed:run",
+    "db:migrate": "knex migrate:latest",
+    "db:seed": "knex seed:run",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -e ts --exec \"node --inspect=0.0.0.0:9229 -r ts-node/register -r dotenv/config src/api.ts\""
   },
@@ -17,11 +20,13 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "knex": "^2.0.0",
     "md5": "^2.3.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
-    "validator": "^13.6.0",
-    "nodemailer": "^6.7.2"
+    "mysql2": "^2.3.3",
+    "nodemailer": "^6.7.2",
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

@@ -9,9 +9,11 @@ import {
   sendPasswordResetEmail,
   sendPasswordResetUnknownEmail,
 } from '../libs';
-import { SessionInfo } from '../types';
+import { SessionInfo } from 'session-info.interface';
 
 class MemberController {
+  /** Duration in minutes until a password reset attempt expires */
+  public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
   /** List of disallowed usernames. */
   public static readonly RESTRICTED_USERNAMES = [
     'cybertown',
@@ -38,6 +40,7 @@ class MemberController {
         username,
       });
     } catch (error) {
+      console.error(error);
       response.status(400).json({ error });
     }
   }
@@ -52,14 +55,21 @@ class MemberController {
       if (!newPassword.trim().length || newPassword !== newPassword2) {
         throw new Error('Please enter the same password twice.');
       }
-      const user = await db.member.byPasswordResetToken(resetToken);
+      const user = await db.member
+        .where({ password_reset_token: resetToken })
+        .whereRaw('password_reset_expire > NOW()')
+        .limit(1)
+        .first();
       if (!user) {
         throw new Error('Invalid or expired reset token. Please request a new password reset.');
       }
       const hashedPassword = await member.encryptPassword(newPassword);
-      await db.member.updatePasswordById(user.id, hashedPassword);
+      await db.member
+        .where({ id: user.id })
+        .update({ password: hashedPassword });
       response.status(200).json({ message: 'success' });
     } catch (error) {
+      console.error(error);
       response.status(400).json({ error });
     }
   }
@@ -73,16 +83,28 @@ class MemberController {
     const { email } = request.body;
     try {
       this.validatePasswordResetInput(email);
-      const user = await db.member.byEmail(email);
+      const [user] = await db.member
+        .where({
+          email,
+          status: 1,
+        });
       if (user) {
         const resetToken = crypto.randomBytes(16).toString('hex');
-        await db.member.setPasswordResetTokenById(user.id, resetToken);
+        const resetExpiration = new Date(Date.now()
+          + MemberController.PASSWORD_RESET_EXPIRATION_DURATION * 60000);
+        await db.member
+          .where({ id: user.id })
+          .update({
+            password_reset_expire: resetExpiration,
+            password_reset_token: resetToken,
+          });
         await sendPasswordResetEmail(email, resetToken);
       } else {
         await sendPasswordResetUnknownEmail(email);
       }
       response.status(200).json({ message: 'success' });
     } catch (error) {
+      console.error(error);
       response.status(400).json({ error });
     }
   }
@@ -119,15 +141,16 @@ class MemberController {
         username,
       });
     } catch (error) {
+      console.error(error);
       response.status(400).json({ error });
     }
   }
 
   /** Controller method for updating a user's avatar */
   public async updateAvatar(request: Request, response: Response): Promise<void> {
-    const token = this.decryptSession(request, response);
-    if (!token) return;
-    const { id, username } = token;
+    const session = this.decryptSession(request, response);
+    if (!session) return;
+    const { id, username } = session;
     const { avatarId } = request.body;
     if (!avatarId) {
       response.status(400).json({
@@ -136,17 +159,24 @@ class MemberController {
       return;
     }
     try {
-      if (await db.avatar.doesAvatarExist(avatarId)) {
-        await db.member.updateAvatarById(token.id, avatarId);
-        const avatarData = await db.avatar.byId(avatarId);
-        const newToken = member.createToken(id, username, avatarData);
+      const [avatar] = await db.avatar.where({
+        id: avatarId,
+        status: 1,
+        private: false,
+      });
+      if (avatar) {
+        await db.member
+          .where({ id })
+          .update({ avatar_id: avatarId });
+        const token = member.createToken(id, username, avatar);
         response.status(200).json({
           message: 'Success',
-          token: newToken,
-          username: username,
+          token,
+          username,
         });
       }
     } catch (error) {
+      console.error(error);
       response.status(400).json({
         error: 'A problem occurred during avatar update.',
       });
@@ -164,29 +194,28 @@ class MemberController {
       });
       return;
     }
-    let user;
-    try {
-      user = await db.member.byId(session.id);
-    } catch (error) {
+    const [user] = await db.member.where({ id: session.id });
+    if (!user) {
       response.status(400).json({
         error: 'A problem occurred while fetching your account.',
       });
       return;
     }
-    try {
-      await bcrypt.compare(currentPassword, user.password);
-    } catch (error) {
+    const validPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!validPassword ) {
       response.status(400).json({
         error: 'Incorrect current password.',
       });
       return;
     }
-
     const hashedPassword = await member.encryptPassword(newPassword);
     try {
-      await db.member.updatePasswordById(session.id, hashedPassword);
+      await db.member
+        .where({ id: session.id })
+        .update({ password: hashedPassword });
       response.status(200).json({ message: 'success' });
     } catch (error) {
+      console.error(error);
       response.status(400).json({
         error: 'A problem occurred during password update.',
       });
@@ -199,13 +228,9 @@ class MemberController {
    * @returns Promise which will resolve if no duplicate email exists, and reject if one does
    */
   private async checkDuplicateEmail(email: string): Promise<void> {
-    try {
-      const count = await db.member.countByEmail(email);
-      if (count) {
-        throw new Error('An account with this email already exists.');
-      }
-    } catch (error) {
-      throw new Error('A problem occurred during duplicate account check.');
+    const [user] = await db.member.where({ email });
+    if (user) {
+      throw new Error('An account with this email already exists.');
     }
   }
 
@@ -215,13 +240,9 @@ class MemberController {
    * @returns Promise which will resolve if no duplicate username exists, and reject if one does
    */
   private async checkDuplicateUsername(username: string): Promise<void> {
-    try {
-      const count = await db.member.countByUsername(username);
-      if (count) {
-        throw new Error('An account with this username already exists.');
-      }
-    } catch (error) {
-      throw new Error('A probelm occurred during username check.');
+    const [user] = await db.member.where({ username });
+    if (user) {
+      throw new Error('An account with this username already exists.');
     }
   }
 
@@ -233,13 +254,13 @@ class MemberController {
    */
   private async createSession(username: string, password: string): Promise<string> {
     try {
-      const user = await db.member.byUsername(username);
+      const [user] = await db.member.where({ username });
       if (!user) throw new Error('Account not found.');
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) throw new Error('Incorrect login details.');
       const { avatar_id, id } =  user;
-      const avatarData = await db.avatar.byId(avatar_id);
-      const token = member.createToken(id, user.username, avatarData);
+      const [avatar] = await db.avatar.where({ id: avatar_id });
+      const token = member.createToken(id, username, avatar);
       return token;
     } catch(error) {
       console.error(error);
@@ -259,11 +280,17 @@ class MemberController {
     console.log(`Creating user: ${email}, ${username}`);
     const hashedPassword = await member.encryptPassword(password);
     try {
-      const memberId = await db.member.create(email, username, hashedPassword);
-      const avatarData = await db.avatar.byId(1);
-      const token = member.createToken(memberId, username, avatarData);
+      const [memberId] = await db.member
+        .insert({
+          email,
+          password: hashedPassword,
+          username,
+        }, ['id']);
+      const [avatar] = await db.avatar.where({ id: 1 });
+      const token = member.createToken(memberId, username, avatar);
       return token;
     } catch (error) {
+      console.error(error);
       throw new Error('A problem occurred during account creation.');
     }
   }

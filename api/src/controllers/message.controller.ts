@@ -1,8 +1,12 @@
 import { Request, Response} from 'express';
 import validator from 'validator';
 
-import { db } from '../db';
+import {
+  db,
+  knex,
+} from '../db';
 import { member } from '../libs';
+import { Message } from 'models';
 
 interface QueryParams {
   limit: string,
@@ -19,8 +23,8 @@ class MessageController {
 
   /** Handles storing a user message to the database */
   public async addMessage(request: Request, response: Response): Promise<void> {
-    const token = member.decryptToken(<string> request.headers.apitoken);
-    if(!token) {
+    const session = member.decryptToken(<string> request.headers.apitoken);
+    if(!session) {
       response.status(400).json({
         error: 'Invalid or missing token.',
       });
@@ -36,18 +40,24 @@ class MessageController {
     
     if(validator.isEmpty(request.body.body)) {
       response.status(400).json({
-        error: 'body is required.',
+        error: 'Message body is required.',
       });
       return;
     }
     
     try {
-      const { id } = token;
+      const { id } = session;
       const { body } = request.body;
       const placeId = Number.parseInt(request.params.placeId);
-      const messageId = await db.message.add(id, placeId, body);
+      const [messageId] = await db.message
+        .insert({
+          body,
+          member_id: id,
+          place_id: placeId,
+        });
       response.status(200).json({ messageId });
     } catch (error) {
+      console.error(error);
       response.status(400).json({
         error: 'A problem occurred creating message.',
       });
@@ -73,12 +83,18 @@ class MessageController {
       : 'id';
     const queryOrderDirection = MessageController.VALID_ORDER_DIRECTIONS.includes(orderDirection)
       ? orderDirection
-      : '';
+      : 'desc';
     try {
-      const messages = await db.message.byPlaceId(placeId, queryOrder, queryOrderDirection,
-        queryLimit);
+      const messages = await knex
+        .select('message.id', 'message.body as msg', 'member.username as username')
+        .from<Message, Message[]>('message')
+        .where('message.place_id', placeId)
+        .innerJoin('member', 'message.member_id', 'member.id')
+        .orderBy(queryOrder, queryOrderDirection)
+        .limit(queryLimit);
       response.status(200).json({ messages });
     } catch (error) {
+      console.error(error);
       response.status(400).json({
         error: 'A problem occurred while trying to fetch messages.',
       });

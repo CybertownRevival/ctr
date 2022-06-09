@@ -34,9 +34,13 @@ class AvatarController {
       : '';
     
     try {
-      const avatars = await db.avatar.getAll(orderBy, queryOrderDirection, queryLimit);
+      const avatars = await db.avatar
+        .select('id', 'name')
+        .orderBy(orderBy, queryOrderDirection)
+        .limit(queryLimit);
       response.status(200).json({ avatars });
     } catch (error) {
+      console.error(error);
       response.status(400).json({
         error: 'A problem occurred while trying to fetch avatars.',
       });
