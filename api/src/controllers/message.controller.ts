@@ -44,7 +44,6 @@ class MessageController {
       });
       return;
     }
-
     const bannedwords = /(nigger)|(chinc)/i;
     if (bannedwords.test(request.body.body)) {
       try {
