@@ -1,6 +1,6 @@
 import { Knex, knex } from 'knex';
 
-import config from '../../knexfile';
+import config from '../../src/knexfile';
 
 (async () => {
   const { client, connection } = config[process.env.NODE_ENV];
