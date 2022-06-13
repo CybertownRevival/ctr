@@ -40,7 +40,7 @@ jobs:
             npm install
             npm run build:prod
             echo -e "\e[1;42m Migrating database to latest schema..."
-            npx knex migrate:latest
+            npm run db:migrate
             cd ..
             cd spa
             echo -e "\e[1;42m Increment SPA minor version number..."
