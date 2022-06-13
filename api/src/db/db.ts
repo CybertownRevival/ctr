@@ -1,6 +1,6 @@
 import { knex as _knex } from 'knex';
 
-import config from '../../knexfile';
+import config from '../knexfile';
 import * as Models from 'models';
 
 export const knex = _knex(config[process.env.NODE_ENV]);

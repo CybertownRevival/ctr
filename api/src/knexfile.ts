@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import type { Knex } from 'knex';
 
 // Ensure process.env is populated with values from .env file
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 const config: { [key: string]: Knex.Config } = {
   development: {
@@ -19,7 +19,7 @@ const config: { [key: string]: Knex.Config } = {
       max: 10,
     },
     migrations: {
-      directory: './db/migrations',
+      directory: '../db/migrations',
       extension: 'ts',
       tableName: 'migrations',
     },
@@ -41,7 +41,7 @@ const config: { [key: string]: Knex.Config } = {
       max: 10,
     },
     migrations: {
-      directory: './db/migrations',
+      directory: '../db/migrations',
       extension: 'ts',
       tableName: 'migrations',
     },
