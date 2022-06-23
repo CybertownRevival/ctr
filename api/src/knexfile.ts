@@ -24,7 +24,7 @@ const config: { [key: string]: Knex.Config } = {
       tableName: 'migrations',
     },
     seeds: {
-      directory: './db/seed',
+      directory: './../db/seed',
     },
   },
   production: {
