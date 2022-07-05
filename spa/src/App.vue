@@ -120,8 +120,44 @@ export default Vue.extend({
           slug: "",
         },
         {
-          title: "(coming soon)",
-          slug: "",
+          title: "Sci-fi",
+          slug: "scifi_col",
+        },
+        {
+          title: "Entertainment",
+          slug: "ent_col",
+        },
+        {
+          title: "Games",
+          slug: "games_col",
+        },
+        {
+          title: "Virtual Worlds",
+          slug: "vrtwrlds_col",
+        },
+        {
+          title: "Cyberhood",
+          slug: "cyberhood",
+        },
+        {
+          title: "Inner Realms",
+          slug: "inrlms_col",
+        },
+        {
+          title: "Teens",
+          slug: "teen_col",
+        },
+        {
+          title: "Adventure",
+          slug: "ad_col",
+        },
+        {
+          title: "Hi-Tek",
+          slug: "hitek_col",
+        },
+        {
+          title: "Morning Star",
+          slug: "morningstar",
         },
         {
           title: "-----------------------",
@@ -136,9 +172,9 @@ export default Vue.extend({
           slug: "fleamarket",
         },
         {
-                    'title': 'Mall',
-                    "slug": "mall"
-         },
+          title: "Mall",
+          slug: "mall",
+        },
         {
           title: "Bank",
           slug: "bank",

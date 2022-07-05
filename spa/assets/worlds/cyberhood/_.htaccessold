@@ -1,0 +1,5 @@
+AuthName "Cybertown Hacker protection"
+AuthType Basic
+AuthUserFile /services/http/conf/htpasswd.users
+#AuthGroupFile /services/http/conf/htpasswd.group
+require user passenger
