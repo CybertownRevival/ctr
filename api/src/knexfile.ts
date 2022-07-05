@@ -45,6 +45,9 @@ const config: { [key: string]: Knex.Config } = {
       extension: 'ts',
       tableName: 'migrations',
     },
+    seeds: {
+      directory: '../db/seed',
+    },
   },
 };
 export default config;
