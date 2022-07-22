@@ -69,7 +69,7 @@ io.on('connection', async function (socket) {
         avatar: tokenData.avatar,
         username: tokenData.username
       });
-      
+
       socket.join(room);
       // provide the new user with data about the current users in the room
       const clientsInRoom = io.sockets.adapter.rooms.get(room);
@@ -91,14 +91,14 @@ io.on('connection', async function (socket) {
           });
         }
       }
-    
+
       console.log(`User '${tokenData.username}' entered room ${room}`);
       webhookMessage("System", `${tokenData.username} entered room \`${room}\``);
     } else {
       console.error("invalid token!");
     }
   });
-  
+
   //handle avatar related calls.
   socket.on("AV", function (msg) {
     msg.id = socket.id;
@@ -115,28 +115,35 @@ io.on('connection', async function (socket) {
       }
     }
   });
-  
+
   //handle shared events
   socket.on("SE", function (msg) {
     console.log(msg);
     io.to(USERS.get(socket).room).emit("SE", msg);
   });
-  
+
   //handle chat messages
   socket.on("CHAT", (chatData) => {
     console.log('chat message...');
     console.log(chatData);
     if (!chatData || !chatData.msg || typeof chatData.msg !== "string") return;
     const user = USERS.get(socket);
-    if (user?.room) {
-      webhookMessage(`${user.username} in ${user.room}`, chatData.msg);
-      io.to(user.room).emit("CHAT", {
-        username: user.username,
-        msg: chatData.msg,
-      });
+    const bannedwords = /(nigger)|(chinc)/i;
+    if (bannedwords.test(chatData.msg)){
+      console.log(`${user.username} used a banned word in ${user.room}`);
+      return;
+    }
+    else {
+      if (user?.room) {
+        webhookMessage(`${user.username} in ${user.room}`, chatData.msg);
+        io.to(user.room).emit("CHAT", {
+          username: user.username,
+          msg: chatData.msg,
+        });
+      }
     }
   });
-  
+
   socket.on("unsubscribe", () => {
     const user = USERS.get(socket);
     socket.leave(user.room);
@@ -145,7 +152,7 @@ io.on('connection', async function (socket) {
         id: socket.id,
         username: user.username,
       });
-    
+
     console.log(`User '${user.username}' left ${user.room}`);
     webhookMessage("System", `${user.username} left ${user.room}`);
   });
