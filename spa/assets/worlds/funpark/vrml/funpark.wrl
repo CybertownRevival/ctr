@@ -7,12 +7,21 @@ EXTERNPROTO HUD[
 	eventIn MFNode addChildren
 	eventIn MFNode removeChildren
 ]
-["urn:inet:blaxxun.com:node:HUD","http://www.blaxxun.com/vrml/protos/nodes.wrl#HUD"]
+["/externprotos/nodes_xite.wrl#HUD"]
+
+NavigationInfo
+{
+  avatarSize [0.25 1.75 0.75000]
+  visibilityLimit 0.0
+  speed 4.0
+  headlight FALSE
+  type["WALK"]
+}
 
 #PROTO's = Tent Bridge Tree ParkBench Lamp FerrisWheel RideView FWSegment
 #Shooting Gallery PROTO's =  Bullseye Gun Target SGMovingTarget TargetCounter  ShootingGallery
 #Tags = mainRoot landscape pavillion island walls grass walks poolSign upDate gunGeometry
-Inline{url"/places/no_cache/funpark/temp.wrl"}
+Inline{url"../../../no_cache/funpark/temp.wrl"}
 PROTO SharedEvent [
 field SFBool local FALSE
 exposedField SFString   name    "event"  
@@ -1637,9 +1646,9 @@ field MFString loadUrl [ "" ]
 field MFString loadParam [ "" ]
 url "vrmlscript:
 function initialize(){
-loadUrl[0] = '/cgi-bin/cybertown/place?plc=funpark&ac=action';
-loadParam[0] = 'target=action';
-Browser.loadURL(loadUrl, loadParam);
+# loadUrl[0] = '/cgi-bin/cybertown/place?plc=funpark&ac=action';
+# loadParam[0] = 'target=action';
+# Browser.loadURL(loadUrl, loadParam);
 }
 "}
 
@@ -1791,20 +1800,17 @@ Tree{position -75 0 29}
 Tree{position -100 0 29}
 Tree{position -120 0 9}
 
-
-
-
-
 ]}#END mainRoot
 
+## TODO: The sign is failing to load colors. ##
 DEF poolSign Transform {translation 8 0 -20 scale 4 4 4 children [
 DEF poolButton TouchSensor{}
 DEF stake Shape {
-appearance Appearance {material Material {ambientIntensity  .3 diffuseColor .5 .3 .1 specularColor .7 .7 0}}
+appearance Appearance {material Material{transparency 0 diffuseColor .5 .3 .1 specularColor .7 .7 0 emissiveColor .5 .3 .1 shininess 0}}
 geometry IndexedFaceSet {ccw TRUE convex TRUE solid TRUE creaseAngle 3 coord Coordinate {point [.075 .547 -.016,.075 .547 .016,.021 -.013 -.01,.021 -.013 .01,.048 .547 -.031,.005 -.013 -.019,.021 .547 -.016,-.012 -.013 -.01,.021 .547 .016,-.012 -.013 .01,.048 .547 .031,.005 -.013 .019,.095 .688 -.027,.048 .688 -.053,.002 .688 -.027,.002 .688 .027,.048 .688 .053,.095 .688 .027]}coordIndex [12,1,0,-1,17,1,12,-1,17,10,1,-1,16,10,17,-1,16,8,10,-1,15,8,16,-1,15,6,8,-1,14,6,15,-1,14,4,6,-1,13,4,14,-1,13,0,4,-1,12,0,13,-1,3,10,11,-1,1,10,3,-1,11,8,9,-1,10,8,11,-1,9,8,7,-1,8,6,7,-1,7,6,5,-1,6,4,5,-1,5,4,2,-1,4,0,2,-1,2,1,3,-1,0,1,2,-1]}
 }
 DEF arrow Shape {
-appearance Appearance {material Material {ambientIntensity  .3 diffuseColor 1 0 0}}
+appearance Appearance {material Material{transparency 0 diffuseColor .5 .3 .1 specularColor .7 .7 0 emissiveColor .5 .3 .1 shininess 0}}
 geometry IndexedFaceSet {coord Coordinate {point [-.174 .572 -.05,-.174 .572 .05,.176 .637 .05,.176 .637 -.05,.162 .712 .05,.162 .712 -.05,.339 .589 -.05,.339 .589 .05,.217 .412 -.05,.217 .412 .05,.203 .487 -.05,.203 .487 .05,-.146 .423 .05,-.146 .423 -.05]}coordIndex [1,12,2,-1,2,12,7,-1,11,7,12,-1,9,7,11,-1,4,2,7,-1,13,0,3,-1,13,3,6,-1,6,10,13,-1,6,8,10,-1,3,5,6,-1,13,1,0,-1,13,12,1,-1,10,12,13,-1,10,11,12,-1,9,11,10,-1,8,9,10,-1,7,9,8,-1,6,7,8,-1,4,7,6,-1,5,4,6,-1,3,4,5,-1,3,2,4,-1,0,2,3,-1,0,1,2,-1]}
 }
 DEF toPool Transform{translation 0.05 .5125 .07 rotation 0 0 1 0.2 children[
@@ -1820,10 +1826,10 @@ geometry Text{string ["Click Here"] fontStyle FontStyle{ size .03 family "SANS" 
 ]}
 ###### REQUIRES PROPER URL AND TARGET--LOADS POOL
 DEF poolLinker Script{
-eventIn SFBool link
-field MFString loadUrl [ "/places/pool/vrml/pool.wrl" ]
-field MFString loadParam [ "/place?plc=pool&ac=3D&ie=x.bxx" ]
-url "vrmlscript:function link(v) {if(!v){return;}Browser.loadURL(loadUrl, loadParam);}"
+ eventIn SFBool link
+ field MFString loadUrl [ "/#/place/pool" ]
+ field MFString loadParam [ "" ]
+ url "vrmlscript:function link(v) {if(!v){return;}Browser.loadURL(loadUrl, loadParam);}"
 }
 ##########################################
 ]}#END POOLSIGN
