@@ -1802,7 +1802,6 @@ Tree{position -120 0 9}
 
 ]}#END mainRoot
 
-## TODO: The sign is failing to load colors. ##
 DEF poolSign Transform {translation 8 0 -20 scale 4 4 4 children [
 DEF poolButton TouchSensor{}
 DEF stake Shape {
