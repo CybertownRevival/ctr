@@ -1,6 +1,6 @@
 #VRML V2.0 utf8
 
-Inline{url"/places/no_cache/employment/temp.wrl"}
+Inline{url"../../../no_cache/employment/temp.wrl"}
 
 PROTO CacheFooler[
 field MFString url []
@@ -95,7 +95,8 @@ eventOut SFTime touchTime
 eventOut SFBool isOver
 eventOut SFVec3f newPosition
 eventOut SFRotation newRotation
-] "http://www.blaxxun.com/vrml/protos/shared.wrl#SharedObject"
+] 
+["/externprotos/shared_xite.wrl"]
 
 
 PROTO SharedEvent[
@@ -259,16 +260,16 @@ skyAngle [1.209,1.571]
 groundColor[0 0 0,0 0.1 0,.0 .8 .05,1 1 1]
 groundAngle [1.53,1.56,1.569]
 }
-DEF frameLoader Script{
-field MFString loadUrl [ "" ]
-field MFString loadParam [ "" ]
-url "vrmlscript:
-function initialize(){
-loadUrl[0] = '/cgi-bin/colonycity/place?plc=employment&ac=action';
-loadParam[0] = 'target=action';
-Browser.loadURL(loadUrl, loadParam);
-}
-"}
+# DEF frameLoader Script{
+# field MFString loadUrl [ "" ]
+# field MFString loadParam [ "" ]
+# url "vrmlscript:
+# function initialize(){
+# loadUrl[0] = '/cgi-bin/colonycity/place?plc=employment&ac=action';
+# loadParam[0] = 'target=action';
+# Browser.loadURL(loadUrl, loadParam);
+# }
+# "}
 Transform {
 scale 40 20 40 children [
 Shape {  #ceiling      
@@ -532,10 +533,9 @@ Transform{ translation .8 .475 7 scale 1 .5 1 rotation 0 1 0 1.571 children USE 
 Transform{ translation -7.35 .475 7 scale 1 .5 1 rotation 0 1 0 1.571 children USE tellerWindow}
 Transform{ translation  8.75 .475 7 scale 1 .5 1 rotation 0 1 0 1.571 children USE tellerWindow} 
 
-CacheFooler{url"http://www.colonycity.com/cgi-bin/games/fool/empl_fool_switch_morph.pl"}
+# CacheFooler{url"http://www.colonycity.com/cgi-bin/games/fool/empl_fool_switch_morph.pl"}
 
-CacheFooler{url"http://www.colonycity.com/cgi-bin/games/fool/empl_fool_switch.pl"}
+# CacheFooler{url"http://www.colonycity.com/cgi-bin/games/fool/empl_fool_switch.pl"}
 
 
 
-]}#END root Group
