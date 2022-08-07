@@ -27,7 +27,7 @@ class PlaceController {
       response.status(200).json({ object_instance: objects });
     } catch (error) {
       console.error(error);
-      response.status(400).json({ error });
+      response.status(400).json({ error: error.message });
     }
   }
 }

@@ -41,7 +41,7 @@ class MemberController {
       });
     } catch (error) {
       console.error(error);
-      response.status(400).json({ error });
+      response.status(400).json({ error: error.message });
     }
   }
 
@@ -70,7 +70,7 @@ class MemberController {
       response.status(200).json({ message: 'success' });
     } catch (error) {
       console.error(error);
-      response.status(400).json({ error });
+      response.status(400).json({ error: error.message });
     }
   }
 
@@ -105,7 +105,7 @@ class MemberController {
       response.status(200).json({ message: 'success' });
     } catch (error) {
       console.error(error);
-      response.status(400).json({ error });
+      response.status(400).json({ error: error.message });
     }
   }
 
@@ -142,7 +142,7 @@ class MemberController {
       });
     } catch (error) {
       console.error(error);
-      response.status(400).json({ error });
+      response.status(400).json({ error: error.message });
     }
   }
 
@@ -264,7 +264,7 @@ class MemberController {
       return token;
     } catch(error) {
       console.error(error);
-      throw new Error('A problem occurred while trying to log in.');
+      throw new Error(error.message);
     }
   }
 
