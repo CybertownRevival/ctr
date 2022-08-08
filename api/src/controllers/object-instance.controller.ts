@@ -40,7 +40,7 @@ class ObjectInstanceController {
       response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
-      response.status(400).json({ error });
+      response.status(400).json({ error: error.message });
     }
   }
 }
