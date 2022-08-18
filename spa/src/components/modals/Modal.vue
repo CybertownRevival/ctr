@@ -38,9 +38,7 @@ import Vue from "vue";
 export default Vue.extend({
   name: "Modal",
   components: {},
-  data: () => {
-    return {};
-  },
+  data: () => ({}),
   methods: {
     closeModal() : void {
       this.$emit("close");
