@@ -31,8 +31,8 @@ import Vue from "vue";
 import Modal from './Modal.vue';
 import ModalMixin from './mixins/ModalMixin';
 
-import InfoModal from "./InfoModal.vue"
-import ModalService from "./services/ModalService.vue"
+import InfoModal from "./InfoModal.vue";
+import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "TestModal",
@@ -63,7 +63,7 @@ export default Vue.extend({
         const response = await this.$http.post("/member/update_avatar", {
           avatarId: this.avatarId,
         });
-        this.$store.data.user.username = response.data.username
+        this.$store.data.user.username = response.data.username;
         this.$store.methods.setToken(response.data.token);
         this.showSuccess = true;
       } catch (errorResponse: any) {

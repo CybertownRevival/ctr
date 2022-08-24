@@ -51,8 +51,8 @@ import Vue from "vue";
 import Modal from './Modal.vue';
 import ModalMixin from './mixins/ModalMixin';
 
-import InfoModal from "./InfoModal.vue"
-import ModalService from "./services/ModalService.vue"
+import InfoModal from "./InfoModal.vue";
+import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "AccountModal",
