@@ -38,7 +38,7 @@
             <div class="menu">
               <a href="#"
                 class="menuLink"
-                @click.prevent="showMyInfoModal = true"
+                @click="openInfoModal"
                 style="top: 78px"
               ></a>
               <router-link to="/citymap"
@@ -88,12 +88,13 @@
                   title="Hosted by KDA Web Services"
                 />
               </a>
+              <br />
             </p>
           </div>
         </div>
       </div>
     </div>
-    <my-info-modal v-if="showMyInfoModal" @close="showMyInfoModal = false"></my-info-modal>
+    <ModalRoot />
   </main>
 </template>
 
@@ -101,7 +102,10 @@
 import Vue from "vue";
 
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
-import MyInfoModal from "./components/myInfoModal/modal.vue";
+import ModalRoot from "./components/modals/ModalRoot.vue"
+import TestModal from "./components/modals/TestModal.vue"
+import InfoModal from "./components/modals/InfoModal.vue"
+import ModalService from "./components/modals/services/ModalService.vue"
 
 declare const X3D: any;
 
@@ -109,11 +113,10 @@ export default Vue.extend({
   name: "App",
   components: {
     WorldBrowserPage,
-    MyInfoModal,
+    ModalRoot,
   },
   data: () => {
     return {
-      showMyInfoModal: false,
       jumpGateData: [
         {
           title: "COLONIES:",
@@ -317,6 +320,9 @@ export default Vue.extend({
         this.$router.push({ path: `/place/${this.jumpGate}` });
         this.jumpGate = "";
       }
+    },
+    openInfoModal(): void {
+      ModalService.open(InfoModal);
     },
   },
   mounted() {

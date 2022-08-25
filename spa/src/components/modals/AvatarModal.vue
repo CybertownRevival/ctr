@@ -1,27 +1,42 @@
 <template>
-  <div class="flex-1">
-    <h3 align="center">Update Your Avatar</h3>
-    <p align="center" v-if="showError" class="text-red-500">{{ error }}</p>
-    <p align="center" v-if="showSuccess" color="#00FF00">
-      Account Details Updated!
-    </p>
-    <div align="center">
-      <select v-model="avatarId">
-        <option v-for="avatar in avatars" :value="avatar.id" :key="avatar.id">
-          {{ avatar.name }}
-        </option>
-      </select>
-      <br />
-      <button type="button" class="btn" @click="save">Update Avatar</button>
-    </div>
-  </div>
+  <Modal>
+    <template v-slot:header>
+        <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
+        <button type="button" class="btn-ui-inline" @click="openInfoModal"><</button>
+    </template>
+    <template v-slot:body>
+      <div class="flex-1">
+        <h3 align="center">Update Your Avatar</h3>
+        <p align="center" v-if="showError" class="text-red-500">{{ error }}</p>
+        <p align="center" v-if="showSuccess" color="#00FF00">
+          Account Details Updated!
+        </p>
+        <div align="center">
+          <select v-model="avatarId">
+            <option v-for="avatar in avatars" :value="avatar.id" :key="avatar.id">
+              {{ avatar.name }}
+            </option>
+          </select>
+          <br />
+          <button type="button" class="btn" @click="save">Update Avatar</button>
+        </div>
+      </div>
+    </template>
+  </Modal>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
+import Modal from './Modal.vue';
+import ModalMixin from './mixins/ModalMixin';
+
+import InfoModal from "./InfoModal.vue";
+import ModalService from "./services/ModalService.vue";
+
 export default Vue.extend({
-  name: "AvatarPage",
+  name: "TestModal",
+  components: {Modal},
   data: () => {
     return {
       avatarId: null,
@@ -32,6 +47,9 @@ export default Vue.extend({
     };
   },
   methods: {
+    openInfoModal(): void {
+      ModalService.open(InfoModal);
+    },
     async save() {
       this.showError = false;
       //todo validate a value
@@ -45,7 +63,7 @@ export default Vue.extend({
         const response = await this.$http.post("/member/update_avatar", {
           avatarId: this.avatarId,
         });
-        this.$store.data.user.username = response.data.username
+        this.$store.data.user.username = response.data.username;
         this.$store.methods.setToken(response.data.token);
         this.showSuccess = true;
       } catch (errorResponse: any) {
@@ -72,5 +90,6 @@ export default Vue.extend({
     //todo set avatarId = user's avatar id
     this.avatarId = this.$store.data.user.avatar.id;
   },
-},);
+  mixins: [ModalMixin],
+});
 </script>
