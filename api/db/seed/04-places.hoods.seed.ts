@@ -1,17 +1,21 @@
 import { Knex } from 'knex';
+import { db } from '../../src/db';
 
-const colonyIdsToSlugs = {
-  'games_col': '0101',
-  'scifi_col': '0102',
-  'vrtwrlds_col': '0103',
-  'ent_col': '0104',
-  'inrlms_col': '0105',
-  'teen_col': '0106',
-  'morningstar': '0107',
-  'cyberhood': '0108',
-  'ad_col': '0109',
-  'hitek_col': '0110',
-};
+const hoodBlockData = require('./../seed_data/hood_block_data.json');
+
+const colonyIdsToSlugs = [
+  {'slug': 'games_col', 'oldId': '0101'},
+  {'slug': 'scifi_col', 'oldId': '0102'},
+  {'slug': 'vrtwrlds_col', 'oldId': '0103'},
+  {'slug': 'ent_col', 'oldId': '0104'},
+  {'slug': 'inrlms_col', 'oldId': '0105'},
+  {'slug': 'teen_col', 'oldId': '0106'},
+  {'slug': 'morningstar', 'oldId': '0107'},
+  {'slug': 'cyberhood', 'oldId': '0108'},
+  {'slug': 'ad_col', 'oldId': '0109'},
+  {'slug': 'hitek_col', 'oldId': '0110'},
+];
+
 
 // todo upload assets for 9thD and campus
 // todo have a big array of data to loop
@@ -21,27 +25,47 @@ export async function seed(knex: Knex): Promise<void> {
 
   // todo remove map_location ref for hoods and blocks
 
-  // todo remove hoods and blocks
-  await knex('place').del().where({
-    type: ['hood','block'],
+  // remove hoods and blocks from places
+  await knex('place').del().whereIn(
+    'type', ['hood','block']
+  );
+
+  //console.log(hoodBlockData);
+
+  // loop through colonyidstoSlugs
+  colonyIdsToSlugs.forEach( async (colRef) => {
+    let hoodId = null,
+      blocks = hoodBlockData.filter((row) => {
+        return row.colony_id === parseInt(colRef.oldId)
+      });
+
+    console.log(colRef);
+
+    //console.log(blocks);
+
+    // todo get the place id of the colony in place table
+    console.log(colRef.slug);
+    //const [colony] = await db.place.where({ slug: colRef.slug });
+    const [colony] = await knex('place').select('id').where({ slug: colRef.slug });
+
+    console.log(colony);
+    // loop through the blocks
+    blocks.forEach(block => {
+      //  todo new hood id? yes -> create place and fetch new place id
+      //  todo insert hood map_location with rel to colony place id (store in var)
+      //  todo sanitize the block's name
+      //  todo if "Closed" or name is null don't insert or not avail some how
+      //    todo replace BR with space
+      //    todo if super natural, sea of ships, caribbean islands, metaverse, treasures of the deep, point
+      //     world, nexus
+      //     hood => get the image's alt
+      //  todo insert place for block and fetch new place id for block
+      //  todo  insert block map_location with rel to hood place id
+      // todo end loop
+
+    })
   });
 
-
-  // todo loop through colonyidstoSlugs
-  // todo get the place id of the colony in place
-  // todo filter data to only those where colony_id = the old one
-  // todo loop through the blocks
-  //  todo new hood id? yes -> create place and fetch new place id
-  //  todo insert hood map_location with rel to colony place id (store in var)
-  //  todo sanitize the block's name
-  //  todo if "Closed" or name is null don't insert or not avail some how
-  //    todo replace BR with space
-  //    todo if super natural, sea of ships, caribbean islands, metaverse, treasures of the deep, point
-  //     world, nexus
-  //     hood => get the image's alt
-  //  todo insert place for block and fetch new place id for block
-  //  todo  insert block map_location with rel to hood place id
-  // todo end loop
 
   /*
   1. select the id of the X col
