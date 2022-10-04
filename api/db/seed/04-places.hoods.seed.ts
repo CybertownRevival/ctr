@@ -17,6 +17,28 @@ const colonyIdsToSlugs = [
 ];
 
 
+function location2dto1d(location2d, width) {
+  const stringCoords = String(location2d).padStart(4, '0'),
+    coords = stringCoords.match(/.{1,2}/g);
+
+  console.log('string coords: '+stringCoords);
+  console.log('coords: '+coords);
+
+
+  return (parseInt(coords[0]) - 1) * width + (parseInt(coords[1]) - 1) + 1;
+
+  /*
+  //(x-1)*n+(y-1)=z
+  Actually it's mapping 2d array onto 1d array so (x-1)*n+(y-1)=z
+
+n is width so 6
+z is 1d index
+
+I added the -1s as a quick way to convert from 1 based index to zero based
+The z is zero based so add one to it*/
+
+}
+
 // todo upload assets for 9thD and campus
 // todo have a big array of data to loop
 
@@ -27,13 +49,12 @@ export async function seed(knex: Knex): Promise<void> {
 
   // remove hoods and blocks from places
   await knex('place').del().whereIn(
-    'type', ['hood','block']
+    'type', ['hood','block'],
   );
 
-  //console.log(hoodBlockData);
 
   // loop through colonyidstoSlugs
-  colonyIdsToSlugs.forEach( async (colRef) => {
+  for(const colRef of colonyIdsToSlugs) {
     let hoodId = null,
       blocks = hoodBlockData.filter((row) => {
         return row.colony_id === parseInt(colRef.oldId)
@@ -43,28 +64,59 @@ export async function seed(knex: Knex): Promise<void> {
 
     //console.log(blocks);
 
-    // todo get the place id of the colony in place table
+    // get the place id of the colony in place table
     console.log(colRef.slug);
-    //const [colony] = await db.place.where({ slug: colRef.slug });
-    const [colony] = await knex('place').select('id').where({ slug: colRef.slug });
+    const [colony] = await db.place.where({ slug: colRef.slug });
 
     console.log(colony);
-    // loop through the blocks
-    blocks.forEach(block => {
-      //  todo new hood id? yes -> create place and fetch new place id
-      //  todo insert hood map_location with rel to colony place id (store in var)
-      //  todo sanitize the block's name
-      //  todo if "Closed" or name is null don't insert or not avail some how
-      //    todo replace BR with space
-      //    todo if super natural, sea of ships, caribbean islands, metaverse, treasures of the deep, point
-      //     world, nexus
-      //     hood => get the image's alt
-      //  todo insert place for block and fetch new place id for block
-      //  todo  insert block map_location with rel to hood place id
-      // todo end loop
 
-    })
-  });
+    for(const block of blocks) {
+      console.log(block);
+      if(block.hood_name !== null) {
+
+        //  new hood id? yes -> create place and fetch new place id
+        if(hoodId !== block.h_id) {
+          console.log('new hood...create it');
+          hoodId = block.h_id;
+          let newHoodId = await db.place.insert(
+            {
+              name: block.hood_name,
+              type: 'hood',
+              assets_dir: '',
+              slug: block.h_id,
+              world_filename: '',
+            },
+          );
+          console.log('new hood id: ' + newHoodId);
+
+
+          const newLocation = location2dto1d(block.hood_map_coord,8);
+
+          console.log('new hood location: ' + newLocation);
+
+          //  todo insert hood map_location with rel to colony place id (store in var)
+          await db.mapLocation.insert({
+            parent_place_id: colony.id,
+            place_id: newHoodId[0],
+            location: newLocation,
+          });
+
+        }
+
+        //  todo sanitize the block's name
+        //  todo if "Closed" or name is null don't insert or not avail some how
+        //    todo replace BR with space
+        //    todo if super natural, sea of ships, caribbean islands, metaverse, treasures of the deep, point
+        //     world, nexus
+        //     hood => get the image's alt
+        //  todo insert place for block and fetch new place id for block
+        //  todo  insert block map_location with rel to hood place id
+        // todo end loop
+      }
+
+    }
+  }
+
 
 
   /*

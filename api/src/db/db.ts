@@ -22,4 +22,7 @@ export const db = {
   get place() {
     return knex<Models.Place, Models.Place[]>('place');
   },
+  get mapLocation() {
+    return knex<Models.MapLocation, Models.MapLocation[]>('map_location');
+  },
 };

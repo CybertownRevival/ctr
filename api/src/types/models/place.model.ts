@@ -8,4 +8,5 @@ export interface Place extends Model {
   slug: string;
   status: number;
   world_filename: string;
+  type: string;
 }
