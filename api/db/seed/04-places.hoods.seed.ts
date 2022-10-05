@@ -21,21 +21,39 @@ function location2dto1d(location2d, width) {
   const stringCoords = String(location2d).padStart(4, '0'),
     coords = stringCoords.match(/.{1,2}/g);
 
-  console.log('string coords: '+stringCoords);
-  console.log('coords: '+coords);
-
-
   return (parseInt(coords[0]) - 1) * width + (parseInt(coords[1]) - 1) + 1;
+}
 
-  /*
-  //(x-1)*n+(y-1)=z
-  Actually it's mapping 2d array onto 1d array so (x-1)*n+(y-1)=z
+function cleanBlockName(blockName) {
 
-n is width so 6
-z is 1d index
+  if (blockName === null) {
+    return blockName;
+  }
 
-I added the -1s as a quick way to convert from 1 based index to zero based
-The z is zero based so add one to it*/
+  let regex = new RegExp("alt='(.*)'", "g");
+  let match = regex.exec(blockName);
+
+  if(match !== null) {
+    return match[1];
+  } else {
+    blockName = blockName.replace("<BR>", " ");
+    blockName = blockName.replace("<br>", " ");
+    blockName = blockName.replace("<B>", " ");
+    blockName = blockName.replace("<b>", " ");
+    blockName = blockName.replace("</B>", " ");
+    blockName = blockName.replace("</b>", " ");
+    blockName = blockName.replace("</a>", " ");
+    blockName = blockName.replace("<img src='http://hermes.spaceports.com/~hitman/sk_map/a1.jpg' class='a1b' border='0'>", " ");
+    blockName = blockName.replace("<font face=tahoma>", " ");
+    blockName = blockName.replace("<font color=#CCCC99>", " ");
+    blockName = decodeURIComponent(blockName);
+
+    const placeholder = blockName.match(/^(ai|sc|nex|ds|d|qi)([0-9]+)$/g);
+    if(placeholder !== null) {
+      return null;
+    }
+  }
+  return blockName;
 
 }
 
@@ -45,9 +63,14 @@ The z is zero based so add one to it*/
 export async function seed(knex: Knex): Promise<void> {
   console.log('Creating seed places hoods and blocks');
 
-  // todo remove map_location ref for hoods and blocks
+  // remove map_location ref for hoods and blocks
+  // todo remove this from seed. shouldn't be allowed to reverse this easy
+  console.log('Removing map locations...');
+  await knex('map_location').del();
 
   // remove hoods and blocks from places
+  // todo remove this from seed. shouldn't be allowed to reverse this easy
+  console.log('Removing hoods and blocks from place table...');
   await knex('place').del().whereIn(
     'type', ['hood','block'],
   );
@@ -56,29 +79,30 @@ export async function seed(knex: Knex): Promise<void> {
   // loop through colonyidstoSlugs
   for(const colRef of colonyIdsToSlugs) {
     let hoodId = null,
+      newHood = null,
       blocks = hoodBlockData.filter((row) => {
         return row.colony_id === parseInt(colRef.oldId)
       });
 
-    console.log(colRef);
-
-    //console.log(blocks);
-
+    console.log('Processing ' + colRef.slug + ' block data...');
     // get the place id of the colony in place table
-    console.log(colRef.slug);
     const [colony] = await db.place.where({ slug: colRef.slug });
-
     console.log(colony);
 
+    console.log(blocks.length + " blocks to process...");
+
     for(const block of blocks) {
-      console.log(block);
-      if(block.hood_name !== null) {
+      const blockName = cleanBlockName(block.block_name);
+
+      if(block.hood_name !== null && blockName !== 'Closed' && blockName !== null && block.block_map_coord !== 0) {
 
         //  new hood id? yes -> create place and fetch new place id
         if(hoodId !== block.h_id) {
-          console.log('new hood...create it');
+
+          console.log('Creating Hood: '+ block.hood_name);
+
           hoodId = block.h_id;
-          let newHoodId = await db.place.insert(
+          const newHoodId = await db.place.insert(
             {
               name: block.hood_name,
               type: 'hood',
@@ -87,55 +111,41 @@ export async function seed(knex: Knex): Promise<void> {
               world_filename: '',
             },
           );
-          console.log('new hood id: ' + newHoodId);
-
 
           const newLocation = location2dto1d(block.hood_map_coord,8);
 
-          console.log('new hood location: ' + newLocation);
+          newHood = newHoodId[0];
 
-          //  todo insert hood map_location with rel to colony place id (store in var)
+          //  insert hood map_location with rel to colony place id (store in var)
           await db.mapLocation.insert({
             parent_place_id: colony.id,
-            place_id: newHoodId[0],
+            place_id: newHood,
             location: newLocation,
           });
 
         }
 
-        //  todo sanitize the block's name
-        //  todo if "Closed" or name is null don't insert or not avail some how
-        //    todo replace BR with space
-        //    todo if super natural, sea of ships, caribbean islands, metaverse, treasures of the deep, point
-        //     world, nexus
-        //     hood => get the image's alt
-        //  todo insert place for block and fetch new place id for block
-        //  todo  insert block map_location with rel to hood place id
-        // todo end loop
-      }
+        console.log('Creating Block: ' + blockName);
 
+        const newBlockId = await db.place.insert(
+          {
+            name: blockName,
+            type: 'block',
+            assets_dir: '',
+            slug: block.b_id,
+            world_filename: '',
+          },
+        );
+
+        const newBlockLocation = location2dto1d(block.block_map_coord,6);
+
+        //  insert block map_location with rel to hood place id
+        await db.mapLocation.insert({
+          parent_place_id: newHood,
+          place_id: newBlockId[0],
+          location: newBlockLocation,
+        });
+      }
     }
   }
-
-
-
-  /*
-  1. select the id of the X col
-  2. insert hoods into place
-  3. get hood ids
-  4. insert into association table the ids of the above. relating them to the X col's id
-   */
-
-  // Inserts seed entries
-  /*
-  await knex("table_name").insert([
-    { id: 1, colName: "rowValue1" },
-    { id: 2, colName: "rowValue2" },
-    { id: 3, colName: "rowValue3" }
-  ]);
-   */
-
-  //todo: replace morning star with 9th Dimension
-
-  //todo: replace teens with the campus
 };
