@@ -2,7 +2,7 @@
   <main id="app" class="h-screen flex flex-col">
     <div
       class="flex flex-none flex-row bg-lines justify-between h-full"
-      style="height: 70px"
+      style="height: 70px;"
       v-if="$store.data.isUser"
     >
       <div class="flex h-full items-center">

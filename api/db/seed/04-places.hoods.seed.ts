@@ -58,7 +58,6 @@ function cleanBlockName(blockName) {
 }
 
 // todo upload assets for 9thD and campus
-// todo have a big array of data to loop
 
 export async function seed(knex: Knex): Promise<void> {
   console.log('Creating seed places hoods and blocks');
@@ -148,4 +147,10 @@ export async function seed(knex: Knex): Promise<void> {
       }
     }
   }
+
+
+  // todo migrate morningstar -> 9th dim
+
+  // todo migrate teen -> campus
+
 };
