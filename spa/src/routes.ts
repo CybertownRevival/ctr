@@ -8,6 +8,7 @@ import PasswordResetPage from "./pages/PasswordResetPage.vue";
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 import CityMapPage from "./pages/CityMapPage.vue";
 import NeighborhoodPage from "./pages/neighborhood/NeighborhoodPage.vue";
+import BlockPage from "./pages/block/BlockPage.vue";
 
 export default [
   { path: "/", component: HomePage, name: "home", meta:
@@ -52,5 +53,6 @@ export default [
       },
   },
   { path: "/neighborhood/:id", component: NeighborhoodPage, name: "neighborhood" },
+  { path: "/block/:id", component: BlockPage, name: "block" },
 ];
 

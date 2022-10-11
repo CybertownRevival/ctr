@@ -33,7 +33,7 @@ const appStore = Vue.observable<AppStore>({
     loading: false,
     isUser: false,
     x3dReady: false,
-    view3d: true,
+    view3d: false,
     user: {
       token: localStorage.getItem("token"),
     },

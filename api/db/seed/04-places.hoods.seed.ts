@@ -9,8 +9,8 @@ const colonyIdsToSlugs = [
   {'slug': 'vrtwrlds_col', 'oldId': '0103'},
   {'slug': 'ent_col', 'oldId': '0104'},
   {'slug': 'inrlms_col', 'oldId': '0105'},
-  {'slug': 'teen_col', 'oldId': '0106'},
-  {'slug': 'morningstar', 'oldId': '0107'},
+  {'slug': 'campus', 'oldId': '0106'},
+  {'slug': '9thdimension', 'oldId': '0107'},
   {'slug': 'cyberhood', 'oldId': '0108'},
   {'slug': 'ad_col', 'oldId': '0109'},
   {'slug': 'hitek_col', 'oldId': '0110'},
@@ -57,23 +57,49 @@ function cleanBlockName(blockName) {
 
 }
 
-// todo upload assets for 9thD and campus
-
 export async function seed(knex: Knex): Promise<void> {
   console.log('Creating seed places hoods and blocks');
 
+  console.log('Removing 9thdim + campus colonies from table...');
+  await knex('place').del().whereIn(
+    'slug', ['9thdimension','campus'],
+  );
+
   // remove map_location ref for hoods and blocks
-  // todo remove this from seed. shouldn't be allowed to reverse this easy
   console.log('Removing map locations...');
   await knex('map_location').del();
 
   // remove hoods and blocks from places
-  // todo remove this from seed. shouldn't be allowed to reverse this easy
   console.log('Removing hoods and blocks from place table...');
   await knex('place').del().whereIn(
     'type', ['hood','block'],
   );
 
+
+  console.log('Creating 9th Dimension and Campus colonies...');
+  await knex('place').insert([
+    {
+      name: '9th Dimension',
+      description: 'Welcome to the 9th Dimension Colony',
+      slug: '9thdimension',
+      assets_dir: '/9thdimension/vrml/',
+      world_filename: '9thdimension.wrl',
+      type: 'colony',
+    },
+    {
+      name: 'The Campus',
+      description: 'Welcome to the Campus',
+      slug: 'campus',
+      assets_dir: '/campus/vrml/',
+      world_filename: 'campus.wrl',
+      type: 'colony',
+    },
+  ]);
+
+  console.log('Deactivating teen and morningstar colonies...');
+  await knex('place').update({'status': 0 }).whereIn(
+    'slug', ['teen_col','morningstar'],
+  );
 
   // loop through colonyidstoSlugs
   for(const colRef of colonyIdsToSlugs) {
@@ -147,10 +173,5 @@ export async function seed(knex: Knex): Promise<void> {
       }
     }
   }
-
-
-  // todo migrate morningstar -> 9th dim
-
-  // todo migrate teen -> campus
 
 };
