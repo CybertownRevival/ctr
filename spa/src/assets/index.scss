@@ -182,3 +182,13 @@ table {
 
   }
 }
+
+.colonyMap {
+  position: relative;
+  display: inline-block;
+
+  .mapGrid {
+    position:absolute;
+  }
+
+}
