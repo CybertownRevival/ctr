@@ -1,33 +1,19 @@
 <template>
   <div class="text-center" v-if="loaded">
-    <div :style = '{
-      "width": "591px",
-      "height": "279px",
-      "background-image": "url(\"/assets/img/place/hitek_col/community.jpg\")",
-      "position": "relative",
-      "border": "1px solid green",
-      "perspective": "340px",
-      "display": "inline-block",
-    }'>
-      <div style="border: 1px solid red;
-      position:absolute;
-      bottom:-9px;
-      transform: rotateX(47deg) scale(0.7) skewX(357deg) translateX(40px);
-      width: 590px;
-      height: 310px;
-        "
-           class="grid grid-cols-8 gap-0">
-
-        <div v-for="index in 40" :key="index" style="border: 1px solid yellow">
-          <template v-if="hoods.find(h => h.location === index)" >
-            <router-link :to="'/neighborhood/' + hoods.find(h => h.location === index).id"
-                         class="w-full h-full block text-center flex items-center justify-center">
-            </router-link>
-          </template>
-        </div>
-
-      </div>
-    </div>
+    <colony-map
+      map-width="591px"
+      map-height="279px"
+      map-bg="/assets/img/place/hitek_col/community.jpg"
+      perspective="340px"
+      grid-bottom="-9px"
+      rotate-x="47deg"
+      scale=".70"
+      skew-x="357deg"
+      translate-x="40px"
+      grid-width="590px"
+      grid-height="310px"
+      :hoods="hoods"
+    ></colony-map>
     <br/>
     <small>Click a neighborhood on the colony map to get your home.</small><br>
   </div>
@@ -35,9 +21,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import colonyMap from "@/components/place/colonyMap.vue";
 
 export default Vue.extend({
   name: "HiTekMain2d",
+  components: {colonyMap},
   data: () => {
     return {
       loaded: false,
