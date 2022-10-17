@@ -64,7 +64,6 @@ export default Vue.extend({
         this.hood = response[0].data.hood;
         this.colony = response[0].data.colony;
         this.blocks = response[1].data.blocks;
-        console.log(colonyDataHelper[this.colony.slug]);
         document.title = this.hood.name + " - Cybertown";
       });
     },

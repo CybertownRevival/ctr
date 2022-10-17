@@ -5,3 +5,4 @@ export * from './object-instance.routes';
 export * from './place.routes';
 export * from './hood.routes';
 export * from './colony.routes';
+export * from './block.routes';

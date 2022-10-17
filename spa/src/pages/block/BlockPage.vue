@@ -1,26 +1,71 @@
 <template>
   <div class="h-full w-full bg-black flex flex-col" v-if="loaded">
-    todo
+    <div class="w-full flex-1 text-center">
+      <div class="inline-block mx-auto">
+        <div :style="{
+        width: '480px',
+        height: '240px',
+        'background-image': mapBackground ,
+      }"
+             class="grid grid-cols-12 gap-0">
+
+          <div v-for="index in 72" :key="index"
+               style="height:40px;">
+            <template v-if="locations.find(b => b.location === index)" >
+              <router-link :to="'/block/' + locations.find(b => b.location === index).id"
+                           class="w-full h-full block text-center flex items-center justify-center">
+                <span>{{ locations.find(b => b.location === index).name }}</span>
+              </router-link>
+            </template>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { BlockData } from "./block-data.interface";
-//import { colonyDataHelper } from '@/helpers';
+import { colonyDataHelper } from '@/helpers';
 
 export default Vue.extend({
   name: "BlockPage",
   data: (): BlockData => {
     return {
-      loaded: true,
+      loaded: false,
+      block: undefined,
+      hood: undefined,
+      colony: undefined,
+      locations: [],
     };
   },
   methods: {
+    getData(): Promise<void> {
+      return Promise.all([
+        this.$http.get("/block/" + this.$route.params.id),
+        this.$http.get("/block/" + this.$route.params.id + "/locations"),
+      ]).then((response) => {
+        this.block = response[0].data.block;
+        this.hood = response[0].data.hood;
+        this.colony = response[0].data.colony;
+        this.locations = response[1].data.locations;
+
+        document.title = this.block.name + " - Cybertown";
+        this.loaded = true;
+      });
+
+    },
   },
-  watch: {
+  computed: {
+    mapBackground () {
+      return "url('/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
+        "/block/Pimg2d000.gif')";
+    },
   },
   mounted() {
+    this.getData();
   },
   async beforeDestroy() {
   },
