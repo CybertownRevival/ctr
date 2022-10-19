@@ -18,8 +18,6 @@ export async function up(knex: Knex): Promise<void> {
       table.integer('location')
         .notNullable();
 
-      table.string('map_image');
-
       table.boolean('available')
         .defaultTo(false)
         .notNullable();

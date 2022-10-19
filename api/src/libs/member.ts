@@ -6,8 +6,8 @@ import { SessionInfo } from '../types';
 const saltRounds = 10;
 
 export const member = {
-  createToken: (id: number, username: string, avatar: unknown): string => {
-    return jwt.sign({ id, username, avatar }, process.env.JWT_SECRET);
+  createToken: (id: number, username: string, avatar: unknown, admin: unknown): string => {
+    return jwt.sign({ id, username, avatar, admin}, process.env.JWT_SECRET);
   },
   encryptPassword: (passwordText: string): Promise<string> => {
     return bcrypt.hash(passwordText, saltRounds);

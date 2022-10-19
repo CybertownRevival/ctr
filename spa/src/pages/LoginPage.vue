@@ -15,13 +15,13 @@
           src="/assets/img/login/bestchat.gif"
           class="inline-block"
         /><BR /><FONT FACE="arial" SIZE="-1" COLOR="#00DD00"
-          >Chosen by YAHOO! as coolest chat site for 2001
-        </FONT>
+      >Chosen by YAHOO! as coolest chat site for 2001
+      </FONT>
         <br />
         <FONT COLOR="#80FF00" SIZE="+2">E</FONT
         ><FONT COLOR="#80FF00" SIZE="+1">NTER</FONT
-        ><FONT COLOR="#80FF00" SIZE="+2"> C</FONT
-        ><FONT COLOR="#80FF00" SIZE="+1">YBERTOWN</FONT>
+      ><FONT COLOR="#80FF00" SIZE="+2"> C</FONT
+      ><FONT COLOR="#80FF00" SIZE="+1">YBERTOWN</FONT>
         <br />
         <img
           class="inline-block"
@@ -43,13 +43,13 @@
         />
         <br />
         <router-link to="/signup"
-          ><IMG
-            class="inline-block"
-            HEIGHT="83"
-            WIDTH="84"
-            SRC="/assets/img/login/register.gif"
-            BORDER="0"
-            ALT="Immigrate Today!"
+        ><IMG
+          class="inline-block"
+          HEIGHT="83"
+          WIDTH="84"
+          SRC="/assets/img/login/register.gif"
+          BORDER="0"
+          ALT="Immigrate Today!"
         /></router-link>
       </div>
     </div>
@@ -69,10 +69,10 @@
         <router-link to="/forgot">here</router-link> and we will
         <router-link to="/forgot">email</router-link> instructions to you.
         <font color="red"
-          ><strong
-            >NEVER, EVER give your password to anyone else, no matter who they
-            claim to be or what jobs they offer you!</strong
-          ></font
+        ><strong
+        >NEVER, EVER give your password to anyone else, no matter who they
+          claim to be or what jobs they offer you!</strong
+        ></font
         >
       </div>
       <div class="flex-1 px-8">
@@ -118,10 +118,10 @@
         Password, click <router-link to="/forgot">here</router-link> and we will
         email you instructions.
         <font color="yellow"
-          ><strong
-            >ALWAYS make your password something that it would be VERY HARD for
-            anyone to guess!</strong
-          ></font
+        ><strong
+        >ALWAYS make your password something that it would be VERY HARD for
+          anyone to guess!</strong
+        ></font
         >
       </div>
       <div class="text-center self-start" style="width: 100px">

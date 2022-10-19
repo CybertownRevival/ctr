@@ -6,9 +6,12 @@ import LogoutPage from "./pages/LogoutPage.vue";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.vue";
 import PasswordResetPage from "./pages/PasswordResetPage.vue";
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
+import WorldBrowserTools from "./pages/world-browser/WorldBrowserTools.vue";
 import CityMapPage from "./pages/CityMapPage.vue";
 import NeighborhoodPage from "./pages/neighborhood/NeighborhoodPage.vue";
+import NeighborhoodTools from "@/pages/neighborhood/NeighborhoodTools.vue";
 import BlockPage from "./pages/block/BlockPage.vue";
+import BlockTools from "@/pages/block/BlockTools.vue";
 
 export default [
   { path: "/", component: HomePage, name: "home", meta:
@@ -21,7 +24,14 @@ export default [
         title: "About Cybertown Revival",
       },
   },
-  { path: "/place/:id", component: WorldBrowserPage, name: "world-browser" },
+  {
+    path: "/place/:id",
+    components: {
+      default: WorldBrowserPage,
+      tools: WorldBrowserTools,
+    },
+    name: "world-browser" ,
+  },
   { path: "/login", component: LoginPage, name: "login", meta:
       {
         title: "Login",
@@ -52,7 +62,21 @@ export default [
         title: "City Map",
       },
   },
-  { path: "/neighborhood/:id", component: NeighborhoodPage, name: "neighborhood" },
-  { path: "/block/:id", component: BlockPage, name: "block" },
+  {
+    path: "/neighborhood/:id",
+    components: {
+      default: NeighborhoodPage,
+      tools: NeighborhoodTools,
+    },
+    name: "neighborhood" ,
+  },
+  {
+    path: "/block/:id",
+    components: {
+      default: BlockPage,
+      tools: BlockTools,
+    },
+    name: "block",
+  },
 ];
 

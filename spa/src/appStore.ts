@@ -10,6 +10,7 @@ export interface User {
   },
   username?: string,
   token?: string,
+  admin?: boolean,
 }
 
 /** Represents the shape of the global app store object */
