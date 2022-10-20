@@ -112,15 +112,25 @@ class MemberController {
   /** Controller method for getting a session */
   public async session(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
-    const sessionInfo = member.decryptToken(<string> apitoken);
+    let sessionInfo = member.decryptToken(<string> apitoken);
     if (!sessionInfo) {
       response.status(400).json({
         error: 'Invalid or missing token.',
       });
     } else {
+      // recheck admin access to keep token up-to-date
+      const [adminCheck] = await db.member.where({id: sessionInfo.id}).select(['admin']);
+      sessionInfo.admin = adminCheck.admin;
+      const newToken = member.createToken(
+        sessionInfo.id,
+        sessionInfo.username,
+        sessionInfo.avatar,
+        adminCheck.admin
+      );
+
       response.status(200).json({
         message: 'success',
-        token: apitoken,
+        token: newToken,
         user: sessionInfo,
       });
     }
