@@ -10,8 +10,11 @@ import WorldBrowserTools from "./pages/world-browser/WorldBrowserTools.vue";
 import CityMapPage from "./pages/CityMapPage.vue";
 import NeighborhoodPage from "./pages/neighborhood/NeighborhoodPage.vue";
 import NeighborhoodTools from "@/pages/neighborhood/NeighborhoodTools.vue";
+
 import BlockPage from "./pages/block/BlockPage.vue";
 import BlockTools from "@/pages/block/BlockTools.vue";
+import BlockWizardPage from "./pages/block/BlockWizardPage.vue";
+import RestrictedAccess from "@/pages/RestrictedAccess.vue";
 
 export default [
   { path: "/", component: HomePage, name: "home", meta:
@@ -62,6 +65,11 @@ export default [
         title: "City Map",
       },
   },
+  { path: "/restricted", component: RestrictedAccess, name: "restrictedaccess", meta:
+      {
+        title: "Restricted Access",
+      },
+  },
   {
     path: "/neighborhood/:id",
     components: {
@@ -69,6 +77,14 @@ export default [
       tools: NeighborhoodTools,
     },
     name: "neighborhood" ,
+  },
+  {
+    path: "/block/:id/wizard",
+    components: {
+      default: BlockWizardPage,
+      tools: BlockTools,
+    },
+    name: "blockwizard",
   },
   {
     path: "/block/:id",

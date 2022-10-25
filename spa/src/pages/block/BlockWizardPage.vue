@@ -10,28 +10,36 @@
              class="grid grid-cols-12 gap-0">
 
           <div v-for="index in 72" :key="index"
-               style="height:40px;">
+               style="height:40px;line-height:40px;">
             <template v-if="locations.find(b => b.location === index)" >
-
-              <router-link
-                v-if="locations.find(b => b.location === index).id"
-                :to="'/block/' + locations.find(b => b.location === index).id"
-                class="w-full h-full block text-center flex items-center justify-center">
+              <router-link :to="'/block/' + locations.find(b => b.location === index).id"
+                           class="w-full h-full block text-center flex items-center justify-center"
+                           v-if="locations.find(b => b.location === index).id"
+              >
                 <span>{{ locations.find(b => b.location === index).name }}</span>
               </router-link>
-              <router-link
-                v-else-if="locations.find(b => b.location === index).available"
-                :to="''"
-                class="w-full h-full block text-center flex items-center justify-center">
-                <span>
-                  <img :src="freeImage" />
-                </span>
-              </router-link>
+              <input type="checkbox" v-model="availableLocations" v-else :value="index"/>
+            </template>
+            <template v-else>
+              <input type="checkbox" v-model="availableLocations" :value="index"/>
             </template>
           </div>
 
         </div>
       </div>
+
+      <p><strong>Update Wizard for block '{{ this.$store.data.place.block.name }}'</strong></p>
+
+      <small>Checkmark the plots where you want members to settle down.</small>
+      <br/>
+      <button type="button" @click="update" class="btn">Update</button>
+      <br/>
+
+      <small>
+        Change the
+        <a href="block<$g_exe>?ac=wizardimage&ID=<$ID>" target="place">background image</a>
+        for this <strong>block</strong>.
+      </small>
     </div>
   </div>
 </template>
@@ -42,14 +50,15 @@ import { BlockData } from "./block-data.interface";
 import { colonyDataHelper } from '@/helpers';
 
 export default Vue.extend({
-  name: "BlockPage",
-  data: (): BlockData => {
+  name: "BlockWizardPage",
+  data: () => {
     return {
       loaded: false,
       block: undefined,
       hood: undefined,
       colony: undefined,
       locations: [],
+      availableLocations: [],
     };
   },
   methods: {
@@ -64,10 +73,27 @@ export default Vue.extend({
         this.locations = response[1].data.locations;
         this.$store.methods.setPlace(response[0].data);
 
-        document.title = this.block.name + " - Cybertown";
+        this.availableLocations = this.locations
+          .filter(location => {
+            return location.available;
+          })
+          .map(loc => {
+            return loc.location;
+          });
+
+
+        document.title = this.block.name + " Wizard - Cybertown";
         this.loaded = true;
       });
 
+    },
+    update() {
+      this.$http.post("/block/" + this.$route.params.id + "/locations", {
+        "availableLocations": this.availableLocations,
+      })
+        .then(() => {
+          alert("Block Updated");
+        });
     },
   },
   computed: {
@@ -75,13 +101,14 @@ export default Vue.extend({
       return "url('/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
         "/block/Pimg2d000.gif')";
     },
-    freeImage () {
-      return "/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
-        "/block/Ficon2D000.gif";
-    },
   },
   mounted() {
-    this.getData();
+    if(!this.$store.data.user.admin) {
+      this.$router.push("/restricted");
+    } else {
+      this.getData();
+    }
+
   },
   async beforeDestroy() {
   },

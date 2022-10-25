@@ -1,15 +1,21 @@
 <template>
-  <div class="text-center">
-    <a href="" class="btn-ui">Information</a>
-    <a href="" class="btn-ui">Messages</a>
-    <a href=""><img src="/assets/img/up.gif" /> hood name </a>
+  <div class="text-center" v-if="loaded">
+    <a class="btn-ui">Information</a>
+    <a class="btn-ui">Messages</a>
+    <router-link v-if="this.$store.data.place.hood"
+                 :to="'/neighborhood/'+this.$store.data.place.hood.id"><img src="/assets/img/up.gif" /> {{
+        this.$store.data.place.hood.name
+      }}</router-link>
     <br/>
     <br/>
-    <a href="" class="btn-ui">Message to All</a>
-    <a href="" class="btn-ui">Inbox</a>
-    <a href="" class="btn-ui">Update</a>
-    <a href="" class="btn-ui" title="Check Images">Check</a>
-    <a href="" class="btn-ui">Access Rights</a>
+    <div v-if="this.$store.data.user.admin && this.$store.data.place.block">
+      <a  class="btn-ui">Message to All</a>
+      <a class="btn-ui">Inbox</a>
+      <router-link :to="'/block/'+this.$store.data.place.block.id+'/wizard'" class="btn-ui">Update
+      </router-link>
+      <a class="btn-ui" title="Check Images">Check</a>
+      <a class="btn-ui">Access Rights</a>
+    </div>
     <br/>
   </div>
 </template>
@@ -25,14 +31,7 @@ export default Vue.extend({
     };
   },
   mounted() {
-    console.log('block tools');
-    console.log(this.$store.data.user);
-    if(this.$store.data.user.admin) {
-      console.log("is admin");
-    } else {
-      console.log('is not admin');
-
-    }
+    this.loaded = true;
 
   },
 });

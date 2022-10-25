@@ -12,8 +12,7 @@ export async function up(knex: Knex): Promise<void> {
       table.integer('parent_place_id')
         .notNullable();
 
-      table.integer('place_id')
-        .notNullable();
+      table.integer('place_id');
 
       table.integer('location')
         .notNullable();

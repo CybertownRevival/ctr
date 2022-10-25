@@ -125,7 +125,7 @@ class MemberController {
         sessionInfo.id,
         sessionInfo.username,
         sessionInfo.avatar,
-        adminCheck.admin
+        adminCheck.admin,
       );
 
       response.status(200).json({
