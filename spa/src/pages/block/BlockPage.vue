@@ -21,7 +21,7 @@
               </router-link>
               <router-link
                 v-else-if="locations.find(b => b.location === index).available"
-                :to="''"
+                :to="'/block/' + $route.params.id + '/move/' + index"
                 class="w-full h-full block text-center flex items-center justify-center">
                 <span>
                   <img :src="freeImage" />
@@ -32,6 +32,10 @@
 
         </div>
       </div>
+      <h2>You've landed at {{ this.block.name }}</h2>
+      Above is a detailed map of the {{ this.block.name }} block.
+      Lots marked as "Free" are available for your new home.
+
     </div>
   </div>
 </template>
