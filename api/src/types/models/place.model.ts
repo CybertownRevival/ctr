@@ -9,4 +9,8 @@ export interface Place extends Model {
   status: number;
   world_filename: string;
   type: string;
+  map_background_icon: number;
+  map_icon_index: number;
+  member_id: number;
+  home_id: string;
 }

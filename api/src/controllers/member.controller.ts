@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { Request, Response } from 'express';
 import validator from 'validator';
 
-import { db } from '../db';
+import {db, knex} from '../db';
 import {
   member,
   sendPasswordResetEmail,
@@ -229,6 +229,53 @@ class MemberController {
         error: 'A problem occurred during password update.',
       });
     }
+  }
+
+  public async getHome(request: Request, response: Response): Promise<void> {
+    const session = this.decryptSession(request, response);
+    if (!session) return;
+
+    try {
+      // todo, join map_location
+      // todo, fetch block name
+
+      const [homeData] = await db.place
+        .where({
+          type: 'home',
+          member_id: session.id,
+        })
+        .select(['id']);
+
+      if(homeData.id) {
+        const blockData = await knex
+          .select(
+            'place.id',
+            'place.name',
+          )
+          .from('map_location')
+          .leftJoin('place', 'map_location.parent_place_id', 'place.id')
+          .where('map_location.place_id', homeData.id);
+
+        response.status(200).json({
+          homeData: homeData,
+          blockData: blockData,
+        });
+      } else {
+        response.status(200).json({
+          homeData: null,
+          blockData: null
+        });
+      }
+
+
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({
+        error: 'A problem occurred during fetching home data.',
+      });
+
+    }
+
   }
 
   /**

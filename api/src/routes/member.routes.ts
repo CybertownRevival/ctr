@@ -14,5 +14,7 @@ memberRoutes.post('/send_password_reset',
   (request, response) => memberController.sendPasswordReset(request, response));
 memberRoutes.post('/reset_password',
   (request, response) => memberController.resetPassword(request, response));
+memberRoutes.get('/home',
+  (request, response) => memberController.getHome(request, response));
 
 export { memberRoutes };

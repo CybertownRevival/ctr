@@ -106,14 +106,12 @@ export default Vue.extend({
         this.block = response[0].data.block;
         this.hood = response[0].data.hood;
         this.colony = response[0].data.colony;
-
-        // todo check this location is still available
+        this.locations = response[1].data.locations;
+        this.$store.methods.setPlace(response[0].data);
 
         // todo check if they already have a home. if not, tell them to buy
         // todo else, ask them if they want to move?
 
-        this.locations = response[1].data.locations;
-        this.$store.methods.setPlace(response[0].data);
 
         document.title = "Move - Cybertown";
         this.loaded = true;
