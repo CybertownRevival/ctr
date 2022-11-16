@@ -13,14 +13,8 @@ export const member = {
   encryptPassword: (passwordText: string): Promise<string> => {
     return bcrypt.hash(passwordText, saltRounds);
   },
-  decryptToken: (token: string): SessionInfo | boolean => {
-    try {
+  decryptToken: (token: string): SessionInfo => {
       return (<SessionInfo> jwt.verify(token, process.env.JWT_SECRET));
-    } catch (err) {
-      console.log('error with token');
-      console.log(err);
-      return false;
-    }
   },
   isAdmin: async (id: number): Promise<boolean> => {
     const [adminCheck] = await db.member.where({id: id}).select(['admin']);
