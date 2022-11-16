@@ -77,7 +77,7 @@ export default Vue.extend({
   computed: {
     mapBackground () {
       return "url('/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
-        "/block/Pimg2d000.gif')";
+        "/block/Pimg2D000.gif')";
     },
     freeImage () {
       return "/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +

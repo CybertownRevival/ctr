@@ -87,7 +87,7 @@ export default Vue.extend({
   computed: {
     mapBackground () {
       return "url('/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
-        "/hood/Pimg2d000.gif')";
+        "/hood/Pimg2D000.gif')";
     },
     blockBackground () {
       return "url('/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
