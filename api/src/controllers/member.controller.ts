@@ -118,7 +118,18 @@ class MemberController {
         error: 'Missing token.',
       });
     } else {
-      let sessionInfo = member.decryptToken(<string> apitoken);
+      let sessionInfo = null;
+      try {
+        sessionInfo = member.decryptToken(<string> apitoken);
+      } catch (err) {
+        console.log('error decrypting token');
+        console.log(err);
+        response.status(400).json({
+          error: 'Invalid or missing token.',
+        });
+
+      }
+
       if (!sessionInfo) {
         console.log('invalid token');
         response.status(400).json({
