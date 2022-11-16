@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { Request, Response } from 'express';
 import validator from 'validator';
 
-import { db } from '../db';
+import {db, knex} from '../db';
 import {
   member,
   sendPasswordResetEmail,
@@ -110,18 +110,27 @@ class MemberController {
   }
 
   /** Controller method for getting a session */
-  public session(request: Request, response: Response): void {
+  public async session(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
-    const sessionInfo = member.decryptToken(<string> apitoken);
+    let sessionInfo = member.decryptToken(<string> apitoken);
     if (!sessionInfo) {
       response.status(400).json({
         error: 'Invalid or missing token.',
       });
     } else {
-      console.log(sessionInfo);
+      // recheck admin access to keep token up-to-date
+      const [adminCheck] = await db.member.where({id: sessionInfo.id}).select(['admin']);
+      sessionInfo.admin = adminCheck.admin;
+      const newToken = member.createToken(
+        sessionInfo.id,
+        sessionInfo.username,
+        sessionInfo.avatar,
+        adminCheck.admin,
+      );
+
       response.status(200).json({
         message: 'success',
-        token: apitoken,
+        token: newToken,
         user: sessionInfo,
       });
     }
@@ -150,7 +159,7 @@ class MemberController {
   public async updateAvatar(request: Request, response: Response): Promise<void> {
     const session = this.decryptSession(request, response);
     if (!session) return;
-    const { id, username } = session;
+    const { id, username, admin } = session;
     const { avatarId } = request.body;
     if (!avatarId) {
       response.status(400).json({
@@ -168,7 +177,7 @@ class MemberController {
         await db.member
           .where({ id })
           .update({ avatar_id: avatarId });
-        const token = member.createToken(id, username, avatar);
+        const token = member.createToken(id, username, avatar, admin);
         response.status(200).json({
           message: 'Success',
           token,
@@ -222,6 +231,53 @@ class MemberController {
     }
   }
 
+  public async getHome(request: Request, response: Response): Promise<void> {
+    const session = this.decryptSession(request, response);
+    if (!session) return;
+
+    try {
+      // todo, join map_location
+      // todo, fetch block name
+
+      const [homeData] = await db.place
+        .where({
+          type: 'home',
+          member_id: session.id,
+        })
+        .select(['id']);
+
+      if(homeData.id) {
+        const blockData = await knex
+          .select(
+            'place.id',
+            'place.name',
+          )
+          .from('map_location')
+          .leftJoin('place', 'map_location.parent_place_id', 'place.id')
+          .where('map_location.place_id', homeData.id);
+
+        response.status(200).json({
+          homeData: homeData,
+          blockData: blockData,
+        });
+      } else {
+        response.status(200).json({
+          homeData: null,
+          blockData: null
+        });
+      }
+
+
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({
+        error: 'A problem occurred during fetching home data.',
+      });
+
+    }
+
+  }
+
   /**
    * Checks to see if the provided email already exists in the db.
    * @param email email to be checked
@@ -260,7 +316,7 @@ class MemberController {
       if (!validPassword) throw new Error('Incorrect login details.');
       const { avatar_id, id } =  user;
       const [avatar] = await db.avatar.where({ id: avatar_id });
-      const token = member.createToken(id, user.username, avatar);
+      const token = member.createToken(id, user.username, avatar, user.admin);
       return token;
     } catch(error) {
       console.error(error);
@@ -287,7 +343,7 @@ class MemberController {
           username,
         }, ['id']);
       const [avatar] = await db.avatar.where({ id: 1 });
-      const token = member.createToken(memberId, username, avatar);
+      const token = member.createToken(memberId, username, avatar, false);
       return token;
     } catch (error) {
       console.error(error);
@@ -363,5 +419,7 @@ class MemberController {
     }
     return session;
   }
+
+
 }
 export const memberController = new MemberController();

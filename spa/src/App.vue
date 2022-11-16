@@ -2,7 +2,7 @@
   <main id="app" class="h-screen flex flex-col">
     <div
       class="flex flex-none flex-row bg-lines justify-between h-full"
-      style="height: 70px"
+      style="height: 70px;"
       v-if="$store.data.isUser"
     >
       <div class="flex h-full items-center">
@@ -64,6 +64,7 @@
           </div>
           <div>
             <br />
+            <router-view name="tools"></router-view>
             <a
               href="https://github.com/CybertownRevival/ctr/issues"
               class="btn-ui"
@@ -147,8 +148,8 @@ export default Vue.extend({
           slug: "inrlms_col",
         },
         {
-          title: "Teens",
-          slug: "teen_col",
+          title: "The Campus",
+          slug: "campus",
         },
         {
           title: "Adventure",
@@ -159,8 +160,8 @@ export default Vue.extend({
           slug: "hitek_col",
         },
         {
-          title: "Morning Star",
-          slug: "morningstar",
+          title: "9th Dimension",
+          slug: "9thdimension",
         },
         {
           title: "-----------------------",

@@ -9,4 +9,5 @@ export interface Member extends Model {
   password_reset_token?: string;
   status: number;
   username: string,
+  admin: boolean
 }
