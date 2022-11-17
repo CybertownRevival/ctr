@@ -1,11 +1,4 @@
 <template>
-  <a
-    href="https://github.com/CybertownRevival/ctr/issues"
-    class="btn-ui"
-    target="_blank"
-  >
-    Tools
-  </a>
 </template>
 
 <script lang="ts">
