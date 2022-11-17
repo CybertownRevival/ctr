@@ -1,16 +1,23 @@
 <template>
   <div class="text-center">
-    <a href="" class="btn-ui">Information</a>
-    <a href="" class="btn-ui">Inbox</a>
-    <a href="" class="btn-ui">Messages</a>
-    <a href="" class="btn-ui">Vote</a>
-    <a href=""><img src="/assets/img/up.gif" /> colony name </a>
+    <span href="" class="btn-ui">Information</span>
+    <span href="" class="btn-ui">Inbox</span>
+    <span href="" class="btn-ui">Messages</span>
+    <span href="" class="btn-ui">Vote</span>
+    <router-link
+      v-if="this.$store.data.place.colony"
+      :to="'/place/'+this.$store.data.place.colony.slug">
+      <img src="/assets/img/up.gif" />
+      {{ this.$store.data.place.colony.name }}
+    </router-link>
     <br/>
     <br/>
-    <a href="" class="btn-ui">Message to All</a>
-    <a href="" class="btn-ui">Inbox to All</a>
-    <a href="" class="btn-ui">Update</a>
-    <a href="" class="btn-ui">Access Rights</a>
+    <div v-if="this.$store.data.user.admin && this.$store.data.place.block">
+      <span href="" class="btn-ui">Message to All</span>
+      <span href="" class="btn-ui">Inbox to All</span>
+      <span href="" class="btn-ui">Update</span>
+      <span href="" class="btn-ui">Access Rights</span>
+    </div >
     <br/>
   </div>
 </template>
