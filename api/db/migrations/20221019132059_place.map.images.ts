@@ -19,11 +19,18 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
+  await knex.raw('SET foreign_key_checks = 0');
   await knex.schema.table('place', table => {
     table.dropColumn('map_background_index');
     table.dropColumn('map_icon_index');
     table.dropColumn('member_id');
     table.dropColumn('home_id');
+    table.unique(['slug']);
+    table.dropNullable('slug');
+    table.dropNullable('assets_dir');
+    table.dropNullable('world_filename');
+    table.dropIndex('slug');
   });
+  await knex.raw('SET foreign_key_checks = 1');
 }
 
