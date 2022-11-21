@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { Request, Response } from 'express';
@@ -5,10 +6,10 @@ import validator from 'validator';
 
 import {db, knex} from '../db';
 import {
-  member,
   sendPasswordResetEmail,
   sendPasswordResetUnknownEmail,
 } from '../libs';
+import { MemberService } from '../services/member.service';
 import { SessionInfo } from 'session-info.interface';
 
 class MemberController {
@@ -26,7 +27,12 @@ class MemberController {
     'owner',
   ];
 
-  constructor() {}
+  /**
+   * Constructor.
+   *
+   * @param memberService service for interacting with member models
+   */
+  constructor(private memberService: MemberService) {}
 
   /** Controller method for creating a new user session. */
   public async login(request: Request, response: Response): Promise<void> {
@@ -55,18 +61,15 @@ class MemberController {
       if (!newPassword.trim().length || newPassword !== newPassword2) {
         throw new Error('Please enter the same password twice.');
       }
-      const user = await db.member
+      const member = await db.member
         .where({ password_reset_token: resetToken })
         .whereRaw('password_reset_expire > NOW()')
         .limit(1)
         .first();
-      if (!user) {
+      if (!member) {
         throw new Error('Invalid or expired reset token. Please request a new password reset.');
       }
-      const hashedPassword = await member.encryptPassword(newPassword);
-      await db.member
-        .where({ id: user.id })
-        .update({ password: hashedPassword });
+      await this.memberService.updatePassword(member.id, newPassword);
       response.status(200).json({ message: 'success' });
     } catch (error) {
       console.error(error);
@@ -83,21 +86,15 @@ class MemberController {
     const { email } = request.body;
     try {
       this.validatePasswordResetInput(email);
-      const [user] = await db.member
-        .where({
-          email,
-          status: 1,
-        });
-      if (user) {
+      const member = await this.memberService.find({ email, status: 1 });
+      if (member) {
         const resetToken = crypto.randomBytes(16).toString('hex');
         const resetExpiration = new Date(Date.now()
           + MemberController.PASSWORD_RESET_EXPIRATION_DURATION * 60000);
-        await db.member
-          .where({ id: user.id })
-          .update({
-            password_reset_expire: resetExpiration,
-            password_reset_token: resetToken,
-          });
+        await this.memberService.update(member.id, {
+          password_reset_expire: resetExpiration,
+          password_reset_token: resetToken,
+        });
         await sendPasswordResetEmail(email, resetToken);
       } else {
         await sendPasswordResetUnknownEmail(email);
@@ -111,48 +108,29 @@ class MemberController {
 
   /** Controller method for getting a session */
   public async session(request: Request, response: Response): Promise<void> {
-    const { apitoken } = request.headers;
-    if(typeof apitoken === 'undefined') {
-      console.log('missing token');
-      response.status(400).json({
-        error: 'Missing token.',
-      });
-    } else {
-      let sessionInfo = null;
-      try {
-        sessionInfo = member.decryptToken(<string> apitoken);
-      } catch (err) {
-        console.log('error decrypting token');
-        console.log(err);
-        response.status(400).json({
-          error: 'Invalid or missing token.',
-        });
-
+    try {
+      const { apitoken } = request.headers;
+      if (_.isUndefined(apitoken)) {
+        throw new Error('Missing token.');
       }
-
-      if (!sessionInfo) {
-        console.log('invalid token');
-        response.status(400).json({
-          error: 'Invalid or missing token.',
-        });
-      } else {
-        // recheck admin access to keep token up-to-date
-        const [adminCheck] = await db.member.where({id: sessionInfo.id}).select(['admin']);
-        sessionInfo.admin = adminCheck.admin;
-        const newToken = member.createToken(
-          sessionInfo.id,
-          sessionInfo.username,
-          sessionInfo.avatar,
-          adminCheck.admin,
-        );
-
+      const session = this.memberService.decodeMemberToken(<string> apitoken);
+      if (session) {
+        // refresh client token with latest from database
+        const token = await this.memberService.encodeMemberToken(session.id);
         response.status(200).json({
           message: 'success',
-          token: newToken,
-          user: sessionInfo,
+          token,
+          user: session,
         });
+      } else {
+        throw new Error('Invalid or missing token');
       }
-
+    } catch (error) {
+      console.error('Session error');
+      console.error(error);
+      response.status(400).json({
+        error: error.message,
+      });
     }
   }
 
@@ -161,9 +139,14 @@ class MemberController {
     const { email, username, password } = request.body;
     try {
       this.validateSignupInput(email, username, password);
-      await this.checkDuplicateEmail(email);
-      await this.checkDuplicateUsername(username);
-      const token = await this.createUser(email, username, password);
+      if (await this.memberService.find({ email })) {
+        throw new Error('An account with this email already exists.');
+      }
+      if (await this.memberService.find({ username })) {
+        throw new Error('An account with this email already exists.');
+      }
+      const memberId = await this.memberService.createMember(email, username, password);
+      const token = await this.memberService.encodeMemberToken(memberId);
       response.status(200).json({
         message: 'Signup Completed',
         token,
@@ -179,7 +162,7 @@ class MemberController {
   public async updateAvatar(request: Request, response: Response): Promise<void> {
     const session = this.decryptSession(request, response);
     if (!session) return;
-    const { id, username, admin } = session;
+    const { id, username } = session;
     const { avatarId } = request.body;
     if (!avatarId) {
       response.status(400).json({
@@ -188,26 +171,17 @@ class MemberController {
       return;
     }
     try {
-      const [avatar] = await db.avatar.where({
-        id: avatarId,
-        status: 1,
-        private: false,
+      await this.memberService.updateAvatar(id, avatarId);
+      const token = await this.memberService.encodeMemberToken(id);
+      response.status(200).json({
+        message: 'Success',
+        token,
+        username,
       });
-      if (avatar) {
-        await db.member
-          .where({ id })
-          .update({ avatar_id: avatarId });
-        const token = member.createToken(id, username, avatar, admin);
-        response.status(200).json({
-          message: 'Success',
-          token,
-          username,
-        });
-      }
     } catch (error) {
       console.error(error);
       response.status(400).json({
-        error: 'A problem occurred during avatar update.',
+        error: `A problem occurred during avatar update: ${error.message}`,
       });
     }
   }
@@ -216,6 +190,7 @@ class MemberController {
   public async updatePassword(request: Request, response: Response): Promise<void> {
     const session = this.decryptSession(request, response);
     if (!session) return;
+    const { id } = session;
     const { newPassword, newPassword2, currentPassword } = request.body;
     if (newPassword !== newPassword2 || !newPassword.trim().length) {
       response.status(400).json({
@@ -223,25 +198,22 @@ class MemberController {
       });
       return;
     }
-    const [user] = await db.member.where({ id: session.id });
-    if (!user) {
+    const member = await this.memberService.find({ id });
+    if (!member) {
       response.status(400).json({
         error: 'A problem occurred while fetching your account.',
       });
       return;
     }
-    const validPassword = await bcrypt.compare(currentPassword, user.password);
+    const validPassword = await bcrypt.compare(currentPassword, member.password);
     if (!validPassword ) {
       response.status(400).json({
         error: 'Incorrect current password.',
       });
       return;
     }
-    const hashedPassword = await member.encryptPassword(newPassword);
     try {
-      await db.member
-        .where({ id: session.id })
-        .update({ password: hashedPassword });
+      await this.memberService.updatePassword(id, newPassword);
       response.status(200).json({ message: 'success' });
     } catch (error) {
       console.error(error);
@@ -283,7 +255,7 @@ class MemberController {
       } else {
         response.status(200).json({
           homeData: null,
-          blockData: null
+          blockData: null,
         });
       }
 
@@ -299,30 +271,6 @@ class MemberController {
   }
 
   /**
-   * Checks to see if the provided email already exists in the db.
-   * @param email email to be checked
-   * @returns Promise which will resolve if no duplicate email exists, and reject if one does
-   */
-  private async checkDuplicateEmail(email: string): Promise<void> {
-    const [user] = await db.member.where({ email });
-    if (user) {
-      throw new Error('An account with this email already exists.');
-    }
-  }
-
-  /**
-   * Checks to see if the provided username already exists in the db.
-   * @param username username to be checked
-   * @returns Promise which will resolve if no duplicate username exists, and reject if one does
-   */
-  private async checkDuplicateUsername(username: string): Promise<void> {
-    const [user] = await db.member.where({ username });
-    if (user) {
-      throw new Error('An account with this username already exists.');
-    }
-  }
-
-  /**
    * 
    * @param username user name
    * @param password user password
@@ -330,44 +278,14 @@ class MemberController {
    */
   private async createSession(username: string, password: string): Promise<string> {
     try {
-      const [user] = await db.member.where({ username });
-      if (!user) throw new Error('Account not found.');
-      const validPassword = await bcrypt.compare(password, user.password);
+      const member = await this.memberService.find({ username });
+      if (!member) throw new Error('Account not found.');
+      const validPassword = await bcrypt.compare(password, member.password);
       if (!validPassword) throw new Error('Incorrect login details.');
-      const { avatar_id, id } =  user;
-      const [avatar] = await db.avatar.where({ id: avatar_id });
-      const token = member.createToken(id, user.username, avatar, user.admin);
-      return token;
+      return await this.memberService.encodeMemberToken(member.id);
     } catch(error) {
       console.error(error);
       throw new Error(error.message);
-    }
-  }
-
-  /**
-   * Creates a new user in the db with the given info.
-   * @param email user's email address
-   * @param username user's username
-   * @param password user's password
-   * @returns Promise which resolves when the account has been created, and rejects if there is an
-   *  issue.
-   */
-  private async createUser(email: string, username: string, password: string): Promise<string> {
-    console.log(`Creating user: ${email}, ${username}`);
-    const hashedPassword = await member.encryptPassword(password);
-    try {
-      const [memberId] = await db.member
-        .insert({
-          email,
-          password: hashedPassword,
-          username,
-        }, ['id']);
-      const [avatar] = await db.avatar.where({ id: 1 });
-      const token = member.createToken(memberId, username, avatar, false);
-      return token;
-    } catch (error) {
-      console.error(error);
-      throw new Error('A problem occurred during account creation.');
     }
   }
 
@@ -423,15 +341,15 @@ class MemberController {
   }
 
   /**
-   * Attempts to decrypt the session token present in the request and automatically responds with a
+   * Attempts to decode the session token present in the request and automatically responds with a
    * 400 error if decryption is unsuccessful
    * @param request express request object
    * @param response express response object
-   * @returns session info object if decryption was successful, `void` otherwise
+   * @returns session info object if decoding was successful, `void` otherwise
    */
   private decryptSession(request: Request, response: Response): SessionInfo {
     const { apitoken } = request.headers;
-    const session = member.decryptToken(<string> apitoken);
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
     if (!session) {
       response.status(400).json({
         error: 'Invalid or missing token.',
@@ -439,7 +357,6 @@ class MemberController {
     }
     return session;
   }
-
-
 }
-export const memberController = new MemberController();
+const memberService = new MemberService(db);
+export const memberController = new MemberController(memberService);

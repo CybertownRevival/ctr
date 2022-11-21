@@ -1,11 +1,12 @@
 import { Request, Response} from 'express';
 
 import {db, knex} from '../db';
-import {member} from "../libs";
+import { MemberService } from '../services/member.service';
+import {member} from '../libs';
 
 class BlockController {
 
-  constructor() {}
+  constructor(private memberService: MemberService) {}
 
   public async getBlock(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
@@ -54,17 +55,8 @@ class BlockController {
     const { apitoken } = request.headers;
 
     try {
-
-      const session = member.decryptToken(<string> apitoken);
-      if (!session) {
-        response.status(400).json({
-          error: 'Invalid or missing token.',
-        });
-      }
-
-      // todo check access rights first
-      const isAdmin = await member.isAdmin(session.id);
-      if(!isAdmin) {
+      const session = this.memberService.decodeMemberToken(<string> apitoken);
+      if (!session || !(await this.memberService.isAdmin(session.id))) {
         response.status(400).json({
           error: 'Invalid or missing token.',
         });
@@ -73,7 +65,7 @@ class BlockController {
       // todo validate the array of locations
       const { availableLocations } = request.body;
 
-      // todo: unset all "available"
+      // todo: unset all 'available'
       await db.mapLocation
         .update({available: false })
         .where({ parent_place_id: parseInt(id) });
@@ -97,6 +89,6 @@ class BlockController {
       response.status(400).json({ error });
     }
   }
-
 }
-export const blockController = new BlockController();
+const memberService = new MemberService(db);
+export const blockController = new BlockController(memberService);
