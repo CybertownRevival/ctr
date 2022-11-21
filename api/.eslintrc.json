@@ -5,8 +5,10 @@
   },
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended"
   ],
+  "ignorePatterns": ["jest.config.js"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -50,7 +52,6 @@
     ],
     "no-multiple-empty-lines": "error",
     "no-unreachable": "off",
-    "no-unused-vars": "error",
     "no-var": "error",
     "prefer-const": "error",
     "prefer-template": "error",
