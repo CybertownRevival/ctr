@@ -7,6 +7,7 @@ import {
 } from '../db';
 import { member } from '../libs';
 import { Message } from 'models';
+import { MemberService } from '../services';
 
 interface QueryParams {
   limit: string,
@@ -19,11 +20,12 @@ class MessageController {
   public static readonly VALID_ORDERS = ['id'];
   public static readonly VALID_ORDER_DIRECTIONS = ['asc', 'desc'];
 
-  constructor() {}
+  constructor(private memberService: MemberService) {}
 
   /** Handles storing a user message to the database */
   public async addMessage(request: Request, response: Response): Promise<void> {
-    const session = member.decryptToken(<string> request.headers.apitoken);
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
     if(!session) {
       response.status(400).json({
         error: 'Invalid or missing token.',
@@ -125,4 +127,5 @@ class MessageController {
     }
   }
 }
-export const messageController = new MessageController();
+const memberService = new MemberService(db);
+export const messageController = new MessageController(memberService);
