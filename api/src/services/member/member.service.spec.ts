@@ -1,15 +1,17 @@
 import { createSpyObj } from 'jest-createspyobj';
-import QueryBuilder from 'knex';
+import { Container } from 'typedi';
 
 import { Db } from '../../db/db.class';
 import { MemberService } from './member.service';
 import { Member, Wallet } from 'models';
+import { WalletService } from '../wallet/wallet.service';
 
 // jest.mock('../../db/db');
 describe('MemberService', () => {
   const fakeMember: Partial<Member> = { id: 11 };
   const fakeWallet: Partial<Wallet> = { id: 42 };
   let db;
+  let walletService: jest.Mocked<WalletService>;
   let service: MemberService;
 
   beforeEach(() => {
@@ -18,22 +20,23 @@ describe('MemberService', () => {
         insert: jest.fn().mockResolvedValue([fakeMember.id]),
         where: jest.fn().mockResolvedValue([fakeMember]),
       },
+      wallet: {
+        insert: jest.fn().mockResolvedValue([fakeWallet.id]),
+      },
     };
-    service = new MemberService(db);
+    walletService = createSpyObj(WalletService);
+    Container.reset();
+    Container.set(Db, db);
+    Container.set(WalletService, walletService);
+    service = Container.get(MemberService);
   });
 
-  it('should create', () => {
+  it('should create', async () => {
     expect(service).toBeTruthy();
   });
 
   describe('createMember', () => {
     beforeEach(async () => {
-      db.wallet = {
-        insert: jest.fn().mockReturnValue(
-          Promise.resolve([fakeWallet.id]),
-        ),
-      };
-      service = new MemberService(db);
       await service.createMember('foo@foo.com', 'foo', 'foopassword');
     });
     it('should create a wallet for a new member', () => {
