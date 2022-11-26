@@ -28,15 +28,16 @@ export class MemberService {
    */
   public async createMember(email: string, username: string, password: string): Promise<number> {
     const hashedPassword = await this.encryptPassword(password);
-    const [walletId] = await this.db.wallet.insert({});
-    const [memberId] = await this.db.member
-      .insert({
+    return await this.db.knex.transaction(async trx => {
+      const [walletId] = await trx('wallet').insert({}, 'id');
+      const [memberId] = await trx('member').insert({
         email,
         password: hashedPassword,
         username,
-        wallet_id: (<number> walletId),
+        wallet_id: walletId,
       });
-    return memberId;
+      return memberId;
+    });
   }
 
   /**
