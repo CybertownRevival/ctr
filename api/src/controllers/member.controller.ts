@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { Request, Response } from 'express';
+import { Container, Service } from 'typedi';
 import validator from 'validator';
 
 import {db, knex} from '../db';
@@ -9,9 +10,10 @@ import {
   sendPasswordResetEmail,
   sendPasswordResetUnknownEmail,
 } from '../libs';
-import { MemberService } from '../services/member.service';
+import { MemberService } from '../services/member/member.service';
 import { SessionInfo } from 'session-info.interface';
 
+@Service()
 class MemberController {
   /** Duration in minutes until a password reset attempt expires */
   public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
@@ -358,5 +360,4 @@ class MemberController {
     return session;
   }
 }
-const memberService = new MemberService(db);
-export const memberController = new MemberController(memberService);
+export const memberController = Container.get(MemberController);

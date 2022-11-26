@@ -1,9 +1,11 @@
 import { Knex, knex as _knex } from 'knex';
+import { Service } from 'typedi';
 
 import config from '../knexfile';
 import * as Models from 'models';
 
 /** Class for providing knex query builders for each table in the database. */
+@Service()
 export class Db {
   public knex: Knex;
 

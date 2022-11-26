@@ -1,16 +1,23 @@
 import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { Service } from 'typedi';
 
-import{ Db } from '../../db';
+import{ Db } from '../../db/db.class';
 import { Member } from '../../types/models';
 import { SessionInfo } from 'session-info.interface';
+import { WalletService } from '../wallet/wallet.service';
 
+/** Service for dealing with members */
+@Service()
 export class MemberService {
   /** Number of times to salt member passwords */
   private static readonly SALT_ROUNDS = 10;
 
-  constructor(private db: Db) {}
+  constructor(
+    private db: Db,
+    private wallet: WalletService,
+  ) {}
 
   /**
    * Creates a new member with the given email, username, and password.

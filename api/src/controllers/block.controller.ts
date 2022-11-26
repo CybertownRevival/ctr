@@ -1,9 +1,10 @@
 import { Request, Response} from 'express';
+import { Container, Service } from 'typedi';
 
 import {db, knex} from '../db';
-import { MemberService } from '../services/member.service';
-import {member} from '../libs';
+import { MemberService } from '../services/member/member.service';
 
+@Service()
 class BlockController {
 
   constructor(private memberService: MemberService) {}
@@ -90,5 +91,4 @@ class BlockController {
     }
   }
 }
-const memberService = new MemberService(db);
-export const blockController = new BlockController(memberService);
+export const blockController = Container.get(BlockController);
