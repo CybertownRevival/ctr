@@ -16,6 +16,9 @@ describe('MemberService', () => {
 
   beforeEach(() => {
     db = {
+      knex: {
+        transaction: jest.fn().mockResolvedValue(fakeMember.id),
+      },
       member: {
         insert: jest.fn().mockResolvedValue([fakeMember.id]),
         where: jest.fn().mockResolvedValue([fakeMember]),
@@ -36,19 +39,34 @@ describe('MemberService', () => {
   });
 
   describe('createMember', () => {
+    let walletInsert;
+    let memberInsert;
     beforeEach(async () => {
+      walletInsert = jest.fn().mockResolvedValue([fakeWallet.id]);
+      memberInsert = jest.fn().mockResolvedValue([fakeMember.id]);
       await service.createMember('foo@foo.com', 'foo', 'foopassword');
+      db.knex.transaction.mock.lastCall[0](tableName => {
+        const insert =(() => {
+          switch(tableName) {
+          case 'wallet':
+            return walletInsert;
+          case 'member':
+            return memberInsert;
+          }
+        })();
+        return { insert };
+      });
     });
     it('should create a wallet for a new member', () => {
-      expect(db.wallet.insert).toHaveBeenCalled();
+      expect(walletInsert).toHaveBeenCalled();
     });
     it('should assign a wallet id to the new member', () => {
-      expect(db.member.insert).toHaveBeenCalledWith(
+      expect(memberInsert).toHaveBeenCalledWith(
         expect.objectContaining({ wallet_id: fakeWallet.id }),
       );
     });
     it('should tell the database to create a member with the provided name and email', () => {
-      expect(db.member.insert).toHaveBeenCalledWith(
+      expect(memberInsert).toHaveBeenCalledWith(
         expect.objectContaining({
           email: 'foo@foo.com',
           username: 'foo',
@@ -56,7 +74,7 @@ describe('MemberService', () => {
       );
     });
     it('should not store the provided member password in clear text', () => {
-      expect(db.member.insert).toHaveBeenCalledWith(
+      expect(memberInsert).toHaveBeenCalledWith(
         expect.not.objectContaining({
           password: 'foopassword',
         }),
