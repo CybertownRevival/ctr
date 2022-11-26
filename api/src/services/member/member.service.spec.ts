@@ -15,9 +15,8 @@ describe('MemberService', () => {
   beforeEach(() => {
     db = {
       member: {
-        insert: jest.fn().mockReturnValue(
-          Promise.resolve([fakeMember.id]),
-        ),
+        insert: jest.fn().mockResolvedValue([fakeMember.id]),
+        where: jest.fn().mockResolvedValue([fakeMember]),
       },
     };
     service = new MemberService(db);
@@ -63,6 +62,47 @@ describe('MemberService', () => {
     it('should return the id of the new member', async () => {
       const id = await service.createMember('foo@foo.com', 'foo', 'foopassword');
       expect(id).toBe(fakeMember.id);
+    });
+  });
+  describe('hasReceivedLoginBonusToday', () => {
+    describe('when a member has already received a daily login bonus', () => {
+      beforeEach(() => {
+        const member = {
+          last_daily_login_bonus: new Date(),
+          ...fakeMember,
+        };
+        db.member.where.mockResolvedValue([member]);
+      });
+      it('should return true', async () => {
+        expect(await service.hasReceviedLoginBonusToday(fakeMember.id)).toBe(true);
+      });
+    });
+    describe('when a member has not received a daily login bonus today', () => {
+      beforeEach(() => {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() -1);
+        const member = {
+          last_daily_login_bonus: yesterday,
+          ...fakeMember,
+        };
+        db.member.where.mockResolvedValue([member]);
+      });
+      it('should return false', async () => {
+        expect(await service.hasReceviedLoginBonusToday(fakeMember.id)).toBe(false);
+      });
+    });
+    describe('when a member recieved their login bonus at exactly midnight today', () => {
+      beforeEach(() => {
+        const todayAtMidnight = new Date().setHours(0,0,0,0);
+        const member = {
+          last_daily_login_bonus: new Date(todayAtMidnight),
+          ...fakeMember,
+        };
+        db.member.where.mockResolvedValue([member]);
+      });
+      it('should return true', async () => {
+        expect(await service.hasReceviedLoginBonusToday(fakeMember.id)).toBe(true);
+      });
     });
   });
 });
