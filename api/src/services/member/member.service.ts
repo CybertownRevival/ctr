@@ -7,6 +7,7 @@ import { Member } from '../../types/models';
 import { SessionInfo } from 'session-info.interface';
 
 export class MemberService {
+  /** Number of times to salt member passwords */
   private static readonly SALT_ROUNDS = 10;
 
   constructor(private db: Db) {}
@@ -67,6 +68,19 @@ export class MemberService {
   public async find(memberSearchParams: Partial<Member>): Promise<Member> {
     const [member] = await this.db.member.where(memberSearchParams);
     return member;
+  }
+
+  /**
+   * Determines if the member with the given id has received their daily login bonus since the
+   * beginning (00:00:00) of the current day.
+   * @param memberId id of member to be checked
+   * @returns promise resolving in `true` if the member has received their daily login bonus today,
+   * `false` otherwise, or rejecting on error
+   */
+  public async hasReceviedLoginBonusToday(memberId: number): Promise<boolean> {
+    const member = await this.find({ id: memberId });
+    const today = new Date().setHours(0, 0, 0, 0); 
+    return member.last_daily_login_bonus.getTime() >= today;
   }
 
   /**

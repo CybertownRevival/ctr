@@ -5,6 +5,7 @@ export interface Member extends Model {
   admin: boolean;
   avatar_id: number;
   email: string;
+  last_daily_login_bonus: Date;
   password: string;
   password_reset_expire?: Date;
   password_reset_token?: string;
