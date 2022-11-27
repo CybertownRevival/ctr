@@ -34,7 +34,7 @@ describe('MemberService', () => {
     service = Container.get(MemberService);
   });
 
-  it('should create', async () => {
+  it('should create', () => {
     expect(service).toBeTruthy();
   });
 

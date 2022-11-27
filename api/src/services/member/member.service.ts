@@ -115,9 +115,7 @@ export class MemberService {
       private: false,
     });
     if (_.isUndefined(avatar)) throw new Error(`No avatar exists with id ${avatarId}`);
-    await this.db.member
-      .where({ id: memberId })
-      .update({ avatar_id: avatarId });
+    await this.update(memberId, { avatar_id: avatarId });
   }
 
   /**
@@ -129,9 +127,7 @@ export class MemberService {
    */
   public async updatePassword(memberId: number, password: string): Promise<void> {
     const hashedPassword = await this.encryptPassword(password);
-    await this.db.member
-      .where({ id: memberId })
-      .update({ password: hashedPassword });
+    await this.update(memberId, { password: hashedPassword });
   }
 
   /**
