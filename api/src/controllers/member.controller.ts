@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { Request, Response } from 'express';
-import { Container, Service } from 'typedi';
+import { Container } from 'typedi';
 import validator from 'validator';
 
 import {db, knex} from '../db';
@@ -13,10 +13,7 @@ import {
 import { MemberService } from '../services/member/member.service';
 import { SessionInfo } from 'session-info.interface';
 
-@Service()
 class MemberController {
-  /** Duration in minutes until a password reset attempt expires */
-  public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
   /** List of disallowed usernames. */
   public static readonly RESTRICTED_USERNAMES = [
     'cybertown',
@@ -63,11 +60,7 @@ class MemberController {
       if (!newPassword.trim().length || newPassword !== newPassword2) {
         throw new Error('Please enter the same password twice.');
       }
-      const member = await db.member
-        .where({ password_reset_token: resetToken })
-        .whereRaw('password_reset_expire > NOW()')
-        .limit(1)
-        .first();
+      const member = await this.memberService.findByPasswordResetToken(resetToken);
       if (!member) {
         throw new Error('Invalid or expired reset token. Please request a new password reset.');
       }
@@ -90,13 +83,7 @@ class MemberController {
       this.validatePasswordResetInput(email);
       const member = await this.memberService.find({ email, status: 1 });
       if (member) {
-        const resetToken = crypto.randomBytes(16).toString('hex');
-        const resetExpiration = new Date(Date.now()
-          + MemberController.PASSWORD_RESET_EXPIRATION_DURATION * 60000);
-        await this.memberService.update(member.id, {
-          password_reset_expire: resetExpiration,
-          password_reset_token: resetToken,
-        });
+        const resetToken = await this.memberService.enablePasswordReset(member.id);
         await sendPasswordResetEmail(email, resetToken);
       } else {
         await sendPasswordResetUnknownEmail(email);
@@ -360,4 +347,5 @@ class MemberController {
     return session;
   }
 }
-export const memberController = Container.get(MemberController);
+const memberService = Container.get(MemberService);
+export const memberController = new MemberController(memberService);

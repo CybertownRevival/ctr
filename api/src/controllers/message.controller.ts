@@ -1,6 +1,6 @@
 import { Request, Response} from 'express';
 import validator from 'validator';
-import { Container, Service } from 'typedi';
+import { Container } from 'typedi';
 
 import {
   db,
@@ -15,7 +15,6 @@ interface QueryParams {
   orderDirection: string,
 }
 
-@Service()
 class MessageController {
   public static readonly MAX_QUERY_LIMIT = 1000;
   public static readonly VALID_ORDERS = ['id'];
@@ -128,4 +127,5 @@ class MessageController {
     }
   }
 }
-export const messageController = Container.get(MessageController);
+const memberService = Container.get(MemberService);
+export const messageController = new MessageController(memberService);
