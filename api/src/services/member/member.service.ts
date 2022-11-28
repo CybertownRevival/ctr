@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { Service } from 'typedi';
 
 import{ Db } from '../../db/db.class';
+import { AvatarRepository, MemberRepository } from '../../repositories';
 import { Member } from '../../types/models';
 import { SessionInfo } from 'session-info.interface';
 import { WalletService } from '../wallet/wallet.service';
@@ -11,12 +13,14 @@ import { WalletService } from '../wallet/wallet.service';
 /** Service for dealing with members */
 @Service()
 export class MemberService {
+  /** Duration in minutes until a password reset attempt expires */
+  public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
   /** Number of times to salt member passwords */
   private static readonly SALT_ROUNDS = 10;
 
   constructor(
-    private db: Db,
-    private wallet: WalletService,
+    private avatarRepository: AvatarRepository,
+    private memberRepository: MemberRepository,
   ) {}
 
   /**
@@ -28,16 +32,7 @@ export class MemberService {
    */
   public async createMember(email: string, username: string, password: string): Promise<number> {
     const hashedPassword = await this.encryptPassword(password);
-    return await this.db.knex.transaction(async trx => {
-      const [walletId] = await trx('wallet').insert({}, 'id');
-      const [memberId] = await trx('member').insert({
-        email,
-        password: hashedPassword,
-        username,
-        wallet_id: walletId,
-      });
-      return memberId;
-    });
+    return this.memberRepository.create({ email, username, password: hashedPassword });
   }
 
   /**
@@ -50,13 +45,30 @@ export class MemberService {
   }
 
   /**
+   * Sets the password reset token and expiration fields on a member record.
+   * @param memberId id of member to enable password reset for
+   * @returns password reset token asisgned to member
+   */
+  public async enablePasswordReset(memberId: number): Promise<string> {
+    const resetToken = crypto.randomBytes(16).toString('hex');
+    const resetExpiration = new Date(
+      Date.now() + MemberService.PASSWORD_RESET_EXPIRATION_DURATION * 60000,
+    );
+    await this.memberRepository.update(memberId, {
+      password_reset_expire: resetExpiration,
+      password_reset_token: resetToken,
+    });
+    return resetToken;
+  }
+
+  /**
    * Encodes a JSON web token for the member with the given memberId.
    * @param memberId id of member to generate a token for
    * @returns promise resolving in encoded token, or rejecting on error
    */
   public async encodeMemberToken(memberId: number): Promise<string> {
-    const member = await this.find({ id: memberId });
-    const [avatar] = await this.db.avatar.where({ id: member.avatar_id });
+    const member = await this.memberRepository.findById(memberId);
+    const avatar = await this.avatarRepository.find({ id: member.avatar_id });
     return jwt.sign(
       {
         id: member.id,
@@ -69,13 +81,21 @@ export class MemberService {
   }
 
   /**
-   * Finds a user with the given search parameters if one exists.
+   * Finds a member with the given search parameters if one exists.
    * @param memberSearchParams object containing properties of a member for searching on
    * @returns promise resolving in the found member object, or rejecting on error
    */
   public async find(memberSearchParams: Partial<Member>): Promise<Member> {
-    const [member] = await this.db.member.where(memberSearchParams);
-    return member;
+    return this.memberRepository.find(memberSearchParams);
+  }
+
+  /**
+   * Finds a member with the given password reset token if one exists.
+   * @param resetToken reset token to search on
+   * @returns promise resolving in the found member object, or rejecting on error
+   */
+  public async findByPasswordResetToken(resetToken: string): Promise<Member> {
+    return this.memberRepository.findByPasswordResetToken(resetToken);
   }
 
   /**
@@ -86,7 +106,7 @@ export class MemberService {
    * `false` otherwise, or rejecting on error
    */
   public async hasReceviedLoginBonusToday(memberId: number): Promise<boolean> {
-    const member = await this.find({ id: memberId });
+    const member = await this.memberRepository.find({ id: memberId });
     const today = new Date().setHours(0, 0, 0, 0); 
     return member.last_daily_login_bonus.getTime() >= today;
   }
@@ -97,7 +117,7 @@ export class MemberService {
    * @returns promise resolving in a boolean, or rejecting on error
    */
   public async isAdmin(memberId: number): Promise<boolean> {
-    const member = await this.find({ id: memberId });
+    const member = await this.memberRepository.findById(memberId);
     return member.admin;
   }
 
@@ -109,13 +129,13 @@ export class MemberService {
    * error
    */
   public async updateAvatar(memberId: number, avatarId: number): Promise<void> {
-    const [avatar] = await this.db.avatar.where({
+    const avatar = await this.avatarRepository.find({
       id: avatarId,
       status: 1,
       private: false,
     });
     if (_.isUndefined(avatar)) throw new Error(`No avatar exists with id ${avatarId}`);
-    await this.update(memberId, { avatar_id: avatarId });
+    await this.memberRepository.update(memberId, { avatar_id: avatarId });
   }
 
   /**
@@ -127,24 +147,7 @@ export class MemberService {
    */
   public async updatePassword(memberId: number, password: string): Promise<void> {
     const hashedPassword = await this.encryptPassword(password);
-    await this.update(memberId, { password: hashedPassword });
-  }
-
-  /**
-   * Updates properties on the member record with the given id.
-   * @param memberId id of member to be updated
-   * @param props object containing key/value pairs of member properties to be updated
-   * @param returning optional. defaults to false. returns the updated record if true.
-   * @returns promise resolving in the updated member object, or rejecting on error
-   */
-  public async update(memberId: number, props: Partial<Member>, returning = false):
-    Promise<Member | undefined> {
-    await this.db.member
-      .where({ id: memberId })
-      .update(props);
-    return returning
-      ? this.find({ id: memberId })
-      : undefined;
+    await this.memberRepository.update(memberId, { password: hashedPassword });
   }
 
   /**
