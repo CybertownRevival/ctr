@@ -4,8 +4,10 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { Service } from 'typedi';
 
-import{ Db } from '../../db/db.class';
-import { AvatarRepository, MemberRepository } from '../../repositories';
+import {
+  AvatarRepository,
+  MemberRepository,
+} from '../../repositories';
 import { Member } from '../../types/models';
 import { SessionInfo } from 'session-info.interface';
 import { WalletService } from '../wallet/wallet.service';
@@ -13,6 +15,8 @@ import { WalletService } from '../wallet/wallet.service';
 /** Service for dealing with members */
 @Service()
 export class MemberService {
+  /** Amount of cybcercash a member receives for the login bonus */
+  public static readonly DAILY_LOGIN_AMOUNT_CC = 50;
   /** Duration in minutes until a password reset attempt expires */
   public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
   /** Number of times to salt member passwords */
@@ -21,18 +25,27 @@ export class MemberService {
   constructor(
     private avatarRepository: AvatarRepository,
     private memberRepository: MemberRepository,
+    private walletService: WalletService,
   ) {}
 
   /**
-   * Creates a new member with the given email, username, and password.
+   * Creates a new member with the given email, username, and password. If successful, distributes
+   * daily login bonuses, and returns an encoded member token.
    * @param email member email address
    * @param username member usename, used during login
    * @param password  raw member password
-   * @returns promise resolving in the id for the newly created member
+   * @returns promise resolving in the session token for the newly created member
    */
-  public async createMember(email: string, username: string, password: string): Promise<number> {
+  public async createMemberAndLogin(email: string, username: string, password: string):
+  Promise<string> {
     const hashedPassword = await this.encryptPassword(password);
-    return this.memberRepository.create({ email, username, password: hashedPassword });
+    const memberId = await this.memberRepository.create({
+      email,
+      username,
+      password: hashedPassword,
+    });
+    await this.maybeGiveDailyLoginBonus(memberId);
+    return this.getMemberToken(memberId);
   }
 
   /**
@@ -62,25 +75,6 @@ export class MemberService {
   }
 
   /**
-   * Encodes a JSON web token for the member with the given memberId.
-   * @param memberId id of member to generate a token for
-   * @returns promise resolving in encoded token, or rejecting on error
-   */
-  public async encodeMemberToken(memberId: number): Promise<string> {
-    const member = await this.memberRepository.findById(memberId);
-    const avatar = await this.avatarRepository.find({ id: member.avatar_id });
-    return jwt.sign(
-      {
-        id: member.id,
-        username: member.username,
-        avatar,
-        admin: member.admin,
-      },
-      process.env.JWT_SECRET,
-    );
-  }
-
-  /**
    * Finds a member with the given search parameters if one exists.
    * @param memberSearchParams object containing properties of a member for searching on
    * @returns promise resolving in the found member object, or rejecting on error
@@ -99,14 +93,22 @@ export class MemberService {
   }
 
   /**
+   * Returns a JSON web token for the member with the given memberId.
+   * @param memberId id of member to generate a token for
+   * @returns promise resolving in encoded token, or rejecting on error
+   */
+  public async getMemberToken(memberId: number): Promise<string> {
+    const member = await this.memberRepository.findById(memberId);
+    return this.encodeMemberToken(member);
+  }
+
+  /**
    * Determines if the member with the given id has received their daily login bonus since the
    * beginning (00:00:00) of the current day.
-   * @param memberId id of member to be checked
-   * @returns promise resolving in `true` if the member has received their daily login bonus today,
-   * `false` otherwise, or rejecting on error
+   * @param member member object to be checked
+   * @returns `true` if the member has received their daily login bonus today, `false` otherwise
    */
-  public async hasReceviedLoginBonusToday(memberId: number): Promise<boolean> {
-    const member = await this.memberRepository.find({ id: memberId });
+  public hasReceivedLoginBonusToday(member: Member): boolean {
     const today = new Date().setHours(0, 0, 0, 0); 
     return member.last_daily_login_bonus.getTime() >= today;
   }
@@ -119,6 +121,21 @@ export class MemberService {
   public async isAdmin(memberId: number): Promise<boolean> {
     const member = await this.memberRepository.findById(memberId);
     return member.admin;
+  }
+
+  /**
+   * Validates the given username and password and logs a user in.
+   * @param username username of member to be logged in
+   * @param password password of member to be logged in
+   * @returns 
+   */
+  public async login(username: string, password: string): Promise<string> {
+    const member = await this.memberRepository.find({ username });
+    if (!member) throw new Error('Account not found.');
+    const validPassword = await bcrypt.compare(password, member.password);
+    if (!validPassword) throw new Error('Incorrect login details.');
+    this.maybeGiveDailyLoginBonus(member.id);
+    return this.encodeMemberToken(member);
   }
 
   /**
@@ -151,11 +168,46 @@ export class MemberService {
   }
 
   /**
+   * Encodes a JSON web token for the member with the given memberId.
+   * @param member member object to encode a token for
+   * @returns promise resolving in encoded token, or rejecting on error
+   */
+  private async encodeMemberToken(member: Member): Promise<string> {
+    const avatar = await this.avatarRepository.find({ id: member.avatar_id });
+    return jwt.sign(
+      {
+        id: member.id,
+        username: member.username,
+        avatar,
+        admin: member.admin,
+      },
+      process.env.JWT_SECRET,
+    );
+  }
+
+  /**
    * Hashes the given password.
    * @param password cleartext password to be encrypted
    * @returns promise resolving in hashed password or rejecting on error
    */
   private encryptPassword(password: string): Promise<string> {
     return bcrypt.hash(password, MemberService.SALT_ROUNDS);
+  }
+
+  /**
+   * Distributes daily login bonuses to the member with the given id if they haven't already
+   * received one today.
+   * @param memberId id of member
+   * @returns promise resolving when complete, rejecting on error
+   */
+  private async maybeGiveDailyLoginBonus(memberId: number): Promise<void> {
+    const member = await this.memberRepository.findById(memberId);
+    if (!this.hasReceivedLoginBonusToday(member)) {
+      await this.walletService.giveDailyLoginBonus(
+        member.wallet_id,
+        MemberService.DAILY_LOGIN_AMOUNT_CC,
+      );
+      await this.memberRepository.update(memberId, { last_daily_login_bonus: new Date() });
+    }
   }
 }

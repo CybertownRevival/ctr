@@ -2,31 +2,44 @@ import { createSpyObj } from 'jest-createspyobj';
 import { Container } from 'typedi';
 
 import { MemberService } from './member.service';
-import { Member } from 'models';
+import {
+  Avatar,
+  Member,
+} from 'models';
 import {
   AvatarRepository,
   MemberRepository,
 } from '../../repositories';
+import { WalletService } from '../wallet/wallet.service';
 
 describe('MemberService', () => {
+  const fakeAvatar: Partial<Avatar> = {
+    id: 42,
+  };
   const fakeMember: Partial<Member> = {
     id: 11,
     username: 'foo',
+    last_daily_login_bonus: new Date(),
     password: 'foopassword',
     email: 'foo@foo.com',
   };
   let avatarRepository: jest.Mocked<AvatarRepository>;
   let memberRepository: jest.Mocked<MemberRepository>;
+  let walletService: jest.Mocked<WalletService>;
   let service: MemberService;
 
   beforeEach(() => {
     avatarRepository = createSpyObj(AvatarRepository);
+    avatarRepository.find.mockResolvedValue(fakeAvatar as Avatar);
     memberRepository = createSpyObj(MemberRepository);
     memberRepository.create.mockResolvedValue(fakeMember.id);
     memberRepository.find.mockResolvedValue(fakeMember as Member);
+    memberRepository.findById.mockResolvedValue(fakeMember as Member);
+    walletService = createSpyObj(WalletService);
     Container.reset();
     Container.set(AvatarRepository, avatarRepository);
     Container.set(MemberRepository, memberRepository);
+    Container.set(WalletService, walletService);
     service = Container.get(MemberService);
   });
 
@@ -34,9 +47,13 @@ describe('MemberService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('createMember', () => {
+  describe('createMemberAndLogin', () => {
     beforeEach(async () => {
-      await service.createMember(fakeMember.email, fakeMember.username, fakeMember.password);
+      await service.createMemberAndLogin(
+        fakeMember.email,
+        fakeMember.username,
+        fakeMember.password,
+      );
     });
     it('should tell the database to create a member with the provided name and email', () => {
       expect(memberRepository.create).toHaveBeenCalledWith(
@@ -53,49 +70,52 @@ describe('MemberService', () => {
         }),
       );
     });
-    it('should return the id of the new member', async () => {
-      const id = await service.createMember('foo@foo.com', 'foo', 'foopassword');
-      expect(id).toBe(fakeMember.id);
+    it('should return a session token for the new member', async () => {
+      const token = await service.createMemberAndLogin(
+        fakeMember.email,
+        fakeMember.username,
+        fakeMember.password,
+      );
+      const fakeToken = await service.getMemberToken(fakeMember.id);
+      expect(token).toBe(fakeToken);
     });
   });
   describe('hasReceivedLoginBonusToday', () => {
+    let member;
     describe('when a member has already received a daily login bonus', () => {
       beforeEach(() => {
-        const member = {
-          last_daily_login_bonus: new Date(),
+        member = {
           ...fakeMember,
+          last_daily_login_bonus: new Date(),
         };
-        memberRepository.find.mockResolvedValue(member as Member);
       });
-      it('should return true', async () => {
-        expect(await service.hasReceviedLoginBonusToday(fakeMember.id)).toBe(true);
+      it('should return true', () => {
+        expect(service.hasReceivedLoginBonusToday(member)).toBe(true);
       });
     });
     describe('when a member has not received a daily login bonus today', () => {
       beforeEach(() => {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() -1);
-        const member = {
-          last_daily_login_bonus: yesterday,
+        member = {
           ...fakeMember,
+          last_daily_login_bonus: yesterday,
         };
-        memberRepository.find.mockResolvedValue(member as Member);
       });
-      it('should return false', async () => {
-        expect(await service.hasReceviedLoginBonusToday(fakeMember.id)).toBe(false);
+      it('should return false', () => {
+        expect(service.hasReceivedLoginBonusToday(member)).toBe(false);
       });
     });
     describe('when a member recieved their login bonus at exactly midnight today', () => {
       beforeEach(() => {
         const todayAtMidnight = new Date().setHours(0,0,0,0);
-        const member = {
-          last_daily_login_bonus: new Date(todayAtMidnight),
+        member = {
           ...fakeMember,
+          last_daily_login_bonus: new Date(todayAtMidnight),
         };
-        memberRepository.find.mockResolvedValue(member as Member);
       });
-      it('should return true', async () => {
-        expect(await service.hasReceviedLoginBonusToday(fakeMember.id)).toBe(true);
+      it('should return true', () => {
+        expect(service.hasReceivedLoginBonusToday(member)).toBe(true);
       });
     });
   });
