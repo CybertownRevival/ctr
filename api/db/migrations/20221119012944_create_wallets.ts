@@ -7,6 +7,8 @@ function applyCommon(table: Knex.CreateTableBuilder) {
   table.timestamps(false, true);
 }
 
+const INITIAL_BALANCE = 1000;
+
 export async function up(knex: Knex): Promise<void> {
   if(!await knex.schema.hasTable('wallet')) {
     await knex.schema.createTable('wallet', table => {
@@ -15,7 +17,7 @@ export async function up(knex: Knex): Promise<void> {
 
       table.integer('balance')
         .unsigned()
-        .defaultTo(0)
+        .defaultTo(INITIAL_BALANCE)
         .notNullable();
     });
 

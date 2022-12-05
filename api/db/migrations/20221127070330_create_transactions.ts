@@ -30,7 +30,7 @@ export async function up(knex: Knex): Promise<void> {
         .references('wallet.id');
 
       table.enu('reason', [
-        'daily-bonus', 
+        'daily-credit', 
         'home-purchase', 
         'item-purchase', 
         'member-to-member', 

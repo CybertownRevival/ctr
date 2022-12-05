@@ -18,6 +18,6 @@ export class WalletService {
    * @param amount amount to be dispersed
    */
   public async giveDailyLoginBonus(walletId: number, amount: number) {
-    await this.transactionRepository.createDailyBonusTransaction(walletId, amount);
+    await this.transactionRepository.createDailyCreditTransaction(walletId, amount);
   }
 }
