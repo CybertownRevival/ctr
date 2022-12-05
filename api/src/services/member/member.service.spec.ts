@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { createSpyObj } from 'jest-createspyobj';
 import { Container } from 'typedi';
 
@@ -80,9 +81,9 @@ describe('MemberService', () => {
       expect(token).toBe(fakeToken);
     });
   });
-  describe('hasReceivedLoginBonusToday', () => {
+  describe('hasReceivedLoginCreditToday', () => {
     let member;
-    describe('when a member has already received a daily login bonus', () => {
+    describe('when a member has already received a daily login credit', () => {
       beforeEach(() => {
         member = {
           ...fakeMember,
@@ -90,10 +91,10 @@ describe('MemberService', () => {
         };
       });
       it('should return true', () => {
-        expect(service.hasReceivedLoginBonusToday(member)).toBe(true);
+        expect(service.hasReceivedLoginCreditToday(member)).toBe(true);
       });
     });
-    describe('when a member has not received a daily login bonus today', () => {
+    describe('when a member has not received a daily login credit today', () => {
       beforeEach(() => {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() -1);
@@ -103,10 +104,10 @@ describe('MemberService', () => {
         };
       });
       it('should return false', () => {
-        expect(service.hasReceivedLoginBonusToday(member)).toBe(false);
+        expect(service.hasReceivedLoginCreditToday(member)).toBe(false);
       });
     });
-    describe('when a member recieved their login bonus at exactly midnight today', () => {
+    describe('when a member recieved their login credit at exactly midnight today', () => {
       beforeEach(() => {
         const todayAtMidnight = new Date().setHours(0,0,0,0);
         member = {
@@ -115,7 +116,37 @@ describe('MemberService', () => {
         };
       });
       it('should return true', () => {
-        expect(service.hasReceivedLoginBonusToday(member)).toBe(true);
+        expect(service.hasReceivedLoginCreditToday(member)).toBe(true);
+      });
+    });
+  });
+  describe('login', () => {
+    beforeEach(async () => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() -1);
+      const fakeLoginMember = {
+        ...fakeMember,
+        last_daily_login_credit: yesterday,
+        password: await bcrypt.hash(fakeMember.password, 10),
+      } as Member;
+      memberRepository.find.mockResolvedValue(fakeLoginMember);
+      memberRepository.findById.mockResolvedValue(fakeLoginMember);
+    });
+    describe('when given a valid username and password', () => {
+      beforeEach(async () => {
+        await service.login(fakeMember.username, fakeMember.password);
+      });
+      it('gives daily xp to the member', () => {
+        expect(memberRepository.update).toHaveBeenCalledWith(
+          fakeMember.id,
+          expect.objectContaining({ xp: expect.any(Number) }),
+        );
+      });
+      it('updates the timestamp of when the user last received login credit', () => {
+        expect(memberRepository.update).toHaveBeenCalledWith(
+          fakeMember.id,
+          expect.objectContaining({ last_daily_login_credit: expect.any(Date) }),
+        );
       });
     });
   });
