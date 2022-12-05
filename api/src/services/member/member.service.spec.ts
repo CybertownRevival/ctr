@@ -19,7 +19,7 @@ describe('MemberService', () => {
   const fakeMember: Partial<Member> = {
     id: 11,
     username: 'foo',
-    last_daily_login_bonus: new Date(),
+    last_daily_login_credit: new Date(),
     password: 'foopassword',
     email: 'foo@foo.com',
   };
@@ -86,7 +86,7 @@ describe('MemberService', () => {
       beforeEach(() => {
         member = {
           ...fakeMember,
-          last_daily_login_bonus: new Date(),
+          last_daily_login_credit: new Date(),
         };
       });
       it('should return true', () => {
@@ -99,7 +99,7 @@ describe('MemberService', () => {
         yesterday.setDate(yesterday.getDate() -1);
         member = {
           ...fakeMember,
-          last_daily_login_bonus: yesterday,
+          last_daily_login_credit: yesterday,
         };
       });
       it('should return false', () => {
@@ -111,7 +111,7 @@ describe('MemberService', () => {
         const todayAtMidnight = new Date().setHours(0,0,0,0);
         member = {
           ...fakeMember,
-          last_daily_login_bonus: new Date(todayAtMidnight),
+          last_daily_login_credit: new Date(todayAtMidnight),
         };
       });
       it('should return true', () => {

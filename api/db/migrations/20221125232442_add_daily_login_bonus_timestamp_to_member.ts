@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 
-const columnName = 'last_daily_login_bonus';
+const columnName = 'last_daily_login_credit';
 
 export async function up(knex: Knex): Promise<void> {
   if (!await knex.schema.hasColumn('member', columnName)) {

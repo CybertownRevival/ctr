@@ -110,7 +110,7 @@ export class MemberService {
    */
   public hasReceivedLoginBonusToday(member: Member): boolean {
     const today = new Date().setHours(0, 0, 0, 0); 
-    return member.last_daily_login_bonus.getTime() >= today;
+    return member.last_daily_login_credit.getTime() >= today;
   }
 
   /**
@@ -207,7 +207,7 @@ export class MemberService {
         member.wallet_id,
         MemberService.DAILY_CC_AMOUNT,
       );
-      await this.memberRepository.update(memberId, { last_daily_login_bonus: new Date() });
+      await this.memberRepository.update(memberId, { last_daily_login_credit: new Date() });
     }
   }
 }
