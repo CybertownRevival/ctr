@@ -17,6 +17,8 @@ import { WalletService } from '../wallet/wallet.service';
 export class MemberService {
   /** Amount of cityccash a member receives each day they log in */
   public static readonly DAILY_CC_AMOUNT = 50;
+  /** Amount of experience points a member received each day they log in */
+  public static readonly DAILY_XP_AMOUNT = 5;
   /** Duration in minutes until a password reset attempt expires */
   public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
   /** Number of times to salt member passwords */
@@ -108,7 +110,7 @@ export class MemberService {
    * @param member member object to be checked
    * @returns `true` if the member has received their daily login bonus today, `false` otherwise
    */
-  public hasReceivedLoginBonusToday(member: Member): boolean {
+  public hasReceivedLoginCreditToday(member: Member): boolean {
     const today = new Date().setHours(0, 0, 0, 0); 
     return member.last_daily_login_credit.getTime() >= today;
   }
@@ -195,19 +197,25 @@ export class MemberService {
   }
 
   /**
-   * Distributes daily credits (citycash, exp) to the member with the given id if they haven't
+   * Distributes daily credits (citycash, xp) to the member with the given id if they haven't
    * already received any today.
-   * @param memberId id of member
+   * @param memberId id of member to receive daily credits
    * @returns promise resolving when complete, rejecting on error
    */
   private async maybeGiveDailyCredits(memberId: number): Promise<void> {
     const member = await this.memberRepository.findById(memberId);
-    if (!this.hasReceivedLoginBonusToday(member)) {
+    if (!this.hasReceivedLoginCreditToday(member)) {
       await this.walletService.giveDailyLoginBonus(
         member.wallet_id,
         MemberService.DAILY_CC_AMOUNT,
       );
-      await this.memberRepository.update(memberId, { last_daily_login_credit: new Date() });
+      await this.memberRepository.update(
+        memberId,
+        {
+          last_daily_login_credit: new Date(),
+          xp: member.xp + MemberService.DAILY_XP_AMOUNT,
+        },
+      );
     }
   }
 }

@@ -22,4 +22,6 @@ export interface Member extends Model {
   username: string;
   /** Foreign key reference to the member's wallet record */
   wallet_id: number;
+  /** Amount of experience points the member has accrued over the lifetime of their account */
+  xp: number;
 }
