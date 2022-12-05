@@ -2,8 +2,8 @@ import { Model } from './model';
 
 /** Collection of transaction reasons */
 export enum TransactionReason {
-  /** Used for issuing payments to users for their daily login bonus */
-  DailyBonus = 'daily-bonus',
+  /** Used for issuing daily credits to members when they log in */
+  DailyCredit = 'daily-credit',
   /** Used for taking payments from users when they buy a house */
   HomePurchase = 'home-purchase',
   /** Used for transacting between the buyer and the seller of an item */

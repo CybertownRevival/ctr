@@ -1,7 +1,10 @@
 import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
-import { Member } from 'models';
+import {
+  Member,
+  Wallet,
+} from 'models';
 
 /** Repository for interacting with member table data in the database. */
 @Service()
@@ -16,8 +19,8 @@ export class MemberRepository {
    */
   public async create(memberParams: Partial<Member>): Promise<number> {
     return await this.db.knex.transaction(async trx => {
-      const [walletId] = await trx('wallet').insert({}, 'id');
-      const [memberId] = await trx('member').insert({
+      const [walletId] = await trx<Wallet>('wallet').insert({});
+      const [memberId] = await trx<Member>('member').insert({
         ...memberParams,
         wallet_id: walletId,
       });

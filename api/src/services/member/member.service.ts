@@ -15,8 +15,8 @@ import { WalletService } from '../wallet/wallet.service';
 /** Service for dealing with members */
 @Service()
 export class MemberService {
-  /** Amount of cybcercash a member receives for the login bonus */
-  public static readonly DAILY_LOGIN_AMOUNT_CC = 50;
+  /** Amount of cityccash a member receives each day they log in */
+  public static readonly DAILY_CC_AMOUNT = 50;
   /** Duration in minutes until a password reset attempt expires */
   public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
   /** Number of times to salt member passwords */
@@ -44,7 +44,7 @@ export class MemberService {
       username,
       password: hashedPassword,
     });
-    await this.maybeGiveDailyLoginBonus(memberId);
+    await this.maybeGiveDailyCredits(memberId);
     return this.getMemberToken(memberId);
   }
 
@@ -134,7 +134,7 @@ export class MemberService {
     if (!member) throw new Error('Account not found.');
     const validPassword = await bcrypt.compare(password, member.password);
     if (!validPassword) throw new Error('Incorrect login details.');
-    this.maybeGiveDailyLoginBonus(member.id);
+    this.maybeGiveDailyCredits(member.id);
     return this.encodeMemberToken(member);
   }
 
@@ -195,17 +195,17 @@ export class MemberService {
   }
 
   /**
-   * Distributes daily login bonuses to the member with the given id if they haven't already
-   * received one today.
+   * Distributes daily credits (citycash, exp) to the member with the given id if they haven't
+   * already received any today.
    * @param memberId id of member
    * @returns promise resolving when complete, rejecting on error
    */
-  private async maybeGiveDailyLoginBonus(memberId: number): Promise<void> {
+  private async maybeGiveDailyCredits(memberId: number): Promise<void> {
     const member = await this.memberRepository.findById(memberId);
     if (!this.hasReceivedLoginBonusToday(member)) {
       await this.walletService.giveDailyLoginBonus(
         member.wallet_id,
-        MemberService.DAILY_LOGIN_AMOUNT_CC,
+        MemberService.DAILY_CC_AMOUNT,
       );
       await this.memberRepository.update(memberId, { last_daily_login_bonus: new Date() });
     }
