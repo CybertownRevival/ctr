@@ -10,7 +10,9 @@ import {
   sendPasswordResetEmail,
   sendPasswordResetUnknownEmail,
 } from '../libs';
-import { MemberService } from '../services/member/member.service';
+import {
+  MemberService,
+} from '../services';
 import { SessionInfo } from 'session-info.interface';
 
 class MemberController {
@@ -31,14 +33,16 @@ class MemberController {
    *
    * @param memberService service for interacting with member models
    */
-  constructor(private memberService: MemberService) {}
+  constructor(
+    private memberService: MemberService,
+  ) {}
 
   /** Controller method for creating a new user session. */
   public async login(request: Request, response: Response): Promise<void> {
     const { username, password } = request.body;
     try {
       this.validateLoginInput(username, password);
-      const token = await this.createSession(username, password);
+      const token = await this.memberService.login(username, password);
       response.status(200).json({
         message: 'Login Successful',
         token,
@@ -105,7 +109,7 @@ class MemberController {
       const session = this.memberService.decodeMemberToken(<string> apitoken);
       if (session) {
         // refresh client token with latest from database
-        const token = await this.memberService.encodeMemberToken(session.id);
+        const token = await this.memberService.getMemberToken(session.id);
         response.status(200).json({
           message: 'success',
           token,
@@ -134,8 +138,7 @@ class MemberController {
       if (await this.memberService.find({ username })) {
         throw new Error('An account with this email already exists.');
       }
-      const memberId = await this.memberService.createMember(email, username, password);
-      const token = await this.memberService.encodeMemberToken(memberId);
+      const token = await this.memberService.createMemberAndLogin(email, username, password);
       response.status(200).json({
         message: 'Signup Completed',
         token,
@@ -161,7 +164,7 @@ class MemberController {
     }
     try {
       await this.memberService.updateAvatar(id, avatarId);
-      const token = await this.memberService.encodeMemberToken(id);
+      const token = await this.memberService.getMemberToken(id);
       response.status(200).json({
         message: 'Success',
         token,
@@ -257,25 +260,6 @@ class MemberController {
 
     }
 
-  }
-
-  /**
-   * 
-   * @param username user name
-   * @param password user password
-   * @returns Promise that resolves with the user's token string if successful, otherwise rejects
-   */
-  private async createSession(username: string, password: string): Promise<string> {
-    try {
-      const member = await this.memberService.find({ username });
-      if (!member) throw new Error('Account not found.');
-      const validPassword = await bcrypt.compare(password, member.password);
-      if (!validPassword) throw new Error('Incorrect login details.');
-      return await this.memberService.encodeMemberToken(member.id);
-    } catch(error) {
-      console.error(error);
-      throw new Error(error.message);
-    }
   }
 
   /**

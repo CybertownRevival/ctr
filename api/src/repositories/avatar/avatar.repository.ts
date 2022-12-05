@@ -3,12 +3,11 @@ import { Service } from 'typedi';
 import { Db } from '../../db/db.class';
 import { Avatar } from 'models';
 
-/** Class for interacting with the avatar database table */
+/** Repository for interacting with member table data in the database. */
 @Service()
 export class AvatarRepository {
 
   constructor(private db: Db) {}
-
 
   /**
    * Finds an avatar with the given search parameters if one exists.

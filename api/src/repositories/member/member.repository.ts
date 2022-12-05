@@ -3,7 +3,7 @@ import { Service } from 'typedi';
 import { Db } from '../../db/db.class';
 import { Member } from 'models';
 
-/** Class for interacting with the member database table */
+/** Repository for interacting with member table data in the database. */
 @Service()
 export class MemberRepository {
 
