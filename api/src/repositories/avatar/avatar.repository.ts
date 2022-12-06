@@ -3,7 +3,7 @@ import { Service } from 'typedi';
 import { Db } from '../../db/db.class';
 import { Avatar } from 'models';
 
-/** Repository for interacting with member table data in the database. */
+/** Repository for fetching/interacting with avatar data in the database. */
 @Service()
 export class AvatarRepository {
 

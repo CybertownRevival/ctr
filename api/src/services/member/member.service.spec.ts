@@ -10,8 +10,9 @@ import {
 import {
   AvatarRepository,
   MemberRepository,
+  TransactionRepository,
+  WalletRepository,
 } from '../../repositories';
-import { WalletService } from '../wallet/wallet.service';
 
 describe('MemberService', () => {
   const fakeAvatar: Partial<Avatar> = {
@@ -26,7 +27,8 @@ describe('MemberService', () => {
   };
   let avatarRepository: jest.Mocked<AvatarRepository>;
   let memberRepository: jest.Mocked<MemberRepository>;
-  let walletService: jest.Mocked<WalletService>;
+  let transactionRepository: jest.Mocked<TransactionRepository>;
+  let walletRepository: jest.Mocked<WalletRepository>;
   let service: MemberService;
 
   beforeEach(() => {
@@ -36,11 +38,13 @@ describe('MemberService', () => {
     memberRepository.create.mockResolvedValue(fakeMember.id);
     memberRepository.find.mockResolvedValue(fakeMember as Member);
     memberRepository.findById.mockResolvedValue(fakeMember as Member);
-    walletService = createSpyObj(WalletService);
+    transactionRepository = createSpyObj(TransactionRepository);
+    walletRepository = createSpyObj(WalletRepository);
     Container.reset();
     Container.set(AvatarRepository, avatarRepository);
     Container.set(MemberRepository, memberRepository);
-    Container.set(WalletService, walletService);
+    Container.set(TransactionRepository, transactionRepository);
+    Container.set(WalletRepository, walletRepository);
     service = Container.get(MemberService);
   });
 

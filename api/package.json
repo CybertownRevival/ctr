@@ -10,6 +10,7 @@
     "db:migrate": "knex migrate:latest --knexfile src/knexfile.ts",
     "db:rollback": "knex migrate:rollback --knexfile src/knexfile.ts",
     "db:seed": "knex seed:run --knexfile src/knexfile.ts",
+    "lint": "eslint -c .eslintrc.json src/**/*",
     "test": "jest",
     "dev": "nodemon -e ts --exec \"node --inspect=0.0.0.0:9229 -r ts-node/register -r dotenv/config src/api.ts\""
   },

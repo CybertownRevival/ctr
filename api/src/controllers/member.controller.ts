@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
 import { Request, Response } from 'express';
 import { Container } from 'typedi';
 import validator from 'validator';
@@ -36,6 +35,70 @@ class MemberController {
   constructor(
     private memberService: MemberService,
   ) {}
+
+  public async getHome(request: Request, response: Response): Promise<void> {
+    const session = this.decryptSession(request, response);
+    if (!session) return;
+
+    try {
+      // todo, join map_location
+      // todo, fetch block name
+
+      const [homeData] = await db.place
+        .where({
+          type: 'home',
+          member_id: session.id,
+        })
+        .select(['id']);
+
+      if(homeData.id) {
+        const blockData = await knex
+          .select(
+            'place.id',
+            'place.name',
+          )
+          .from('map_location')
+          .leftJoin('place', 'map_location.parent_place_id', 'place.id')
+          .where('map_location.place_id', homeData.id);
+
+        response.status(200).json({
+          homeData: homeData,
+          blockData: blockData,
+        });
+      } else {
+        response.status(200).json({
+          homeData: null,
+          blockData: null,
+        });
+      }
+
+
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({
+        error: 'A problem occurred during fetching home data.',
+      });
+
+    }
+
+  }
+
+  /**
+   * Controller method for providing member information
+   * @route /api/member/info
+   */
+  public async getInfo(request: Request, response: Response): Promise<void> {
+    const session = this.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const memberInfo = await this.memberService.getMemberInfo(session.id);
+      if (!memberInfo) throw new Error('A problem occurred while fetching your account.');
+      response.status(200).json({ memberInfo });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
 
   /** Controller method for creating a new user session. */
   public async login(request: Request, response: Response): Promise<void> {
@@ -213,53 +276,6 @@ class MemberController {
         error: 'A problem occurred during password update.',
       });
     }
-  }
-
-  public async getHome(request: Request, response: Response): Promise<void> {
-    const session = this.decryptSession(request, response);
-    if (!session) return;
-
-    try {
-      // todo, join map_location
-      // todo, fetch block name
-
-      const [homeData] = await db.place
-        .where({
-          type: 'home',
-          member_id: session.id,
-        })
-        .select(['id']);
-
-      if(homeData.id) {
-        const blockData = await knex
-          .select(
-            'place.id',
-            'place.name',
-          )
-          .from('map_location')
-          .leftJoin('place', 'map_location.parent_place_id', 'place.id')
-          .where('map_location.place_id', homeData.id);
-
-        response.status(200).json({
-          homeData: homeData,
-          blockData: blockData,
-        });
-      } else {
-        response.status(200).json({
-          homeData: null,
-          blockData: null,
-        });
-      }
-
-
-    } catch (error) {
-      console.error(error);
-      response.status(400).json({
-        error: 'A problem occurred during fetching home data.',
-      });
-
-    }
-
   }
 
   /**

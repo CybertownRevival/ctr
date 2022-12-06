@@ -1,6 +1,6 @@
 import { Request, Response} from 'express';
 
-import {db, knex} from '../db';
+import { knex } from '../db';
 
 class ColonyController {
 

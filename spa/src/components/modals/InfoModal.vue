@@ -14,7 +14,9 @@
             <table border="0">
               <tr>
                 <td width="200" align="center">
-                  <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Personal Info</b>
+                  <a href="#" @click="openPersonalInfoModal">
+                    <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Personal Info</b>
+                  </a>
                 </td>
                 <td width=200 align=center>
                   <img src="/assets/img/icon_myhouse.jpg" border=0><br><b>Visit My House</b>
@@ -59,6 +61,7 @@ import ModalMixin from './mixins/ModalMixin';
 import AvatarModal from "./AvatarModal.vue";
 import AccountModal from "./AccountModal.vue";
 import ModalService from "./services/ModalService.vue";
+import PersonalInfoModalVue from './PersonalInfoModal.vue';
 
 export default Vue.extend({
   name: "InfoModal",
@@ -70,6 +73,9 @@ export default Vue.extend({
     openAccountModal(): void {
       ModalService.open(AccountModal);
     },
+    openPersonalInfoModal(): void {
+      ModalService.open(PersonalInfoModalVue);
+    }
   },
   mixins: [ModalMixin],
 });

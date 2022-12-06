@@ -1,23 +1,21 @@
-import * as _ from 'lodash';
 import { Service } from 'typedi';
 
-import {
-  TransactionRepository,
-} from '../../repositories';
+import { Wallet } from '../../types/models';
+import { WalletRepository } from '../../repositories';
 
 /** Service for interacting with wallets */
 @Service()
 export class WalletService {
   constructor(
-    private transactionRepository: TransactionRepository,
+    private walletRepository: WalletRepository,
   ) {}
 
   /**
-   * Disperses the provided amount of CCs to the provided wallet as a daily login bonus.
-   * @param walletId wallet id to disperse daily bonus
-   * @param amount amount to be dispersed
+   * Delegates to `WalletRepository#findById` to find a wallet record with the given id.
+   * @param id id of wallet to look for
+   * @returns promise resolving in the found wallet object, or rejecting on error
    */
-  public async giveDailyLoginBonus(walletId: number, amount: number) {
-    await this.transactionRepository.createDailyCreditTransaction(walletId, amount);
+  public async findById(walletId: number): Promise<Wallet> {
+    return this.walletRepository.findById(walletId);
   }
 }

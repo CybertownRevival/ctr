@@ -7,10 +7,12 @@ import { Service } from 'typedi';
 import {
   AvatarRepository,
   MemberRepository,
+  TransactionRepository,
+  WalletRepository,
 } from '../../repositories';
 import { Member } from '../../types/models';
+import { MemberInfoView } from '../../types/views';
 import { SessionInfo } from 'session-info.interface';
-import { WalletService } from '../wallet/wallet.service';
 
 /** Service for dealing with members */
 @Service()
@@ -27,7 +29,8 @@ export class MemberService {
   constructor(
     private avatarRepository: AvatarRepository,
     private memberRepository: MemberRepository,
-    private walletService: WalletService,
+    private transactionRepository: TransactionRepository,
+    private walletRepository: WalletRepository,
   ) {}
 
   /**
@@ -92,6 +95,23 @@ export class MemberService {
    */
   public async findByPasswordResetToken(resetToken: string): Promise<Member> {
     return this.memberRepository.findByPasswordResetToken(resetToken);
+  }
+
+  /**
+   * Builds a member info view.
+   * @param memberId id of member to retrieve info for
+   * @returns promise resolving in a member info view object, or rejecting on error
+   */
+  public async getMemberInfo(memberId: number): Promise<MemberInfoView> {
+    const member = await this.find({ id: memberId });
+    const wallet = await this.walletRepository.findById(member.wallet_id);
+    return {
+      email: member.email,
+      immigrationDate: member.created_at,
+      username: member.username,
+      walletBalance: wallet.balance,
+      xp: member.xp,
+    };
   }
 
   /**
@@ -205,7 +225,7 @@ export class MemberService {
   private async maybeGiveDailyCredits(memberId: number): Promise<void> {
     const member = await this.memberRepository.findById(memberId);
     if (!this.hasReceivedLoginCreditToday(member)) {
-      await this.walletService.giveDailyLoginBonus(
+      await this.transactionRepository.createDailyCreditTransaction(
         member.wallet_id,
         MemberService.DAILY_CC_AMOUNT,
       );
