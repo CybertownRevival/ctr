@@ -173,6 +173,7 @@ class MemberController {
       if (session) {
         // refresh client token with latest from database
         const token = await this.memberService.getMemberToken(session.id);
+        this.memberService.maybeGiveDailyCredits(session.id);
         response.status(200).json({
           message: 'success',
           token,
