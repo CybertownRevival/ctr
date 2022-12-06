@@ -1,8 +1,6 @@
-import { createSpyObj } from 'jest-createspyobj';
 import { Container } from 'typedi';
 
 import { Db } from '../../db/db.class';
-import { Wallet } from 'models';
 import { WalletRepository} from './wallet.repository';
 
 describe('WalletRepository', () => {

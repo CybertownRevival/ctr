@@ -104,7 +104,6 @@ import Vue from "vue";
 
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 import ModalRoot from "./components/modals/ModalRoot.vue"
-import TestModal from "./components/modals/TestModal.vue"
 import InfoModal from "./components/modals/InfoModal.vue"
 import ModalService from "./components/modals/services/ModalService.vue"
 

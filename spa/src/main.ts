@@ -6,23 +6,25 @@ import App from "./App.vue"
 import api from "./api";
 import appStore from "./appStore";
 import { User } from "./appStore";
+import * as filters from './helpers/fiters';
 import routes from "./routes";
 import socket from "./socket";
 import "./assets/index.scss";
 
 Vue.config.productionTip = false
 
-const router = new VueRouter({ routes });
-
-Vue.use(VueRouter);
-
-
+// register global utilities/filters
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key]);
+});
 Vue.prototype.$http = api;
 Vue.prototype.$store = appStore;
 Vue.prototype.$socket = socket;
 
-document.querySelector("html").classList.add("dark")
+document.querySelector("html").classList.add("dark");
 
+const router = new VueRouter({ routes });
+Vue.use(VueRouter);
 //todo, this
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
@@ -66,4 +68,4 @@ Vue.use(VueGtag, {
 new Vue({
   router,
   render: h => h(App),
-}).$mount("#app")
+}).$mount("#app");
