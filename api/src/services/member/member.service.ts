@@ -161,6 +161,29 @@ export class MemberService {
   }
 
   /**
+   * Distributes daily credits (citycash, xp) to the member with the given id if they haven't
+   * already received any today.
+   * @param memberId id of member to receive daily credits
+   * @returns promise resolving when complete, rejecting on error
+   */
+  public async maybeGiveDailyCredits(memberId: number): Promise<void> {
+    const member = await this.memberRepository.findById(memberId);
+    if (!this.hasReceivedLoginCreditToday(member)) {
+      await this.transactionRepository.createDailyCreditTransaction(
+        member.wallet_id,
+        MemberService.DAILY_CC_AMOUNT,
+      );
+      await this.memberRepository.update(
+        memberId,
+        {
+          last_daily_login_credit: new Date(),
+          xp: member.xp + MemberService.DAILY_XP_AMOUNT,
+        },
+      );
+    }
+  }
+
+  /**
    * Assigns the avatar with the given id, if one exists, to the member with the given id.
    * @param memberId id of member to be updated
    * @param avatarId id of avatar to be assigned to member
@@ -214,28 +237,5 @@ export class MemberService {
    */
   private encryptPassword(password: string): Promise<string> {
     return bcrypt.hash(password, MemberService.SALT_ROUNDS);
-  }
-
-  /**
-   * Distributes daily credits (citycash, xp) to the member with the given id if they haven't
-   * already received any today.
-   * @param memberId id of member to receive daily credits
-   * @returns promise resolving when complete, rejecting on error
-   */
-  private async maybeGiveDailyCredits(memberId: number): Promise<void> {
-    const member = await this.memberRepository.findById(memberId);
-    if (!this.hasReceivedLoginCreditToday(member)) {
-      await this.transactionRepository.createDailyCreditTransaction(
-        member.wallet_id,
-        MemberService.DAILY_CC_AMOUNT,
-      );
-      await this.memberRepository.update(
-        memberId,
-        {
-          last_daily_login_credit: new Date(),
-          xp: member.xp + MemberService.DAILY_XP_AMOUNT,
-        },
-      );
-    }
   }
 }
