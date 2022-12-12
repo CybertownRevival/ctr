@@ -4,6 +4,6 @@
     "sourceMap": false
   },
   "include": [
-    "../src/**/*"
+    "./src/**/*"
   ]
 }
