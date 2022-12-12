@@ -51,7 +51,7 @@ class MemberController {
         })
         .select(['id']);
 
-      if(homeData.id) {
+      if(homeData) {
         const blockData = await knex
           .select(
             'place.id',

@@ -1,77 +1,100 @@
 <template>
-  <div class="h-full w-full bg-black flex flex-col" v-if="loaded">
+  <div class="h-full w-full bg-black flex flex-col p-2" v-if="loaded">
 
-    <div>
-      <!-- RELOCATE MESSAGE -->
-      <p><strong>Hello <$NNM>,</strong> do you want to move from
-      '<$comm1> / <$neigh1> / <$block1> / <$prop1>' to
-      this <$PNM>?
-      <!-- in <$BNM> <b>'<$comm2> / <$neigh2> / <$block2>'</b>?-->
-      </p>
-      <button type="button" class="btn">Yes</button>
-      <button type="button" class="btn">No</button>
+    <div v-if="!complete">
+      <div v-if="relocating">
+        <!-- RELOCATE MESSAGE -->
+        <p><strong>Hello <$NNM>,</strong> do you want to move from
+          '<$comm1> / <$neigh1> / <$block1> / <$prop1>' to
+          this <$PNM>?
+          <!-- in <$BNM> <b>'<$comm2> / <$neigh2> / <$block2>'</b>?-->
+        </p>
+        <button type="button" class="btn">Yes</button>
+        <button type="button" class="btn">No</button>
+      </div>
+      <div v-else-if="relocating === false">
+        <!-- SETTLE MESSAGE -->
+        <p class="text-center font-weight-bold">Settle down here!</p>
+
+        <button type="button" class="btn">Yes</button>
+        <button type="button" class="btn">No</button>
+
+        <table>
+          <tr>
+            <td style="width:150px"><strong>House Name</strong></td>
+            <td><input maxlength="32" size="20" /></td>
+          </tr>
+
+          <tr>
+            <td><strong>House Description</strong></td>
+            <td><input maxlength="255" size="32" /></td>
+          </tr>
+
+          <tr>
+            <td><strong>Your First Name</strong></td>
+            <td><input maxlength="20" size="20" /></td>
+          </tr>
+
+          <tr>
+            <td><strong>Your Last Name</strong></td>
+            <td><input maxlength="32" size="32" /></td>
+          </tr>
+
+          <tr><td colspan="2">&nbsp;</td></tr>
+
+          <tr>
+            <td><strong>House icons</strong></td>
+            <td>
+              <input type="radio" />None<br />
+
+              <template v-if="colonyData[colony.slug].map_theme === 'grass'">
+                <template v-for="index in 33">
+                  <input type="radio" :value="index">
+                  <img
+                    :src="'/assets/img/map_themes/grass/block/Picon2D'+(index-1).toString().padStart(3,'0')+'.gif'" />
+                  <br />
+                </template>
+              </template>
+              <template v-else-if="colonyData[colony.slug].map_theme === 'desert'">
+                <template v-for="index in 7">
+                  <input type="radio" :value="index">
+                  <img
+                    :src="'/assets/img/map_themes/desert/block/Picon2D'+(index-1).toString().padStart(3,'0')+'.gif'" />
+                  <br />
+                </template>
+              </template>
+              <template v-else-if="colonyData[colony.slug].map_theme === 'cyberhood'">
+                <template v-for="index in 5">
+                  <input type="radio" :value="index">
+                  <img
+                    :src="'/assets/img/map_themes/cyberhood/block/Picon2D'+(index-1).toString().padStart(3,'0')+'.gif'" />
+                  <br />
+                </template>
+              </template>
+            </td>
+          </tr>
+
+          <tr><td colspan="2">&nbsp;</td></tr>
+
+          <tr>
+            <td><strong>3D Houses</strong></td>
+            <td>
+              <input type="radio" />None <br />
+
+
+              <template v-for="(item,key) in homeData" >
+                <input type="radio" :value="key"/>
+                <img :src="'/assets/img/homes/Picon3D' + key + '.gif'" />
+                Price: {{ item.price }}
+                <br />
+              </template>
+            </td>
+          </tr>
+        </table>
+      </div>
+
     </div>
-    <div>
-      <!-- SETTLE MESSAGE -->
-      <p class="text-center font-weight-bold">Settle down here!</p>
-
-      <button type="button" class="btn">Yes</button>
-      <button type="button" class="btn">No</button>
-
-      <table>
-        <tr>
-          <td style="width:150px"><strong>House Name</strong></td>
-          <td><input maxlength="32" size="20" /></td>
-        </tr>
-
-        <tr>
-          <td><strong>House Description</strong></td>
-          <td><input maxlength="255" size="32" /></td>
-        </tr>
-
-        <tr>
-          <td><strong>Your First Name</strong></td>
-          <td><input maxlength="20" size="20" /></td>
-        </tr>
-
-        <tr>
-          <td><strong>Your Last Name</strong></td>
-          <td><input maxlength="32" size="32" /></td>
-        </tr>
-
-        <tr><td colspan="2">&nbsp;</td></tr>
-
-        <tr>
-          <td><strong>House icons</strong></td>
-          <td>
-            <input type="radio" />None<br />
-
-            <template>
-              <input type="radio">
-              <img src="<$g_HTMLRoot>/home/<$community>/property/<$2TI><$2DI>.gif" />
-              <br />
-            </template>
-          </td>
-        </tr>
-
-        <tr><td colspan="2">&nbsp;</td></tr>
-
-        <tr>
-          <td><strong>3D Houses</strong></td>
-          <td>
-            <input type="radio" />None <br />
-
-            <template>
-              <input type="radio" />
-              <img src="<$g_HTMLRoot>/home/<$community>/property/<$3TI><$3DI>.gif" />
-              Price:
-              <br />
-            </template>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <div>
+    <div v-if="complete">
       <!-- DONE MESSAGE -->
       <p class="text-center">Congratulations, <strong><$NNM></strong>!<br />
         You have settled down and are now a <strong>Resident</strong>!</p>
@@ -94,7 +117,12 @@ export default Vue.extend({
       block: undefined,
       hood: undefined,
       colony: undefined,
+      homeResponse: undefined,
+      relocating: null,
+      complete: false,
       locations: [],
+      homeData: homeDataHelper,
+      colonyData: colonyDataHelper,
     };
   },
   methods: {
@@ -102,16 +130,22 @@ export default Vue.extend({
       return Promise.all([
         this.$http.get("/block/" + this.$route.params.id),
         this.$http.get("/block/" + this.$route.params.id + "/locations"),
+        this.$http.get("/member/home"),
       ]).then((response) => {
         this.block = response[0].data.block;
         this.hood = response[0].data.hood;
         this.colony = response[0].data.colony;
         this.locations = response[1].data.locations;
         this.$store.methods.setPlace(response[0].data);
+        this.homeResponse = response[2];
 
-        // todo check if they already have a home. if not, tell them to buy
-        // todo else, ask them if they want to move?
-
+        if(this.homeResponse.homeData) {
+          // has a home
+          this.relocating = true;
+        } else {
+          // doeesn't have a home
+          this.relocating = false;
+        }
 
         document.title = "Move - Cybertown";
         this.loaded = true;
