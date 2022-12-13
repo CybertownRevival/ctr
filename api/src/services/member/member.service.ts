@@ -9,8 +9,10 @@ import {
   MemberRepository,
   TransactionRepository,
   WalletRepository,
+  PlaceRepository,
+  MapLocationRepository,
 } from '../../repositories';
-import { Member } from '../../types/models';
+import { Member, Place } from '../../types/models';
 import { MemberInfoView } from '../../types/views';
 import { SessionInfo } from 'session-info.interface';
 
@@ -31,6 +33,8 @@ export class MemberService {
     private memberRepository: MemberRepository,
     private transactionRepository: TransactionRepository,
     private walletRepository: WalletRepository,
+    private placeRepository: PlaceRepository,
+    private mapLocationRespository: MapLocationRepository,
   ) {}
 
   /**
@@ -237,5 +241,35 @@ export class MemberService {
    */
   private encryptPassword(password: string): Promise<string> {
     return bcrypt.hash(password, MemberService.SALT_ROUNDS);
+  }
+
+  /**
+   * Updates a members first and last name
+   * @param memberId id of the member
+   * @param firstName string of the first name
+   * @param lastName string of the last name
+   */
+  public async updateName(memberId: number, firstName: string, lastName: string): Promise<void> {
+    await this.memberRepository.update(memberId, {
+      firstname: firstName,
+      lastname: lastName,
+    });
+  }
+
+  /**
+   * Get a place object for a member's home
+   * @param memberId id of the member
+   */
+  public async getHome(memberId: number): Promise<Place> {
+    const place = await this.placeRepository.findHomeByMemberId(memberId);
+    return place;
+  }
+
+  public async getHomeBlock(homePlaceId: number): Promise<Place> {
+    // todo get home's parent_place id
+    const parentPlaceId = await this.mapLocationRespository.findParentPlaceId(homePlaceId);
+    const place = await this.placeRepository.findById(parentPlaceId);
+    return place;
+
   }
 }

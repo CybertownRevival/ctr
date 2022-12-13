@@ -16,28 +16,28 @@
         <!-- SETTLE MESSAGE -->
         <p class="text-center font-weight-bold">Settle down here!</p>
 
-        <button type="button" class="btn">Yes</button>
-        <button type="button" class="btn">No</button>
+        <button type="button" class="btn" @click="settle">Yes</button>
+        <button type="button" class="btn" @click="$router.back()">No</button>
 
         <table>
           <tr>
             <td style="width:150px"><strong>House Name</strong></td>
-            <td><input maxlength="32" size="20" /></td>
+            <td><input maxlength="32" size="20" v-model="houseName"/></td>
           </tr>
 
           <tr>
             <td><strong>House Description</strong></td>
-            <td><input maxlength="255" size="32" /></td>
+            <td><input maxlength="255" size="32" v-model="houseDescription"/></td>
           </tr>
 
           <tr>
             <td><strong>Your First Name</strong></td>
-            <td><input maxlength="20" size="20" /></td>
+            <td><input maxlength="20" size="20" v-model="firstName"/></td>
           </tr>
 
           <tr>
             <td><strong>Your Last Name</strong></td>
-            <td><input maxlength="32" size="32" /></td>
+            <td><input maxlength="32" size="32" v-model="lastName"/></td>
           </tr>
 
           <tr><td colspan="2">&nbsp;</td></tr>
@@ -45,11 +45,11 @@
           <tr>
             <td><strong>House icons</strong></td>
             <td>
-              <input type="radio" />None<br />
+              <input type="radio" v-model="icon2d"/>None<br />
 
               <template v-if="colonyData[colony.slug].map_theme === 'grass'">
                 <template v-for="index in 33">
-                  <input type="radio" :value="index">
+                  <input type="radio" :value="index" v-model="icon2d">
                   <img
                     :src="'/assets/img/map_themes/grass/block/Picon2D'+(index-1).toString().padStart(3,'0')+'.gif'" />
                   <br />
@@ -57,7 +57,7 @@
               </template>
               <template v-else-if="colonyData[colony.slug].map_theme === 'desert'">
                 <template v-for="index in 7">
-                  <input type="radio" :value="index">
+                  <input type="radio" :value="index" v-model="icon2d">
                   <img
                     :src="'/assets/img/map_themes/desert/block/Picon2D'+(index-1).toString().padStart(3,'0')+'.gif'" />
                   <br />
@@ -65,7 +65,7 @@
               </template>
               <template v-else-if="colonyData[colony.slug].map_theme === 'cyberhood'">
                 <template v-for="index in 5">
-                  <input type="radio" :value="index">
+                  <input type="radio" :value="index" v-model="icon2d">
                   <img
                     :src="'/assets/img/map_themes/cyberhood/block/Picon2D'+(index-1).toString().padStart(3,'0')+'.gif'" />
                   <br />
@@ -79,11 +79,10 @@
           <tr>
             <td><strong>3D Houses</strong></td>
             <td>
-              <input type="radio" />None <br />
-
+              <input type="radio" v-model="home3d"/>None <br />
 
               <template v-for="(item,key) in homeData" >
-                <input type="radio" :value="key"/>
+                <input type="radio" :value="key" v-model="home3d"/>
                 <img :src="'/assets/img/homes/Picon3D' + key + '.gif'" />
                 Price: {{ item.price }}
                 <br />
@@ -123,6 +122,12 @@ export default Vue.extend({
       locations: [],
       homeData: homeDataHelper,
       colonyData: colonyDataHelper,
+      houseName: "",
+      houseDescription: "",
+      firstName: "",
+      lastName: "",
+      icon2d: null,
+      home3d: null,
     };
   },
   methods: {
@@ -140,10 +145,8 @@ export default Vue.extend({
         this.homeResponse = response[2];
 
         if(this.homeResponse.homeData) {
-          // has a home
           this.relocating = true;
         } else {
-          // doeesn't have a home
           this.relocating = false;
         }
 
@@ -151,12 +154,25 @@ export default Vue.extend({
         this.loaded = true;
       });
     },
-    settle() {
-      // todo check they have selected all the required data
-      // todo check they have enough funds
-      // todo check the spot is still available
-      // todo do it
-      // todo show a congrats
+    async settle() {
+
+      try {
+        const response = await this.$http.post("/member/home/settle", {
+          blockId: this.$route.params.id,
+          location: this.$route.params.location,
+          houseName: this.houseName,
+          houseDescription: this.houseDescription,
+          firstName: this.firstName,
+          lastName: this.lastName,
+          icon2d: this.icon2d,
+          home3d: this.home3d,
+        });
+
+        // todo show a congrats
+
+      } catch(e) {
+
+      }
     },
     relocate() {
       // todo check they already have a spot

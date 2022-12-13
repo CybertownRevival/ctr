@@ -41,26 +41,11 @@ class MemberController {
     if (!session) return;
 
     try {
-      // todo, join map_location
-      // todo, fetch block name
 
-      const [homeData] = await db.place
-        .where({
-          type: 'home',
-          member_id: session.id,
-        })
-        .select(['id']);
+      const homeData = await this.memberService.getHome(session.id);
 
       if(homeData) {
-        const blockData = await knex
-          .select(
-            'place.id',
-            'place.name',
-          )
-          .from('map_location')
-          .leftJoin('place', 'map_location.parent_place_id', 'place.id')
-          .where('map_location.place_id', homeData.id);
-
+        const blockData = await this.memberService.getHomeBlock(homeData.id);
         response.status(200).json({
           homeData: homeData,
           blockData: blockData,
@@ -77,6 +62,76 @@ class MemberController {
       console.error(error);
       response.status(400).json({
         error: 'A problem occurred during fetching home data.',
+      });
+
+    }
+
+  }
+
+  public async createHome(request: Request, response: Response): Promise<void> {
+    const session = this.decryptSession(request, response);
+    if (!session) return;
+
+    const {
+      blockId,
+      location,
+      houseName,
+      houseDescription,
+      firstName,
+      lastName,
+      icon2d,
+      home3d,
+    } = request.body;
+
+    try {
+      if (!validator.isInt(blockId)) {
+        response.status(400).json({
+          error: 'blockId must be passed.',
+        });
+      }
+
+      if (!validator.isInt(location)) {
+        response.status(400).json({
+          error: 'location must be passed.',
+        });
+      }
+
+      if (validator.isEmpty(houseName)) {
+        response.status(400).json({
+          error: 'House name is required.',
+        });
+      }
+
+      const memberInfo = this.memberService.getMemberInfo(session.id);
+
+      // check they don't already have a home
+      const homeInfo = this.memberService.getHome(session.id);
+      if(homeInfo) {
+        response.status(400).json({
+          error: 'House already exists.',
+        });
+      } else {
+        // todo check they have enough in their wallet to buy the 3d home
+        // memberInfo.walletBalance
+
+        // todo check the space isn't already taken
+
+        // todo create place
+        // todo create map location
+
+        // update firstname + last name on member
+        await this.memberService.updateName(session.id, firstName, lastName);
+
+        // todo deduct amount
+        // todo return a success
+
+      }
+
+
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({
+        error: 'A problem occurred creating a home.',
       });
 
     }
@@ -347,6 +402,8 @@ class MemberController {
     }
     return session;
   }
+
+
 }
 const memberService = Container.get(MemberService);
 export const memberController = new MemberController(memberService);
