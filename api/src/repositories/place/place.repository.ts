@@ -28,4 +28,14 @@ export class PlaceRepository {
     return place;
   }
 
+  /**
+   * Creates a new place with the given parameters.
+   * @param placeParams parameters to be used for the new place
+   * @returns promise resolving in the id for the newly created place
+   */
+  public async create(placeParams: Partial<Place>): Promise<number> {
+    const [placeId] = await this.db.place.insert(placeParams);
+    return placeId;
+  }
+
 }

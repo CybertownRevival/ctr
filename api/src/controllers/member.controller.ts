@@ -83,59 +83,45 @@ class MemberController {
       home3d,
     } = request.body;
 
+    console.log(request.body);
+
     try {
       if (!validator.isInt(blockId)) {
-        response.status(400).json({
-          error: 'blockId must be passed.',
-        });
+        throw new Error('blockId must be passed');
       }
 
       if (!validator.isInt(location)) {
-        response.status(400).json({
-          error: 'location must be passed.',
-        });
+        throw new Error('location must be passed');
       }
 
       if (validator.isEmpty(houseName)) {
-        response.status(400).json({
-          error: 'House name is required.',
-        });
+        throw new Error('Home name is required');
       }
 
-      const memberInfo = this.memberService.getMemberInfo(session.id);
 
       // check they don't already have a home
-      const homeInfo = this.memberService.getHome(session.id);
+      const homeInfo = await this.memberService.getHome(session.id);
       if(homeInfo) {
-        response.status(400).json({
-          error: 'House already exists.',
-        });
+        console.log(homeInfo);
+        throw new Error('Home already exists.');
       } else {
-        // todo check they have enough in their wallet to buy the 3d home
-        // memberInfo.walletBalance
-
-        // todo check the space isn't already taken
-
-        // todo create place
-        // todo create map location
-
-        // update firstname + last name on member
-        await this.memberService.updateName(session.id, firstName, lastName);
-
-        // todo deduct amount
-        // todo return a success
-
+        await this.memberService.createHome(
+          session.id,
+          firstName,
+          lastName,
+          blockId,
+          location,
+          houseName,
+          houseDescription,
+          icon2d,
+          home3d,
+        );
       }
-
 
     } catch (error) {
       console.error(error);
-      response.status(400).json({
-        error: 'A problem occurred creating a home.',
-      });
-
+      response.status(400).json({ 'error': error.message });
     }
-
   }
 
   /**
