@@ -55,7 +55,7 @@ export class MemberRepository {
   public async findByPasswordResetToken(resetToken: string): Promise<Member> {
     return this.db.member
       .where({ password_reset_token: resetToken })
-      .whereRaw('password_reset_expire < NOW()')
+      .whereRaw('password_reset_expire > NOW()')
       .limit(1)
       .first();
   }
