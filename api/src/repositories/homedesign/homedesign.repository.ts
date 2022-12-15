@@ -1,12 +1,12 @@
 import { Service } from 'typedi';
 
-import { House } from '../../types/models';
+import { HomeDesign } from '../../types/models';
 
 /** Repository for fetching/interacting with house data. */
 @Service()
-export class HouseRepository {
+export class HomeDesignRepository {
 
-  private houseData = [
+  private homeDesigns: HomeDesign[] = [
     {
       'id': '003',
       'price': 160,
@@ -56,12 +56,12 @@ export class HouseRepository {
   constructor() {}
 
   /**
-   * Finds a house with the given id.
-   * @param id id of home to look for
-   * @returns promise resolving in the found house object, or rejecting on error
+   * Finds a home design with the given id.
+   * @param id id of home design to look for
+   * @returns promise resolving in the found home design object, or rejecting on error
    */
-  public findHouseById(houseId: string): House {
-    return this.houseData.find(row => row.id === houseId);
+  public find(homeDesignId: string): HomeDesign {
+    return this.homeDesigns.find(row => row.id === homeDesignId);
   }
 
 

@@ -36,6 +36,7 @@ class BlockController {
           'map_location.available',
           'place.id',
           'place.name',
+          'place.map_icon_index',
         )
         .from('map_location')
         .leftJoin('place', 'map_location.place_id', 'place.id')

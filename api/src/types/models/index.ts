@@ -6,4 +6,5 @@ export * from './object-instance.model';
 export * from './place.model';
 export * from './transaction.model';
 export * from './wallet.model';
-export * from './house.model';
+export * from './home-design.model';
+export * from './home.model';

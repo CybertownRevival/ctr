@@ -17,7 +17,10 @@
                 v-if="locations.find(b => b.location === index).id"
                 :to="'/block/' + locations.find(b => b.location === index).id"
                 class="w-full h-full block text-center flex items-center justify-center">
-                <span>{{ locations.find(b => b.location === index).name }}</span>
+                <span>
+                  <img :src="mapIconImage(locations.find(b => b.location === index).map_icon_index)"
+                       :title="locations.find(b => b.location === index).name"/>
+                </span>
               </router-link>
               <router-link
                 v-else-if="locations.find(b => b.location === index).available"
@@ -72,6 +75,10 @@ export default Vue.extend({
         this.loaded = true;
       });
 
+    },
+    mapIconImage (index) {
+      return "/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
+        "/block/Picon2D"+(index-1).toString().padStart(3,"0")+".gif";
     },
   },
   computed: {

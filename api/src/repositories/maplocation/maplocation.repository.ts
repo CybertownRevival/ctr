@@ -28,7 +28,10 @@ export class MapLocationRepository {
    * @returns promise
    */
   public async create(locationParams: Partial<MapLocation>): Promise<void> {
-    await this.db.mapLocation.insert(locationParams);
+    // todo on duplicate key update
+    await this.db.mapLocation.insert(locationParams)
+      .onConflict(['parent_place_id','location'])
+      .merge(['place_id','available']);
   }
 
 }

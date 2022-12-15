@@ -11,6 +11,7 @@ import {
 } from '../libs';
 import {
   MemberService,
+  HomeService,
 } from '../services';
 import { SessionInfo } from 'session-info.interface';
 
@@ -34,6 +35,7 @@ class MemberController {
    */
   constructor(
     private memberService: MemberService,
+    private homeService: HomeService,
   ) {}
 
   public async getHome(request: Request, response: Response): Promise<void> {
@@ -42,10 +44,10 @@ class MemberController {
 
     try {
 
-      const homeData = await this.memberService.getHome(session.id);
+      const homeData = await this.homeService.getHome(session.id);
 
       if(homeData) {
-        const blockData = await this.memberService.getHomeBlock(homeData.id);
+        const blockData = await this.homeService.getHomeBlock(homeData.id);
         response.status(200).json({
           homeData: homeData,
           blockData: blockData,
@@ -83,7 +85,6 @@ class MemberController {
       home3d,
     } = request.body;
 
-    console.log(request.body);
 
     try {
       if (!validator.isInt(blockId)) {
@@ -100,12 +101,26 @@ class MemberController {
 
 
       // check they don't already have a home
-      const homeInfo = await this.memberService.getHome(session.id);
+      const homeInfo = await this.homeService.getHome(session.id);
       if(homeInfo) {
         console.log(homeInfo);
         throw new Error('Home already exists.');
       } else {
-        await this.memberService.createHome(
+
+        // check if they have enough for the home
+        const memberInfo = await this.memberService.getMemberInfo(session.id);
+        let purchaseAmount = 0;
+        if(home3d) {
+          // check they have enough in their wallet to buy the 3d home
+          // this is optional (if not null)
+          const homeDesignInfo = this.homeService.getHomeDesign(home3d);
+          if(homeDesignInfo.price > memberInfo.walletBalance) {
+            throw new Error('Not enough funds to purchase house.');
+          }
+          purchaseAmount = homeDesignInfo.price;
+        }
+
+        await this.homeService.createHome(
           session.id,
           firstName,
           lastName,
@@ -116,6 +131,15 @@ class MemberController {
           icon2d,
           home3d,
         );
+
+        if(purchaseAmount > 0) {
+          await this.memberService.performHomePurchaseTransaction(session.id, purchaseAmount);
+        }
+
+        await this.memberService.updateName(session.id, firstName, lastName);
+
+        response.status(200).json({ 'status': 'success' });
+
       }
 
     } catch (error) {
@@ -392,4 +416,5 @@ class MemberController {
 
 }
 const memberService = Container.get(MemberService);
-export const memberController = new MemberController(memberService);
+const homeService = Container.get(HomeService);
+export const memberController = new MemberController(memberService, homeService);

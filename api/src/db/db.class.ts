@@ -37,4 +37,7 @@ export class Db {
   get wallet() {
     return this.knex<Models.Wallet, Models.Wallet[]>('wallet');
   }
+  get home() {
+    return this.knex<Models.Home, Models.Home[]>('home');
+  }
 }

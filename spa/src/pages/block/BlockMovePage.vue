@@ -1,5 +1,6 @@
 <template>
   <div class="h-full w-full bg-black flex flex-col p-2" v-if="loaded">
+    <div v-if="showError" class="text-center text-red-500">{{ error }}</div>
 
     <div v-if="!complete">
       <div v-if="relocating">
@@ -95,7 +96,7 @@
     </div>
     <div v-if="complete">
       <!-- DONE MESSAGE -->
-      <p class="text-center">Congratulations, <strong><$NNM></strong>!<br />
+      <p class="text-center">Congratulations, <strong>{{ $store.data.user.username }}</strong>!<br />
         You have settled down and are now a <strong>Resident</strong>!</p>
 
       <p><a href="block<$g_exe>?ac=place&ID=<$ID>" target="place">Click here</a>
@@ -113,6 +114,8 @@ export default Vue.extend({
   data: () => {
     return {
       loaded: false,
+      showError: false,
+      error: '',
       block: undefined,
       hood: undefined,
       colony: undefined,
@@ -155,6 +158,8 @@ export default Vue.extend({
       });
     },
     async settle() {
+      this.showError = false;
+      this.error = '';
 
       try {
         const response = await this.$http.post("/member/home/settle", {
@@ -169,9 +174,11 @@ export default Vue.extend({
         });
 
         // todo show a congrats
+        this.complete = true;
 
       } catch(e) {
-
+        this.error = e.response.data.error;
+        this.showError = true;
       }
     },
     relocate() {

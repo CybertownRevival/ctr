@@ -11,7 +11,6 @@ import {
   WalletRepository,
   PlaceRepository,
   MapLocationRepository,
-  HouseRepository,
 } from '../../repositories';
 import { Member, Place } from '../../types/models';
 import { MemberInfoView } from '../../types/views';
@@ -36,7 +35,6 @@ export class MemberService {
     private walletRepository: WalletRepository,
     private placeRepository: PlaceRepository,
     private mapLocationRespository: MapLocationRepository,
-    private houseRepository: HouseRepository,
   ) {}
 
   /**
@@ -259,75 +257,11 @@ export class MemberService {
   }
 
   /**
-   * Get a place object for a member's home
-   * @param memberId id of the member
+   * Deducts the amount for a house purchase from a member's wallet
+   * @param memberId id of a member
+   * @param amount amount to deduct
    */
-  public async getHome(memberId: number): Promise<Place> {
-    const place = await this.placeRepository.findHomeByMemberId(memberId);
-    return place;
-  }
-
-  public async getHomeBlock(homePlaceId: number): Promise<Place> {
-    const mapLocation = await this.mapLocationRespository.findPlaceIdMapLocation(homePlaceId);
-    const place = await this.placeRepository.findById(mapLocation.parent_place_id);
-    return place;
-
-  }
-
-  public async createHome(
-    memberId: number,
-    firstName: string,
-    lastName: string,
-    blockId: number,
-    location: number,
-    houseName: string,
-    houseDescription: string,
-    icon2d: string,
-    houseId: string,
-  ): Promise<void> {
-
-    const memberInfo = await this.getMemberInfo(memberId);
-
-    // check the space isn't already taken
-    const mapLocation = await this.mapLocationRespository.findByParentPlaceIdAndLocation(
-      blockId,
-      location,
-    );
-    if(!mapLocation || !mapLocation.available) {
-      throw new Error('Location is not available.');
-    } else if (mapLocation.place_id > 0) {
-      throw new Error('Location already taken.');
-    }
-
-    if(houseId) {
-      // check they have enough in their wallet to buy the 3d home
-      // this is optional (if not null)
-      const houseInfo = this.houseRepository.findHouseById(houseId);
-      if(houseInfo.price > memberInfo.walletBalance) {
-        throw new Error('Not enough funds to purchase house.');
-      }
-    }
-
-    // todo create place
-    const placeId = await this.placeRepository.create({
-      type: 'home',
-      member_id: memberId,
-      home_id: houseId,
-      name: houseName,
-      description: houseDescription,
-      map_icon_index: parseInt(icon2d),
-    });
-
-    // todo create map location
-    await this.mapLocationRespository.create()
-
-    // update firstname + last name on member
-    await this.updateName(memberId, firstName, lastName);
-
-    // todo deduct amount (if required);
-    // todo return a success
-
-    console.log('GOT TO THE END! SEND A SUCCESS');
-
+  public async performHomePurchaseTransaction(memberId: number, amount: number): Promise<void> {
+    await this.transactionRepository.createHomePurchaseTransaction(memberId, amount);
   }
 }
