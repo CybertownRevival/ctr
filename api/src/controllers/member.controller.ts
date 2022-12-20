@@ -41,21 +41,45 @@ class MemberController {
   public async getHome(request: Request, response: Response): Promise<void> {
     const session = this.decryptSession(request, response);
     if (!session) return;
+    let userId = null;
+
+
 
     try {
 
-      const homeData = await this.homeService.getHome(session.id);
+      const { username } = request.params;
+
+      if(username) {
+        const user = await this.memberService.find({
+          username: username,
+        });
+        if(user) {
+          userId = user.id;
+        } else {
+          throw new Error('Member not found');
+
+        }
+      } else {
+        userId = session.id;
+
+      }
+
+      const homeData = await this.homeService.getHome(userId);
 
       if(homeData) {
         const blockData = await this.homeService.getHomeBlock(homeData.id);
+        const homeDesignData = await this.homeService.getPlaceHomeDesign(homeData.id);
+        console.log(homeDesignData);
         response.status(200).json({
           homeData: homeData,
           blockData: blockData,
+          homeDesignData: homeDesignData,
         });
       } else {
         response.status(200).json({
           homeData: null,
           blockData: null,
+          homeDesignData: null,
         });
       }
 

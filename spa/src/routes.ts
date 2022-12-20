@@ -103,5 +103,12 @@ export default [
     },
     name: "block",
   },
+  {
+    path: "/home/:username",
+    components: {
+      default: WorldBrowserPage,
+    },
+    name: "user-home",
+  },
 ];
 

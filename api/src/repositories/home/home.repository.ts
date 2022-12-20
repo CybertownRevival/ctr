@@ -13,4 +13,9 @@ export class HomeRepository {
     await this.db.home.insert(homeParams);
   }
 
+  public async findById(placeId: number): Promise<Home> {
+    const [home] = await this.db.home.where({ place_id: placeId });
+    return home;
+  }
+
 }

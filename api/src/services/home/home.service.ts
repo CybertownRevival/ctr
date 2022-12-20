@@ -48,6 +48,13 @@ export class HomeService {
 
   }
 
+  public async getPlaceHomeDesign(homePlaceId: number): Promise<HomeDesign> {
+    const homeInfo = await this.homeRepository.findById(homePlaceId);
+    console.log(homeInfo);
+    return this.homeDesignRespository.find(homeInfo.home_design_id);
+
+  }
+
   public getHomeDesign(homeDesignId: string): HomeDesign {
     return this.homeDesignRespository.find(homeDesignId);
   }

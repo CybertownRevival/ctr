@@ -152,17 +152,38 @@ export default Vue.extend({
       this.sharedObjectsMap.set(obj.id, sharedObject);
     },
     debugMsg,
-    getPlace(): Promise<void> {
+    async getPlace(): Promise<void> {
       this.debugMsg("get place");
-      return Promise.all([
-        this.$http.get("/place/" + this.$route.params.id),
-        this.$http.get("/place/" + this.$route.params.id + "/object_instance"),
-      ]).then((response) => {
-        this.place = response[0].data.place;
-        document.title = this.place.name + " - Cybertown";
-        this.sharedObjects = response[1].data.object_instance;
-        this.debugMsg(response[0].data.place);
-      });
+      let placeId = null;
+
+      if(this.$route.params.username) {
+        try {
+          const homeResponse = await this.$http.get("/member/home_info/"+this.$route.params.username);
+          console.log(homeResponse);
+
+          // todo handle null homeDesignData
+          // todo build the place from the home (place) data and the home design data
+          this.place = {
+            ...homeResponse.data.homeData,
+            assets_dir: homeResponse.data.homeDesignData.id+"/",
+            world_filename: "home.wrl",
+            slug: "home",
+          };
+        } catch(e) {
+          console.error("error with home response");
+        }
+      } else {
+        return Promise.all([
+          this.$http.get("/place/" + this.$route.params.id),
+          this.$http.get("/place/" + this.$route.params.id + "/object_instance"),
+        ]).then((response) => {
+          this.place = response[0].data.place;
+          document.title = this.place.name + " - Cybertown";
+          this.sharedObjects = response[1].data.object_instance;
+          this.debugMsg(response[0].data.place);
+        });
+      }
+
     },
     async loadAndJoinPlace(): Promise<void> {
       this.loaded = false;
@@ -178,6 +199,7 @@ export default Vue.extend({
         this.loaded = true;
         this.startX3DListeners(browser);
       } else {
+        // todo handle home components
         this.mainComponent = () => import("@/components/place/"+this.place.slug+"/main2d.vue");
         this.loaded = true;
       }
@@ -539,26 +561,33 @@ export default Vue.extend({
   },
   computed: {
     worldUrl(): string {
+      // todo handle homes
       const { assets_dir, world_filename } = this.place;
       return `/assets/worlds/${assets_dir}${world_filename}`;
     },
   },
   watch: {
     "$store.data.x3dReady": function (to, from) {
-      if (to && this.$route.name === "world-browser") {
+      if (to && (this.$route.name === "world-browser" || this.$route.name === "user-home")) {
         this.loadAndJoinPlace();
       }
     },
     "$store.data.view3d": function () {
-      if (this.$route.name === "world-browser") {
+      if (this.$route.name === "world-browser" || this.$route.name === "user-home") {
         this.loadAndJoinPlace();
       }
     },
 
     $route(to, from) {
-      if (to.name === "world-browser" && this.$store.data.x3dReady) {
+      if (
+        (to.name === "world-browser" || to.name === "user-home")
+        && this.$store.data.x3dReady
+      ) {
         this.loadAndJoinPlace();
-      } else if(from.name === "world-browser" && this.$store.data.x3dReady) {
+      } else if(
+        (from.name === "world-browser" || from.name === "user-home")
+        && this.$store.data.x3dReady
+      ) {
         this.unloadPlace();
       }
     },
@@ -586,6 +615,7 @@ export default Vue.extend({
     },
   },
   mounted() {
+    console.log('mounted');
     this.startSocketListeners();
   },
   beforeDestroy() {},
