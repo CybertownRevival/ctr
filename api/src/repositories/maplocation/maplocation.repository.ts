@@ -28,10 +28,15 @@ export class MapLocationRepository {
    * @returns promise
    */
   public async create(locationParams: Partial<MapLocation>): Promise<void> {
-    // todo on duplicate key update
     await this.db.mapLocation.insert(locationParams)
       .onConflict(['parent_place_id','location'])
       .merge(['place_id','available']);
+  }
+
+  public async unsetPlaceId(parentPlaceId: number, location: number): Promise<void> {
+    await this.db.mapLocation
+      .update({place_id: null})
+      .where({parent_place_id: parentPlaceId, location: location});
   }
 
 }

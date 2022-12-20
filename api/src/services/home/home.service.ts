@@ -97,4 +97,37 @@ export class HomeService {
     });
 
   }
+
+  public async moveHome(
+    memberId: number,
+    blockId: number,
+    location: number,
+  ): Promise<void> {
+
+
+    // check the space isn't already taken
+    const mapLocation = await this.mapLocationRespository.findByParentPlaceIdAndLocation(
+      blockId,
+      location,
+    );
+    if(!mapLocation || !mapLocation.available) {
+      throw new Error('Location is not available.');
+    } else if (mapLocation.place_id > 0) {
+      throw new Error('Location already taken.');
+    }
+
+    const place = await this.placeRepository.findHomeByMemberId(memberId);
+
+    const currentMapLocation = await this.mapLocationRespository.findPlaceIdMapLocation(place.id);
+    await this.mapLocationRespository.unsetPlaceId(
+      currentMapLocation.parent_place_id,
+      currentMapLocation.location,
+    );
+
+    await this.mapLocationRespository.create({
+      ...mapLocation,
+      place_id: place.id,
+    });
+
+  }
 }

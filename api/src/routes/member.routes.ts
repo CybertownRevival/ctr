@@ -23,6 +23,8 @@ memberRoutes.get('/home',
   (request, response) => memberController.getHome(request, response));
 memberRoutes.post('/home/settle',
   (request, response) => memberController.createHome(request, response));
+memberRoutes.post('/home/move',
+  (request, response) => memberController.moveHome(request, response));
 memberRoutes.get('/info',
   (request, response) => memberController.getInfo(request, response));
 

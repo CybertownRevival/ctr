@@ -5,20 +5,21 @@
     <div v-if="!complete">
       <div v-if="relocating">
         <!-- RELOCATE MESSAGE -->
-        <p><strong>Hello <$NNM>,</strong> do you want to move from
-          '<$comm1> / <$neigh1> / <$block1> / <$prop1>' to
-          this <$PNM>?
-          <!-- in <$BNM> <b>'<$comm2> / <$neigh2> / <$block2>'</b>?-->
+        <p><strong>Hello {{ $store.data.user.username }},</strong> do you want to move from
+          '{{ homeResponse.blockData.name }}' to
+          this plot?
         </p>
-        <button type="button" class="btn">Yes</button>
-        <button type="button" class="btn">No</button>
+        <button type="button" class="btn" @click="relocate">Yes</button>
+        <button type="button" class="btn" @click="$router.back()">No</button>
       </div>
       <div v-else-if="relocating === false">
         <!-- SETTLE MESSAGE -->
         <p class="text-center font-weight-bold">Settle down here!</p>
 
-        <button type="button" class="btn" @click="settle">Yes</button>
-        <button type="button" class="btn" @click="$router.back()">No</button>
+        <div class="text-center">
+          <button type="button" class="btn" @click="settle">Yes</button>
+          <button type="button" class="btn" @click="$router.back()">No</button>
+        </div>
 
         <table>
           <tr>
@@ -52,7 +53,8 @@
                 <template v-for="index in 33">
                   <input type="radio" :value="index" v-model="icon2d">
                   <img
-                    :src="'/assets/img/map_themes/grass/block/Picon2D'+(index-1).toString().padStart(3,'0')+'.gif'" />
+                    :src="'/assets/img/map_themes/grass/block/Picon2D'+
+                    (index-1).toString().padStart(3,'0')+'.gif'" />
                   <br />
                 </template>
               </template>
@@ -60,7 +62,8 @@
                 <template v-for="index in 7">
                   <input type="radio" :value="index" v-model="icon2d">
                   <img
-                    :src="'/assets/img/map_themes/desert/block/Picon2D'+(index-1).toString().padStart(3,'0')+'.gif'" />
+                    :src="'/assets/img/map_themes/desert/block/Picon2D'+
+                    (index-1).toString().padStart(3,'0')+'.gif'" />
                   <br />
                 </template>
               </template>
@@ -68,7 +71,8 @@
                 <template v-for="index in 5">
                   <input type="radio" :value="index" v-model="icon2d">
                   <img
-                    :src="'/assets/img/map_themes/cyberhood/block/Picon2D'+(index-1).toString().padStart(3,'0')+'.gif'" />
+                    :src="'/assets/img/map_themes/cyberhood/block/Picon2D'+
+                    (index-1).toString().padStart(3,'0')+'.gif'" />
                   <br />
                 </template>
               </template>
@@ -95,19 +99,22 @@
 
     </div>
     <div v-if="complete">
-      <!-- DONE MESSAGE -->
-      <p class="text-center">Congratulations, <strong>{{ $store.data.user.username }}</strong>!<br />
-        You have settled down and are now a <strong>Resident</strong>!</p>
+      <p class="text-center">Congratulations,
+        <strong>{{ $store.data.user.username }}</strong>!<br />
+        You have settled down and are now a <strong>Resident</strong>!
+      </p>
 
-      <p><a href="block<$g_exe>?ac=place&ID=<$ID>" target="place">Click here</a>
-        to update the block and enter your new home ...</p>
+      <p class="text-center">
+        <router-link :to="'/block/'+$route.params.id" target="place">Click here</router-link>
+        to update the block and enter your new home ...
+      </p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { colonyDataHelper, homeDataHelper } from '@/helpers';
+import { colonyDataHelper, homeDataHelper } from "@/helpers";
 
 export default Vue.extend({
   name: "BlockMovePage",
@@ -115,7 +122,7 @@ export default Vue.extend({
     return {
       loaded: false,
       showError: false,
-      error: '',
+      error: "",
       block: undefined,
       hood: undefined,
       colony: undefined,
@@ -145,7 +152,7 @@ export default Vue.extend({
         this.colony = response[0].data.colony;
         this.locations = response[1].data.locations;
         this.$store.methods.setPlace(response[0].data);
-        this.homeResponse = response[2];
+        this.homeResponse = response[2].data;
 
         if(this.homeResponse.homeData) {
           this.relocating = true;
@@ -159,10 +166,10 @@ export default Vue.extend({
     },
     async settle() {
       this.showError = false;
-      this.error = '';
+      this.error = "";
 
       try {
-        const response = await this.$http.post("/member/home/settle", {
+        await this.$http.post("/member/home/settle", {
           blockId: this.$route.params.id,
           location: this.$route.params.location,
           houseName: this.houseName,
@@ -173,7 +180,6 @@ export default Vue.extend({
           home3d: this.home3d,
         });
 
-        // todo show a congrats
         this.complete = true;
 
       } catch(e) {
@@ -181,10 +187,25 @@ export default Vue.extend({
         this.showError = true;
       }
     },
-    relocate() {
+    async relocate() {
       // todo check they already have a spot
       // todo check this spot is still available
       // todo do it
+      this.showError = false;
+      this.error = "";
+
+      try {
+        await this.$http.post("/member/home/move", {
+          blockId: this.$route.params.id,
+          location: this.$route.params.location
+        });
+
+        this.complete = true;
+
+      } catch(e) {
+        this.error = e.response.data.error;
+        this.showError = true;
+      }
     },
   },
   mounted() {

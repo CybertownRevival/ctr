@@ -37,9 +37,11 @@ class BlockController {
           'place.id',
           'place.name',
           'place.map_icon_index',
+          'member.username',
         )
         .from('map_location')
         .leftJoin('place', 'map_location.place_id', 'place.id')
+        .leftJoin('member', 'place.member_id', 'member.id')
         .where('map_location.parent_place_id', id)
         .orderBy('map_location.location');
 

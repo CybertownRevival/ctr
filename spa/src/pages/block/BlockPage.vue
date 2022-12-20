@@ -15,11 +15,13 @@
 
               <router-link
                 v-if="locations.find(b => b.location === index).id"
-                :to="'/block/' + locations.find(b => b.location === index).id"
+                :to="'/home/' + locations.find(b => b.location === index).username"
+                :title="locations.find(b => b.location === index).name"
                 class="w-full h-full block text-center flex items-center justify-center">
                 <span>
-                  <img :src="mapIconImage(locations.find(b => b.location === index).map_icon_index)"
-                       :title="locations.find(b => b.location === index).name"/>
+                  <img v-if="locations.find(b => b.location === index).map_icon_index"
+                       :src="mapIconImage(locations.find(b => b.location === index).map_icon_index)"
+                       />
                 </span>
               </router-link>
               <router-link

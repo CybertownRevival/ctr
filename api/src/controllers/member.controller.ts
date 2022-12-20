@@ -148,6 +148,46 @@ class MemberController {
     }
   }
 
+  public async moveHome(request: Request, response: Response): Promise<void> {
+    const session = this.decryptSession(request, response);
+    if (!session) return;
+
+    const {
+      blockId,
+      location,
+    } = request.body;
+
+
+    try {
+      if (!validator.isInt(blockId)) {
+        throw new Error('blockId must be passed');
+      }
+
+      if (!validator.isInt(location)) {
+        throw new Error('location must be passed');
+      }
+
+      const homeInfo = await this.homeService.getHome(session.id);
+      if(!homeInfo) {
+        throw new Error('You don\'t have a home yet.');
+      } else {
+
+        await this.homeService.moveHome(
+          session.id,
+          blockId,
+          location
+        );
+
+        response.status(200).json({ 'status': 'success' });
+
+      }
+
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ 'error': error.message });
+    }
+  }
+
   /**
    * Controller method for providing member information
    * @route /api/member/info
