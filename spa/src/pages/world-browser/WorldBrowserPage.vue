@@ -486,7 +486,7 @@ export default Vue.extend({
 
       this.eventNodeMap = new Map();
 
-      for (const eventNode of Array.from(sharedZone.events)) {
+      for (const eventNode of Array.from(sharedZone.events) as Array<any>) {
         for (const typeName of Object.keys(this.TYPES)) {
           eventNode.addFieldCallback(typeName + "ToServer", {}, val => {
             // TODO: confirm validity of adding to possibly non-existent field
