@@ -340,10 +340,9 @@ export default Vue.extend({
       delete this.users[id];
     },
     onSharedEvent(event): void {
-      let eventObj = event.detail;
-      for (let node of this.eventNodeMap.get(eventObj.name)) {
-        node[eventObj.type + "FromServer"] = this.TYPES[eventObj.type].fromJSON(
-          eventObj.value
+      for (let node of this.eventNodeMap.get(event.name)) {
+        node[event.type + "FromServer"] = this.TYPES[event.type].fromJSON(
+          event.value
         );
       }
     },
@@ -450,7 +449,7 @@ export default Vue.extend({
 
       this.eventNodeMap = new Map();
 
-      for (const eventNode of Array.from(sharedZone.events) as Array<any>) {
+      for (const eventNode of Array.from<any>(sharedZone.events)) {
         for (const typeName of Object.keys(this.TYPES)) {
           eventNode.addFieldCallback(typeName + "ToServer", {}, val => {
             // TODO: confirm validity of adding to possibly non-existent field
