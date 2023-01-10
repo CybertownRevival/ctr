@@ -533,6 +533,8 @@ export default Vue.extend({
 
       this.startSharedEvents();
 
+      this.startSocketListeners();
+
       this.loaded = true;
     },
   },
@@ -583,9 +585,6 @@ export default Vue.extend({
       deep: true,
       immediate: true,
     },
-  },
-  mounted() {
-    this.startSocketListeners();
   },
   beforeDestroy() {},
   async beforeCreate() {
