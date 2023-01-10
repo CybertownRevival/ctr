@@ -507,7 +507,7 @@ export default Vue.extend({
     },
     startSocketListeners(): void {
       this.$socket.on("VERSION", event => this.onVersion(event));
-    }
+    },
     start3DSocketListeners(): void {
       this.$socket.on("AV", event => this.onAvatarMoved(event));
       this.$socket.on("AV:del", event => this.onAvatarRemoved(event));
