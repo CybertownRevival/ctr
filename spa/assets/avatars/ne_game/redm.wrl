@@ -1,0 +1,41 @@
+#VRML V2.0 utf8
+
+EXTERNPROTO Avatar [
+
+ exposedField MFFloat avatarSize
+ exposedField SFBool isAvatar
+ exposedField SFTime gesture1
+ exposedField SFTime gesture2
+ exposedField SFTime gesture3
+ exposedField SFTime gesture4
+ exposedField SFTime gesture5
+ exposedField SFTime gesture6
+ exposedField SFTime gesture7
+ exposedField SFTime gesture8
+ eventIn SFVec3f set_position
+ exposedField SFRotation rotation
+ exposedField SFInt32 whichChoice
+ exposedField SFBool isOver
+ exposedField SFTime touchTime
+ exposedField SFBool isPilot
+ exposedField SFString nickname
+ exposedField MFString texture
+
+exposedField MFNode v15_children
+exposedField MFNode vc7_children
+exposedField MFNode neck_children
+exposedField MFNode skull_children
+exposedField MFNode r_wrist_children
+exposedField MFNode l_wrist_children 
+]"./m.wrl#Avatar"
+
+
+Avatar{ 
+texture "./redm.jpg"
+r_wrist_children[
+#Transform{translation -.2 .03 0 rotation 0 -1 0 1.571 children[ Inline{url "http://www.colonycity.com/places/ne_game/vrml/weapons/beamer.wrl"}]}
+#Transform{translation -.2 .03 0 rotation 0 -1 0 1.571 children[ Inline{url "http://www.colonycity.com/places/ne_game/vrml/weapons/repulsor.wrl"}]}
+Transform{translation -.15 .03 0 rotation 0 -1 0 1.571 children[ Inline{url "http://www.cybertown.com/places/ne_game/vrml/weapons/aapd.wrl"}]}
+] 
+
+}#END avatar 
