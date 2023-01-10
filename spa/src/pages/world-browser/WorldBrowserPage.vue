@@ -470,11 +470,13 @@ export default Vue.extend({
       }
     },
     startSocketListeners(): void {
+      this.$socket.on("VERSION", event => this.onVersion(event));
+    }
+    start3DSocketListeners(): void {
       this.$socket.on("AV", event => this.onAvatarMoved(event));
       this.$socket.on("AV:del", event => this.onAvatarRemoved(event));
       this.$socket.on("AV:new", event => this.onAvatarAdded(event));
       this.$socket.on("SE", event => this.onSharedEvent(event));
-      this.$socket.on("VERSION", event => this.onVersion(event));
     },
     async startX3D(): Promise<any> {
       if (!this.browser) {
@@ -533,7 +535,7 @@ export default Vue.extend({
 
       this.startSharedEvents();
 
-      this.startSocketListeners();
+      this.start3DSocketListeners();
 
       this.loaded = true;
     },
@@ -585,6 +587,9 @@ export default Vue.extend({
       deep: true,
       immediate: true,
     },
+  },
+  mounted() {
+    this.startSocketListeners();
   },
   beforeDestroy() {},
   async beforeCreate() {
