@@ -195,7 +195,7 @@ export default Vue.extend({
       });
       this.$socket.on("AV:del", event => {
         this.systemMessage(event.username + " has left.");
-        this.users = this.users.filter((u) => u.username !== event.username);
+        this.users = this.users.filter((u) => u.id !== event.id);
       });
       this.$socket.on("AV:new", event => {
         this.systemMessage(event.username + " has entered.");
