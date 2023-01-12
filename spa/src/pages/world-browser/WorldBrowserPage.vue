@@ -259,7 +259,7 @@ export default Vue.extend({
         let distance;
         const browser = X3D.getBrowser(this.browser);
         try {
-          distance = browser.currentScene?.getNamedNode("SharedNode")?.beamToDistance ?? 3;
+          distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? 3;
         } catch(e) {
           distance = 3;
         }
