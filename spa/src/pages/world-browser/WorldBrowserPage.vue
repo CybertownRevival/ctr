@@ -226,7 +226,6 @@ export default Vue.extend({
         let rot = new X3D.SFRotation(...user.transform.rot);
         let pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -distance));
         pos_offset.y = 0;
-        console.log("pos_offset", pos_offset);
         browser.viewpointPosition = pos.add(pos_offset);
         // orientation math:
         // The destination avatar is, relative to us, at the negation of pos_offset
