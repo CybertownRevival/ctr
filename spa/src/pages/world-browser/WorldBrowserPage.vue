@@ -21,6 +21,7 @@
         :shared-event="sharedEvent"
         :shared-objects="sharedObjects"
         @move-object="moveObject"
+        @beam-to="beamTo"
       ></chat>
     </div>
   </div>
@@ -210,6 +211,30 @@ export default Vue.extend({
     },
     moveObject(objectId): void {
       this.sharedObjectsMap.get(objectId).startMove = true;
+    },
+    beamTo(userId): void {
+      let user = this.users[userId];
+      if(user && user.transform && user.transform.pos && user.transform.rot) {
+        let distance;
+        const browser = X3D.getBrowser(this.browser);
+        try {
+          distance = browser.currentScene?.getNamedNode("SharedNode")?.beamToDistance ?? 3;
+        } catch(e) {
+          distance = 3;
+        }
+        let pos = new X3D.SFVec3f(...user.transform.pos);
+        let rot = new X3D.SFRotation(...user.transform.rot);
+        let pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -distance));
+        pos_offset.y = 0;
+        console.log("pos_offset", pos_offset);
+        browser.viewpointPosition = pos.add(pos_offset);
+        // orientation math:
+        // The destination avatar is, relative to us, at the negation of pos_offset
+        // Math.atan2(y, x) gives the angle to face (x, y) if 0 angle is facing x
+        // We want x = our -z to be 0 and y = our left = our -x. So, Math.atan(-x, -z)
+        // Negating pos_offset gives Math.atan2(pos_offset.x, pos_offset.z)
+        browser.viewpointOrientation = new X3D.SFRotation(0, 1, 0, Math.atan2(pos_offset.x, pos_offset.z));
+      }
     },
     async onAvatarAdded(event): Promise<void> {
       const ROTATE180 = new X3D.SFRotation(0, 1, 0, Math.PI);

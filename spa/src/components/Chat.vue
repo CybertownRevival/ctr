@@ -80,7 +80,7 @@
             <img src="/assets/img/av_me.gif" class="inline" />
             {{ this.$store.data.user.username }}
           </li>
-          <li v-for="(user, key) in users" :key="key">
+          <li v-for="(user, key) in users" :key="key" @click="beamTo(user.id)">
             <img src="/assets/img/av_def.gif" class="inline" />
             {{ user.username }}
           </li>
@@ -186,6 +186,9 @@ export default Vue.extend({
     },
     moveObject(objectId): void {
       this.$emit("move-object", objectId);
+    },
+    beamTo(userId): void {
+      this.$emit("beam-to", userId);
     },
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {
