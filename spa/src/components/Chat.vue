@@ -218,8 +218,8 @@ export default Vue.extend({
     moveObject(objectId): void {
       this.$emit("move-object", objectId);
     },
-    async refreshPlaces(): void {
-      const population = await fetch('/population').then(r => r.json());
+    async refreshPlaces(): Promise<void> {
+      const population: {[index: string]: number} = await fetch('/population').then(r => r.json());
       console.log(population);
       const placesInfo = await fetch(`/api/place/${Object.keys(population).join(',')}/ids`).then(r => r.json()).then(j => j.places);
       const placeIdMapping = function(id) {
@@ -228,7 +228,7 @@ export default Vue.extend({
       };
       console.log(placesInfo);
       this.places = Object.entries(population)
-        .sort(([id_a, count_a] [id_b, count_b]) => count_b - count_a)
+        .sort(([id_a, count_a], [id_b, count_b]) => count_b - count_a)
         .map(([id, count]) => {
           const placeInfo = placeIdMapping(id);
           return {name: placeInfo.name, count: count, slug: placeInfo.slug}
