@@ -50,11 +50,29 @@
           font-bold
         "
       >
+        <button
+          v-if="activePanel === 'places'"
+          type="button"
+          class="
+            flex-none
+            p-0.5
+            bg-gray-300
+            text-black
+            hover:bg-gray-200
+            active:bg-gray-400
+          "
+          @click="refreshPlaces"
+        >
+        Refresh
+        </button>
         <span v-if="activePanel === 'users'" class="flex-grow">
           ({{ this.users.length + 1 }}) {{ place.name }}
         </span>
         <span v-if="activePanel === 'gestures'" class="flex-grow">
           Body Language
+        </span>
+        <span v-if="activePanel === 'places'" class="flex-grow">
+          Places
         </span>
         <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
           Objects
@@ -94,6 +112,11 @@
             {{ gesture }}
           </li>
         </ul>
+        <ul v-if="activePanel === 'places'">
+          <li v-for="place in places" @click="goToSlug(place.slug)">
+            {{ place.name }} ({{ place.count }})
+          </li>
+        </ul>
         <ul v-if="activePanel === 'sharedObjects'">
           <li
             v-for="object in sharedObjects"
@@ -125,6 +148,7 @@ export default Vue.extend({
       message: "",
       messages: [],
       users: [],
+      places: [],
       activePanel: "users",
     };
   },
@@ -172,6 +196,10 @@ export default Vue.extend({
           this.activePanel = "gestures";
           break;
         case "gestures":
+          this.activePanel = "places";
+          this.refreshPlaces();
+          break;
+        case "places":
           this.activePanel = "sharedObjects";
           break;
         case "sharedObjects":
@@ -184,8 +212,28 @@ export default Vue.extend({
         gesture: gestureIndex + 1, // Gestures in ssts start at 1 for some reason.
       });
     },
+    goToSlug(slug): void {
+      this.$router.push({ path: `/place/${slug}` });
+    },
     moveObject(objectId): void {
       this.$emit("move-object", objectId);
+    },
+    async refreshPlaces(): void {
+      const population = await fetch('/population').then(r => r.json());
+      console.log(population);
+      const placesInfo = await fetch(`/api/place/${Object.keys(population).join(',')}/ids`).then(r => r.json()).then(j => j.places);
+      const placeIdMapping = function(id) {
+        const idInt = parseInt(id, 10);
+        return placesInfo.filter(place => place.id === idInt)[0] ?? {name: "<Unknown>", slug: ""};
+      };
+      console.log(placesInfo);
+      this.places = Object.entries(population)
+        .sort(([id_a, count_a] [id_b, count_b]) => count_b - count_a)
+        .map(([id, count]) => {
+          const placeInfo = placeIdMapping(id);
+          return {name: placeInfo.name, count: count, slug: placeInfo.slug}
+        });
+      console.log(this.places);
     },
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {

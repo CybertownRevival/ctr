@@ -42,6 +42,20 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, "/dist/index.html"));
 });
 
+app.get('/population', (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  let population = {};
+  for(let user of USERS.values()) {
+    if(user.room) {
+      if(!population[user.room]) {
+        population[user.room] = 0;
+      }
+      population[user.room] += 1;
+    }
+  }
+  res.send(population);
+});
+
 io.on('connection', async function (socket) {
   console.log('a user connected');
   webhookMessage("System", `${socket.id} connected.`);

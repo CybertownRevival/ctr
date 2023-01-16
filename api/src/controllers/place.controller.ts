@@ -18,6 +18,19 @@ class PlaceController {
     }
   }
 
+   /** Provides data about the places with the given ids */
+   public async getPlacesByIds(request: Request, response: Response): Promise<void> {
+    const { ids: idsString } = request.params;
+    const ids = idsString.split(',').map(id => parseInt(id, 10));
+    try {
+      const places = await db.place.whereIn('id', ids);
+      response.status(200).json({ places });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
   /** Provides data about objects present in the place with the given slug */
   public async getPlaceObjects(request: Request, response: Response): Promise<void> {
     const { slug } = request.params;
