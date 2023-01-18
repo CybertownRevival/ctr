@@ -20,7 +20,7 @@
         <router-view
           v-if="this.$route.name !== 'world-browser' && this.$route.name !== 'user-home'"></router-view>
         <world-browser-page
-          v-show="this.$route.name === 'world-browser' && this.$route.name === 'user-home'"></world-browser-page>
+          v-show="this.$route.name === 'world-browser' || this.$route.name === 'user-home'"></world-browser-page>
       </div>
       <div
         class="flex-none w-60 bg-lines overflow-y-auto"
