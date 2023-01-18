@@ -154,7 +154,6 @@ export default Vue.extend({
     debugMsg,
     async getPlace(): Promise<void> {
       this.debugMsg("get place");
-      let placeId = null;
 
       if(this.$route.params.username) {
         try {
@@ -163,9 +162,15 @@ export default Vue.extend({
 
           // todo handle null homeDesignData
           // todo build the place from the home (place) data and the home design data
+
+          const sharedObjectsResponse = await this.$http.get("/place/" + homeResponse.data.homeData.id +
+            "/object_instance");
+
+          this.sharedObjects = sharedObjectsResponse.data.object_instance;
+
           this.place = {
             ...homeResponse.data.homeData,
-            assets_dir: homeResponse.data.homeDesignData.id+"/",
+            assets_dir: homeResponse.data.homeDesignData.id + "/",
             world_filename: "home.wrl",
             slug: "home",
           };
@@ -173,22 +178,30 @@ export default Vue.extend({
           console.error("error with home response");
         }
       } else {
-        return Promise.all([
-          this.$http.get("/place/" + this.$route.params.id),
-          this.$http.get("/place/" + this.$route.params.id + "/object_instance"),
-        ]).then((response) => {
-          this.place = response[0].data.place;
+        try {
+          const placeResponse = await this.$http.get("/place/" + this.$route.params.id);
+          this.debugMsg(placeResponse.data.place);
+          this.place = placeResponse.data.place;
           document.title = this.place.name + " - Cybertown";
-          this.sharedObjects = response[1].data.object_instance;
-          this.debugMsg(response[0].data.place);
-        });
+
+          const objectInstanceResponse = await this.$http.get("/place/" + this.place.id +
+              "/object_instance");
+
+          this.sharedObjects = objectInstanceResponse.data.object_instance;
+
+        } catch(e) {
+          console.error(e);
+        }
       }
+      console.log('loade');
 
     },
     async loadAndJoinPlace(): Promise<void> {
       this.loaded = false;
       if (this.place) this.$socket.leaveRoom(this.place.id);
       await this.getPlace();
+
+      console.log('continue load and join');
 
       if(this.browser) {
         const browser = X3D.getBrowser(this.browser);
@@ -200,6 +213,7 @@ export default Vue.extend({
         this.startX3DListeners(browser);
       } else {
         // todo handle home components
+        console.log(this.place);
         this.mainComponent = () => import("@/components/place/"+this.place.slug+"/main2d.vue");
         this.loaded = true;
       }
