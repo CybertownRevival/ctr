@@ -1,68 +1,112 @@
 <template>
-  <div class="text-center">
+  <div class="text-center p-3">
     <!-- property/present.tmpl -->
-    <h3><strong>Welcome to <$NAM></strong></h3>
+    <h3><strong>Welcome to {{ $store.data.place.name }}</strong></h3>
 
     <div class="flex flex-row" >
       <div class="flex flex-auto w-2/3">
-        <table border=0 width=100%>
+        <table>
           <tr>
-            <td width=130><b>Resident</b></td>
-            <td><$ownername></td>
+            <td class="w-130 font-bold text-left">
+              Resident
+            </td>
+            <td class="text-left">
+              <!-- username -->
+              <$ownername>
+            </td>
           </tr>
 
           <tr>
-            <td><b>Name</b></td>
-            <td><$FNM> <$LNM></td>
+            <td class="font-bold text-left">
+              Name
+            </td>
+            <td class="text-left">
+              <!-- real name -->
+              <$FNM> <$LNM>
+            </td>
           </tr>
           <!-- #ifdef variable="EML" -->
           <!--#if variable="NNM" == variable="MEM_NNM" -->
           <!-- todo IF viewing their own data -->
           <tr>
-            <td><b>Email</b></td>
-            <td><$EML></td>
+            <td class="font-bold text-left">
+              Email
+            </td>
+            <td class="text-left">
+              <$EML>
+            </td>
           </tr>
           <!--#endif variable="NNM" -->
           <!-- #ifdef variable="isAdmin" -->
           <!-- todo IF admin -->
           <tr>
-            <td><b>Email</b></td>
-            <td><$EML></td>
+            <td class="font-bold text-left">
+              Email
+            </td>
+            <td class="text-left">
+              <$EML>
+            </td>
           </tr>
           <tr>
-            <td><b>Immigration Email</b></td>
-            <td><$EMI></td>
+            <td class="font-bold text-left">
+              Immigration Email
+            </td>
+            <td class="text-left">
+              <$EMI>
+            </td>
           </tr>
           <!-- #endif variable="isAdmin" -->
           <!-- #endif variable="EML" -->
 
           <tr>
-            <td><b>Immigration</b></td>
-            <td><$IMD_DAYNAME>, <$IMD_MONNAME> <$IMD_MDAy> <$IMD_YEAR></td>
+            <td class="font-bold text-left">
+              Immigration
+            </td>
+            <td class="text-left">
+              <!-- format Saturday, October 9 1999 -->
+              <$IMD_DAYNAME>, <$IMD_MONNAME> <$IMD_MDAy> <$IMD_YEAR>
+            </td>
           </tr>
           <!-- #ifdef variable="LAD_DAYNAME" -->
+
           <tr>
-            <td><b>Last Access</b></td>
-            <td><$LAD_DAYNAME>, <$LAD_MONNAME> <$LAD_MDAy> <$LAD_YEAR></td>
+            <td class="font-bold text-left">
+              Last Access
+            </td>
+            <td class="text-left">
+              <$LAD_DAYNAME>, <$LAD_MONNAME> <$LAD_MDAy> <$LAD_YEAR>
+            </td>
           </tr>
           <!-- #endif variable="LAD_DAYNAME" -->
           <tr>
-            <td><b>Experience</b></td>
-            <td><$EXP></td>
+            <td class="font-bold text-left">
+              Experience
+            </td>
+            <td class="text-left">
+              <$EXP>
+            </td>
           </tr>
 
           <tr>
             <!-- #ifdef variable="MON" -->
-            <td><b>Money</b>
+            <!-- TODO suspect this is owner only -->
+            <td class="font-bold text-left">
+              Money
             </td>
-            <td><$MON></td>
+            <td class="text-left">
+              <$MON>
+            </td>
           </tr>
           <!-- #endif variable="MON" -->
 
           <!-- #ifdef variable="HPG" -->
           <tr>
-            <td><b>Home Page</b></td>
-            <td><a href="<$HPG>" target="external"><$HPG></a></td>
+            <td class="font-bold text-left">
+              Home Page
+            </td>
+            <td class="text-left">
+              <a href="<$HPG>" target="external"><$HPG></a>
+            </td>
           </tr>
           <!-- #endif variable="HPG" -->
         </table>
@@ -85,19 +129,6 @@
 
       </div>
     </div>
-    <table border=0 width=100%>
-      <tr>
-        <td>
-          <!-- 1. table for text data -->
-        </td>
-
-        <!-- 2. image data -->
-        <td width=150>
-        </td>
-
-      </tr>
-    </table>
-
   </div>
 </template>
 
@@ -108,6 +139,10 @@ export default Vue.extend({
   name: "HomeMain2d",
   data: () => {
     return {};
+  },
+  mounted() {
+    console.log('the place');
+    console.log(this.$store.data.place);
   },
 });
 </script>

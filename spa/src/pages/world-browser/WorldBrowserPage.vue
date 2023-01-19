@@ -158,10 +158,8 @@ export default Vue.extend({
       if(this.$route.params.username) {
         try {
           const homeResponse = await this.$http.get("/member/home_info/"+this.$route.params.username);
-          console.log(homeResponse);
 
           // todo handle null homeDesignData
-          // todo build the place from the home (place) data and the home design data
 
           const sharedObjectsResponse = await this.$http.get("/place/" + homeResponse.data.homeData.id +
             "/object_instance");
@@ -174,6 +172,7 @@ export default Vue.extend({
             world_filename: "home.wrl",
             slug: "home",
           };
+          this.$store.methods.setPlace(this.place);
         } catch(e) {
           console.error("error with home response");
         }
@@ -188,12 +187,12 @@ export default Vue.extend({
               "/object_instance");
 
           this.sharedObjects = objectInstanceResponse.data.object_instance;
+          this.$store.methods.setPlace(this.place);
 
         } catch(e) {
           console.error(e);
         }
       }
-      console.log('loade');
 
     },
     async loadAndJoinPlace(): Promise<void> {
@@ -201,7 +200,6 @@ export default Vue.extend({
       if (this.place) this.$socket.leaveRoom(this.place.id);
       await this.getPlace();
 
-      console.log('continue load and join');
 
       if(this.browser) {
         const browser = X3D.getBrowser(this.browser);
@@ -212,8 +210,6 @@ export default Vue.extend({
         this.loaded = true;
         this.startX3DListeners(browser);
       } else {
-        // todo handle home components
-        console.log(this.place);
         this.mainComponent = () => import("@/components/place/"+this.place.slug+"/main2d.vue");
         this.loaded = true;
       }
@@ -578,7 +574,6 @@ export default Vue.extend({
   },
   computed: {
     worldUrl(): string {
-      // todo handle homes
       const { assets_dir, world_filename } = this.place;
       return `/assets/worlds/${assets_dir}${world_filename}`;
     },
@@ -632,7 +627,6 @@ export default Vue.extend({
     },
   },
   mounted() {
-    console.log('mounted');
     this.startSocketListeners();
   },
   beforeDestroy() {},

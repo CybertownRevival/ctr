@@ -40,7 +40,7 @@ const appStore = Vue.observable<AppStore>({
     user: {
       token: localStorage.getItem("token"),
     },
-    place: {}
+    place: {},
   },
   methods: {
     destroySession() {
