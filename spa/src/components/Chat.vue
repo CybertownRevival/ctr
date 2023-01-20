@@ -220,20 +220,17 @@ export default Vue.extend({
     },
     async refreshPlaces(): Promise<void> {
       const population: {[index: string]: number} = await fetch('/population').then(r => r.json());
-      console.log(population);
       const placesInfo = await fetch(`/api/place/${Object.keys(population).join(',')}/ids`).then(r => r.json()).then(j => j.places);
       const placeIdMapping = function(id) {
         const idInt = parseInt(id, 10);
         return placesInfo.filter(place => place.id === idInt)[0] ?? {name: "<Unknown>", slug: ""};
       };
-      console.log(placesInfo);
       this.places = Object.entries(population)
         .sort(([id_a, count_a], [id_b, count_b]) => count_b - count_a)
         .map(([id, count]) => {
           const placeInfo = placeIdMapping(id);
           return {name: placeInfo.name, count: count, slug: placeInfo.slug}
         });
-      console.log(this.places);
     },
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {
