@@ -29,5 +29,7 @@ memberRoutes.post('/home/move',
   (request, response) => memberController.moveHome(request, response));
 memberRoutes.get('/info',
   (request, response) => memberController.getInfo(request, response));
+memberRoutes.get('/info/:id',
+  (request, response) => memberController.getInfo(request, response));
 
 export { memberRoutes };

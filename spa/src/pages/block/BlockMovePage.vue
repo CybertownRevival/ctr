@@ -188,9 +188,6 @@ export default Vue.extend({
       }
     },
     async relocate() {
-      // todo check they already have a spot
-      // todo check this spot is still available
-      // todo do it
       this.showError = false;
       this.error = "";
 

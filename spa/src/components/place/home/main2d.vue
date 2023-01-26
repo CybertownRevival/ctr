@@ -5,14 +5,13 @@
 
     <div class="flex flex-row" >
       <div class="flex flex-auto w-2/3">
-        <table>
+        <table class="w-full">
           <tr>
             <td class="w-130 font-bold text-left">
               Resident
             </td>
             <td class="text-left">
-              <!-- username -->
-              <$ownername>
+              {{ memberInfo.username }}
             </td>
           </tr>
 
@@ -21,42 +20,17 @@
               Name
             </td>
             <td class="text-left">
-              <!-- real name -->
-              <$FNM> <$LNM>
+              {{ memberInfo.firstName }} {{ memberInfo.lastName }}
             </td>
           </tr>
-          <!-- #ifdef variable="EML" -->
-          <!--#if variable="NNM" == variable="MEM_NNM" -->
-          <!-- todo IF viewing their own data -->
-          <tr>
+          <tr v-if="this.$store.data.user.id == this.$store.data.place.member_id || this.$store.data.user.admin">
             <td class="font-bold text-left">
               Email
             </td>
             <td class="text-left">
-              <$EML>
+              {{ memberInfo.email }}
             </td>
           </tr>
-          <!--#endif variable="NNM" -->
-          <!-- #ifdef variable="isAdmin" -->
-          <!-- todo IF admin -->
-          <tr>
-            <td class="font-bold text-left">
-              Email
-            </td>
-            <td class="text-left">
-              <$EML>
-            </td>
-          </tr>
-          <tr>
-            <td class="font-bold text-left">
-              Immigration Email
-            </td>
-            <td class="text-left">
-              <$EMI>
-            </td>
-          </tr>
-          <!-- #endif variable="isAdmin" -->
-          <!-- #endif variable="EML" -->
 
           <tr>
             <td class="font-bold text-left">
@@ -64,11 +38,12 @@
             </td>
             <td class="text-left">
               <!-- format Saturday, October 9 1999 -->
-              <$IMD_DAYNAME>, <$IMD_MONNAME> <$IMD_MDAy> <$IMD_YEAR>
+              {{ memberInfo.immigrationDate | dateFormatFilter }}
             </td>
           </tr>
           <!-- #ifdef variable="LAD_DAYNAME" -->
-
+          <!-- todo: add last login date -->
+          <!--
           <tr>
             <td class="font-bold text-left">
               Last Access
@@ -77,29 +52,27 @@
               <$LAD_DAYNAME>, <$LAD_MONNAME> <$LAD_MDAy> <$LAD_YEAR>
             </td>
           </tr>
+          -->
           <!-- #endif variable="LAD_DAYNAME" -->
           <tr>
             <td class="font-bold text-left">
               Experience
             </td>
             <td class="text-left">
-              <$EXP>
+              {{ memberInfo.xp }}
             </td>
           </tr>
 
-          <tr>
-            <!-- #ifdef variable="MON" -->
-            <!-- TODO suspect this is owner only -->
+          <tr v-if="this.$store.data.user.id == this.$store.data.place.member_id">
             <td class="font-bold text-left">
               Money
             </td>
             <td class="text-left">
-              <$MON>
+               {{ memberInfo.walletBalance }}cc
             </td>
           </tr>
-          <!-- #endif variable="MON" -->
 
-          <!-- #ifdef variable="HPG" -->
+          <!--
           <tr>
             <td class="font-bold text-left">
               Home Page
@@ -108,21 +81,29 @@
               <a href="<$HPG>" target="external"><$HPG></a>
             </td>
           </tr>
-          <!-- #endif variable="HPG" -->
+          -->
         </table>
 
       </div>
       <div class="flex-auto w-1/3">
         <!-- #ifdef variable="exists" -->
-        <img src="property<$g_exe>?ac=print&ID=<$propid>&type=P&index=&media=i" border=0 alt="">
+        <!--<img src="property<$g_exe>?ac=print&ID=<$propid>&type=P&index=&media=i" border=0 alt="">-->
         <!-- #endif variable="exists" -->
+
         <!-- #ifdef variable="medialocked" -->
-        <img src="<$g_Images>/images/locked.gif" border=0 alt="Your image must be accepted by the block leader first!">
-        <br><font color="FFFF00"><small>Your image must be accepted by the block leader first!</small></font>
+        <!--
+        <img src="<$g_Images>/images/locked.gif" border=0
+              alt="Your image must be accepted by the block leader first!">
+        <br>
+        <font color="FFFF00"><small>Your image must be accepted by the block leader first!</small>
+        </font>
+        -->
         <!-- #endif variable="medialocked" -->
+
         <!-- #ifdef variable="upload" -->
-        <small><i>Click Update to upload your personal image!</i></small>
+        <!--<small><i>Click Update to upload your personal image!</i></small> -->
         <!-- #endif variable="upload" -->
+
         <!-- #ifdef variable="noimage" -->
         <small><i>No image uploaded yet!</i></small>
         <!-- #endif variable="noimage" -->
@@ -138,11 +119,26 @@ import Vue from 'vue';
 export default Vue.extend({
   name: "HomeMain2d",
   data: () => {
-    return {};
+    return {
+      memberInfo: {},
+
+    };
+  },
+  methods: {
+    async getData() {
+      console.log('get 2d home data...');
+
+      try {
+        const response = await this.$http.get("/member/info/"+this.$store.data.place.member_id);
+        this.memberInfo = response.data.memberInfo;
+        console.log(this.memberInfo);
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   mounted() {
-    console.log('the place');
-    console.log(this.$store.data.place);
+    this.getData();
   },
 });
 </script>

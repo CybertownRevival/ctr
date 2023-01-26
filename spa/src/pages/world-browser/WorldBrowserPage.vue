@@ -171,6 +171,7 @@ export default Vue.extend({
             assets_dir: homeResponse.data.homeDesignData.id + "/",
             world_filename: "home.wrl",
             slug: "home",
+            block: homeResponse.data.blockData,
           };
           this.$store.methods.setPlace(this.place);
         } catch(e) {

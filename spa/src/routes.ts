@@ -17,6 +17,9 @@ import BlockTools from "@/pages/block/BlockTools.vue";
 import BlockWizardPage from "./pages/block/BlockWizardPage.vue";
 import RestrictedAccess from "@/pages/RestrictedAccess.vue";
 
+import HomeTools from "@/pages/home/HomeTools.vue";
+import HomeUpdatePage from "@/pages/home/HomeUpdatePage.vue";
+
 export default [
   { path: "/", component: HomePage, name: "home", meta:
       {
@@ -104,9 +107,18 @@ export default [
     name: "block",
   },
   {
+    path: "/home/update",
+    components: {
+      default: HomeUpdatePage,
+      tools: HomeTools,
+    },
+    name: "home-update",
+  },
+  {
     path: "/home/:username",
     components: {
       default: WorldBrowserPage,
+      tools: HomeTools,
     },
     name: "user-home",
   },

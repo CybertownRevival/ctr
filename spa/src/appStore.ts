@@ -13,6 +13,24 @@ export interface User {
   admin?: boolean,
 }
 
+export interface Place {
+  assets_dir?: string,
+  block?: object,
+  hood?: object,
+  created_at?: string,
+  description?: string,
+  id?: number | string,
+  map_background_index?: string,
+  map_icon_index?: string,
+  member_id?: number,
+  name?: string,
+  slug?: string,
+  status?: number,
+  type?:string,
+  updated_at?: string,
+  world_filename?: string,
+}
+
 /** Represents the shape of the global app store object */
 export interface AppStore {
   data: {
@@ -21,13 +39,13 @@ export interface AppStore {
     x3dReady: boolean,
     user: User,
     view3d: boolean,
-    place: object
+    place: Place,
   },
   methods: {
     destroySession: () => void,
     setToken: (token: string) => void,
     setView3d: (value: boolean) => void,
-    setPlace: (value: object) => void,
+    setPlace: (value: Place) => void,
   },
 }
 
@@ -55,7 +73,7 @@ const appStore = Vue.observable<AppStore>({
     setView3d(value: boolean): void {
       appStore.data.view3d = value;
     },
-    setPlace(placeData: object): void{
+    setPlace(placeData: Place): void{
       appStore.data.place = placeData;
     },
   },

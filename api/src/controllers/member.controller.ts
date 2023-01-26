@@ -220,8 +220,22 @@ class MemberController {
     const session = this.decryptSession(request, response);
     if (!session) return;
     try {
-      const memberInfo = await this.memberService.getMemberInfo(session.id);
-      if (!memberInfo) throw new Error('A problem occurred while fetching your account.');
+      let memberInfo;
+
+      if(typeof request.params.id !== 'undefined') {
+
+        if(await memberService.isAdmin(session.id)) {
+          memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
+        } else {
+          memberInfo = await this.memberService.getMemberInfoPublic(parseInt(request.params.id));
+        }
+      } else {
+        memberInfo = await this.memberService.getMemberInfo(session.id);
+      }
+
+      if (Object.keys(memberInfo).length === 0)
+        throw new Error('A problem occurred while fetching account info.');
+
       response.status(200).json({ memberInfo });
     } catch (error) {
       console.error(error);
