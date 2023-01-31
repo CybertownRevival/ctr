@@ -19,6 +19,7 @@ import RestrictedAccess from "@/pages/RestrictedAccess.vue";
 
 import HomeTools from "@/pages/home/HomeTools.vue";
 import HomeUpdatePage from "@/pages/home/HomeUpdatePage.vue";
+import HomeUpdateHomePage from "@/pages/home/HomeUpdateHomePage.vue";
 
 export default [
   { path: "/", component: HomePage, name: "home", meta:
@@ -113,6 +114,14 @@ export default [
       tools: HomeTools,
     },
     name: "home-update",
+  },
+  {
+    path: "/home/update/home",
+    components: {
+      default: HomeUpdateHomePage,
+      tools: HomeTools,
+    },
+    name: "home-update-home",
   },
   {
     path: "/home/:username",
