@@ -3,211 +3,84 @@
     <!-- archive template: property/updatehome.tmpl -->
     <template v-if="!hasHome">
       <div class="text-center mb-3">
-        <h3>You don't have a home yet.</h3>
+        <h2>You don't have a home yet.</h2>
         <p>You must first settle into a block before you can update your home.</p>
       </div>
     </template>
     <template v-else>
-      <h2>Update your House</h2>
-      <p>Choose one of the free <b>2D houses</b> for the map and the <b>3D
-        house.</b></p>
+      <div>
+        <div class="text-center mb-3">
+          <h2>Update your House</h2>
+          <p>Choose one of the free <strong>2D houses</strong> for the map and the <strong>3D
+            house.</strong></p>
+        </div>
 
-      <!-- #include virtual="<$g_Templates>common/updbutton.tmpl" -->
+        <p><strong>Home Name</strong>: <input maxlength="32" size="20" /> (mandatory)</p>
 
-      <p><b>Home Name</b>: <INPUT NAME="NAM" VALUE="<$NAM>" MAXLENGTH=32 SIZE=20> (mandatory)</p>
-      <hr />
-      <table border=0 width=100%>
-        <tr>
-          <td valign=top colspan=3><a name="2D"></a><h3>Choose a free 2D House</h3></td>
-        </tr>
+        <hr class="my-3" />
 
-        <tr>
-          <!--#for loopname="2dicons" loopvars="index2i" -->
-          <td valign=top width=33%>
-            <input type="Radio" name="IC2" value="<$index2i>" <$chk2i>>
-            <img src="<$g_HTMLRoot>/home/<$path>block/<$prefix2i><$index2i>.gif" border=0 ALT="<$name2i>" />
-            <!--#ifdef variable="name2i" -->
-            <br><$name2i>
-            <!--#endif variable="name2i" -->
-            <!--#ifdef variable="text2i" -->
-            <br><$text2i>
-            <!--#endif variable="text2i" -->
-            <!--<p>Price: <b>$<$price2i></b>-->
-          </td>
+        <h3>Choose a free 2D House</h3>
+        <input type="radio" v-model="icon2d"/>None<br />
 
-          <!--#ifdef variable="col3_2i" -->
-        </tr>
-        <tr>
-          <!--#endif variable="col3_2i" -->
+        <template v-if="colonyData[colony.slug].map_theme === 'grass'">
+          <template v-for="index in 33">
+            <input type="radio" :value="index" v-model="icon2d">
+            <img
+              :src="'/assets/img/map_themes/grass/block/Picon2D'+
+                    (index-1).toString().padStart(3,'0')+'.gif'" />
+            <br />
+          </template>
+        </template>
+        <template v-else-if="colonyData[colony.slug].map_theme === 'desert'">
+          <template v-for="index in 7">
+            <input type="radio" :value="index" v-model="icon2d">
+            <img
+              :src="'/assets/img/map_themes/desert/block/Picon2D'+
+                    (index-1).toString().padStart(3,'0')+'.gif'" />
+            <br />
+          </template>
+        </template>
+        <template v-else-if="colonyData[colony.slug].map_theme === 'cyberhood'">
+          <template v-for="index in 5">
+            <input type="radio" :value="index" v-model="icon2d">
+            <img
+              :src="'/assets/img/map_themes/cyberhood/block/Picon2D'+
+                    (index-1).toString().padStart(3,'0')+'.gif'" />
+            <br />
+          </template>
+        </template>
 
-          <!--#endfor loopname="2dicons" -->
-        </tr>
-      </table>
+        <hr class="my-3" />
 
-      <table border=0 width=100%>
-        <tr>
-          <td valign=top colspan=4>
-            <hr>
-            <h3>Your 3D House</h3>
-            Now it's time to choose your fabulous 3D home.
-            Please check your bank account at: My Info > Personal Info >Money
-            (MyInfo button on Control Panel in right frame) before deciding because
-            it's really tough to get a loan around here.
-            <p><font color=#FFFF00><b>Note:</b> You need the free download, blaxxun Contact, to view your
-              3D home.</font></p>
+        <h3>Your 3D House</h3>
+        <p>Now it's time to choose your fabulous 3D home.
+          Please check your bank account at: My Info > Personal Info >Money
+          (MyInfo button on Control Panel in right frame) before deciding because
+          it's really tough to get a loan around here.</p>
 
-            <!-- #if variable="IC3" contains value="deshom/dbobjects" -->
-            <p><font color=red><b>WARNING:</b> You currently have a custom 3D home. Selecting a new 3D home
-              below will <b>permanently</b> remove this.</font></p>
-            <p><input type="Radio" name="IC3" value="<$WR3>"
-              <!-- #if variable="IC3" contains value="deshom/dbobjects" -->
-              checked
-              > <b>Designer Home</b>
-            <p>
-              <!-- #endif variable="IC3" -->
+        <input type="radio" v-model="home3d"/>None <br />
 
-          </td>
-        </tr>
+        <template v-for="(item,key) in homeData" >
+          <input type="radio" :value="key" v-model="home3d"/>
+          <img :src="'/assets/img/homes/Picon3D' + key + '.gif'" />
+          Price: {{ item.price }}
+          <br />
+        </template>
 
-        <tr>
-          <td colspan=4>
-            <input type="Radio" name="IC3" value="" <$chknone3i>>None<br>
-          </td>
-        </tr>
+        <hr class="my-3" />
 
-        <tr>
-          <!--#for loopname="3dicons" loopvars="index3i" -->
-          <td valign=top width=50%>
-            <input type="Radio" name="IC3" value="<$index3i>" <$chk3i>>
-            <img src="<$g_HTMLRoot>/home/<$path>block/<$prefix3i><$index3i>.gif" border=0 ALT="<$name3i>">
-            <!--#ifdef variable="name3i" -->
-            <br><$name3i>
-            <!--#endif variable="name3i" -->
-            <!--#ifdef variable="text3i" -->
-            <br><$text3i>
-            <!--#endif variable="text3i" -->
-            <p>Price: <b>$<$price3i></b>
-          </td>
-          <td width=10>&nbsp;</td>
-
-          <!--#ifdef variable="col2_3i" -->
-        </tr><tr><td height=10>&nbsp;</td></tr><tr>
-        <!--#endif variable="col2_3i" -->
-
-        <!--#endfor loopname="3dicons" -->
-
-
-
-
-      </tr>
-
-        <!-- #ifndef variable="index3i0" -->
-        No 3D Houses available!
-        <!-- #endif variable="index3i0" -->
-        </tr>
-
-        <!-- #if variable="WR3" == value="101" -->
-        <tr>
-          <td valign=top colspan="3" align=center>
-            <input type="Radio" name="IC3" value="101" checked>
-            <img src="<$g_HTMLRoot>/home/<$path>block/Picon3D101.gif" border=0 ALT="<$name3i>">
-            <br>Intel<sup>&reg;</sup> WebOutfitter<sup>(SM) 3D Home
-            <p>Price: <b>$200</b>
-          </td>
-        </tr>
-        <!-- #endif variable="WR3" -->
-
-        <!-- #if variable="WR3" == value="102" -->
-        <tr>
-          <td valign=top colspan="3" align=center>
-            <input type="Radio" name="IC3" value="102" checked>
-            <img src="<$g_HTMLRoot>/home/<$path>block/Picon3D102.gif" border=0 ALT="<$name3i>">
-            <br>Intel<sup>&reg;</sup> WebOutfitter<sup>(SM) 3D Home
-            <p>Price: <b>$200</b>
-          </td>
-        </tr>
-        <!-- #endif variable="WR3" -->
-
-        <!-- #if variable="WR3" == value="103" -->
-        <tr>
-          <td valign=top colspan="3" align=center>
-            <input type="Radio" name="IC3" value="103" checked>
-            <img src="<$g_HTMLRoot>/home/<$path>block/Picon3D103.gif" border=0 ALT="<$name3i>">
-            <br>Intel<sup>&reg;</sup> WebOutfitter<sup>(SM)</sup> 3D Home
-            <p>Price: <b>$200</b>
-          </td>
-        </tr>
-        <!-- #endif variable="WR3" -->
-
-        <!-- Special Title homes goes here! -->
-
-        <!-- #if variable="CHKVM" == value="1" -->
-        <tr>
-          <td valign=top colspan="3" align=center>
-            <p><input type="Radio" name="IC3" value="/home/titlehomes/VirtMaster/vmzip.wrl"
-              <!-- #if variable="IC3" contains value="home/titlehomes/VirtMaster/" -->
-              checked
-              <!-- #endif variable="IC3" -->
-              > <img src="<$g_HTMLRoot>/home/titlehomes/VirtMaster/vmthumb.jpg" border=0 ALT="Knight Virtual">
-              </font><br><b>VirtMaster Home</b>
-
-          </td>
-        </tr>
-        <!-- #endif variable="CHKVM" -->
-
-        <!-- #if variable="CHKKV" == value="1" -->
-        <tr>
-          <td valign=top colspan="3" align=center>
-            <input type="Radio" name="IC3" value="home/titlehomes/KnightVirtual/kvzip.wrl"
-            <!-- #if variable="IC3" contains value="home/titlehomes/KnightVirtual" -->
-            checked
-            <!-- #endif variable="IC3" -->
-            > <img src="<$g_HTMLRoot>/home/titlehomes/KnightVirtual/kvshield.gif" border=0 ALT="Knight Virtual">
-            <br><b>Knight Virtual Home</b>
-          </td>
-        </tr>
-        <!-- #endif variable="CHKKV" -->
-
-        <!-- #if variable="CHKSG" == value="1" -->
-        <tr>
-          <td valign=top colspan="3" align=center>
-            <input type="Radio" name="IC3" value="/home/titlehomes/Sage/sage.wrl"
-            <!-- #if variable="IC3" contains value="home/titlehomes/Sage" -->
-            checked
-            <!-- #endif variable="IC3" -->
-            > <img src="<$g_HTMLRoot>/home/titlehomes/Sage/sage2d.jpg" border=0 ALT="Sage">
-            <br><b>Sage Home</b>
-          </td>
-        </tr>
-        <!-- #endif variable="CHKSG" -->
-
-        <!-- #if variable="CHKGM" == value="1" -->
-        <tr>
-          <td valign=top colspan="3" align=center>
-            <input type="Radio" name="IC3" value="/home/titlehomes/GM/gm.wrl"
-            <!-- #if variable="IC3" contains value="home/titlehomes/GM" -->
-            checked
-            <!-- #endif variable="IC3" -->
-            > <img src="<$g_HTMLRoot>/home/titlehomes/GM/gm2d.jpg" border=0 ALT="Grand Master">
-            <br><b>Grand Master Home</b>
-          </td>
-        </tr>
-        <!-- #endif variable="CHKGM" -->
-
-      </table>
-
-      <div align=center>
-        <hr>
-        <a name=submitbutton></a>
-        <input type=submit name="yes" value=Update>
-        <input type=button name="no" value=Cancel onClick="history.back()">
-
+        <div class="text-center">
+          <button type="button" class="btn">Update</button>
+          <button type="button" class="btn" @click="$router.back()">Cancel</button>
+        </div>
+      </div>
     </template>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import {colonyDataHelper, homeDataHelper} from "@/helpers";
 
 export default Vue.extend({
   name: "HomeUpdateHomePage",
@@ -215,6 +88,12 @@ export default Vue.extend({
     return {
       loaded: false,
       hasHome: false,
+      homeData: homeDataHelper,
+      colonyData: colonyDataHelper,
+      home: undefined,
+      colony: undefined,
+      icon2d: null,
+      home3d: null,
     };
   },
   methods: {
@@ -223,6 +102,12 @@ export default Vue.extend({
         const homeResponse = await this.$http.get("/member/home");
 
         this.hasHome = !!homeResponse.data.homeData;
+        if(this.hasHome) {
+          this.home = homeResponse.data.homeData;
+
+          const blockResponse  = await this.$http.get("/block/" + homeResponse.data.blockData.id);
+          this.colony = blockResponse.data.colony;
+        }
         this.loaded = true;
 
       } catch(e) {
