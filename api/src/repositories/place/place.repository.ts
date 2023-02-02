@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
-import { Place } from '../../types/models';
+import {Home, Place} from '../../types/models';
 
 /** Repository for fetching/interacting with place data in the database. */
 @Service()
@@ -36,6 +36,16 @@ export class PlaceRepository {
   public async create(placeParams: Partial<Place>): Promise<number> {
     const [placeId] = await this.db.place.insert(placeParams);
     return placeId;
+  }
+
+  public async updateHomeByMemberId(memberId: number, props: Partial<Place>, returning = false):
+    Promise<Place | undefined> {
+    await this.db.place
+      .where({ type: 'home', member_id: memberId })
+      .update(props);
+    return returning
+      ? this.findHomeByMemberId(memberId)
+      : undefined;
   }
 
 }

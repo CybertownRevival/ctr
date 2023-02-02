@@ -44,7 +44,6 @@ class MemberController {
     let userId = null;
 
 
-
     try {
 
       const { username } = request.params;
@@ -201,6 +200,85 @@ class MemberController {
           blockId,
           location
         );
+
+        response.status(200).json({ 'status': 'success' });
+
+      }
+
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ 'error': error.message });
+    }
+  }
+
+  public async updateHome(request: Request, response: Response): Promise<void> {
+    const session = this.decryptSession(request, response);
+    if (!session) return;
+
+    const {
+      homeName,
+      icon2d,
+      home3d,
+    } = request.body;
+
+
+    try {
+
+      if (validator.isEmpty(homeName)) {
+        throw new Error('Home name is required');
+      }
+
+      // check they already have a home
+      const homeInfo = await this.homeService.getHome(session.id);
+      if(!homeInfo) {
+        throw new Error("You don't have a home yet.");
+      } else {
+
+        const currentHomeDesign = await this.homeService.getPlaceHomeDesign(homeInfo.id);
+        let refund = 0;
+        let currentHomeDesignId = null;
+        if(currentHomeDesign) {
+          refund = currentHomeDesign.price;
+          currentHomeDesignId = currentHomeDesign.id;
+        }
+
+
+        // check if they have enough for the home
+        const memberInfo = await this.memberService.getMemberInfo(session.id);
+        let purchaseAmount = 0;
+        if(home3d
+          && home3d !== currentHomeDesignId
+        ) {
+          // check they have enough in their wallet to buy the 3d home
+          // this is optional (if not null)
+          const homeDesignInfo = this.homeService.getHomeDesign(home3d);
+          if(typeof homeDesignInfo.id === 'undefined') {
+            throw new Error('Home design not found.');
+          }
+
+          if(homeDesignInfo.price > (memberInfo.walletBalance + refund)) {
+            throw new Error('Not enough funds to purchase house.');
+          }
+          purchaseAmount = homeDesignInfo.price;
+
+        }
+
+        await this.homeService.updateHome(
+          session.id,
+          homeName,
+          icon2d,
+          home3d,
+        );
+
+        if(home3d !== currentHomeDesignId) {
+          if(refund > 0) {
+            await this.memberService.performHomeRefundTransaction(session.id, currentHomeDesign.price);
+          }
+
+          if(purchaseAmount > 0) {
+            await this.memberService.performHomePurchaseTransaction(session.id, purchaseAmount);
+          }
+        }
 
         response.status(200).json({ 'status': 'success' });
 

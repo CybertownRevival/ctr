@@ -299,4 +299,13 @@ export class MemberService {
   public async performHomePurchaseTransaction(memberId: number, amount: number): Promise<void> {
     await this.transactionRepository.createHomePurchaseTransaction(memberId, amount);
   }
+
+  /**
+   * Refunds the amount for a house purchase to a member's wallet
+   * @param memberId id of a member
+   * @param amount amount to refund
+   */
+  public async performHomeRefundTransaction(memberId: number, amount: number): Promise<void> {
+    await this.transactionRepository.createHomeRefundTransaction(memberId, amount);
+  }
 }

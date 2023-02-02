@@ -50,7 +50,6 @@ export class HomeService {
 
   public async getPlaceHomeDesign(homePlaceId: number): Promise<HomeDesign> {
     const homeInfo = await this.homeRepository.findById(homePlaceId);
-    console.log(homeInfo);
     return this.homeDesignRespository.find(homeInfo.home_design_id);
 
   }
@@ -135,6 +134,30 @@ export class HomeService {
       ...mapLocation,
       place_id: place.id,
     });
+
+  }
+
+  public async updateHome(
+    memberId: number,
+    houseName: string,
+    icon2d: number|null,
+    homeDesignId: string|null,
+  ): Promise<void> {
+
+
+    // update place
+    const place = await this.placeRepository.updateHomeByMemberId(
+      memberId,
+      {
+        name: houseName,
+        map_icon_index: icon2d,
+      }, true);
+
+    // update home record
+    await this.homeRepository.update(
+      place.id,
+      {home_design_id: homeDesignId},
+    );
 
   }
 }

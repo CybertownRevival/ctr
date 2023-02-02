@@ -194,7 +194,7 @@ export default Vue.extend({
       try {
         await this.$http.post("/member/home/move", {
           blockId: this.$route.params.id,
-          location: this.$route.params.location
+          location: this.$route.params.location,
         });
 
         this.complete = true;
