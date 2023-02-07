@@ -43,6 +43,12 @@
                 @click="openInfoModal"
                 style="top: 78px"
               ></a>
+              <router-link
+                 class="menuLink"
+                 style="top: 98px"
+                 v-if="$store.data.user.hasHome"
+                 :to="'/home/'+$store.data.user.username"
+              ></router-link>
               <router-link to="/citymap"
                  class="menuMapLink"
               ></router-link>

@@ -11,6 +11,7 @@ export interface User {
   username?: string,
   token?: string,
   admin?: boolean,
+  hasHome?: boolean,
 }
 
 export interface Place {

@@ -180,6 +180,7 @@ export default Vue.extend({
           home3d: this.home3d,
         });
 
+        this.$store.data.user.hasHome = true;
         this.complete = true;
 
       } catch(e) {

@@ -68,7 +68,6 @@ class MemberController {
       if(homeData) {
         const blockData = await this.homeService.getHomeBlock(homeData.id);
         const homeDesignData = await this.homeService.getPlaceHomeDesign(homeData.id);
-        console.log(homeDesignData);
         response.status(200).json({
           homeData: homeData,
           blockData: blockData,
@@ -327,10 +326,14 @@ class MemberController {
     try {
       this.validateLoginInput(username, password);
       const token = await this.memberService.login(username, password);
+      const tokenData = await this.memberService.decodeMemberToken(token);
+      const homeInfo = await this.homeService.getHome(tokenData.id);
+
       response.status(200).json({
         message: 'Login Successful',
         token,
         username,
+        hasHome: !!homeInfo,
       });
     } catch (error) {
       console.error(error);
@@ -395,6 +398,8 @@ class MemberController {
         // refresh client token with latest from database
         const token = await this.memberService.getMemberToken(session.id);
         this.memberService.maybeGiveDailyCredits(session.id);
+        const homeInfo = await this.homeService.getHome(session.id);
+        session.hasHome = !!homeInfo;
         response.status(200).json({
           message: 'success',
           token,

@@ -126,12 +126,10 @@ export default Vue.extend({
   },
   methods: {
     async getData() {
-      console.log('get 2d home data...');
 
       try {
         const response = await this.$http.get("/member/info/"+this.$store.data.place.member_id);
         this.memberInfo = response.data.memberInfo;
-        console.log(this.memberInfo);
       } catch (error) {
         console.log(error);
       }
