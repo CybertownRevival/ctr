@@ -16,6 +16,9 @@ export class Db {
   get avatar() {
     return this.knex<Models.Avatar, Models.Avatar[]>('avatar');
   }
+  get home() {
+    return this.knex<Models.Home, Models.Home[]>('home');
+  }
   get mapLocation() {
     return this.knex<Models.MapLocation, Models.MapLocation[]>('map_location');
   }
@@ -36,8 +39,5 @@ export class Db {
   }
   get wallet() {
     return this.knex<Models.Wallet, Models.Wallet[]>('wallet');
-  }
-  get home() {
-    return this.knex<Models.Home, Models.Home[]>('home');
   }
 }

@@ -3,7 +3,7 @@ import { Service } from 'typedi';
 import { Db } from '../../db/db.class';
 import {Home, Member} from '../../types/models';
 
-/** Repository for fetching/interacting with place data in the database. */
+/** Repository for fetching/interacting with home data in the database. */
 @Service()
 export class HomeRepository {
 
