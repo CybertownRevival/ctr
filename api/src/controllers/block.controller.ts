@@ -1,12 +1,15 @@
 import { Request, Response} from 'express';
 import { Container } from 'typedi';
 
-import {db, knex} from '../db';
-import { MemberService } from '../services/member/member.service';
+import {db} from '../db';
+import { MemberService, BlockService } from '../services';
 
 class BlockController {
 
-  constructor(private memberService: MemberService) {}
+  constructor(
+    private memberService: MemberService,
+    private blockService: BlockService,
+  ) {}
 
   public async getBlock(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
@@ -29,24 +32,9 @@ class BlockController {
   public async getLocations(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-
-      const locations = await knex
-        .select(
-          'map_location.location',
-          'map_location.available',
-          'place.id',
-          'place.name',
-          'place.map_icon_index',
-          'member.username',
-        )
-        .from('map_location')
-        .leftJoin('place', 'map_location.place_id', 'place.id')
-        .leftJoin('member', 'place.member_id', 'member.id')
-        .where('map_location.parent_place_id', id)
-        .orderBy('map_location.location');
-
+      const locations = await this.blockService
+        .getMapLocationAndPlaces(parseInt(id));
       response.status(200).json({ locations });
-
     } catch (error) {
       console.error(error);
       response.status(400).json({ error });
@@ -65,15 +53,12 @@ class BlockController {
         });
       }
 
-      // todo validate the array of locations
       const { availableLocations } = request.body;
 
-      // todo: unset all 'available'
       await db.mapLocation
         .update({available: false })
         .where({ parent_place_id: parseInt(id) });
 
-      // todo INSERT, on duplicate, update available = 1
       for(const location of availableLocations) {
         await db.mapLocation
           .insert({
@@ -94,4 +79,5 @@ class BlockController {
   }
 }
 const memberService = Container.get(MemberService);
-export const blockController = new BlockController(memberService);
+const blockService = Container.get(BlockService);
+export const blockController = new BlockController(memberService, blockService);

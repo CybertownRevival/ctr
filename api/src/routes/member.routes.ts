@@ -19,16 +19,6 @@ memberRoutes.post('/send_password_reset',
   (request, response) => memberController.sendPasswordReset(request, response));
 memberRoutes.post('/reset_password',
   (request, response) => memberController.resetPassword(request, response));
-memberRoutes.get('/home',
-  (request, response) => memberController.getHome(request, response));
-memberRoutes.get('/home_info/:username',
-  (request, response) => memberController.getHome(request, response));
-memberRoutes.post('/home/settle',
-  (request, response) => memberController.createHome(request, response));
-memberRoutes.post('/home/move',
-  (request, response) => memberController.moveHome(request, response));
-memberRoutes.post('/home/update',
-  (request, response) => memberController.updateHome(request, response));
 memberRoutes.get('/info',
   (request, response) => memberController.getInfo(request, response));
 memberRoutes.get('/info/:id',

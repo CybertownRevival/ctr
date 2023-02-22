@@ -118,7 +118,7 @@ export default Vue.extend({
   methods: {
     async getHome() {
       try {
-        const homeResponse = await this.$http.get("/member/home");
+        const homeResponse = await this.$http.get("/home");
 
         this.hasHome = !!homeResponse.data.homeData;
         if(this.hasHome) {
@@ -144,7 +144,7 @@ export default Vue.extend({
       this.error = "";
 
       try {
-        await this.$http.post("/member/home/update", {
+        await this.$http.post("/home/update", {
           homeName: this.homeName,
           icon2d: this.icon2d,
           home3d: this.home3d,

@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-import jwt from 'jsonwebtoken';
 import { Service } from 'typedi';
 
 import {
@@ -8,21 +6,11 @@ import {
   HomeDesignRepository,
   HomeRepository,
 } from '../../repositories';
-import { Member, Place, HomeDesign } from '../../types/models';
-import { MemberInfoView } from '../../types/views';
-import { SessionInfo } from 'session-info.interface';
+import { Place, HomeDesign } from '../../types/models';
 
 /** Service for dealing with members */
 @Service()
 export class HomeService {
-  /** Amount of cityccash a member receives each day they log in */
-  public static readonly DAILY_CC_AMOUNT = 50;
-  /** Amount of experience points a member received each day they log in */
-  public static readonly DAILY_XP_AMOUNT = 5;
-  /** Duration in minutes until a password reset attempt expires */
-  public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
-  /** Number of times to salt member passwords */
-  private static readonly SALT_ROUNDS = 10;
 
   constructor(
     private placeRepository: PlaceRepository,

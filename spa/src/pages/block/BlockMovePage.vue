@@ -145,7 +145,7 @@ export default Vue.extend({
       return Promise.all([
         this.$http.get("/block/" + this.$route.params.id),
         this.$http.get("/block/" + this.$route.params.id + "/locations"),
-        this.$http.get("/member/home"),
+        this.$http.get("/home"),
       ]).then((response) => {
         this.block = response[0].data.block;
         this.hood = response[0].data.hood;
@@ -169,7 +169,7 @@ export default Vue.extend({
       this.error = "";
 
       try {
-        await this.$http.post("/member/home/settle", {
+        await this.$http.post("/home/settle", {
           blockId: this.$route.params.id,
           location: this.$route.params.location,
           houseName: this.houseName,
@@ -193,7 +193,7 @@ export default Vue.extend({
       this.error = "";
 
       try {
-        await this.$http.post("/member/home/move", {
+        await this.$http.post("/home/move", {
           blockId: this.$route.params.id,
           location: this.$route.params.location,
         });

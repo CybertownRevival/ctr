@@ -89,7 +89,7 @@ export default Vue.extend({
   methods: {
     async getHome() {
       try {
-        const homeResponse = await this.$http.get("/member/home");
+        const homeResponse = await this.$http.get("/home");
 
         this.hasHome = !!homeResponse.data.homeData;
         this.loaded = true;

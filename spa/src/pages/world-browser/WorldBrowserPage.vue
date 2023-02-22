@@ -157,7 +157,7 @@ export default Vue.extend({
 
       if(this.$route.params.username) {
         try {
-          const homeResponse = await this.$http.get("/member/home_info/"+this.$route.params.username);
+          const homeResponse = await this.$http.get("/home/"+this.$route.params.username);
 
           // todo handle null homeDesignData
 

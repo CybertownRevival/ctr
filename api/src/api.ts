@@ -15,6 +15,7 @@ import {
   hoodRoutes,
   colonyRoutes,
   blockRoutes,
+  homeRoutes,
 } from './routes';
 
 interface HttpException extends Error {
@@ -47,6 +48,7 @@ app.use('/api/avatar', avatarRoutes);
 app.use('/api/hood', hoodRoutes);
 app.use('/api/colony', colonyRoutes);
 app.use('/api/block', blockRoutes);
+app.use('/api/home', homeRoutes);
 
 app.use((request, response, next) => {
   const error = new Error('Not found');

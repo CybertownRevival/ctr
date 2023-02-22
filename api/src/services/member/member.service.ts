@@ -15,6 +15,7 @@ import {
 import { Member, Place } from '../../types/models';
 import { MemberInfoView } from '../../types/views';
 import { SessionInfo } from 'session-info.interface';
+import { Request, Response } from 'express';
 
 /** Service for dealing with members */
 @Service()
@@ -308,4 +309,23 @@ export class MemberService {
   public async performHomeRefundTransaction(memberId: number, amount: number): Promise<void> {
     await this.transactionRepository.createHomeRefundTransaction(memberId, amount);
   }
+
+  /**
+   * Attempts to decode the session token present in the request and automatically responds with a
+   * 400 error if decryption is unsuccessful
+   * @param request express request object
+   * @returns session info object if decoding was successful, `void` otherwise
+   */
+  public decryptSession(request: Request, response: Response): SessionInfo {
+    const { apitoken } = request.headers;
+    const session = this.decodeMemberToken(<string> apitoken);
+    if (!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    return session;
+  }
+
 }
