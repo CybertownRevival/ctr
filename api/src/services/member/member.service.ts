@@ -298,7 +298,8 @@ export class MemberService {
    * @param amount amount to deduct
    */
   public async performHomePurchaseTransaction(memberId: number, amount: number): Promise<void> {
-    await this.transactionRepository.createHomePurchaseTransaction(memberId, amount);
+    const member = await this.memberRepository.findById(memberId);
+    await this.transactionRepository.createHomePurchaseTransaction(member.wallet_id, amount);
   }
 
   /**
@@ -307,7 +308,8 @@ export class MemberService {
    * @param amount amount to refund
    */
   public async performHomeRefundTransaction(memberId: number, amount: number): Promise<void> {
-    await this.transactionRepository.createHomeRefundTransaction(memberId, amount);
+    const member = await this.memberRepository.findById(memberId);
+    await this.transactionRepository.createHomeRefundTransaction(member.wallet_id, amount);
   }
 
   /**
