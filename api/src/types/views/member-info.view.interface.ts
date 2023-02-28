@@ -4,13 +4,17 @@
  */
 export interface MemberInfoView {
   /** Member's email address */
-  email: string;
+  email?: string;
   /** Date the member's account was created */
   immigrationDate: Date;
   /** The member's username */
   username: string;
   /** The amount of CCs contained in the member's wallet */
-  walletBalance: number;
+  walletBalance?: number;
   /** Amount of experience points the member has accrued over the lifetime of their account */
   xp: number;
+  /** members first name **/
+  firstName?: string;
+  /** members last name **/
+  lastName?: string;
 }

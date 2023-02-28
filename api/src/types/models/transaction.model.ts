@@ -12,6 +12,8 @@ export enum TransactionReason {
   MemberToMember = 'member-to-member',
   /** Catch-all for any transaction between a member and Cybertown itself */
   SystemToMember = 'system-to-member',
+  /** Used for refunding payments to users when they sell a house */
+  HomeRefund = 'home-refund',
 }
 
 /** Defines a Transaction object as stored in the db */

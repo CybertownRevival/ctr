@@ -17,8 +17,10 @@
       style="height: calc(100vh - 70px) !important"
     >
       <div class="flex flex-1">
-        <router-view v-if="this.$route.name !== 'world-browser'"></router-view>
-        <world-browser-page v-show="this.$route.name === 'world-browser'"></world-browser-page>
+        <router-view
+          v-if="this.$route.name !== 'world-browser' && this.$route.name !== 'user-home'"></router-view>
+        <world-browser-page
+          v-show="this.$route.name === 'world-browser' || this.$route.name === 'user-home'"></world-browser-page>
       </div>
       <div
         class="flex-none w-60 bg-lines overflow-y-auto"
@@ -41,6 +43,12 @@
                 @click="openInfoModal"
                 style="top: 78px"
               ></a>
+              <router-link
+                 class="menuLink"
+                 style="top: 98px"
+                 v-if="$store.data.user.hasHome"
+                 :to="'/home/'+$store.data.user.username"
+              ></router-link>
               <router-link to="/citymap"
                  class="menuMapLink"
               ></router-link>

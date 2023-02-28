@@ -152,22 +152,55 @@ export default Vue.extend({
       this.sharedObjectsMap.set(obj.id, sharedObject);
     },
     debugMsg,
-    getPlace(): Promise<void> {
+    async getPlace(): Promise<void> {
       this.debugMsg("get place");
-      return Promise.all([
-        this.$http.get("/place/" + this.$route.params.id),
-        this.$http.get("/place/" + this.$route.params.id + "/object_instance"),
-      ]).then((response) => {
-        this.place = response[0].data.place;
-        document.title = this.place.name + " - Cybertown";
-        this.sharedObjects = response[1].data.object_instance;
-        this.debugMsg(response[0].data.place);
-      });
+
+      if(this.$route.params.username) {
+        try {
+          const homeResponse = await this.$http.get("/home/"+this.$route.params.username);
+
+          // todo handle null homeDesignData
+
+          const sharedObjectsResponse = await this.$http.get("/place/" + homeResponse.data.homeData.id +
+            "/object_instance");
+
+          this.sharedObjects = sharedObjectsResponse.data.object_instance;
+
+          this.place = {
+            ...homeResponse.data.homeData,
+            assets_dir: homeResponse.data.homeDesignData.id + "/",
+            world_filename: "home.wrl",
+            slug: "home",
+            block: homeResponse.data.blockData,
+          };
+          this.$store.methods.setPlace(this.place);
+        } catch(e) {
+          console.error("error with home response");
+        }
+      } else {
+        try {
+          const placeResponse = await this.$http.get("/place/" + this.$route.params.id);
+          this.debugMsg(placeResponse.data.place);
+          this.place = placeResponse.data.place;
+          document.title = this.place.name + " - Cybertown";
+
+          const objectInstanceResponse = await this.$http.get("/place/" + this.place.id +
+              "/object_instance");
+
+          this.sharedObjects = objectInstanceResponse.data.object_instance;
+          this.$store.methods.setPlace(this.place);
+
+        } catch(e) {
+          console.error(e);
+        }
+      }
+
     },
     async loadAndJoinPlace(): Promise<void> {
       this.loaded = false;
       if (this.place) this.$socket.leaveRoom(this.place.id);
       await this.getPlace();
+
 
       if(this.browser) {
         const browser = X3D.getBrowser(this.browser);
@@ -548,20 +581,26 @@ export default Vue.extend({
   },
   watch: {
     "$store.data.x3dReady": function (to, from) {
-      if (to && this.$route.name === "world-browser") {
+      if (to && (this.$route.name === "world-browser" || this.$route.name === "user-home")) {
         this.loadAndJoinPlace();
       }
     },
     "$store.data.view3d": function () {
-      if (this.$route.name === "world-browser") {
+      if (this.$route.name === "world-browser" || this.$route.name === "user-home") {
         this.loadAndJoinPlace();
       }
     },
 
     $route(to, from) {
-      if (to.name === "world-browser" && this.$store.data.x3dReady) {
+      if (
+        (to.name === "world-browser" || to.name === "user-home")
+        && this.$store.data.x3dReady
+      ) {
         this.loadAndJoinPlace();
-      } else if(from.name === "world-browser" && this.$store.data.x3dReady) {
+      } else if(
+        (from.name === "world-browser" || from.name === "user-home")
+        && this.$store.data.x3dReady
+      ) {
         this.unloadPlace();
       }
     },

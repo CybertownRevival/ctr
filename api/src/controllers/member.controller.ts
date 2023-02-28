@@ -11,6 +11,7 @@ import {
 } from '../libs';
 import {
   MemberService,
+  HomeService,
 } from '../services';
 import { SessionInfo } from 'session-info.interface';
 
@@ -34,65 +35,34 @@ class MemberController {
    */
   constructor(
     private memberService: MemberService,
+    private homeService: HomeService,
   ) {}
 
-  public async getHome(request: Request, response: Response): Promise<void> {
-    const session = this.decryptSession(request, response);
-    if (!session) return;
-
-    try {
-      // todo, join map_location
-      // todo, fetch block name
-
-      const [homeData] = await db.place
-        .where({
-          type: 'home',
-          member_id: session.id,
-        })
-        .select(['id']);
-
-      if(homeData.id) {
-        const blockData = await knex
-          .select(
-            'place.id',
-            'place.name',
-          )
-          .from('map_location')
-          .leftJoin('place', 'map_location.parent_place_id', 'place.id')
-          .where('map_location.place_id', homeData.id);
-
-        response.status(200).json({
-          homeData: homeData,
-          blockData: blockData,
-        });
-      } else {
-        response.status(200).json({
-          homeData: null,
-          blockData: null,
-        });
-      }
-
-
-    } catch (error) {
-      console.error(error);
-      response.status(400).json({
-        error: 'A problem occurred during fetching home data.',
-      });
-
-    }
-
-  }
 
   /**
    * Controller method for providing member information
    * @route /api/member/info
    */
   public async getInfo(request: Request, response: Response): Promise<void> {
-    const session = this.decryptSession(request, response);
+    const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
-      const memberInfo = await this.memberService.getMemberInfo(session.id);
-      if (!memberInfo) throw new Error('A problem occurred while fetching your account.');
+      let memberInfo;
+
+      if(typeof request.params.id !== 'undefined') {
+
+        if(await memberService.isAdmin(session.id)) {
+          memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
+        } else {
+          memberInfo = await this.memberService.getMemberInfoPublic(parseInt(request.params.id));
+        }
+      } else {
+        memberInfo = await this.memberService.getMemberInfo(session.id);
+      }
+
+      if (Object.keys(memberInfo).length === 0)
+        throw new Error('A problem occurred while fetching account info.');
+
       response.status(200).json({ memberInfo });
     } catch (error) {
       console.error(error);
@@ -106,10 +76,14 @@ class MemberController {
     try {
       this.validateLoginInput(username, password);
       const token = await this.memberService.login(username, password);
+      const tokenData = await this.memberService.decodeMemberToken(token);
+      const homeInfo = await this.homeService.getHome(tokenData.id);
+
       response.status(200).json({
         message: 'Login Successful',
         token,
         username,
+        hasHome: !!homeInfo,
       });
     } catch (error) {
       console.error(error);
@@ -174,6 +148,8 @@ class MemberController {
         // refresh client token with latest from database
         const token = await this.memberService.getMemberToken(session.id);
         this.memberService.maybeGiveDailyCredits(session.id);
+        const homeInfo = await this.homeService.getHome(session.id);
+        session.hasHome = !!homeInfo;
         response.status(200).json({
           message: 'success',
           token,
@@ -216,7 +192,7 @@ class MemberController {
 
   /** Controller method for updating a user's avatar */
   public async updateAvatar(request: Request, response: Response): Promise<void> {
-    const session = this.decryptSession(request, response);
+    const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const { id, username } = session;
     const { avatarId } = request.body;
@@ -244,7 +220,7 @@ class MemberController {
 
   /** Controller method for updating a user's password */
   public async updatePassword(request: Request, response: Response): Promise<void> {
-    const session = this.decryptSession(request, response);
+    const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const { id } = session;
     const { newPassword, newPassword2, currentPassword } = request.body;
@@ -330,23 +306,8 @@ class MemberController {
     }
   }
 
-  /**
-   * Attempts to decode the session token present in the request and automatically responds with a
-   * 400 error if decryption is unsuccessful
-   * @param request express request object
-   * @param response express response object
-   * @returns session info object if decoding was successful, `void` otherwise
-   */
-  private decryptSession(request: Request, response: Response): SessionInfo {
-    const { apitoken } = request.headers;
-    const session = this.memberService.decodeMemberToken(<string> apitoken);
-    if (!session) {
-      response.status(400).json({
-        error: 'Invalid or missing token.',
-      });
-    }
-    return session;
-  }
+
 }
 const memberService = Container.get(MemberService);
-export const memberController = new MemberController(memberService);
+const homeService = Container.get(HomeService);
+export const memberController = new MemberController(memberService, homeService);

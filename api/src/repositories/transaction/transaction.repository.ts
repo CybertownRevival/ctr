@@ -45,4 +45,50 @@ export class TransactionRepository {
     const [transaction] = await this.db.transaction.where(transactionSearchParams);
     return transaction;
   }
+
+  /**
+   * Deducts the given amount from the balance for the wallet with the given id, and creates
+   * a transaction record.
+   * @param walletId id of recipient wallet
+   * @param amount amount transacted
+   * @returns promise resolving in the created transaction object, or rejecting on error
+   */
+  public async createHomePurchaseTransaction(walletId: number, amount: number):
+    Promise<Transaction> {
+    return await this.db.knex.transaction(async trx => {
+      const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
+      await trx<Wallet>('wallet')
+        .where({ id: walletId })
+        .update({ balance: wallet.balance - amount });
+      const [transactionId] = await trx<Transaction>('transaction').insert({
+        amount,
+        reason: TransactionReason.HomePurchase,
+        recipient_wallet_id: walletId,
+      });
+      return this.find({ id: transactionId });
+    });
+  }
+
+  /**
+   * Applies the given amount to the balance for the wallet with the given id, and creates
+   * a transaction record.
+   * @param walletId id of recipient wallet
+   * @param amount amount transacted
+   * @returns promise resolving in the created transaction object, or rejecting on error
+   */
+  public async createHomeRefundTransaction(walletId: number, amount: number):
+    Promise<Transaction> {
+    return await this.db.knex.transaction(async trx => {
+      const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
+      await trx<Wallet>('wallet')
+        .where({ id: walletId })
+        .update({ balance: wallet.balance + amount });
+      const [transactionId] = await trx<Transaction>('transaction').insert({
+        amount,
+        reason: TransactionReason.HomeRefund,
+        recipient_wallet_id: walletId,
+      });
+      return this.find({ id: transactionId });
+    });
+  }
 }

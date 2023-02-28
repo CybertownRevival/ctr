@@ -9,10 +9,13 @@ import {
   MemberRepository,
   TransactionRepository,
   WalletRepository,
+  PlaceRepository,
+  MapLocationRepository,
 } from '../../repositories';
-import { Member } from '../../types/models';
+import { Member, Place } from '../../types/models';
 import { MemberInfoView } from '../../types/views';
 import { SessionInfo } from 'session-info.interface';
+import { Request, Response } from 'express';
 
 /** Service for dealing with members */
 @Service()
@@ -31,6 +34,8 @@ export class MemberService {
     private memberRepository: MemberRepository,
     private transactionRepository: TransactionRepository,
     private walletRepository: WalletRepository,
+    private placeRepository: PlaceRepository,
+    private mapLocationRespository: MapLocationRepository,
   ) {}
 
   /**
@@ -111,6 +116,41 @@ export class MemberService {
       username: member.username,
       walletBalance: wallet.balance,
       xp: member.xp,
+    };
+  }
+
+  /**
+   * Builds a member info public view.
+   * @param memberId id of member to retrieve info for
+   * @returns promise resolving in a member info view object, or rejecting on error
+   */
+  public async getMemberInfoPublic(memberId: number): Promise<MemberInfoView> {
+    const member = await this.find({ id: memberId });
+    return {
+      firstName: member.firstname,
+      lastName: member.lastname,
+      immigrationDate: member.created_at,
+      username: member.username,
+      xp: member.xp,
+    };
+  }
+
+  /**
+   * Builds a member info admin view.
+   * @param memberId id of member to retrieve info for
+   * @returns promise resolving in a member info view object, or rejecting on error
+   */
+  public async getMemberInfoAdmin(memberId: number): Promise<MemberInfoView> {
+    const member = await this.find({ id: memberId });
+    const wallet = await this.walletRepository.findById(member.wallet_id);
+    return {
+      email: member.email,
+      immigrationDate: member.created_at,
+      username: member.username,
+      walletBalance: wallet.balance,
+      xp: member.xp,
+      firstName: member.firstname,
+      lastName: member.lastname,
     };
   }
 
@@ -238,4 +278,54 @@ export class MemberService {
   private encryptPassword(password: string): Promise<string> {
     return bcrypt.hash(password, MemberService.SALT_ROUNDS);
   }
+
+  /**
+   * Updates a members first and last name
+   * @param memberId id of the member
+   * @param firstName string of the first name
+   * @param lastName string of the last name
+   */
+  public async updateName(memberId: number, firstName: string, lastName: string): Promise<void> {
+    await this.memberRepository.update(memberId, {
+      firstname: firstName,
+      lastname: lastName,
+    });
+  }
+
+  /**
+   * Deducts the amount for a house purchase from a member's wallet
+   * @param memberId id of a member
+   * @param amount amount to deduct
+   */
+  public async performHomePurchaseTransaction(memberId: number, amount: number): Promise<void> {
+    await this.transactionRepository.createHomePurchaseTransaction(memberId, amount);
+  }
+
+  /**
+   * Refunds the amount for a house purchase to a member's wallet
+   * @param memberId id of a member
+   * @param amount amount to refund
+   */
+  public async performHomeRefundTransaction(memberId: number, amount: number): Promise<void> {
+    await this.transactionRepository.createHomeRefundTransaction(memberId, amount);
+  }
+
+  /**
+   * Attempts to decode the session token present in the request and automatically responds with a
+   * 400 error if decryption is unsuccessful
+   * @param request express request object
+   * @returns session info object if decoding was successful, `void` otherwise
+   */
+  public decryptSession(request: Request, response: Response): SessionInfo {
+    const { apitoken } = request.headers;
+    const session = this.decodeMemberToken(<string> apitoken);
+    if (!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    return session;
+  }
+
 }

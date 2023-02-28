@@ -175,6 +175,7 @@ export default Vue.extend({
           password: this.password,
         });
         this.$store.data.user.username = data.username;
+        this.$store.data.user.hasHome = data.hasHome;
         this.$store.methods.setToken(data.token);
         const { redirect } = this.$route.query;
         // redirect can be a string or an array of strings so we have to handle both

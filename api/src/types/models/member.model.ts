@@ -24,4 +24,8 @@ export interface Member extends Model {
   wallet_id: number;
   /** Amount of experience points the member has accrued over the lifetime of their account */
   xp: number;
+  /** The real first name */
+  firstname: string;
+  /** the real last name */
+  lastname: string;
 }
