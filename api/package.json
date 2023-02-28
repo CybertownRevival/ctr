@@ -5,7 +5,7 @@
   "main": "api.ts",
   "scripts": {
     "build": "tsc",
-    "build:prod": "tsc --project tsconfig.prod.json",
+    "build:prod": "tsc --verbose --project tsconfig.prod.json",
     "db:init": "ts-node -r dotenv/config db/scripts/create-db.ts && npm run db:migrate && npm run db:seed",
     "db:migrate": "knex migrate:latest --knexfile src/knexfile.ts",
     "db:rollback": "knex migrate:rollback --knexfile src/knexfile.ts",
