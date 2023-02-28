@@ -8,7 +8,7 @@ import { homeController } from '../controllers';
  */
 
 const homeRoutes = Router();
-homeRoutes.get('/',
+homeRoutes.get('',
   (request, response) => homeController.getHome(request, response));
 homeRoutes.get('/:username',
   (request, response) => homeController.getHome(request, response));
