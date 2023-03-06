@@ -102,6 +102,10 @@ class HomeController {
         throw new Error('Home name is required');
       }
 
+      if (icon2d === null) {
+        throw new Error('2D house is required');
+      }
+
 
       // check they don't already have a home
       const homeInfo = await this.homeService.getHome(session.id);
@@ -206,6 +210,10 @@ class HomeController {
 
       if (validator.isEmpty(homeName)) {
         throw new Error('Home name is required');
+      }
+
+      if (icon2d === null) {
+        throw new Error('2D house is required');
       }
 
       // check they already have a home

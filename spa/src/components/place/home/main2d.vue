@@ -23,7 +23,8 @@
               {{ memberInfo.firstName }} {{ memberInfo.lastName }}
             </td>
           </tr>
-          <tr v-if="this.$store.data.user.id == this.$store.data.place.member_id || this.$store.data.user.admin">
+          <tr v-if="parseInt(this.$store.data.user.id) == parseInt(this.$store.data.place.member_id)
+          || this.$store.data.user.admin">
             <td class="font-bold text-left">
               Email
             </td>
@@ -63,7 +64,7 @@
             </td>
           </tr>
 
-          <tr v-if="this.$store.data.user.id == this.$store.data.place.member_id">
+          <tr v-if="parseInt(this.$store.data.user.id) === parseInt(this.$store.data.place.member_id)">
             <td class="font-bold text-left">
               Money
             </td>

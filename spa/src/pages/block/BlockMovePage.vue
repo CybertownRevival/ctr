@@ -1,6 +1,5 @@
 <template>
   <div class="h-full w-full bg-black flex flex-col p-2" v-if="loaded">
-    <div v-if="showError" class="text-center text-red-500">{{ error }}</div>
 
     <div v-if="!complete">
       <div v-if="relocating">
@@ -14,17 +13,19 @@
       </div>
       <div v-else-if="relocating === false">
         <!-- SETTLE MESSAGE -->
-        <p class="text-center font-weight-bold">Settle down here!</p>
-
         <div class="text-center">
-          <button type="button" class="btn" @click="settle">Yes</button>
-          <button type="button" class="btn" @click="$router.back()">No</button>
+          <h2 class="font-bold text-green">Settle down here!</h2>
+          <p>Choose one of the free 2D houses and the 3D house.</p>
+          <p class="mb-5">
+            <strong>Note:</strong>
+            <em>Use the button at the bottom to submit the form.</em>
+          </p>
         </div>
-
         <table>
+
           <tr>
-            <td style="width:150px"><strong>House Name</strong></td>
-            <td><input maxlength="32" size="20" v-model="houseName"/></td>
+            <td><strong>House Name</strong></td>
+            <td><input maxlength="32" size="20" v-model="houseName"/> (mandatory)</td>
           </tr>
 
           <tr>
@@ -42,59 +43,75 @@
             <td><input maxlength="32" size="32" v-model="lastName"/></td>
           </tr>
 
-          <tr><td colspan="2">&nbsp;</td></tr>
-
-          <tr>
-            <td><strong>House icons</strong></td>
-            <td>
-              <input type="radio" v-model="icon2d"/>None<br />
-
-              <template v-if="colonyData[colony.slug].map_theme === 'grass'">
-                <template v-for="index in 33">
-                  <input type="radio" :value="index" v-model="icon2d">
-                  <img
-                    :src="'/assets/img/map_themes/grass/block/Picon2D'+
-                    (index-1).toString().padStart(3,'0')+'.gif'" />
-                  <br />
-                </template>
-              </template>
-              <template v-else-if="colonyData[colony.slug].map_theme === 'desert'">
-                <template v-for="index in 7">
-                  <input type="radio" :value="index" v-model="icon2d">
-                  <img
-                    :src="'/assets/img/map_themes/desert/block/Picon2D'+
-                    (index-1).toString().padStart(3,'0')+'.gif'" />
-                  <br />
-                </template>
-              </template>
-              <template v-else-if="colonyData[colony.slug].map_theme === 'cyberhood'">
-                <template v-for="index in 5">
-                  <input type="radio" :value="index" v-model="icon2d">
-                  <img
-                    :src="'/assets/img/map_themes/cyberhood/block/Picon2D'+
-                    (index-1).toString().padStart(3,'0')+'.gif'" />
-                  <br />
-                </template>
-              </template>
-            </td>
-          </tr>
-
-          <tr><td colspan="2">&nbsp;</td></tr>
-
-          <tr>
-            <td><strong>3D Houses</strong></td>
-            <td>
-              <input type="radio" v-model="home3d"/>None <br />
-
-              <template v-for="(item,key) in homeData" >
-                <input type="radio" :value="key" v-model="home3d"/>
-                <img :src="'/assets/img/homes/Picon3D' + key + '.gif'" />
-                Price: {{ item.price }}
-                <br />
-              </template>
-            </td>
-          </tr>
         </table>
+
+        <hr class="my-5" />
+        <h3 class="font-bold mb-3">Choose a free 2D House</h3>
+        <div class="grid grid-cols-3 gap-4">
+          <template v-if="colonyData[colony.slug].map_theme === 'grass'">
+            <template v-for="index in 33">
+              <div>
+              <input type="radio" :value="index" v-model="icon2d">
+              <img
+                class="ml-2"
+                :src="'/assets/img/map_themes/grass/block/Picon2D'+
+                    (index-1).toString().padStart(3,'0')+'.gif'" />
+              </div>
+            </template>
+          </template>
+          <template v-else-if="colonyData[colony.slug].map_theme === 'desert'">
+            <template v-for="index in 7">
+              <div>
+              <input type="radio" :value="index" v-model="icon2d">
+              <img
+                class="ml-2"
+                :src="'/assets/img/map_themes/desert/block/Picon2D'+
+                    (index-1).toString().padStart(3,'0')+'.gif'" />
+              </div>
+            </template>
+          </template>
+          <template v-else-if="colonyData[colony.slug].map_theme === 'cyberhood'">
+            <template v-for="index in 5">
+              <div>
+              <input type="radio" :value="index" v-model="icon2d">
+              <img
+                class="ml-2"
+                :src="'/assets/img/map_themes/cyberhood/block/Picon2D'+
+                    (index-1).toString().padStart(3,'0')+'.gif'" />
+              </div>
+            </template>
+          </template>
+        </div>
+
+        <hr class="my-5" />
+
+        <h3 class="font-bold mb-3">Your 3D House</h3>
+
+        <p class="mb-3">Now it's time to choose your fabulous 3D home.
+          Please check your bank account at: My Info > Personal Info >Money
+          (MyInfo button on Control Panel in right frame) before deciding because
+          it's really tough to get a loan around here.</p>
+
+
+        <div class="grid grid-cols-2 gap-5">
+          <div>
+            <input type="radio" v-model="home3d" class="mr-3"/>None
+          </div>
+          <div></div>
+          <template v-for="(item,key) in homeData" >
+            <div>
+              <input type="radio" :value="key" v-model="home3d" class="mr-3"/>
+              <img :src="'/assets/img/homes/Picon3D' + key + '.gif'" /><br/>
+              Price: <strong>{{ item.price }}cc</strong>
+            </div>
+          </template>
+        </div>
+
+        <div v-if="showError" class="text-center text-red-500">{{ error }}</div>
+        <div class="text-center">
+          <button type="button" class="btn" @click="settle">Settle</button>
+          <button type="button" class="btn" @click="$router.back()">Back</button>
+        </div>
       </div>
 
     </div>
