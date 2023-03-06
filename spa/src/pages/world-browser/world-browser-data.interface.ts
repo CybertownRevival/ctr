@@ -22,4 +22,5 @@ export interface WorldBrowserData {
   sharedObjectsMap: Map<any, any>,
   showUpdateWarning: boolean,
   mainComponent: any,
+  force2d: boolean,
 }

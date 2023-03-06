@@ -9,8 +9,8 @@
         </a>
       </strong>
     </div>
-    <div id="world" class="world w-full flex-1" style="" v-show="this.$store.data.view3d"></div>
-    <div v-show="!this.$store.data.view3d" class="w-full flex-1">
+    <div id="world" class="world w-full flex-1" style="" v-show="this.$store.data.view3d && !force2d"></div>
+    <div v-show="!this.$store.data.view3d || force2d" class="w-full flex-1">
       <component :is="mainComponent"></component>
     </div>
     <div class="flex flex-none h-1/3 bg-chat">
@@ -60,6 +60,7 @@ export default Vue.extend({
       sharedObjectsMap: undefined,
       showUpdateWarning: false,
       mainComponent: null,
+      force2d: false,
     };
   },
   methods: {
@@ -159,16 +160,20 @@ export default Vue.extend({
         try {
           const homeResponse = await this.$http.get("/home/"+this.$route.params.username);
 
-          // todo handle null homeDesignData
+          if(typeof homeResponse.data.homeDesignData === "undefined") {
+            this.force2d = true;
+          }
 
-          const sharedObjectsResponse = await this.$http.get("/place/" + homeResponse.data.homeData.id +
+          const sharedObjectsResponse = await this.$http
+            .get("/place/" + homeResponse.data.homeData.id +
             "/object_instance");
 
           this.sharedObjects = sharedObjectsResponse.data.object_instance;
 
           this.place = {
             ...homeResponse.data.homeData,
-            assets_dir: homeResponse.data.homeDesignData.id + "/",
+            assets_dir: homeResponse.data.homeDesignData ?
+              (homeResponse.data.homeDesignData.id + "/") : null,
             world_filename: "home.wrl",
             slug: "home",
             block: homeResponse.data.blockData,
@@ -176,6 +181,7 @@ export default Vue.extend({
           this.$store.methods.setPlace(this.place);
         } catch(e) {
           console.error("error with home response");
+          console.log(e);
         }
       } else {
         try {
@@ -198,6 +204,8 @@ export default Vue.extend({
     },
     async loadAndJoinPlace(): Promise<void> {
       this.loaded = false;
+      this.force2d = false;
+
       if (this.place) this.$socket.leaveRoom(this.place.id);
       await this.getPlace();
 
@@ -206,7 +214,7 @@ export default Vue.extend({
         const browser = X3D.getBrowser(this.browser);
         browser.replaceWorld(null);
       }
-      if(this.$store.data.view3d) {
+      if(this.$store.data.view3d && !this.force2d) {
         const browser = await this.startX3D();
         this.loaded = true;
         this.startX3DListeners(browser);
