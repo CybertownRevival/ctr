@@ -103,7 +103,7 @@
                         <input
                           type="password"
                           v-model="password"
-                          size="16"
+                          size="256"
                           class="input-text"
                         />
                       </td>
