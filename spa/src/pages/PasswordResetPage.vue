@@ -61,7 +61,7 @@
                 v-model="newPassword"
                 type="password"
                 size="16"
-                maxlength="255"
+                maxlength="256"
                 tabindex="1"
                 class="input-text"
               />
@@ -74,7 +74,7 @@
                 v-model="newPassword2"
                 type="password"
                 size="16"
-                maxlength="255"
+                maxlength="256"
                 tabindex="1"
                 class="input-text"
               />
