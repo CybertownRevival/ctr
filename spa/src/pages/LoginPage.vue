@@ -97,7 +97,7 @@
                 v-model="password"
                 type="password"
                 size="16"
-                maxlength="16"
+                maxlength="256"
                 tabindex="2"
                 @keypress.exact.enter="login"
                 class="input-text"
