@@ -116,6 +116,8 @@ export class MemberService {
       username: member.username,
       walletBalance: wallet.balance,
       xp: member.xp,
+      firstName: member.firstname,
+      lastName: member.lastname,
     };
   }
 
