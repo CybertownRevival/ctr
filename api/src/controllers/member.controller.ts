@@ -53,6 +53,8 @@ class MemberController {
 
         if(await memberService.isAdmin(session.id)) {
           memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
+        } else if(parseInt(request.params.id) === session.id) {
+          memberInfo = await this.memberService.getMemberInfo(parseInt(request.params.id));
         } else {
           memberInfo = await this.memberService.getMemberInfoPublic(parseInt(request.params.id));
         }
