@@ -217,6 +217,9 @@ export default Vue.extend({
       if(user && user.transform && user.transform.pos && user.transform.rot) {
         let distance;
         const browser = X3D.getBrowser(this.browser);
+        if(!browser.currentScene) {
+          return;
+        }
         try {
           distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? 3;
         } catch(e) {
@@ -226,13 +229,22 @@ export default Vue.extend({
         let rot = new X3D.SFRotation(...user.transform.rot);
         let pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -distance));
         pos_offset.y = 0;
-        browser.viewpointPosition = pos.add(pos_offset);
+        let viewpoint = browser.currentScene.createNode("Viewpoint");
+        browser.currentScene.addRootNode(viewpoint);
+        viewpoint.position = pos.add(pos_offset);
         // orientation math:
         // The destination avatar is, relative to us, at the negation of pos_offset
         // Math.atan2(y, x) gives the angle to face (x, y) if 0 angle is facing x
         // We want x = our -z to be 0 and y = our left = our -x. So, Math.atan(-x, -z)
         // Negating pos_offset gives Math.atan2(pos_offset.x, pos_offset.z)
-        browser.viewpointOrientation = new X3D.SFRotation(0, 1, 0, Math.atan2(pos_offset.x, pos_offset.z));
+        viewpoint.orientation = new X3D.SFRotation(0, 1, 0, Math.atan2(pos_offset.x, pos_offset.z));
+        viewpoint.set_bind = true;
+        viewpoint.addFieldCallback("isBound", {}, (value) => {
+          if(!value) {
+            browser.currentScene.removeRootNode(viewpoint);
+            viewpoint.dispose();
+          }
+        })
       }
     },
     async onAvatarAdded(event): Promise<void> {
