@@ -146,6 +146,7 @@ url"vrmlscript:
 function set_uptrigger(v,t){
  if(!v || isUsed){return;}
  else{
+  Browser.setGravity(false);
   bind_changed = true;
   upTime_changed = t;
   isUsed = true;
@@ -155,6 +156,7 @@ function set_uptrigger(v,t){
 function set_downtrigger(v,t){
  if(!v || isUsed){return;}
  else{
+  Browser.setGravity(false);
   bind_changed = true;
   downTime_changed = t;
   isUsed = true;
@@ -163,19 +165,18 @@ function set_downtrigger(v,t){
 
 function set_up(v){
  if(v){return;}
- else{isUsed = false;}
+ else{isUsed = false;Browser.setGravity(true);}
 }
 
 function set_down(v){
  if(v){return;}
- else{isUsed = false;}
+ else{isUsed = false;Browser.setGravity(true);}
 }
 
 "}
 
 ]
 }
-DEF antiGrav NavigationInfo { type "NONE" }
 ROUTE utProx.isActive TO ts.set_uptrigger
 ROUTE ts.upTime_changed TO utClock.set_startTime
 ROUTE utClock.fraction_changed TO utInterp.set_fraction
@@ -190,9 +191,6 @@ ROUTE utClock.isActive TO ts.set_up
 ROUTE dtClock.isActive TO ts.set_down
 
 ROUTE ts.bind_changed TO tView.set_bind
-
-ROUTE utClock.isActive TO antiGrav.set_bind
-ROUTE dtClock.isActive TO antiGrav.set_bind
 
 
 
