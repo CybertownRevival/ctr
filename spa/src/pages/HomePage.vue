@@ -379,7 +379,6 @@ export default Vue.extend({
     MM_swapImgRestore() {},
   },
   mounted() {
-    console.log("we are homepage");
     if (this.$store.data.isUser) {
       this.$router.push({ path: "/place/enter" });
     }
