@@ -67,8 +67,6 @@ export default Vue.extend({
   methods: {
     addSharedObject(obj, browser): void {
       obj.url = `/assets/object/${obj.object_id}/${obj.filename}`;
-      console.log(obj.position);
-      console.log(obj.rotation);
       if (obj.position == null) {
         obj.position = {
           x: 0,
@@ -89,7 +87,6 @@ export default Vue.extend({
       let sharedObject = browser.currentScene.createProto("SharedObject");
       sharedObject.name = obj.name;
       sharedObject.id = obj.id;
-      console.log(sharedObject);
       sharedObject.translation = new X3D.SFVec3f(
         obj.position.x,
         obj.position.y,
@@ -105,13 +102,9 @@ export default Vue.extend({
       inline.url = new X3D.MFString(obj.url);
       sharedObject.children[0] = inline;
       browser.currentScene.addRootNode(sharedObject);
-      console.log(sharedObject);
-      console.log(sharedObject.import);
-      console.log(sharedObject["startMove"]);
 
       sharedObject.addFieldCallback("newPosition", {}, (pos) => {
         //todo happens when accepted
-        console.log("new so position fired");
         this.saveObjectLocation(obj.id);
 
         /*
@@ -133,7 +126,6 @@ export default Vue.extend({
 
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
         //todo happens when accepted
-        console.log("new so rotation fired");
         /*
             BxxEvents.dispatchEvent(
               new CustomEvent("SO:toServer:rotation", {
@@ -437,11 +429,7 @@ export default Vue.extend({
       window.location.reload();
     },
     saveObjectLocation(objectId): void {
-      console.log("save object location");
-      console.log(objectId);
       var obj = this.sharedObjectsMap.get(objectId);
-      console.log(obj.translation);
-      console.log(obj.rotation);
       this.$http.post("/object_instance/" + objectId + "/position", {
         position: {
           x: obj.translation.x,

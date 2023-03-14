@@ -6,7 +6,7 @@ export interface User {
     id: string,
     name: string,
     filename: string,
-    gestures: string[],
+    gestures: string,
   },
   username?: string,
   token?: string,
@@ -47,6 +47,7 @@ export interface AppStore {
     setToken: (token: string) => void,
     setView3d: (value: boolean) => void,
     setPlace: (value: Place) => void,
+    getGestures: () => [],
   },
 }
 
@@ -76,6 +77,12 @@ const appStore = Vue.observable<AppStore>({
     },
     setPlace(placeData: Place): void{
       appStore.data.place = placeData;
+    },
+    getGestures(): [] {
+      if(appStore.data.user.avatar.gestures.length){
+        return JSON.parse(appStore.data.user.avatar.gestures);
+      }
+      return [];
     },
   },
 });

@@ -33,8 +33,6 @@ export default Vue.extend({
   },
   mounted() {
     this.loaded = true;
-    console.log('home tools');
-    console.log(this.$store.data.place);
   },
 });
 </script>
