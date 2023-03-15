@@ -1,27 +1,22 @@
 import { Request, Response} from 'express';
 import { Container } from 'typedi';
 
-import {db} from '../db';
-import { MemberService, BlockService } from '../services';
+import { MemberService, BlockService, HoodService } from '../services';
 
 class BlockController {
 
   constructor(
     private memberService: MemberService,
     private blockService: BlockService,
+    private hoodService: HoodService,
   ) {}
 
   public async getBlock(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      const [block] = await db.place.where({ 'id': parseInt(id) });
-      const [mapLocation] = await db.mapLocation.where({ 'place_id': parseInt(id) });
-
-      const [hood] = await db.place.where({ 'id': mapLocation.parent_place_id });
-      const [hoodMapLocation] = await db.mapLocation.where({ 'place_id': hood.id });
-
-      const [colony] = await db.place.where({ 'id': hoodMapLocation.parent_place_id });
-
+      const block = await this.blockService.find(parseInt(id));
+      const hood = await this.blockService.getHood(parseInt(id));
+      const colony = await this.hoodService.getColony(hood.id);
       response.status(200).json({ block: block, hood: hood, colony: colony });
     } catch (error) {
       console.error(error);
@@ -55,19 +50,10 @@ class BlockController {
 
       const { availableLocations } = request.body;
 
-      await db.mapLocation
-        .update({available: false })
-        .where({ parent_place_id: parseInt(id) });
+      await this.blockService.resetMapLocationAvailability(parseInt(id));
 
       for(const location of availableLocations) {
-        await db.mapLocation
-          .insert({
-            parent_place_id: parseInt(id),
-            location: location,
-            available: true,
-          })
-          .onConflict(['parent_place_id','location'])
-          .merge(['available']);
+        await this.blockService.setMapLocationAvailable(parseInt(id), location);
       }
 
       response.status(200).json({'status': 'success'});
@@ -80,4 +66,5 @@ class BlockController {
 }
 const memberService = Container.get(MemberService);
 const blockService = Container.get(BlockService);
-export const blockController = new BlockController(memberService, blockService);
+const hoodService = Container.get(HoodService);
+export const blockController = new BlockController(memberService, blockService, hoodService);
