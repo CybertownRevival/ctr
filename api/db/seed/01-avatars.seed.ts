@@ -33,14 +33,14 @@ export async function seed(knex: Knex): Promise<void> {
       filename: 'jeni.wrl',
     },
     {
-      name: 'Keli',
+      name: 'Kellie',
       status: 1,
-      filename: 'jeni.wrl',
+      filename: 'kellie.wrl',
     },
     {
       name: 'Ken',
       status: 1,
-      filename: 'jeni.wrl',
+      filename: 'ken.wrl',
     },
     {
       name: 'Lili',
