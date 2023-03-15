@@ -1,43 +1,23 @@
 import { Request, Response} from 'express';
+import {Container} from 'typedi';
 
-import { db } from '../db';
+import {
+  AvatarService,
+} from '../services';
 
-interface QueryParams {
-  limit: string,
-  order: string,
-  orderDirection: string,
-}
+
 class AvatarController {
-  public static readonly MAX_LIMIT = 1000;
-  public static readonly VALID_ORDERS = ['id'];
-  public static readonly VALID_ORDER_DIRECTIONS = ['asc', 'desc'];
 
-  constructor() {}
+  constructor(
+    private avatarService: AvatarService,
+  ) {}
 
   /**
    * Returns an ordered list of all avatars.
    */
   public async getResults(request: Request, response: Response): Promise<void> {
-    const { limit, order, orderDirection }: QueryParams = (<QueryParams> (<unknown> request.query));
-    const parsedLimit = parseInt(<string> limit);
-
-    const queryLimit = (parsedLimit <= AvatarController.MAX_LIMIT)
-      ? parsedLimit
-      : 10;
-
-    const orderBy = AvatarController.VALID_ORDERS.includes(order)
-      ? order
-      : 'id';
-
-    const queryOrderDirection = AvatarController.VALID_ORDER_DIRECTIONS.includes(orderDirection)
-      ? orderDirection
-      : '';
-    
     try {
-      const avatars = await db.avatar
-        .select('id', 'name')
-        .orderBy(orderBy, queryOrderDirection)
-        .limit(queryLimit);
+      const avatars = await this.avatarService.findAll();
       response.status(200).json({ avatars });
     } catch (error) {
       console.error(error);
@@ -47,4 +27,5 @@ class AvatarController {
     }
   }
 }
-export const avatarController = new AvatarController();
+const avatarService = Container.get(AvatarService);
+export const avatarController = new AvatarController(avatarService);

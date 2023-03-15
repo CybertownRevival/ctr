@@ -77,16 +77,11 @@ export default Vue.extend({
     },
   },
   mounted() {
-    //todo get the list of public avatars
-    this.$http
-      .get("/avatar", {
-        limit: 1000,
-      })
+    this.$http.get("/avatar")
       .then(response => {
         this.avatars = response.data.avatars;
       });
 
-    //todo set avatarId = user's avatar id
     this.avatarId = this.$store.data.user.avatar.id;
   },
   mixins: [ModalMixin],
