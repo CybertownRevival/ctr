@@ -39,4 +39,23 @@ export class MapLocationRepository {
       .where({parent_place_id: parentPlaceId, location: location});
   }
 
+  public async resetAvailabilityByParentPlaceId(parentPlaceId: number): Promise<void> {
+    await this.db.mapLocation
+      .update({available: false })
+      .where({ parent_place_id: parentPlaceId });
+
+  }
+
+  public async createAvailableLocation(parentPlaceId: number , location: number): Promise<void> {
+    await this.db.mapLocation
+      .insert({
+        parent_place_id: parentPlaceId,
+        location: location,
+        available: true,
+      })
+      .onConflict(['parent_place_id','location'])
+      .merge(['available']);
+  }
+
+
 }
