@@ -1,10 +1,12 @@
 import { Request, Response} from 'express';
-
-import { db } from '../db';
+import { Container } from 'typedi';
+import {ObjectInstanceService} from '../services';
 
 class ObjectInstanceController {
 
-  constructor() {}
+  constructor(
+    private objectInstanceService: ObjectInstanceService,
+  ) {}
 
   /** Stores the position of an object instance in the database */
   public async updateObjectInstancePosition(request: Request, response: Response): Promise<void> {
@@ -22,21 +24,13 @@ class ObjectInstanceController {
       }
   
       const id = Number.parseInt(request.params.id);
-      const position = JSON.stringify({
-        x: Number.parseFloat(request.body.position.x),
-        y: Number.parseFloat(request.body.position.y),
-        z: Number.parseFloat(request.body.position.z),
-      });
-      const rotation = JSON.stringify({
-        x: Number.parseFloat(request.body.rotation.x),
-        y: Number.parseFloat(request.body.rotation.y),
-        z: Number.parseFloat(request.body.rotation.z),
-        angle: Number.parseFloat(request.body.rotation.angle),
-      });
-  
-      await db.objectInstance
-        .where({ id })
-        .update({ position, rotation });
+
+      await this.objectInstanceService.updateObjectPlacement(
+        id,
+        request.body.position,
+        request.body.rotation,
+      );
+
       response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
@@ -44,4 +38,5 @@ class ObjectInstanceController {
     }
   }
 }
-export const objectInstanceController = new ObjectInstanceController();
+const objectInstanceService = Container.get(ObjectInstanceService);
+export const objectInstanceController = new ObjectInstanceController(objectInstanceService);
