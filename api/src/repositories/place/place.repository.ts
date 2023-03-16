@@ -19,6 +19,10 @@ export class PlaceRepository {
     return place;
   }
 
+  public async findBySlug(slug: string): Promise<Place> {
+    return this.db.place.where({ slug: slug }).first();
+  }
+
   /**
    * Finds a place record which is a home for a given member id
    * @param memberId
