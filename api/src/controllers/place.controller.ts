@@ -1,16 +1,18 @@
 import { Request, Response} from 'express';
-
-import { db } from '../db';
+import { PlaceService } from '../services';
+import {Container} from 'typedi';
 
 class PlaceController {
 
-  constructor() {}
+  constructor(
+    private placeService: PlaceService,
+  ) {}
 
   /** Provides data about the place with the given slug */
   public async getPlace(request: Request, response: Response): Promise<void> {
     const { slug } = request.params;
     try {
-      const [place] = await db.place.where({ slug });
+      const place = await this.placeService.fundBySlug(slug);
       response.status(200).json({ place });
     } catch (error) {
       console.error(error);
@@ -22,7 +24,7 @@ class PlaceController {
   public async getPlaceObjects(request: Request, response: Response): Promise<void> {
     const { placeId } = request.params;
     try {
-      const objects = await db.objectInstance.where({ place_id: parseInt(placeId) });
+      const objects = await this.placeService.getPlaceObjects(parseInt(placeId));
       response.status(200).json({ object_instance: objects });
     } catch (error) {
       console.error(error);
@@ -30,4 +32,5 @@ class PlaceController {
     }
   }
 }
-export const placeController = new PlaceController();
+const placeService = Container.get(PlaceService);
+export const placeController = new PlaceController(placeService);
