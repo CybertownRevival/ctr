@@ -26,4 +26,8 @@ export class HoodService {
     return await this.colonyRepository.find(hoodMapLocation.parent_place_id);
   }
 
+  public async getBlocks(hoodId: number): Promise<any> {
+    return await this.hoodRepository.getBlocks(hoodId);
+  }
+
 }
