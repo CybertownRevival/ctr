@@ -2,7 +2,6 @@ import { Request, Response} from 'express';
 import validator from 'validator';
 import { Container } from 'typedi';
 
-import { Message } from 'models';
 import { MemberService, MessageService } from '../services';
 
 interface QueryParams {
