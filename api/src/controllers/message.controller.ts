@@ -2,12 +2,8 @@ import { Request, Response} from 'express';
 import validator from 'validator';
 import { Container } from 'typedi';
 
-import {
-  db,
-  knex,
-} from '../db';
 import { Message } from 'models';
-import { MemberService } from '../services';
+import { MemberService, MessageService } from '../services';
 
 interface QueryParams {
   limit: string,
@@ -16,11 +12,11 @@ interface QueryParams {
 }
 
 class MessageController {
-  public static readonly MAX_QUERY_LIMIT = 1000;
-  public static readonly VALID_ORDERS = ['id'];
-  public static readonly VALID_ORDER_DIRECTIONS = ['asc', 'desc'];
 
-  constructor(private memberService: MemberService) {}
+  constructor(
+    private memberService: MemberService,
+    private messageService: MessageService,
+  ) {}
 
   /** Handles storing a user message to the database */
   public async addMessage(request: Request, response: Response): Promise<void> {
@@ -52,13 +48,15 @@ class MessageController {
         const { id } = session;
         const { body } = request.body;
         const placeId = Number.parseInt(request.params.placeId);
-        const [messageId] = await db.message
-          .insert({
-            body,
-            member_id: id,
-            place_id: placeId,
-            status: 2,
-          });
+
+
+        const messageId = await this.messageService.create(
+          id,
+          placeId,
+          body,
+          2,
+        );
+
         response.status(200).json({ messageId });
       } catch (error) {
         console.error(error);
@@ -72,13 +70,12 @@ class MessageController {
         const { id } = session;
         const { body } = request.body;
         const placeId = Number.parseInt(request.params.placeId);
-        const [messageId] = await db.message
-          .insert({
-            body,
-            member_id: id,
-            place_id: placeId,
-            status: 1,
-          });
+        const messageId = await this.messageService.create(
+          id,
+          placeId,
+          body,
+          1,
+        );
         response.status(200).json({ messageId });
       } catch (error) {
         console.error(error);
@@ -100,24 +97,14 @@ class MessageController {
     }
     const { limit, order, orderDirection }: QueryParams = (<QueryParams> (<unknown> request.query));
     const parsedLimit = Number.parseInt(limit);
-    const queryLimit = (parsedLimit > 0 && parsedLimit <= MessageController.MAX_QUERY_LIMIT)
-      ? parsedLimit
-      : 10;
-    const queryOrder = MessageController.VALID_ORDERS.includes(order)
-      ? order
-      : 'id';
-    const queryOrderDirection = MessageController.VALID_ORDER_DIRECTIONS.includes(orderDirection)
-      ? orderDirection
-      : 'desc';
     try {
-      const messages = await knex
-        .select('message.id', 'message.body as msg', 'member.username as username')
-        .from<Message, Message[]>('message')
-        .where('message.place_id', placeId)
-        .where('message.status', '1')
-        .innerJoin('member', 'message.member_id', 'member.id')
-        .orderBy(queryOrder, queryOrderDirection)
-        .limit(queryLimit);
+
+      const messages = await this.messageService.getResults(
+        placeId,
+        order,
+        orderDirection,
+        parsedLimit,
+      );
       response.status(200).json({ messages });
     } catch (error) {
       console.error(error);
@@ -128,4 +115,5 @@ class MessageController {
   }
 }
 const memberService = Container.get(MemberService);
-export const messageController = new MessageController(memberService);
+const messageService = Container.get(MessageService);
+export const messageController = new MessageController(memberService, messageService);

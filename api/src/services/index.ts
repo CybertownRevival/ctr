@@ -3,3 +3,4 @@ export * from './block/block.service';
 export * from './home/home.service';
 export * from './hood/hood.service';
 export * from './member/member.service';
+export * from './message/message.service';
