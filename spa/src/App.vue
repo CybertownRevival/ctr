@@ -346,17 +346,17 @@ export default Vue.extend({
       },
     );
     require("./libs/x_ite_mods/spec_color.js");
-    require("./libs/x_ite_mods/relax_route.js");
-    require("./libs/x_ite_mods/relax_is.js");
-    require("./libs/x_ite_mods/arrow_keys.js");
-    require("./libs/x_ite_mods/viewpoint_bind.js");
-    require("./libs/x_ite_mods/allow_sf_string.js");
-    //require('./libs/x_ite_mods/speed_multiplier.js');
-    require("./libs/x_ite_mods/bxx_speed_avatar.js");
-    require("./libs/x_ite_mods/default_gravity.js");
-    require("./libs/x_ite_mods/extend_context_menu.js");
-    require("./libs/x_ite_mods/bxx_auth.js");
-    //require('./libs/x_ite_mods/fix_stairs.js');
+    // require("./libs/x_ite_mods/relax_route.js");
+    // require("./libs/x_ite_mods/relax_is.js");
+    // require("./libs/x_ite_mods/arrow_keys.js");
+    // require("./libs/x_ite_mods/viewpoint_bind.js");
+    // require("./libs/x_ite_mods/allow_sf_string.js");
+    // //require('./libs/x_ite_mods/speed_multiplier.js');
+    // require("./libs/x_ite_mods/bxx_speed_avatar.js");
+    // require("./libs/x_ite_mods/default_gravity.js");
+    // require("./libs/x_ite_mods/extend_context_menu.js");
+    // require("./libs/x_ite_mods/bxx_auth.js");
+    // //require('./libs/x_ite_mods/fix_stairs.js');
   },
 });
 </script>
