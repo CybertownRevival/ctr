@@ -25,7 +25,6 @@ document.querySelector("html").classList.add("dark");
 
 const router = new VueRouter({ routes });
 Vue.use(VueRouter);
-//todo, this
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title + " - Cybertown";
@@ -36,7 +35,7 @@ router.beforeEach((to, from, next) => {
   if (!["login", "logout", "signup", "forgot", "password_reset","about"].includes(to.name)) {
     api.get<{ user: User }>("/member/session").then(response => {
       const { user } = response.data;
-      appStore.data.user = { ...appStore.data.user, ...user };
+      appStore.methods.setUser(user);
       appStore.data.isUser = true;
       next();
     }).catch(() => {

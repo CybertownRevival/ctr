@@ -147,6 +147,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import appStore from "@/appStore";
 
 export default Vue.extend({
   name: "SignupPage",
@@ -179,8 +180,12 @@ export default Vue.extend({
           password: this.password,
         });
         this.showSuccess = true;
-        this.$store.data.user.username = data.username;
-        this.$store.data.user.hasHome = false;
+
+        this.$store.methods.setUser({
+          username: data.username,
+          hasHome: false,
+        });
+
         this.$store.methods.setToken(data.token);
         this.$router.push({ path: "/place/enter" });
       } catch (error: any) {
