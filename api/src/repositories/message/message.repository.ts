@@ -36,7 +36,7 @@ export class MessageRepository {
       .select(
         'message.id',
         'message.body as msg',
-        'member.username as usernam',
+        'member.username as username',
       )
       .from<Message, Message[]>('message')
       .where('message.place_id', placeId)
