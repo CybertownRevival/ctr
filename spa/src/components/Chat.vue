@@ -87,7 +87,7 @@
         </ul>
         <ul v-if="activePanel === 'gestures'">
           <li
-            v-for="(gesture, key) in this.$store.methods.getGestures()"
+            v-for="(gesture, key) in this.$store.data.user.avatar.gestures"
             :key="key"
             @click="sendGesture(key)"
             class="cursor-pointer hover:bg-gray-200 active:bg-gray-400"
