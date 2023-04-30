@@ -10,3 +10,4 @@ export * from './transaction.model';
 export * from './wallet.model';
 export * from './home-design.model';
 export * from './home.model';
+export * from './messageboard.model';

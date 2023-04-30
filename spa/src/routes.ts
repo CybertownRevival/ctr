@@ -21,6 +21,8 @@ import HomeTools from "@/pages/home/HomeTools.vue";
 import HomeUpdatePage from "@/pages/home/HomeUpdatePage.vue";
 import HomeUpdateHomePage from "@/pages/home/HomeUpdateHomePage.vue";
 
+import MessageBoard from "@/pages/MessageBoard.vue";
+
 export default [
   { path: "/", component: HomePage, name: "home", meta:
       {
@@ -38,7 +40,9 @@ export default [
       default: WorldBrowserPage,
       tools: WorldBrowserTools,
     },
-    name: "world-browser" ,
+    name: "world-browser",
+    meta:
+     {wrapper: true},
   },
   { path: "/login", component: LoginPage, name: "login", meta:
       {
@@ -81,7 +85,8 @@ export default [
       default: NeighborhoodPage,
       tools: NeighborhoodTools,
     },
-    name: "neighborhood" ,
+    name: "neighborhood",
+    meta: { wrapper: true },
   },
   {
     path: "/block/:id/wizard",
@@ -90,6 +95,7 @@ export default [
       tools: BlockTools,
     },
     name: "blockwizard",
+    meta: { wrapper: true },
   },
   {
     path: "/block/:id/move/:location",
@@ -98,6 +104,7 @@ export default [
       tools: BlockTools,
     },
     name: "blockmove",
+    meta: { wrapper: true },
   },
   {
     path: "/block/:id",
@@ -106,6 +113,7 @@ export default [
       tools: BlockTools,
     },
     name: "block",
+    meta: { wrapper: true },
   },
   {
     path: "/home/update",
@@ -114,6 +122,7 @@ export default [
       tools: HomeTools,
     },
     name: "home-update",
+    meta: { wrapper: true },
   },
   {
     path: "/home/update/home",
@@ -122,6 +131,7 @@ export default [
       tools: HomeTools,
     },
     name: "home-update-home",
+    meta: { wrapper: true },
   },
   {
     path: "/home/:username",
@@ -130,6 +140,15 @@ export default [
       tools: HomeTools,
     },
     name: "user-home",
+    meta: { wrapper: true },
+  },
+  {
+    path: "/messageboard/:place_id",
+    components: {
+      default: MessageBoard,
+    },
+    name: "message-board",
+    meta: { wrapper: false },
   },
 ];
 
