@@ -7,3 +7,4 @@ export * from './message/message.service';
 export * from './object-instance/object-instance.service';
 export * from './place/place.service';
 export * from './wallet/wallet.service';
+export * from './messageboard/messageboard.service';

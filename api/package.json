@@ -30,6 +30,7 @@
     "mysql2": "^2.3.3",
     "nodemailer": "^6.7.2",
     "reflect-metadata": "^0.1.13",
+    "sanitize-html": "^2.10.0",
     "typedi": "^0.10.0",
     "validator": "^13.6.0"
   },

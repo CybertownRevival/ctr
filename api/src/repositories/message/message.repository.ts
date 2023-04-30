@@ -13,7 +13,7 @@ export class MessageRepository {
     memberId: number,
     placeId: number,
     messageBody: string,
-    status: number
+    status: number,
   ): Promise<number> {
     const [message] = await this.db.message
       .insert({
