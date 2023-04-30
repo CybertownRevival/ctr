@@ -1,7 +1,7 @@
 <template>
   <div class="text-center" v-if="loaded">
     <span class="btn-ui" >Information</span>
-    <span class="btn-ui" >Messages</span>
+    <a :href="'#/messageboard/' + this.$store.data.place.block.id" target="_blank" class="btn-ui">Messages</a>
     <router-link
       v-if="this.$store.data.place.hood"
       :to="'/neighborhood/'+this.$store.data.place.hood.id">

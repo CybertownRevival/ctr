@@ -2,7 +2,7 @@
   <div class="text-center">
     <span href="" class="btn-ui">Information</span>
     <span href="" class="btn-ui">Inbox</span>
-    <span href="" class="btn-ui">Messages</span>
+    <a :href="'#/messageboard/' + this.$store.data.place.hood.id" target="_blank" class="btn-ui">Messages</a>
     <span href="" class="btn-ui">Vote</span>
     <router-link
       v-if="this.$store.data.place.colony"

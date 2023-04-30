@@ -2,6 +2,7 @@
   <!-- archive template: property/action_standard.tmpl -->
   <div class="text-center" v-if="loaded">
     <span class="btn-ui" >Information</span>
+    <a :href="'#/messageboard/' + this.$store.data.place.id" target="_blank" class="btn-ui">Messages</a>
     <router-link
       v-if="this.$store.data.place.block"
       :to="'/block/'+this.$store.data.place.block.id">
