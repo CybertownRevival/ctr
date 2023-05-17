@@ -77,18 +77,18 @@
           (i.e. &lt;p&gt;, &lt;br&gt;, &lt;a href&gt;, and &lt;img src&gt;) are
           allowed.  If a disallowed tag is used, an error message will display.
         </div>
-        <lable for="subject">Subject:</lable>&nbsp;&nbsp;
+        <label for="subject">Subject:</label>&nbsp;&nbsp;
         <input type="text" class="text-black" id="subject" v-model="subject" size="50"/><br><br>
-        <lable for="body">Message:</lable><br>
+        <label for="body">Message:</label><br>
         <textarea id="body" class="text-black w-2/3 h-96" v-model="body"></textarea><br><br>
         <button class="btn" @click="switchView()">CANCEL</button>&nbsp;&nbsp;&nbsp;<button type="submit" class="btn" @click="postMessageboardMessage()">POST</button>
       </center>
     </div>
     <div v-if="this.active === 'reply'">
       <center>
-        <lable for="subject">Subject:</lable>&nbsp;&nbsp;
+        <label for="subject">Subject:</label>&nbsp;&nbsp;
         RE: {{ dsubject }}<br><br>
-        <lable for="body">Message:</lable><br>
+        <label for="body">Message:</label><br>
         <textarea id="body" class="text-black w-2/3 h-96" v-model="body"></textarea><br><br>
         <button class="btn" @click="switchView()">CANCEL</button>&nbsp;&nbsp;&nbsp;<button type="submit" class="btn" @click="postMessageboardReply()">REPLY</button>
       </center>
