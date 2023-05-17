@@ -103,7 +103,8 @@
                         <input
                           type="password"
                           v-model="password"
-                          size="256"
+                          size="16"
+                          maxlength="256"
                           class="input-text"
                         />
                       </td>
@@ -118,6 +119,7 @@
                           type="password"
                           v-model="password2"
                           size="16"
+                          maxlength="256"
                           class="input-text"
                         />
                       </td>
