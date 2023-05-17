@@ -1,9 +1,9 @@
 <template>
-  <main id="app" class="h-screen flex flex-col" v-if="this.$route.meta.wrapper">
+  <main id="app" class="h-screen flex flex-col">
     <div
       class="flex flex-none flex-row bg-lines justify-between h-full"
       style="height: 70px;"
-      v-if="$store.data.isUser"
+      v-if="$store.data.isUser && this.$route.meta.wrapper"
     >
       <div class="flex h-full items-center">
         <img src="/assets/img/ctMinaBanner.gif" />
@@ -24,7 +24,7 @@
       </div>
       <div
         class="flex-none w-60 bg-lines overflow-y-auto"
-        v-if="$store.data.isUser"
+        v-if="$store.data.isUser && this.$route.meta.wrapper"
       >
         <div class="flex flex-col">
           <div class="flex justify-center">
@@ -104,11 +104,6 @@
       </div>
     </div>
     <ModalRoot />
-  </main>
-  <main id="app" v-else-if="!this.$route.meta.wrapper">
-    <div style="height: calc(100vh - 70px) !important;">
-      <router-view/>
-    </div>
   </main>
 </template>
 
