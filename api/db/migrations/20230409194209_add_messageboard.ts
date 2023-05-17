@@ -10,7 +10,7 @@ function applyCommon(table: Knex.CreateTableBuilder) {
 export async function up(knex: Knex): Promise<void> {
   if (!await knex.schema.hasTable('messageboard')) {
     await knex.schema.createTable('messageboard', table => {
-      console.log('Creating messageboard table');
+      console.log('Creating messageboard table again');
       applyCommon(table);
             
       table.integer('place_id', 10)
@@ -32,8 +32,8 @@ export async function up(knex: Knex): Promise<void> {
         .notNullable();
             
       table.integer('parent_id', 11)
-        .unsigned()
-        .notNullable();
+        .defaultTo(0)
+        .unsigned();
             
       table.tinyint('reply', 1)
         .defaultTo(0)

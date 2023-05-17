@@ -90,32 +90,15 @@ class MessageboardController {
   public async postMessageboardMessage(request: Request, response: Response): Promise<any> {
     const placeId = Number.parseInt(request.body.place_id);
     const subject = request.body.subject;
-    let body = request.body.body;
-    body = sanitizeHtml(body, {
-      allowedTags: [
-        "address", "article", "aside", "footer", "header", "h1", "h2", "h3", "h4",
-        "h5", "h6", "hgroup", "main", "nav", "section", "blockquote", "dd", "div",
-        "dl", "dt", "figcaption", "figure", "hr", "li", "main", "ol", "p", "pre",
-        "ul", "a", "abbr", "b", "bdi", "bdo", "br", "cite", "code", "data", "dfn",
-        "em", "i", "kbd", "mark", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp",
-        "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr", "caption",
-        "col", "colgroup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "img",
-        "font",
-      ],
-      disallowedTagsMode: 'discard',
-      allowedAttributes: {
-        a: [ 'href', 'name', 'target' ],
-        img: [ 'src', 'srcset', 'alt', 'title', 'width', 'height' ],
-        font: [ 'color', 'size' ],
-      },
-    });
+    const uncleanBody = request.body.body;
+    const cleanBody = await this.messageboardService.sanitize(uncleanBody);
     if (subject === '') {
       response.status(400).json({
         error: 'A subject is required',
       });
       return;
     }
-    if (body === '') {
+    if (cleanBody === '') {
       response.status(400).json({
         error: 'A message is required',
       });
@@ -133,7 +116,7 @@ class MessageboardController {
     try{
       const data = await this
         .messageboardService
-        .postMessageboardMessage(id, placeId, subject, body);
+        .postMessageboardMessage(id, placeId, subject, cleanBody);
       response.status(200).json({data});
     } catch (error) {
       console.log(error);
