@@ -137,6 +137,7 @@ export class MessageboardRepository {
           place_id: placeId,
           subject: subject,
           message: message,
+          parent_id: 0,
         },
         ['id'],
       );
