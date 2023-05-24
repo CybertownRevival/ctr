@@ -12,7 +12,7 @@
     "db:seed": "knex seed:run --knexfile src/knexfile.ts",
     "lint": "eslint -c .eslintrc.json src/**/*",
     "test": "jest",
-    "dev": "nodemon -e ts --exec \"node --inspect=0.0.0.0:9229 -r ts-node/register -r dotenv/config src/api.ts\""
+    "script": "ts-node -r dotenv/config"
   },
   "author": "",
   "license": "ISC",

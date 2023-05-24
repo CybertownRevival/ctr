@@ -34,6 +34,12 @@ export class Db {
   get place() {
     return this.knex<Models.Place, Models.Place[]>('place');
   }
+  get role() {
+    return this.knex<Models.Role, Models.Role[]>('role');
+  }
+  get roleAssignment() {
+    return this.knex<Models.RoleAssignment, Models.RoleAssignment[]>('role_assignment');
+  }
   get transaction() {
     return this.knex<Models.Transaction, Models.Transaction[]>('transaction');
   }
