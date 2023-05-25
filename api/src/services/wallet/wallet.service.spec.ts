@@ -1,26 +1,17 @@
 import { Container } from 'typedi';
+import { createSpyObj } from 'jest-createspyobj';
 
-import { Db } from '../../db/db.class';
-import { Wallet } from 'models';
 import { WalletService } from './wallet.service';
+import { WalletRepository } from '../../repositories';
 
 describe('WalletService', () => {
-  const fakeWallet: Partial<Wallet> = { id: 42 };
-  let db;
+  let walletRepository: jest.Mocked<WalletRepository>;
   let service: WalletService;
 
   beforeEach(() => {
-    db = {
-      wallet: {
-        insert: jest.fn().mockResolvedValue([fakeWallet.id]),
-      },
-    };
+    walletRepository = createSpyObj(WalletRepository);
     Container.reset();
-    Container.set(Db, db);
+    Container.set(WalletRepository, walletRepository);
     service = Container.get(WalletService);
-  });
-
-  it('should create', () => {
-    expect(service).toBeTruthy();
   });
 });

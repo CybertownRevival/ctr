@@ -1,10 +1,7 @@
 import 'reflect-metadata';
 import * as http from 'http';
 import express from 'express';
-import {
-  Request,
-  Response,
-} from 'express';
+import { Request, Response } from 'express';
 import morgan from 'morgan';
 import {
   avatarRoutes,
@@ -15,8 +12,11 @@ import {
   hoodRoutes,
   colonyRoutes,
   blockRoutes,
-  homeRoutes, messageboardRoutes,
+  homeRoutes,
+  messageboardRoutes,
 } from './routes';
+
+require('./cron/cron')();
 
 interface HttpException extends Error {
   status: number;
@@ -59,7 +59,7 @@ app.use((request, response, next) => {
 
 app.use((error: HttpException, request: Request, response: Response) => {
   response.status(error.status || 500);
-  response.json({ error: { message: error.message }});
+  response.json({ error: { message: error.message } });
 });
 
 const server = http.createServer(app);

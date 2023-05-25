@@ -46,8 +46,11 @@ export class MemberService {
    * @param password  raw member password
    * @returns promise resolving in the session token for the newly created member
    */
-  public async createMemberAndLogin(email: string, username: string, password: string):
-  Promise<string> {
+  public async createMemberAndLogin(
+    email: string,
+    username: string,
+    password: string,
+  ): Promise<string> {
     const hashedPassword = await this.encryptPassword(password);
     const memberId = await this.memberRepository.create({
       email,
@@ -64,7 +67,7 @@ export class MemberService {
    * @returns decoded session info
    */
   public decodeMemberToken(token: string): SessionInfo {
-    return (<SessionInfo> jwt.verify(token, process.env.JWT_SECRET));
+    return <SessionInfo>jwt.verify(token, process.env.JWT_SECRET);
   }
 
   /**
@@ -173,7 +176,7 @@ export class MemberService {
    * @returns `true` if the member has received their daily login bonus today, `false` otherwise
    */
   public hasReceivedLoginCreditToday(member: Member): boolean {
-    const today = new Date().setHours(0, 0, 0, 0); 
+    const today = new Date().setHours(0, 0, 0, 0);
     return member.last_daily_login_credit.getTime() >= today;
   }
 
@@ -191,7 +194,7 @@ export class MemberService {
    * Validates the given username and password and logs a user in.
    * @param username username of member to be logged in
    * @param password password of member to be logged in
-   * @returns 
+   * @returns
    */
   public async login(username: string, password: string): Promise<string> {
     const member = await this.memberRepository.find({ username });
@@ -215,13 +218,10 @@ export class MemberService {
         member.wallet_id,
         MemberService.DAILY_CC_AMOUNT,
       );
-      await this.memberRepository.update(
-        memberId,
-        {
-          last_daily_login_credit: new Date(),
-          xp: member.xp + MemberService.DAILY_XP_AMOUNT,
-        },
-      );
+      await this.memberRepository.update(memberId, {
+        last_daily_login_credit: new Date(),
+        xp: member.xp + MemberService.DAILY_XP_AMOUNT,
+      });
     }
   }
 
@@ -322,7 +322,7 @@ export class MemberService {
    */
   public decryptSession(request: Request, response: Response): SessionInfo {
     const { apitoken } = request.headers;
-    const session = this.decodeMemberToken(<string> apitoken);
+    const session = this.decodeMemberToken(<string>apitoken);
     if (!session) {
       response.status(400).json({
         error: 'Invalid or missing token.',
@@ -332,4 +332,10 @@ export class MemberService {
     return session;
   }
 
+  public giveRoleIncome() {
+    // todo: get all users with assigned pimrayr roles and the roles are active
+
+    // todo: update all users who have a primary role id and the role is active (wallet)
+    console.log('todo: give out the income to all the users');
+  }
 }

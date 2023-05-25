@@ -7,7 +7,7 @@ function applyCommon(table: Knex.CreateTableBuilder) {
   table.timestamps(false, true);
 }
 
-const tableName = 'role';
+const tableName = 'role_assignment';
 
 export async function up(knex: Knex): Promise<void> {
   if (!(await knex.schema.hasTable(tableName))) {
@@ -15,15 +15,13 @@ export async function up(knex: Knex): Promise<void> {
       console.log(`Creating ${tableName} table`);
       applyCommon(table);
 
-      table.boolean('active').notNullable().defaultTo(true);
+      table.integer('member_id').unsigned().notNullable();
+      table.foreign('member_id').references('member.id');
 
-      table.string('name').notNullable();
+      table.integer('role_id').unsigned().notNullable();
+      table.foreign('role_id').references('role.id');
 
-      table.integer('required_xp').unsigned().notNullable().defaultTo(0);
-
-      table.integer('income_xp').unsigned().notNullable().defaultTo(0);
-
-      table.integer('income_cc').unsigned().notNullable().defaultTo(0);
+      table.integer('place_id').unsigned();
     });
   }
 }
