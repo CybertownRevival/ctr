@@ -11,7 +11,7 @@ import {
 export class MemberRepository {
 
   constructor(private db: Db) {}
-
+  
   /**
    * Creates a new member with the given parameters.
    * @param memberParams parameters to be used for the new member
