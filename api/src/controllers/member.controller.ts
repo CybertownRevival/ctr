@@ -60,6 +60,20 @@ class MemberController {
       response.status(400).json({ error });
     }
   }
+  
+  /** isBanned results based on member status
+   * 1 = active
+   * 0 = banned
+   */
+  public async isBanned(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    try {
+      const data = await this.memberService.isBanned(session.id);
+      response.status(200).json({data});
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   /** Controller method for creating a new user session. */
   public async login(request: Request, response: Response): Promise<void> {
