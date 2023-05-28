@@ -186,6 +186,12 @@ export class MemberService {
     const member = await this.memberRepository.findById(memberId);
     return member.admin;
   }
+  
+  public async isBanned(memberId: number): Promise<number> {
+    const member = await this.memberRepository.findById(memberId);
+    console.log(member.status);
+    return member.status;
+  }
 
   /**
    * Validates the given username and password and logs a user in.
@@ -198,6 +204,7 @@ export class MemberService {
     if (!member) throw new Error('Account not found.');
     const validPassword = await bcrypt.compare(password, member.password);
     if (!validPassword) throw new Error('Incorrect login details.');
+    if (member.status === 0) throw new Error('Deactivated Account');
     this.maybeGiveDailyCredits(member.id);
     return this.encodeMemberToken(member);
   }

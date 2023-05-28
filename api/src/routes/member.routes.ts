@@ -1,4 +1,4 @@
-import Router from 'express';
+import Router, {request, response} from 'express';
 
 import { memberController } from '../controllers';
 
@@ -9,6 +9,8 @@ import { memberController } from '../controllers';
 
 const memberRoutes = Router();
 memberRoutes.post('/signup', (request, response) => memberController.signup(request, response));
+memberRoutes.post('/is_banned',
+  (request, response) => memberController.isBanned(request, response));
 memberRoutes.post('/login', (request, response) => memberController.login(request, response));
 memberRoutes.get('/session', (request, response) => memberController.session(request, response));
 memberRoutes.post('/update_password',

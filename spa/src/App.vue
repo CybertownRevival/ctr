@@ -1,5 +1,6 @@
 <template>
   <main id="app" class="h-screen flex flex-col">
+    <BanCheck v-if="$store.data.isUser" />
     <div
       class="flex flex-none flex-row bg-lines justify-between h-full"
       style="height: 70px;"
@@ -110,16 +111,19 @@
 <script lang="ts">
 import Vue from "vue";
 
+import BanCheck from "./components/BanCheck.vue";
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
-import ModalRoot from "./components/modals/ModalRoot.vue"
-import InfoModal from "./components/modals/InfoModal.vue"
-import ModalService from "./components/modals/services/ModalService.vue"
+import ModalRoot from "./components/modals/ModalRoot.vue";
+import InfoModal from "./components/modals/InfoModal.vue";
+import ModalService from "./components/modals/services/ModalService.vue";
+import {response} from "express";
 
 declare const X3D: any;
 
 export default Vue.extend({
   name: "App",
   components: {
+    BanCheck,
     WorldBrowserPage,
     ModalRoot,
   },
@@ -227,12 +231,12 @@ export default Vue.extend({
           slug: "gameshow",
         },
         {
-          title: 'Black Market',
-          slug: "blackmarket"
+          title: "Black Market",
+          slug: "blackmarket",
         },
         {
           title: "Jail",
-          slug: "jail"
+          slug: "jail",
         },
         {
           title: "Fun Park",
