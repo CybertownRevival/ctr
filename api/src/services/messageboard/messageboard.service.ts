@@ -87,7 +87,7 @@ export class MessageboardService {
         "em", "i", "kbd", "mark", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp",
         "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr", "caption",
         "col", "colgroup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "img",
-        "font", "p", "center",
+        "font", "center",
       ],
       disallowedTagsMode: 'discard',
       allowedAttributes: {
