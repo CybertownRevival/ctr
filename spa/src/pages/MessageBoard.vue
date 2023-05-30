@@ -257,6 +257,7 @@ export default Vue.extend({
     },
     //button action for manage
     switchManage(): void {
+      this.intro = this.placeinfo[0].messageboard_intro;
       this.active = "manage";
     },
     //button action for post
@@ -269,7 +270,6 @@ export default Vue.extend({
     },
     //button action for message view
     switchView(): void {
-      this.intro = this.placeinfo[0].messageboard_intro;
       this.body = "";
       this.subject = "";
       this.display = false;

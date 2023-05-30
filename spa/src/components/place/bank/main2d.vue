@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    Welcome to the Bank
+    <img src="/assets/img/place/bank/bank.jpg" />
   </div>
 </template>
 
