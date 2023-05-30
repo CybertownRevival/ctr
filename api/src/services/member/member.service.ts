@@ -331,11 +331,4 @@ export class MemberService {
     }
     return session;
   }
-
-  public giveRoleIncome() {
-    // todo: get all users with assigned pimrayr roles and the roles are active
-
-    // todo: update all users who have a primary role id and the role is active (wallet)
-    console.log('todo: give out the income to all the users');
-  }
 }

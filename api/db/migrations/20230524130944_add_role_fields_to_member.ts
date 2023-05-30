@@ -1,21 +1,21 @@
 import { Knex } from 'knex';
 
-const columnName = 'primary_role_id';
-
 export async function up(knex: Knex): Promise<void> {
-  if (!(await knex.schema.hasColumn('member', columnName))) {
-    console.log(`Adding ${columnName} column to member table`);
+  if (!(await knex.schema.hasColumn('member', 'primary_role_field'))) {
+    console.log(`Adding role fields to member table`);
     await knex.schema.alterTable('member', table => {
-      table.integer(columnName);
+      table.integer('primary_role_id');
+      table.timestamp('last_weekly_role_credit').notNullable().defaultTo(knex.fn.now());
     });
   }
 }
 
 export async function down(knex: Knex): Promise<void> {
-  if (await knex.schema.hasColumn('member', columnName)) {
-    console.log(`Dropping ${columnName} column from member table`);
+  if (await knex.schema.hasColumn('member', 'primary_role_id')) {
+    console.log(`Dropping role fields from member table`);
     await knex.schema.alterTable('member', table => {
-      table.dropColumn(columnName);
+      table.dropColumn('primary_role_id');
+      table.dropColumn('last_weekly_role_credit');
     });
   }
 }

@@ -1,16 +1,11 @@
 import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
-import {
-  Transaction,
-  TransactionReason,
-  Wallet,
-} from '../../types/models';
+import { Transaction, TransactionReason, Wallet } from '../../types/models';
 
 /** Repository for creating/interacting with transaction/wallet data in the database. */
 @Service()
 export class TransactionRepository {
-
   constructor(private db: Db) {}
 
   /**
@@ -20,8 +15,10 @@ export class TransactionRepository {
    * @param amount amount transacted
    * @returns promise resolving in the created transaction object, or rejecting on error
    */
-  public async createDailyCreditTransaction(walletId: number, amount: number):
-    Promise<Transaction> {
+  public async createDailyCreditTransaction(
+    walletId: number,
+    amount: number,
+  ): Promise<Transaction> {
     return await this.db.knex.transaction(async trx => {
       const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
       await trx<Wallet>('wallet')
@@ -53,8 +50,10 @@ export class TransactionRepository {
    * @param amount amount transacted
    * @returns promise resolving in the created transaction object, or rejecting on error
    */
-  public async createHomePurchaseTransaction(walletId: number, amount: number):
-    Promise<Transaction> {
+  public async createHomePurchaseTransaction(
+    walletId: number,
+    amount: number,
+  ): Promise<Transaction> {
     return await this.db.knex.transaction(async trx => {
       const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
       await trx<Wallet>('wallet')
@@ -76,8 +75,7 @@ export class TransactionRepository {
    * @param amount amount transacted
    * @returns promise resolving in the created transaction object, or rejecting on error
    */
-  public async createHomeRefundTransaction(walletId: number, amount: number):
-    Promise<Transaction> {
+  public async createHomeRefundTransaction(walletId: number, amount: number): Promise<Transaction> {
     return await this.db.knex.transaction(async trx => {
       const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
       await trx<Wallet>('wallet')
@@ -86,6 +84,24 @@ export class TransactionRepository {
       const [transactionId] = await trx<Transaction>('transaction').insert({
         amount,
         reason: TransactionReason.HomeRefund,
+        recipient_wallet_id: walletId,
+      });
+      return this.find({ id: transactionId });
+    });
+  }
+
+  public async createSystemCreditTransaction(
+    walletId: number,
+    amount: number,
+  ): Promise<Transaction> {
+    return await this.db.knex.transaction(async trx => {
+      const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
+      await trx<Wallet>('wallet')
+        .where({ id: walletId })
+        .update({ balance: wallet.balance + amount });
+      const [transactionId] = await trx<Transaction>('transaction').insert({
+        amount,
+        reason: TransactionReason.SystemToMember,
         recipient_wallet_id: walletId,
       });
       return this.find({ id: transactionId });
