@@ -4,8 +4,6 @@ import {
   MessageboardRepository,
 } from '../../repositories';
 import sanitizeHtml from 'sanitize-html';
-import {MessageBoard} from 'models';
-import {response} from "express";
 
 /** Service for dealing with messages on message boards */
 @Service()
@@ -89,7 +87,7 @@ export class MessageboardService {
         "em", "i", "kbd", "mark", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp",
         "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr", "caption",
         "col", "colgroup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "img",
-        "font",
+        "font", "p", "center",
       ],
       disallowedTagsMode: 'discard',
       allowedAttributes: {
