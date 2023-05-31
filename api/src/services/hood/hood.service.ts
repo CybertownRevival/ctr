@@ -1,16 +1,11 @@
 import { Service } from 'typedi';
 
-import {
-  MapLocationRepository,
-  HoodRepository,
-  ColonyRepository,
-} from '../../repositories';
-import {Place} from '../../types/models';
+import { MapLocationRepository, HoodRepository, ColonyRepository } from '../../repositories';
+import { Place } from '../../types/models';
 
 /** Service for dealing with blocks */
 @Service()
 export class HoodService {
-
   constructor(
     private mapLocationRepository: MapLocationRepository,
     private hoodRepository: HoodRepository,
@@ -30,4 +25,7 @@ export class HoodService {
     return await this.hoodRepository.getBlocks(hoodId);
   }
 
+  public async canAdmin(hoodId: number, memberId: number): Promise<boolean> {
+    return false;
+  }
 }

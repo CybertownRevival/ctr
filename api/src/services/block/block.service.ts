@@ -1,16 +1,11 @@
 import { Service } from 'typedi';
 
-import {
-  BlockRepository,
-  MapLocationRepository,
-  HoodRepository,
-} from '../../repositories';
-import {Place} from '../../types/models';
+import { BlockRepository, MapLocationRepository, HoodRepository } from '../../repositories';
+import { Place } from '../../types/models';
 
 /** Service for dealing with blocks */
 @Service()
 export class BlockService {
-
   constructor(
     private blockRepository: BlockRepository,
     private mapLocationRepository: MapLocationRepository,
@@ -34,7 +29,11 @@ export class BlockService {
     return await this.mapLocationRepository.resetAvailabilityByParentPlaceId(blockId);
   }
 
-  public async setMapLocationAvailable(blockId:number, location: number): Promise<void> {
+  public async setMapLocationAvailable(blockId: number, location: number): Promise<void> {
     return await this.mapLocationRepository.createAvailableLocation(blockId, location);
+  }
+
+  public async canAdmin(blockId: number, memberId: number): Promise<boolean> {
+    return false;
   }
 }

@@ -16,6 +16,11 @@ export class RoleAssignmentService {
     private transactionRepository: TransactionRepository,
   ) {}
 
+  public async getMembersRoles(memberId: number): Promise<RoleAssignment[]> {
+    const response = this.roleAssignmentRepository.getByMemberId(memberId);
+    return response;
+  }
+
   public async getMembersDueRoleCredit(limit: number): Promise<any[]> {
     const response = this.roleAssignmentRepository.getMembersDueRoleCredit(limit);
 

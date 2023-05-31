@@ -7,6 +7,12 @@ import { RoleAssignment } from '../../types/models';
 @Service()
 export class RoleAssignmentRepository {
   constructor(private db: Db) {}
+
+  public async getByMemberId(memberId: number): Promise<RoleAssignment[]> {
+    const results = await this.db.roleAssignment.where('member_id', memberId);
+    return results;
+  }
+
   public async getMembersDueRoleCredit(limit: number): Promise<any[]> {
     const results = await this.db.knex
       .max('role.income_cc as income_cc')

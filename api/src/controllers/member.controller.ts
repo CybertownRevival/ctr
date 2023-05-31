@@ -4,15 +4,9 @@ import { Request, Response } from 'express';
 import { Container } from 'typedi';
 import validator from 'validator';
 
-import {db, knex} from '../db';
-import {
-  sendPasswordResetEmail,
-  sendPasswordResetUnknownEmail,
-} from '../libs';
-import {
-  MemberService,
-  HomeService,
-} from '../services';
+import { db, knex } from '../db';
+import { sendPasswordResetEmail, sendPasswordResetUnknownEmail } from '../libs';
+import { MemberService, HomeService } from '../services';
 import { SessionInfo } from 'session-info.interface';
 
 class MemberController {
@@ -33,11 +27,7 @@ class MemberController {
    *
    * @param memberService service for interacting with member models
    */
-  constructor(
-    private memberService: MemberService,
-    private homeService: HomeService,
-  ) {}
-
+  constructor(private memberService: MemberService, private homeService: HomeService) {}
 
   /**
    * Controller method for providing member information
@@ -49,11 +39,10 @@ class MemberController {
     try {
       let memberInfo;
 
-      if(typeof request.params.id !== 'undefined') {
-
-        if(await memberService.isAdmin(session.id)) {
+      if (typeof request.params.id !== 'undefined') {
+        if (await memberService.isAdmin(session.id)) {
           memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
-        } else if(parseInt(request.params.id) === session.id) {
+        } else if (parseInt(request.params.id) === session.id) {
           memberInfo = await this.memberService.getMemberInfo(parseInt(request.params.id));
         } else {
           memberInfo = await this.memberService.getMemberInfoPublic(parseInt(request.params.id));
@@ -145,7 +134,7 @@ class MemberController {
       if (_.isUndefined(apitoken)) {
         throw new Error('Missing token.');
       }
-      const session = this.memberService.decodeMemberToken(<string> apitoken);
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
       if (session) {
         // refresh client token with latest from database
         const token = await this.memberService.getMemberToken(session.id);
@@ -240,7 +229,7 @@ class MemberController {
       return;
     }
     const validPassword = await bcrypt.compare(currentPassword, member.password);
-    if (!validPassword ) {
+    if (!validPassword) {
       response.status(400).json({
         error: 'Incorrect current password.',
       });
@@ -272,7 +261,7 @@ class MemberController {
   }
 
   /**
-   * 
+   *
    * @param email email address
    */
   private validatePasswordResetInput(email: string): void {
@@ -287,7 +276,7 @@ class MemberController {
    * @param username username
    * @param password password
    */
-  private validateSignupInput(email: string, username: string, password: string):void {
+  private validateSignupInput(email: string, username: string, password: string): void {
     [email, username, password].forEach(item => {
       if (!item || !item.length) {
         console.log('Missing signup details');
@@ -307,8 +296,6 @@ class MemberController {
       throw new Error('Provide a valid email address');
     }
   }
-
-
 }
 const memberService = Container.get(MemberService);
 const homeService = Container.get(HomeService);
