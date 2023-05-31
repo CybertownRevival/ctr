@@ -1,6 +1,12 @@
 import { Service } from 'typedi';
 
-import { BlockRepository, MapLocationRepository, HoodRepository } from '../../repositories';
+import {
+  BlockRepository,
+  MapLocationRepository,
+  HoodRepository,
+  RoleAssignmentRepository,
+  RoleRepository,
+} from '../../repositories';
 import { Place } from '../../types/models';
 
 /** Service for dealing with blocks */
@@ -10,6 +16,8 @@ export class BlockService {
     private blockRepository: BlockRepository,
     private mapLocationRepository: MapLocationRepository,
     private hoodRepository: HoodRepository,
+    private roleAssignmentRepository: RoleAssignmentRepository,
+    private roleRepository: RoleRepository,
   ) {}
 
   public async find(blockId: number): Promise<Place> {
@@ -34,6 +42,39 @@ export class BlockService {
   }
 
   public async canAdmin(blockId: number, memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    const hood = await this.getHood(blockId);
+    const hoodMapLocation = await this.mapLocationRepository.findPlaceIdMapLocation(hood.id);
+    const colonyId = hoodMapLocation.parent_place_id;
+
+    if (
+      roleAssignments.find(assignment => {
+        return (
+          [
+            this.roleRepository.roleMap.Admin,
+            this.roleRepository.roleMap.CityMayor,
+            this.roleRepository.roleMap.DeputyMayor,
+          ].includes(assignment.role_id) ||
+          ([
+            this.roleRepository.roleMap.ColonyLeader,
+            this.roleRepository.roleMap.ColonyDeputy,
+          ].includes(assignment.role_id) &&
+            assignment.place_id === colonyId) ||
+          ([
+            this.roleRepository.roleMap.NeighborhoodDeputy,
+            this.roleRepository.roleMap.NeighborhoodLeader,
+          ].includes(assignment.role_id) &&
+            assignment.place_id === hood.id) ||
+          ([
+            this.roleRepository.roleMap.BlockDeputy,
+            this.roleRepository.roleMap.BlockLeader,
+          ].includes(assignment.role_id) &&
+            assignment.place_id === blockId)
+        );
+      })
+    ) {
+      return true;
+    }
     return false;
   }
 }

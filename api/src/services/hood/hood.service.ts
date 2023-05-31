@@ -1,6 +1,12 @@
 import { Service } from 'typedi';
 
-import { MapLocationRepository, HoodRepository, ColonyRepository } from '../../repositories';
+import {
+  MapLocationRepository,
+  HoodRepository,
+  ColonyRepository,
+  RoleAssignmentRepository,
+  RoleRepository,
+} from '../../repositories';
 import { Place } from '../../types/models';
 
 /** Service for dealing with blocks */
@@ -10,6 +16,8 @@ export class HoodService {
     private mapLocationRepository: MapLocationRepository,
     private hoodRepository: HoodRepository,
     private colonyRepository: ColonyRepository,
+    private roleAssignmentRepository: RoleAssignmentRepository,
+    private roleRepository: RoleRepository,
   ) {}
 
   public async find(hoodId: number): Promise<Place> {
@@ -26,6 +34,32 @@ export class HoodService {
   }
 
   public async canAdmin(hoodId: number, memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    const colony = await this.getColony(hoodId);
+
+    if (
+      roleAssignments.find(assignment => {
+        return (
+          [
+            this.roleRepository.roleMap.Admin,
+            this.roleRepository.roleMap.CityMayor,
+            this.roleRepository.roleMap.DeputyMayor,
+          ].includes(assignment.role_id) ||
+          ([
+            this.roleRepository.roleMap.ColonyLeader,
+            this.roleRepository.roleMap.ColonyDeputy,
+          ].includes(assignment.role_id) &&
+            assignment.place_id === colony.id) ||
+          ([
+            this.roleRepository.roleMap.NeighborhoodDeputy,
+            this.roleRepository.roleMap.NeighborhoodLeader,
+          ].includes(assignment.role_id) &&
+            assignment.place_id === hoodId)
+        );
+      })
+    ) {
+      return true;
+    }
     return false;
   }
 }

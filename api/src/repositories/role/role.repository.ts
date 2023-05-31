@@ -7,7 +7,6 @@ import { Role } from '../../types/models';
 @Service()
 export class RoleRepository {
   constructor(private db: Db) {
-    console.log('init role repository');
     this.populateRoleMap();
   }
   public roleMap: any = {};

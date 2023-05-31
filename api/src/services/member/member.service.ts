@@ -11,6 +11,7 @@ import {
   WalletRepository,
   PlaceRepository,
   MapLocationRepository,
+  RoleAssignmentRepository,
 } from '../../repositories';
 import { Member, Place } from '../../types/models';
 import { MemberInfoView } from '../../types/views';
@@ -24,6 +25,10 @@ export class MemberService {
   public static readonly DAILY_CC_AMOUNT = 50;
   /** Amount of experience points a member received each day they log in */
   public static readonly DAILY_XP_AMOUNT = 5;
+  /** Amount of cityccash an employed member receives each day they log in */
+  public static readonly DAILY_CC_EMPLOYED_AMOUNT = 100;
+  /** Amount of experience points an employed member received each day they log in */
+  public static readonly DAILY_XP_EMPLOYED_AMOUNT = 10;
   /** Duration in minutes until a password reset attempt expires */
   public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
   /** Number of times to salt member passwords */
@@ -36,6 +41,7 @@ export class MemberService {
     private walletRepository: WalletRepository,
     private placeRepository: PlaceRepository,
     private mapLocationRespository: MapLocationRepository,
+    private roleAssignmentRepository: RoleAssignmentRepository,
   ) {}
 
   /**
@@ -214,13 +220,19 @@ export class MemberService {
   public async maybeGiveDailyCredits(memberId: number): Promise<void> {
     const member = await this.memberRepository.findById(memberId);
     if (!this.hasReceivedLoginCreditToday(member)) {
-      await this.transactionRepository.createDailyCreditTransaction(
-        member.wallet_id,
-        MemberService.DAILY_CC_AMOUNT,
-      );
+      let ccIncrease = MemberService.DAILY_CC_AMOUNT;
+      let xpIncrease = MemberService.DAILY_XP_AMOUNT;
+
+      const roles = await this.roleAssignmentRepository.getByMemberId(memberId);
+      if (roles.length > 0) {
+        ccIncrease = MemberService.DAILY_CC_EMPLOYED_AMOUNT;
+        xpIncrease = MemberService.DAILY_XP_EMPLOYED_AMOUNT;
+      }
+
+      await this.transactionRepository.createDailyCreditTransaction(member.wallet_id, ccIncrease);
       await this.memberRepository.update(memberId, {
         last_daily_login_credit: new Date(),
-        xp: member.xp + MemberService.DAILY_XP_AMOUNT,
+        xp: member.xp + xpIncrease,
       });
     }
   }

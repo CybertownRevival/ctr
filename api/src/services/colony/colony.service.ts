@@ -25,13 +25,18 @@ export class ColonyService {
 
     if (
       roleAssignments.find(assignment => {
-        assignment.role_id === this.roleRepository.roleMap.Admin ||
-          assignment.role_id === this.roleRepository.roleMap.CityMayor ||
-          assignment.role_id === this.roleRepository.roleMap.DeputyMayor ||
-          (assignment.role_id === this.roleRepository.roleMap.ColonyLeader &&
-            assignment.place_id === colonyId) ||
-          (assignment.role_id === this.roleRepository.roleMap.ColonyDeputy &&
-            assignment.place_id === colonyId);
+        return (
+          [
+            this.roleRepository.roleMap.Admin,
+            this.roleRepository.roleMap.CityMayor,
+            this.roleRepository.roleMap.DeputyMayor,
+          ].includes(assignment.role_id) ||
+          ([
+            this.roleRepository.roleMap.ColonyLeader,
+            this.roleRepository.roleMap.ColonyDeputy,
+          ].includes(assignment.role_id) &&
+            assignment.place_id === colonyId)
+        );
       })
     ) {
       return true;

@@ -25,6 +25,7 @@ export class RoleAssignmentRepository {
       .where('member.status', 1)
       .whereRaw('DATE(role_assignment.created_at) != DATE(NOW())')
       .whereRaw('DATE(member.last_weekly_role_credit) != DATE(NOW())')
+      .whereRaw('DATE(member.last_daily_login_credit) >= DATE(DATE_SUB(NOW(), INTERVAL 7 DAY))')
       .groupBy('member_id')
       .limit(limit);
     return results;
