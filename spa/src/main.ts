@@ -1,17 +1,18 @@
-import Vue from "vue"
+import Vue from "vue";
 import VueRouter from "vue-router";
 import VueGtag from "vue-gtag";
 
-import App from "./App.vue"
+import App from "./App.vue";
 import api from "./api";
 import appStore from "./appStore";
 import { User } from "./appStore";
-import * as filters from './helpers/fiters';
+import * as filters from "./helpers/fiters";
 import routes from "./routes";
 import socket from "./socket";
 import "./assets/index.scss";
+import {name} from "dayjs";
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 // register global utilities/filters
 Object.keys(filters).forEach(key => {
@@ -32,9 +33,17 @@ router.beforeEach((to, from, next) => {
     document.title = "Cybertown";
   }
 
-  if (!["login", "logout", "signup", "forgot", "password_reset","about"].includes(to.name)) {
-    api.get<{ user: User }>("/member/session").then(response => {
+  if (!["login", "logout", "signup", "forgot", "password_reset", "about", "banned"].includes(to.name)) {
+    api.get<{ user: User, status: number }>("/member/session").then(response => {
       const { user } = response.data;
+      const { status } = response.data;
+      if (status === 0) {
+        appStore.methods.destroySession();
+        next({
+          name: "banned",
+          query: { redirect: to.fullPath },
+        });
+      }
       appStore.methods.setUser(user);
       appStore.data.isUser = true;
       next();
@@ -43,12 +52,12 @@ router.beforeEach((to, from, next) => {
       if (to.name !== "home") {
         next({
           name: "login",
-          query: { redirect: to.fullPath }
+          query: { redirect: to.fullPath },
         });
       } else {
         next();
       }
-    })
+    });
   } else {
     next();
   }

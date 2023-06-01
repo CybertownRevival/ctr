@@ -152,13 +152,17 @@ class MemberController {
       if (session) {
         // refresh client token with latest from database
         const token = await this.memberService.getMemberToken(session.id);
-        this.memberService.maybeGiveDailyCredits(session.id);
-        const homeInfo = await this.homeService.getHome(session.id);
-        session.hasHome = !!homeInfo;
+        const status = await this.memberService.isBanned(session.id);
+        if (status !== 0) {
+          this.memberService.maybeGiveDailyCredits(session.id);
+          const homeInfo = await this.homeService.getHome(session.id);
+          session.hasHome = !!homeInfo;
+        }
         response.status(200).json({
           message: 'success',
           token,
           user: session,
+          status: status,
         });
       } else {
         throw new Error('Invalid or missing token');
@@ -181,7 +185,7 @@ class MemberController {
         throw new Error('An account with this email already exists.');
       }
       if (await this.memberService.find({ username })) {
-        throw new Error('An account with this email already exists.');
+        throw new Error('An account with this nickname already exists.');
       }
       const token = await this.memberService.createMemberAndLogin(email, username, password);
       response.status(200).json({

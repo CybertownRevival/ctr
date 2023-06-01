@@ -1,5 +1,6 @@
 import HomePage from "./pages/HomePage.vue";
 import AboutPage from "./pages/AboutPage.vue";
+import BannedNotice from "./pages/Banned.vue";
 import LoginPage from "./pages/LoginPage.vue";
 import SignupPage from "./pages/SignupPage.vue";
 import LogoutPage from "./pages/LogoutPage.vue";
@@ -33,6 +34,11 @@ export default [
       {
         title: "About Cybertown Revival",
       },
+  },
+  { path: "/banned", component:BannedNotice, name: "banned", meta:
+     {
+       title: "Banned Notice",
+     },
   },
   {
     path: "/place/:id",
