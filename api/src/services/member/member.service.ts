@@ -15,6 +15,7 @@ import {
 import { Member, Place } from '../../types/models';
 import { MemberInfoView } from '../../types/views';
 import { SessionInfo } from 'session-info.interface';
+import { Request, Response } from 'express';
 
 /** Service for dealing with members */
 @Service()
