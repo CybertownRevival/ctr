@@ -15,7 +15,6 @@ import {
 import { Member, Place } from '../../types/models';
 import { MemberInfoView } from '../../types/views';
 import { SessionInfo } from 'session-info.interface';
-import { Request, Response } from 'express';
 
 /** Service for dealing with members */
 @Service()
@@ -189,7 +188,6 @@ export class MemberService {
   
   public async isBanned(memberId: number): Promise<number> {
     const member = await this.memberRepository.findById(memberId);
-    console.log(member.status);
     return member.status;
   }
 
@@ -204,7 +202,7 @@ export class MemberService {
     if (!member) throw new Error('Account not found.');
     const validPassword = await bcrypt.compare(password, member.password);
     if (!validPassword) throw new Error('Incorrect login details.');
-    if (member.status === 0) throw new Error('Deactivated Account');
+    if (member.status === 0) throw new Error('banned');
     this.maybeGiveDailyCredits(member.id);
     return this.encodeMemberToken(member);
   }
