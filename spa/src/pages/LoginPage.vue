@@ -189,7 +189,10 @@ export default Vue.extend({
         const path: string = redirectString || "/place/enter";
         this.$router.push({ path });
       } catch (error) {
-        if (error.response.data.error) {
+        if(error.response.data.error === "banned") {
+          this.$router.push({ name: "banned" });
+        }
+        else if (error.response.data.error) {
           this.error = error.response.data.error;
           this.showError = true;
         } else {
