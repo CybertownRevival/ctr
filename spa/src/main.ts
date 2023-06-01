@@ -10,7 +10,6 @@ import * as filters from "./helpers/fiters";
 import routes from "./routes";
 import socket from "./socket";
 import "./assets/index.scss";
-import {name} from "dayjs";
 
 Vue.config.productionTip = false;
 
