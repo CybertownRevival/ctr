@@ -62,4 +62,31 @@ export class HoodService {
     }
     return false;
   }
+
+  public async canManageAccess(hoodId: number, memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    const colony = await this.getColony(hoodId);
+
+    if (
+      roleAssignments.find(assignment => {
+        return (
+          [
+            this.roleRepository.roleMap.Admin,
+            this.roleRepository.roleMap.CityMayor,
+            this.roleRepository.roleMap.DeputyMayor,
+          ].includes(assignment.role_id) ||
+          ([
+            this.roleRepository.roleMap.ColonyLeader,
+            this.roleRepository.roleMap.ColonyDeputy,
+          ].includes(assignment.role_id) &&
+            assignment.place_id === colony.id) ||
+          ([this.roleRepository.roleMap.NeighborhoodLeader].includes(assignment.role_id) &&
+            assignment.place_id === hoodId)
+        );
+      })
+    ) {
+      return true;
+    }
+    return false;
+  }
 }

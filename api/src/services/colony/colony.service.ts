@@ -43,4 +43,25 @@ export class ColonyService {
     }
     return false;
   }
+
+  public async canManageAccess(colonyId: number, memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+
+    if (
+      roleAssignments.find(assignment => {
+        return (
+          [
+            this.roleRepository.roleMap.Admin,
+            this.roleRepository.roleMap.CityMayor,
+            this.roleRepository.roleMap.DeputyMayor,
+          ].includes(assignment.role_id) ||
+          ([this.roleRepository.roleMap.ColonyLeader].includes(assignment.role_id) &&
+            assignment.place_id === colonyId)
+        );
+      })
+    ) {
+      return true;
+    }
+    return false;
+  }
 }
