@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full bg-black flex flex-col" v-if="loaded">
+  <div v-if="loaded">
     <div class="w-full flex-1 text-center">
       <div class="inline-block mx-auto">
         <div :style="{
@@ -62,10 +62,9 @@ export default Vue.extend({
   },
   methods: {
     getData(): void {
-        this.$http.get("/block/" + this.$route.params.id + "/locations")
+      this.$http.get("/block/" + this.$route.params.id + "/locations")
       .then((response) => {
         this.locations = response.data.locations;
-
         document.title = this.block.name + " - Cybertown";
         this.loaded = true;
       });

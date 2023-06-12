@@ -1,5 +1,5 @@
 <template>
-	<div class="h-full w-full bg-black flex flex-col" v-if="loaded">
+	<div v-if="loaded">
 		<div class="w-full flex-1 text-center">
 			<div class="inline-block mx-auto">
 				<div
@@ -82,46 +82,37 @@
 
 <script lang="ts">
 	import Vue from "vue";
-	import { BlockData } from "./block-data.interface";
 	import { colonyDataHelper } from "@/helpers";
 
 	export default Vue.extend({
 		name: "BlockWizardPage",
+		props: ["block", "hood", "colony"],
 		data: () => {
 			return {
 				loaded: false,
-				block: undefined,
-				hood: undefined,
-				colony: undefined,
 				locations: [],
 				availableLocations: []
 			};
 		},
 		methods: {
-			getData(): Promise<void> {
-				return Promise.all([
-					this.$http.get("/block/" + this.$route.params.id),
-					this.$http.get("/block/" + this.$route.params.id + "/locations")
-				]).then(response => {
-					this.block = response[0].data.block;
-					this.hood = response[0].data.hood;
-					this.colony = response[0].data.colony;
-					this.locations = response[1].data.locations;
-					this.$store.methods.setPlace(response[0].data);
+			async getData(): Promise<void> {
+				this.$http
+					.get("/block/" + this.$route.params.id + "/locations")
+					.then(response => {
+						this.locations = response.data.locations;
+						this.availableLocations = this.locations
+							.filter(location => {
+								return location.available;
+							})
+							.map(loc => {
+								return loc.location;
+							});
 
-					this.availableLocations = this.locations
-						.filter(location => {
-							return location.available;
-						})
-						.map(loc => {
-							return loc.location;
-						});
-
-					document.title = this.block.name + " Wizard - Cybertown";
-					this.loaded = true;
-				});
+						document.title = this.block.name + " Wizard - Cybertown";
+						this.loaded = true;
+					});
 			},
-			update() {
+			update(): void {
 				this.$http
 					.post("/block/" + this.$route.params.id + "/locations", {
 						availableLocations: this.availableLocations
@@ -130,7 +121,7 @@
 						alert("Block Updated");
 					});
 			},
-			async checkAdmin() {
+			async checkAdmin(): Promise<boolean> {
 				try {
 					const adminCheck = await this.$http.get(
 						"/block/" + this.$store.data.place.block.id + "/can_admin"
@@ -142,7 +133,7 @@
 			}
 		},
 		computed: {
-			mapBackground() {
+			mapBackground(): string {
 				return (
 					"url('/assets/img/map_themes/" +
 					colonyDataHelper[this.colony.slug].map_theme +
@@ -150,7 +141,7 @@
 				);
 			}
 		},
-		async mounted() {
+		async mounted(): Promise<void> {
 			if (!(await this.checkAdmin())) {
 				this.$router.push("/restricted");
 			} else {

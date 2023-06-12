@@ -25,6 +25,8 @@ import HomeUpdateHomePage from "@/pages/home/HomeUpdateHomePage.vue";
 
 import MessageBoard from "@/pages/MessageBoard.vue";
 
+import AccessRights from "@/pages/AccessRights.vue";
+
 export default [
     {
         path: "/",
@@ -149,6 +151,12 @@ export default [
                 path: "wizard",
                 component: BlockWizardPage,
                 name: "blockwizard",
+                meta: { wrapper: true },
+            },
+            {
+                path: "access_rights",
+                component: AccessRights,
+                name: "accessrights",
                 meta: { wrapper: true },
             },
         ],
