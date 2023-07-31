@@ -15,7 +15,7 @@ export class RoleAssignmentService {
     private memberRepository: MemberRepository,
     private transactionRepository: TransactionRepository,
   ) {}
-
+  
   public async getMembersRoles(memberId: number): Promise<RoleAssignment[]> {
     const response = this.roleAssignmentRepository.getByMemberId(memberId);
     return response;

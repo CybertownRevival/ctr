@@ -33,7 +33,29 @@ class BlockController {
       response.status(400).json({ error });
     }
   }
+  public async getAccessInfoByUsername(request: Request, response: Response): Promise<any> {
+    const { id } = request.params;
+    try {
+      const data = await this.blockService.getAccessInfoByUsername(parseInt(id));
+      response.status(200).json({ data });
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({ error });
+    }
+  }
 
+  public async postAccessInfo(request: Request, response: Response): Promise<void> {
+    const { id } = request.params;
+    const deputies = request.body.deputies;
+    const owner = request.body.owner;
+    try {
+      await this.blockService.postAccessInfo(parseInt(id), deputies, owner);
+      response.status(200).json({success: true});
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
   public async postLocations(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     const { apitoken } = request.headers;
@@ -62,7 +84,7 @@ class BlockController {
   }
 
   public async canAdmin(request: Request, response: Response): Promise<void> {
-    const { id } = request.params;
+    const id = request.params.id;
     const { apitoken } = request.headers;
 
     try {

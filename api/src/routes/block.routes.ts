@@ -1,4 +1,4 @@
-import Router from 'express';
+import Router, {request, response} from 'express';
 
 import { blockController } from '../controllers';
 
@@ -17,5 +17,10 @@ blockRoutes.get('/:id/can_manage_access', (request, response) =>
 blockRoutes.post('/:id/locations', (request, response) =>
   blockController.postLocations(request, response),
 );
-
+blockRoutes.get('/:id/getAccessInfo', (request, response) =>
+  blockController.getAccessInfoByUsername(request, response),
+);
+blockRoutes.post('/:id/postAccessInfo', (request, response) =>
+ blockController.postAccessInfo(request, response),
+);
 export { blockRoutes };

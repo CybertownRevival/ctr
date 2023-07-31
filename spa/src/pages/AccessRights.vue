@@ -35,7 +35,8 @@
 						<tr>
 							<td><b>Owner</b>:</td>
 							<td>
-								<input class="input-text" SIZE="16" />
+								<input class="input-text" SIZE="16" v-if="!owner" />
+								<input class="input-text" SIZE="16" v-model="owner" v-else />
 							</td>
 						</tr>
 					</table>
@@ -64,31 +65,31 @@
 					<table border="0">
 						<tr>
 							<td>
-								<input SIZE="16" class="input-text" />
+								<input SIZE="16" class="input-text" v-model="deputies[0].username" />
 							</td>
 							<td>
-								<input SIZE="16" class="input-text" />
+								<input SIZE="16" class="input-text" v-model="deputies[1].username" />
 							</td>
 							<td>
-								<input SIZE="16" class="input-text" />
+								<input SIZE="16" class="input-text" v-model="deputies[2].username" />
 							</td>
 							<td>
-								<input SIZE="16" class="input-text" />
+								<input SIZE="16" class="input-text" v-model="deputies[3].username" />
 							</td>
 						</tr>
 
 						<tr>
 							<td>
-								<input SIZE="16" class="input-text" />
+								<input SIZE="16" class="input-text" v-model="deputies[4].username" />
 							</td>
 							<td>
-								<input SIZE="16" class="input-text" />
+								<input SIZE="16" class="input-text" v-model="deputies[5].username" />
 							</td>
 							<td>
-								<input SIZE="16" class="input-text" />
+								<input SIZE="16" class="input-text" v-model="deputies[6].username" />
 							</td>
 							<td>
-								<input SIZE="16" class="input-text" />
+								<input SIZE="16" class="input-text" v-model="deputies[7].username" />
 							</td>
 						</tr>
 					</table>
@@ -101,7 +102,7 @@
 					>
 					<br />
 					<br />
-					<button type="button" value="Update" class="btn">
+					<button type="button" value="Update" class="btn" @click="updateAccess()">
 						Update
 					</button>
 					<button type="button" class="btn" @click="$router.back()">
@@ -114,69 +115,108 @@
 </template>
 
 <script lang="ts">
-	import Vue from "vue";
+import Vue from "vue";
+import {response} from "express";
 
-	export default Vue.extend({
-		name: "AccessRightsPage",
-		data: () => {
-			return {
-				loaded: false,
-				access: false,
-				owner: null,
-				deputies: []
-			};
-		},
-		methods: {
-			async hasAccess(): Promise<boolean> {
-				let endpoint = null;
+export default Vue.extend({
+  name: "AccessRightsPage",
+  data: () => {
+    return {
+      data: [],
+      loaded: false,
+      access: false,
+      owner: null,
+      deputies: [
+        {username: null},
+        {username: null},
+        {username: null},
+        {username: null},
+        {username: null},
+        {username: null},
+        {username: null},
+        {username: null}],
+    };
+  },
+  methods: {
+    async hasAccess(): Promise<boolean> {
+      let endpoint = null;
 
-				switch (this.$store.data.place.type) {
-					case "block":
-						endpoint =
-							"/block/" +
-							this.$store.data.place.id +
-							"/can_manage_access";
-						break;
-					case "hood":
-						break;
-					default:
-						break;
-				}
+      switch (this.$store.data.place.type) {
+      case "block":
+        endpoint =
+							`/block/${ 
+							  this.$store.data.place.id 
+							}/can_manage_access`;
+        break;
+      case "hood":
+        break;
+      default:
+        break;
+      }
 
-				try {
-					await this.$http.get(endpoint);
-					return true;
-				} catch (e) {
-					return false;
-				}
-			},
-			async getData(): Promise<void> {
-				// todo: get leader and deputies
-				this.loaded = true;
-			},
-			async update(): Promise<void> {
-				// todo: update
-			}
-		},
-		async mounted(): Promise<void> {
-			if (
-				typeof this.$store.data.place.id === "undefined" ||
+      try {
+        await this.$http.get(endpoint);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+    async getData(): Promise<void> {
+      let infopoint = null;
+      switch (this.$store.data.place.type) {
+      case "block":
+        infopoint = `/block/${
+          this.$store.data.place.id
+        }/getAccessInfo/`;
+        break;
+      default:
+        break;
+      }
+      return this.$http.get(infopoint).then((response) => {
+        this.owner = response.data.data.owner[0].username;
+        response.data.data.deputies.forEach((username, index) => {
+          this.deputies[index] = username;
+        });
+        this.loaded = true;
+      });
+    },
+    async updateAccess(): Promise<void> {
+      let updatepoint = null;
+      switch (this.$store.data.place.type) {
+      case "block":
+        updatepoint = `/block/${
+          this.$store.data.place.id
+        }/postAccessInfo/`;
+        break;
+      default:
+        break;
+      }
+      console.log(updatepoint);
+      try {
+        await this.$http.post(updatepoint, {deputies: this.deputies, owner: this.owner});
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+  async mounted(): Promise<void> {
+    if (
+      typeof this.$store.data.place.id === "undefined" ||
 				typeof this.$store.data.place.type === "undefined"
-			) {
-				console.error("Place is not set.");
-				return;
-			}
+    ) {
+      console.error("Place is not set.");
+      return;
+    }
 
-			try {
-				if (!this.hasAccess()) {
-					return;
-				}
-				this.access = true;
-
-				this.getData();
-			} catch (e) {
-				console.error(e);
-			}
-		}
-	});
+    try {
+      if (!this.hasAccess()) {
+        return;
+      }
+      this.access = true;
+    } catch (e) {
+      console.error(e);
+    }
+    this.getData();
+  },
+});
 </script>

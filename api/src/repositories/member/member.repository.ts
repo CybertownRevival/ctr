@@ -4,6 +4,7 @@ import { Db } from '../../db/db.class';
 import { Member, Wallet } from 'models';
 import { join } from 'path';
 import { result } from 'lodash';
+import {stringify} from "ts-jest";
 
 /** Repository for interacting with member table data in the database. */
 @Service()
@@ -43,6 +44,13 @@ export class MemberRepository {
    */
   public async findById(memberId: number): Promise<Member> {
     return this.find({ id: memberId });
+  }
+  
+  public async findIdByUsername(username: string): Promise<any> {
+    return this.db.knex
+      .select('id')
+      .from('member')
+      .where('username', username);
   }
 
   /**

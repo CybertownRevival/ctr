@@ -41,38 +41,42 @@
 </template>
 
 <script lang="ts">
-	import Vue from "vue";
+import Vue from "vue";
 
-	export default Vue.extend({
-		name: "BlockTools",
-		data: () => {
-			return {
-				canAdmin: false,
-				loaded: false
-			};
-		},
-		methods: {
-			async checkAdmin() {
-				try {
-					const adminCheck = await this.$http.get(
-						"/block/" + this.$store.data.place.block.id + "/can_admin"
-					);
-					this.canAdmin = true;
-				} catch (e) {
-					console.log(e);
-				}
-			}
-		},
-		watch: {
-			"$store.data.place.block": {
-				handler() {
-					if (this.$store.data.place.block) {
-						this.loaded = true;
-						this.checkAdmin();
-					}
-				}
-			}
-		}
-	});
+export default Vue.extend({
+  name: "BlockTools",
+  data: () => {
+    return {
+      adminCheck: false,
+      canAdmin: false,
+      loaded: false,
+    };
+  },
+  methods: {
+    async checkAdmin() {
+      try {
+        this.adminCheck = await this.$http.get(
+          `/block/${  this.$store.data.place.block.id  }/can_admin`,
+        );
+        this.canAdmin = true;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  },
+  mounted() {
+    this.checkAdmin();
+  },
+  watch: {
+    "$store.data.place.block": {
+      handler() {
+        if (this.$store.data.place.block) {
+          this.loaded = true;
+          this.checkAdmin();
+        }
+      },
+    },
+  },
+});
 </script>
 

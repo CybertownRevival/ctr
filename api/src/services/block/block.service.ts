@@ -6,8 +6,10 @@ import {
   HoodRepository,
   RoleAssignmentRepository,
   RoleRepository,
+  MemberRepository,
 } from '../../repositories';
-import { Place } from '../../types/models';
+import {Member, Place} from '../../types/models';
+import {request} from 'express';
 
 /** Service for dealing with blocks */
 @Service()
@@ -18,6 +20,7 @@ export class BlockService {
     private hoodRepository: HoodRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
     private roleRepository: RoleRepository,
+    private memberRepository: MemberRepository,
   ) {}
 
   public async find(blockId: number): Promise<Place> {
@@ -27,6 +30,57 @@ export class BlockService {
   public async getHood(blockId: number): Promise<Place> {
     const blockMapLocation = await this.mapLocationRepository.findPlaceIdMapLocation(blockId);
     return await this.hoodRepository.find(blockMapLocation.parent_place_id);
+  }
+  
+  public async getAccessInfoByUsername(blockId: number): Promise<object> {
+    return await this.blockRepository.getAccessInfoByUsername(blockId);
+  }
+  
+  public async postAccessInfo(blockId: number, givenDeputies: any, givenOwner: string): Promise<void> {
+    /**
+     * old is coming from database
+     * new is coming from access rights page
+     */
+    let oldOwner = null;
+    let newOwner = null;
+    const oldDeputies = [0,0,0,0,0,0,0,0];
+    const newDeputies = [0,0,0,0,0,0,0,0];
+    const data = await this.blockRepository.getAccessInfoByID(blockId);
+    oldOwner = data.owner[0].member_id;
+    newOwner = await this.memberRepository.findIdByUsername(givenOwner);
+    newOwner = newOwner[0].id;
+    data.deputies.forEach((deputies, index) => {
+      oldDeputies[index] = deputies.member_id;
+    });
+    for (const [index, deputy] of givenDeputies.entries()) {
+      try {
+        let result: any;
+        result = await this.memberRepository.findIdByUsername(deputy.username);
+        newDeputies[index] = result[0].id;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    oldDeputies.forEach((oldDeputies, index) => {
+      console.log(newDeputies[index]);
+      if (oldDeputies !== newDeputies[index]) {
+        if (newDeputies[index] === 0) {
+          try {
+            this.blockRepository.removeIdFromAssignment(blockId, oldDeputies, 6);
+          } catch (e) {
+            console.log(e);
+          }
+        } else {
+          try {
+            this.blockRepository.removeIdFromAssignment(blockId, oldDeputies, 6);
+            this.blockRepository.addIdToAssignment(blockId, newDeputies[index], 6);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+    });
+    return;
   }
 
   public async getMapLocationAndPlaces(blockId: number): Promise<any> {
