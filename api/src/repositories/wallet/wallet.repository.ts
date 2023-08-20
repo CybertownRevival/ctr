@@ -18,4 +18,8 @@ export class WalletRepository {
     const [wallet] = await this.db.wallet.where({ id: walletId });
     return wallet;
   }
+  
+  public async addMoney(walletId: number, newAmount: number): Promise<void> {
+  
+  }
 }

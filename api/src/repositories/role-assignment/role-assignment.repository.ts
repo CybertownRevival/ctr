@@ -9,15 +9,20 @@ export class RoleAssignmentRepository {
   constructor(private db: Db) {}
 
   public async getByMemberId(memberId: number): Promise<RoleAssignment[]> {
-    const results = await this.db.roleAssignment.where('member_id', memberId);
-    return results;
+    const roleResults = await this.db.roleAssignment.where('member_id', memberId);
+    return roleResults;
   }
 
   public async getMembersDueRoleCredit(limit: number): Promise<any[]> {
     const results = await this.db.knex
       .max('role.income_cc as income_cc')
       .max('role.income_xp as income_xp')
-      .select('role_assignment.member_id', 'member.wallet_id', 'member.xp')
+      .select(
+        'role_assignment.member_id',
+        'role_assignment.role_id',
+        'member.wallet_id',
+        'member.xp',
+      )
       .from('role_assignment')
       .innerJoin('role', 'role.id', 'role_assignment.role_id')
       .innerJoin('member', 'member.id', 'role_assignment.member_id')
@@ -25,8 +30,9 @@ export class RoleAssignmentRepository {
       .where('member.status', 1)
       .whereRaw('DATE(role_assignment.created_at) != DATE(NOW())')
       .whereRaw('DATE(member.last_weekly_role_credit) != DATE(NOW())')
-      .whereRaw('DATE(member.last_daily_login_credit) >= DATE(DATE_SUB(NOW(), INTERVAL 7 DAY))')
-      .groupBy('member_id')
+      .whereRaw('DATE(member.last_daily_login_credit) >= DATE(NOW() - INTERVAL 7 DAY)')
+      .groupBy('role_assignment.member_id')
+      .groupBy('role_assignment.role_id')
       .limit(limit);
     return results;
   }

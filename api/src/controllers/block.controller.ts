@@ -45,7 +45,24 @@ class BlockController {
   }
 
   public async postAccessInfo(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
     const { id } = request.params;
+    try {
+      const access = await this.blockService.canManageAccess(parseInt(id), session.id);
+      if (!access) {
+        response.status(403).json({error: 'Access Denied'});
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
     const deputies = request.body.deputies;
     const owner = request.body.owner;
     try {
@@ -109,7 +126,7 @@ class BlockController {
     try {
       const session = this.memberService.decodeMemberToken(<string>apitoken);
       if (!session || !(await this.blockService.canManageAccess(parseInt(id), session.id))) {
-        response.status(400).json({
+        response.status(403).json({
           error: 'Invalid or missing token or access denied.',
         });
         return;

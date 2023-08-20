@@ -22,23 +22,27 @@ export class RoleAssignmentService {
   }
 
   public async getMembersDueRoleCredit(limit: number): Promise<any[]> {
-    const response = this.roleAssignmentRepository.getMembersDueRoleCredit(limit);
-
+    const response = await this.roleAssignmentRepository.getMembersDueRoleCredit(limit);
     return response;
   }
-
   public async giveWeeklyRoleCredit(
     memberId: number,
     memberXp: number,
     walletId: number,
     incomeXp: number,
     incomeCc: number,
+    roleId: number,
   ): Promise<void> {
-    await this.transactionRepository.createSystemCreditTransaction(walletId, incomeCc);
+    await this.transactionRepository.createWeeklyRoleCreditTransaction(
+      walletId,
+      incomeCc,
+      roleId,
+    );
 
     await this.memberRepository.update(memberId, {
       last_weekly_role_credit: new Date(),
       xp: memberXp + incomeXp,
+      
     });
   }
 }

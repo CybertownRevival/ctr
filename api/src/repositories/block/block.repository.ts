@@ -11,14 +11,14 @@ export class BlockRepository {
     return this.db.place.where({ type: 'block', id: blockId }).first();
   }
   
-  public async getAccessInfoByUsername(blockId): Promise<{ owner: any[]; deputies: any[] }> {
+  public async getAccessInfoByUsername(blockId, ownerCode, deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
     const owner: any[] = await this.db.knex
       .select(
         'member.username',
       )
       .from('role_assignment')
       .where('role_assignment.place_id', blockId)
-      .where('role_assignment.role_id', '7')
+      .where('role_assignment.role_id', ownerCode)
       .innerJoin('member', 'role_assignment.member_id', 'member.id');
     const deputies: any[] = await this.db.knex
       .select(
@@ -26,26 +26,26 @@ export class BlockRepository {
       )
       .from('role_assignment')
       .where('role_assignment.place_id', blockId)
-      .where('role_assignment.role_id', '6')
+      .where('role_assignment.role_id', deputyCode)
       .innerJoin('member', 'role_assignment.member_id', 'member.id');
     return {deputies, owner};
   }
   
-  public async getAccessInfoByID(blockId): Promise<{ owner: any[]; deputies: any[] }> {
+  public async getAccessInfoByID(blockId, ownerCode, deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
     const owner: any[] = await this.db.knex
       .select(
         'member_id',
       )
       .from('role_assignment')
       .where('place_id', blockId)
-      .where('role_id', '7');
+      .where('role_id', ownerCode);
     const deputies: any[] = await this.db.knex
       .select(
         'member_id',
       )
       .from('role_assignment')
       .where('place_id', blockId)
-      .where('role_id', '6');
+      .where('role_id', deputyCode);
     return {deputies, owner};
   }
   

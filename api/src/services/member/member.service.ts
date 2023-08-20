@@ -259,7 +259,7 @@ export class MemberService {
     if (_.isUndefined(avatar)) throw new Error(`No avatar exists with id ${avatarId}`);
     await this.memberRepository.update(memberId, { avatar_id: avatarId });
   }
-
+  
   /**
    * Sets the password for the member with the given id to a hashed version of the provided
    * password.

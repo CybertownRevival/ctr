@@ -33,7 +33,9 @@ export class BlockService {
   }
   
   public async getAccessInfoByUsername(blockId: number): Promise<object> {
-    return await this.blockRepository.getAccessInfoByUsername(blockId);
+    const deputyCode = await this.roleRepository.roleMap.BlockDeputy;
+    const ownerCode = await this.roleRepository.roleMap.BlockLeader;
+    return await this.blockRepository.getAccessInfoByUsername(blockId, ownerCode, deputyCode);
   }
   
   public async postAccessInfo(blockId: number, givenDeputies: any, givenOwner: string): Promise<void> {
@@ -41,39 +43,45 @@ export class BlockService {
      * old is coming from database
      * new is coming from access rights page
      */
+    const deputyCode = await this.roleRepository.roleMap.BlockDeputy;
+    const ownerCode = await this.roleRepository.roleMap.BlockLeader;
     let oldOwner = null;
     let newOwner = null;
     const oldDeputies = [0,0,0,0,0,0,0,0];
     const newDeputies = [0,0,0,0,0,0,0,0];
-    const data = await this.blockRepository.getAccessInfoByID(blockId);
+    const data = await this.blockRepository.getAccessInfoByID(blockId, ownerCode, deputyCode);
     oldOwner = data.owner[0].member_id;
-    newOwner = await this.memberRepository.findIdByUsername(givenOwner);
-    newOwner = newOwner[0].id;
+    try {
+      newOwner = await this.memberRepository.findIdByUsername(givenOwner);
+      newOwner = newOwner[0].id;
+    } catch (error) {
+      newOwner = 0;
+    }
+    if (newOwner !== 0) {
+      await this.blockRepository.removeIdFromAssignment(blockId, oldOwner, ownerCode);
+      await this.blockRepository.addIdToAssignment(blockId, newOwner, ownerCode);
+    }
     data.deputies.forEach((deputies, index) => {
       oldDeputies[index] = deputies.member_id;
     });
-    for (const [index, deputy] of givenDeputies.entries()) {
-      try {
-        let result: any;
-        result = await this.memberRepository.findIdByUsername(deputy.username);
-        newDeputies[index] = result[0].id;
-      } catch (error) {
-        console.log(error);
-      }
+    for (const [index, deputy] of givenDeputies.entries()) try {
+      const result: any = await this.memberRepository.findIdByUsername(deputy.username);
+      newDeputies[index] = result[0].id;
+    } catch (error) {
+      break;
     }
     oldDeputies.forEach((oldDeputies, index) => {
-      console.log(newDeputies[index]);
       if (oldDeputies !== newDeputies[index]) {
         if (newDeputies[index] === 0) {
           try {
-            this.blockRepository.removeIdFromAssignment(blockId, oldDeputies, 6);
+            this.blockRepository.removeIdFromAssignment(blockId, oldDeputies, deputyCode);
           } catch (e) {
             console.log(e);
           }
         } else {
           try {
-            this.blockRepository.removeIdFromAssignment(blockId, oldDeputies, 6);
-            this.blockRepository.addIdToAssignment(blockId, newDeputies[index], 6);
+            this.blockRepository.removeIdFromAssignment(blockId, oldDeputies, deputyCode);
+            this.blockRepository.addIdToAssignment(blockId, newDeputies[index], deputyCode);
           } catch (e) {
             console.log(e);
           }

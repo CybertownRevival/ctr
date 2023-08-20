@@ -156,9 +156,10 @@ export default Vue.extend({
 
       try {
         await this.$http.get(endpoint);
-        return true;
-      } catch (e) {
-        return false;
+      } catch (error) {
+        this.access = false;
+        this.loaded = true;
+        return;
       }
     },
     async getData(): Promise<void> {
@@ -195,7 +196,7 @@ export default Vue.extend({
       try {
         await this.$http.post(updatepoint, {deputies: this.deputies, owner: this.owner});
       } catch (error) {
-        console.log(error);
+        this.access = false;
       }
     },
   },
