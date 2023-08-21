@@ -28,6 +28,46 @@ class HoodController {
       response.status(400).json({ error });
     }
   }
+  
+  public async getAccessInfoByUsername(request: Request, response: Response): Promise<any> {
+    const { id } = request.params;
+    try {
+      const data = await this.hoodService.getAccessInfoByUsername(parseInt(id));
+      response.status(200).json({ data });
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({ error });
+    }
+  }
+  
+  public async postAccessInfo(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    const { id } = request.params;
+    try {
+      const access = await this.hoodService.canManageAccess(parseInt(id), session.id);
+      if (!access) {
+        response.status(403).json({error: 'Access Denied'});
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    const deputies = request.body.deputies;
+    const owner = request.body.owner;
+    try {
+      await this.hoodService.postAccessInfo(parseInt(id), deputies, owner);
+      response.status(200).json({success: true});
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   public async canAdmin(request: Request, response: Response): Promise<void> {
     const { id } = request.params;

@@ -1,6 +1,7 @@
 import Router from 'express';
 
-import { hoodController } from '../controllers';
+import {blockController, hoodController} from '../controllers';
+import {blockRoutes} from './block.routes';
 
 const hoodRoutes = Router();
 
@@ -10,5 +11,10 @@ hoodRoutes.get('/:id/can_admin', (request, response) => hoodController.canAdmin(
 hoodRoutes.get('/:id/can_manage_access', (request, response) =>
   hoodController.canManageAccess(request, response),
 );
-
+hoodRoutes.get('/:id/getAccessInfo', (request, response) =>
+  hoodController.getAccessInfoByUsername(request, response),
+);
+hoodRoutes.post('/:id/postAccessInfo', (request, response) =>
+  hoodController.postAccessInfo(request, response),
+);
 export { hoodRoutes };

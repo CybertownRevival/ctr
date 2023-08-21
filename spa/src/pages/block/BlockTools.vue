@@ -33,8 +33,7 @@
 						'/access_rights'
 				"
 				class="btn-ui"
-				>Access Rights</router-link
-			>
+				>Access Rights</router-link>
 		</div>
 		<br />
 	</div>

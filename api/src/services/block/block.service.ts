@@ -38,7 +38,10 @@ export class BlockService {
     return await this.blockRepository.getAccessInfoByUsername(blockId, ownerCode, deputyCode);
   }
   
-  public async postAccessInfo(blockId: number, givenDeputies: any, givenOwner: string): Promise<void> {
+  public async postAccessInfo(
+    blockId: number,
+    givenDeputies: any,
+    givenOwner: string): Promise<void> {
     /**
      * old is coming from database
      * new is coming from access rights page

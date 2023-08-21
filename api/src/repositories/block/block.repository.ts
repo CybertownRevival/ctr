@@ -11,7 +11,10 @@ export class BlockRepository {
     return this.db.place.where({ type: 'block', id: blockId }).first();
   }
   
-  public async getAccessInfoByUsername(blockId, ownerCode, deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
+  public async getAccessInfoByUsername(
+    blockId,
+    ownerCode,
+    deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
     const owner: any[] = await this.db.knex
       .select(
         'member.username',
@@ -31,7 +34,10 @@ export class BlockRepository {
     return {deputies, owner};
   }
   
-  public async getAccessInfoByID(blockId, ownerCode, deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
+  public async getAccessInfoByID(
+    blockId,
+    ownerCode,
+    deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
     const owner: any[] = await this.db.knex
       .select(
         'member_id',

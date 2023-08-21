@@ -10,6 +10,7 @@ import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 import WorldBrowserTools from "./pages/world-browser/WorldBrowserTools.vue";
 import CityMapPage from "./pages/CityMapPage.vue";
 import NeighborhoodPage from "./pages/neighborhood/NeighborhoodPage.vue";
+import NeighborhoodMapPage from "./pages/neighborhood/NeighborhoodMapPage.vue";
 import NeighborhoodTools from "@/pages/neighborhood/NeighborhoodTools.vue";
 
 import BlockPage from "./pages/block/BlockPage.vue";
@@ -125,6 +126,20 @@ export default [
         },
         name: "neighborhood",
         meta: { wrapper: true },
+        children: [
+            {
+                path: "",
+                component: NeighborhoodMapPage,
+                name: "neighborhoodpage",
+                meta: { wrapper: true },
+            },
+            {
+                path: "access_rights",
+                component: AccessRights,
+                name: "accessrights",
+                meta: { wrapper: true },
+            },
+        ],
     },
     {
         path: "/block/:id",

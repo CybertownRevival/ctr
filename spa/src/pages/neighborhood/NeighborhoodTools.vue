@@ -22,7 +22,10 @@
 			<span href="" class="btn-ui">Message to All</span>
 			<span href="" class="btn-ui">Inbox to All</span>
 			<span href="" class="btn-ui">Update</span>
-			<span href="" class="btn-ui">Access Rights</span>
+			<router-link :to="
+        '/neighborhood/' +
+        this.$store.data.place.hood.id +
+        '/access_rights'" class="btn-ui">Access Rights</router-link>
 		</div>
 		<br />
 	</div>

@@ -6,6 +6,9 @@
 					<span style="color:red"> Insufficient access rights.</span>
 				</div>
 				<div v-else align="center">
+          <div v-if="success">
+            <span style="color: #00df00">Access Rights Update</span>
+          </div>
 					<p style="font-weight:bold">
 						Update <font color="#FFFF00">Owner Access</font> for
 						<font color="#FFFF00">{{
@@ -135,20 +138,24 @@ export default Vue.extend({
         {username: null},
         {username: null},
         {username: null}],
+      success: false,
     };
   },
   methods: {
     async hasAccess(): Promise<boolean> {
       let endpoint = null;
-
       switch (this.$store.data.place.type) {
       case "block":
         endpoint =
-							`/block/${ 
-							  this.$store.data.place.id 
-							}/can_manage_access`;
+            `/block/${
+              this.$store.data.place.id
+            }/can_manage_access`;
         break;
       case "hood":
+        endpoint =
+            `/hood/${
+              this.$store.data.place.id
+            }/can_manage_access`;
         break;
       default:
         break;
@@ -164,21 +171,27 @@ export default Vue.extend({
     },
     async getData(): Promise<void> {
       let infopoint = null;
+      console.log(this.$store.data.place.type);
       switch (this.$store.data.place.type) {
       case "block":
         infopoint = `/block/${
           this.$store.data.place.id
         }/getAccessInfo/`;
         break;
+      case "hood":
+        infopoint = `/hood/${
+          this.$store.data.place.id
+        }/getAccessInfo/`;
+        break;
       default:
         break;
       }
+      this.loaded = true;
       return this.$http.get(infopoint).then((response) => {
         this.owner = response.data.data.owner[0].username;
         response.data.data.deputies.forEach((username, index) => {
           this.deputies[index] = username;
         });
-        this.loaded = true;
       });
     },
     async updateAccess(): Promise<void> {
@@ -189,12 +202,17 @@ export default Vue.extend({
           this.$store.data.place.id
         }/postAccessInfo/`;
         break;
+      case "hood":
+        updatepoint = `/hood/${
+          this.$store.data.place.id
+        }/postAccessInfo/`;
+        break;
       default:
         break;
       }
-      console.log(updatepoint);
       try {
         await this.$http.post(updatepoint, {deputies: this.deputies, owner: this.owner});
+        this.success = true;
       } catch (error) {
         this.access = false;
       }
@@ -203,7 +221,7 @@ export default Vue.extend({
   async mounted(): Promise<void> {
     if (
       typeof this.$store.data.place.id === "undefined" ||
-				typeof this.$store.data.place.type === "undefined"
+      typeof this.$store.data.place.type === "undefined"
     ) {
       console.error("Place is not set.");
       return;

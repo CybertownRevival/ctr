@@ -21,6 +21,6 @@ blockRoutes.get('/:id/getAccessInfo', (request, response) =>
   blockController.getAccessInfoByUsername(request, response),
 );
 blockRoutes.post('/:id/postAccessInfo', (request, response) =>
- blockController.postAccessInfo(request, response),
+  blockController.postAccessInfo(request, response),
 );
 export { blockRoutes };
