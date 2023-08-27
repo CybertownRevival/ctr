@@ -61,6 +61,14 @@ export default [
         },
         name: "world-browser",
         meta: { wrapper: true },
+        children: [
+            {
+                path: "a",
+                component: AccessRights,
+                name: "worldAccessRights",
+                meta: { wrapper: true },
+            },
+        ],
     },
     {
         path: "/login",
@@ -134,9 +142,9 @@ export default [
                 meta: { wrapper: true },
             },
             {
-                path: "access_rights",
+                path: "",
                 component: AccessRights,
-                name: "accessrights",
+                name: "neighborhoodAccessRights",
                 meta: { wrapper: true },
             },
         ],
@@ -169,9 +177,9 @@ export default [
                 meta: { wrapper: true },
             },
             {
-                path: "access_rights",
+                path: "",
                 component: AccessRights,
-                name: "accessrights",
+                name: "blockaccessrights",
                 meta: { wrapper: true },
             },
         ],

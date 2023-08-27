@@ -27,11 +27,7 @@
 			</router-link>
 			<span class="btn-ui" title="Check Images">Check</span>
 			<router-link
-				:to="
-					'/block/' +
-						this.$store.data.place.block.id +
-						'/access_rights'
-				"
+				:to="{ name: 'blockaccessrights' }"
 				class="btn-ui"
 				>Access Rights</router-link>
 		</div>

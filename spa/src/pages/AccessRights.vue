@@ -2,8 +2,8 @@
 	<div v-if="loaded">
 		<div class="w-full flex-1 text-center">
 			<div class="inline-block mx-auto">
-				<div v-if="!access">
-					<span style="color:red"> Insufficient access rights.</span>
+				<div class="h-full w-full bg-gray-600 flex flex-col p-2 text-center" v-if="!access">
+          <span style="color: red">Insufficient Access Rights.</span>
 				</div>
 				<div v-else align="center">
           <div v-if="success">
@@ -157,6 +157,12 @@ export default Vue.extend({
               this.$store.data.place.id
             }/can_manage_access`;
         break;
+      case "colony":
+        endpoint =
+            `/colony/${
+              this.$store.data.place.id
+            }/can_manage_access`;
+        break;
       default:
         break;
       }
@@ -183,6 +189,11 @@ export default Vue.extend({
           this.$store.data.place.id
         }/getAccessInfo/`;
         break;
+      case "colony":
+        infopoint = `/colony/${
+          this.$store.data.place.id
+        }/getAccessInfo/`;
+        break;
       default:
         break;
       }
@@ -204,6 +215,11 @@ export default Vue.extend({
         break;
       case "hood":
         updatepoint = `/hood/${
+          this.$store.data.place.id
+        }/postAccessInfo/`;
+        break;
+      case "colony":
+        updatepoint = `/colony/${
           this.$store.data.place.id
         }/postAccessInfo/`;
         break;

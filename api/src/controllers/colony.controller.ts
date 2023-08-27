@@ -21,14 +21,51 @@ class ColonyController {
       response.status(400).json({ error });
     }
   }
+  public async getAccessInfoByUsername(request: Request, response: Response): Promise<any> {
+    const { id } = request.params;
+    try {
+      const data = await this.colonyService.getAccessInfoByUsername(parseInt(id));
+      response.status(200).json({ data });
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({ error });
+    }
+  }
+  public async postAccessInfo(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    const { id } = request.params;
+    try {
+      const access = await this.colonyService.canManageAccess(parseInt(id), session.id);
+      if (!access) {
+        response.status(403).json({error: 'Access Denied'});
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    const deputies = request.body.deputies;
+    const owner = request.body.owner;
+    try {
+      await this.colonyService.postAccessInfo(parseInt(id), deputies, owner);
+      response.status(200).json({success: true});
+    } catch (error) {
+      console.log(error);
+    }
+  }
   public async canAdmin(request: Request, response: Response): Promise<void> {
-    const { slug } = request.params;
+    const { id } = request.params;
     const { apitoken } = request.headers;
 
     try {
-      const colony = await this.placeService.findBySlug(slug);
       const session = this.memberService.decodeMemberToken(<string>apitoken);
-      if (!session || !(await this.colonyService.canAdmin(colony.id, session.id))) {
+      if (!session || !(await this.colonyService.canAdmin(parseInt(id), session.id))) {
         response.status(400).json({
           error: 'Invalid or missing token.',
         });
@@ -42,13 +79,12 @@ class ColonyController {
   }
 
   public async canManageAccess(request: Request, response: Response): Promise<void> {
-    const { slug } = request.params;
+    const { id } = request.params;
     const { apitoken } = request.headers;
 
     try {
-      const colony = await this.placeService.findBySlug(slug);
       const session = this.memberService.decodeMemberToken(<string>apitoken);
-      if (!session || !(await this.colonyService.canManageAccess(colony.id, session.id))) {
+      if (!session || !(await this.colonyService.canManageAccess(parseInt(id), session.id))) {
         response.status(400).json({
           error: 'Invalid or missing token.',
         });

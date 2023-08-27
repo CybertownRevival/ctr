@@ -1,7 +1,6 @@
 import Router from 'express';
 
-import {blockController, hoodController} from '../controllers';
-import {blockRoutes} from './block.routes';
+import {hoodController} from '../controllers';
 
 const hoodRoutes = Router();
 

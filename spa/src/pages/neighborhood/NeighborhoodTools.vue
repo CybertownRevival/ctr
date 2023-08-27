@@ -22,48 +22,49 @@
 			<span href="" class="btn-ui">Message to All</span>
 			<span href="" class="btn-ui">Inbox to All</span>
 			<span href="" class="btn-ui">Update</span>
-			<router-link :to="
+			<!--<router-link :to="
         '/neighborhood/' +
         this.$store.data.place.hood.id +
-        '/access_rights'" class="btn-ui">Access Rights</router-link>
+        '/access_rights'" class="btn-ui">Access Rights</router-link>-->
+      <router-link :to="{ name: 'neighborhoodAccessRights' }" class="btn-ui">Access Rights</router-link>
 		</div>
 		<br />
 	</div>
 </template>
 
 <script lang="ts">
-	import Vue from "vue";
+import Vue from "vue";
 
-	export default Vue.extend({
-		name: "NeighborhoodTools",
-		data: () => {
-			return {
-				canAdmin: false,
-				loaded: false
-			};
-		},
-		methods: {
-			async checkAdmin() {
-				try {
-					const adminCheck = await this.$http.get(
-						"/hood/" + this.$store.data.place.hood.id + "/can_admin"
-					);
-					this.canAdmin = true;
-				} catch (e) {
-					console.log(e);
-				}
-			}
-		},
-		watch: {
-			"$store.data.place.hood": {
-				handler() {
-					if (this.$store.data.place.hood) {
-						this.loaded = true;
-						this.checkAdmin();
-					}
-				}
-			}
-		}
-	});
+export default Vue.extend({
+  name: "NeighborhoodTools",
+  data: () => {
+    return {
+      canAdmin: false,
+      loaded: false,
+    };
+  },
+  methods: {
+    async checkAdmin() {
+      try {
+        await this.$http.get(
+          `/hood/${  this.$store.data.place.hood.id  }/can_admin`,
+        );
+        this.canAdmin = true;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  },
+  watch: {
+    "$store.data.place.hood": {
+      handler() {
+        if (this.$store.data.place.hood) {
+          this.loaded = true;
+          this.checkAdmin();
+        }
+      },
+    },
+  },
+});
 </script>
 
