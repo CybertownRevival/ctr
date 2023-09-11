@@ -4,12 +4,13 @@ import VueGtag from "vue-gtag";
 
 import App from "./App.vue";
 import api from "./api";
-import appStore from "./appStore";
+import appStore, {Place} from "./appStore";
 import { User } from "./appStore";
 import * as filters from "./helpers/fiters";
 import routes from "./routes";
 import socket from "./socket";
 import "./assets/index.scss";
+import {response} from "express";
 
 Vue.config.productionTip = false;
 
@@ -27,12 +28,35 @@ const router = new VueRouter({ routes });
 Vue.use(VueRouter);
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
-    document.title = to.meta.title + " - Cybertown";
+    document.title = `${ to.meta.title } - Cybertown`;
   } else {
     document.title = "Cybertown";
   }
+  if (to.fullPath.includes("/place/")) {
+    api.get<any>(`/place/${ to.params.id }`)
+      .then(response => {
+        const Data = response.data;
+        const place = {...Data.place};
+        appStore.methods.setPlace(place);
+      });
+  } else {
+    api.get<any>(`/home/${ to.params.username }`)
+      .then(response => {
+        const Data = response.data;
+        const place = {
+          ...Data.homeData,
+          assets_dir: Data.homeDesignData ?
+            (`${ Data.homeDesignData.id  }/`) : null,
+          world_filename: "home.wrl",
+          slug: "home",
+          block: Data.blockData,
+        };
+        appStore.methods.setPlace(place);
+      });
+  }
 
-  if (!["login", "logout", "signup", "forgot", "password_reset", "about", "banned"].includes(to.name)) {
+  if (!["login", "logout", "signup", "forgot", "password_reset", "about", "banned"]
+    .includes(to.name)) {
     api.get<{ user: User, status: number }>("/member/session").then(response => {
       const { user } = response.data;
       const { status } = response.data;
@@ -67,7 +91,7 @@ Vue.use(VueGtag, {
     return {
       page_title: document.title,
       page_path: to.path,
-    }
+    };
   },
   config: { id: "G-BCMREM3LDH" },
 }, router);

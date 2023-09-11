@@ -1,7 +1,13 @@
 import {Request, response, Response} from 'express';
 import validator from 'validator';
 import { Container } from 'typedi';
-import { MemberService, MessageboardService } from '../services';
+import { 
+  MemberService,
+  MessageboardService,
+  ColonyService,
+  HoodService,
+  BlockService,
+} from '../services';
 import sanitizeHtml from 'sanitize-html';
 
 class MessageboardController {
@@ -9,32 +15,53 @@ class MessageboardController {
   constructor(
    private memberService: MemberService,
    private messageboardService: MessageboardService,
+   private colonyService: ColonyService,
+   private hoodService: HoodService,
+   private blockService: BlockService,
   ) {
   }
   
+  public async adminCheck(placeId, id, type): Promise<any> {
+    if (type === 'colony') {
+      try {
+        return await this.colonyService.canAdmin(placeId, id);
+      } catch (e) {
+        console.log(e);
+      }
+    } else if (type === 'hood') {
+      try {
+        return await this.hoodService.canAdmin(placeId, id);
+      } catch (e) {
+        console.log(e);
+      }
+    } else if (type === 'block') {
+      try {
+        return await this.blockService.canAdmin(placeId, id);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
+        return await this.messageboardService.getAdminInfo(placeId, id);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
   public async getAdminInfo(request: Request, response: Response): Promise<any> {
     const placeId = Number.parseInt(request.body.place_id);
-    const { apitoken } = request.headers;
-    const session = this.memberService.decodeMemberToken(<string> apitoken);
-    if(!session) {
+    const type = request.body.type;
+    const {apitoken} = request.headers;
+    const session = this.memberService.decodeMemberToken(<string>apitoken);
+    if (!session) {
       response.status(400).json({
         error: 'Invalid or missing token.',
       });
       return;
     }
-    const { id } = session;
-    try {
-      const admin = await this.messageboardService.getAdminInfo(
-        placeId,
-        id,
-      );
-      response.status(200).json({admin});
-    } catch (error) {
-      console.log(error);
-      response.status(400).json({
-        error: 'An error occurred while getting admin information',
-      });
-    }
+    const {id} = session;
+    const admin = await this.adminCheck(placeId, id, type);
+    response.status(200).json({admin});
   }
   public async getInfo(request: Request, response: Response): Promise<void> {
     const placeId = Number.parseInt(request.body.place_id);
@@ -46,6 +73,7 @@ class MessageboardController {
     }
     try {
       const placeinfo = await this.messageboardService.getInfo(placeId);
+      console.log(placeinfo);
       response.status(200).json({placeinfo});
     } catch (error) {
       console.log(error);
@@ -157,6 +185,7 @@ class MessageboardController {
   public async deleteMessageboardMessage(request: Request, response: Response): Promise<void> {
     const placeId = Number.parseInt(request.body.place_id);
     const messageId = Number.parseInt(request.body.message_id);
+    const type = request.body.type;
     const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);
     if(!session) {
@@ -166,25 +195,21 @@ class MessageboardController {
       return;
     }
     const { id } = session;
-    try {
-      await this.messageboardService.deleteMessageboardMessage(placeId, id, messageId);
-      response.status(200).json({success: 'deleted'});
-    } catch (error) {
-      console.log(error);
-      if (error.message === 'not authorized') {
-        response.status(403).json({
-          error: 'You are not authorized to delete messages on this board.'
-        });
-      } else {
-        response.status(400).json({
-          error: 'An error occurred when trying to delete message',
-        });
-        return;
+    const admin = await this.adminCheck(placeId, id, type);
+    if (admin) {
+      try {
+        await this.messageboardService.deleteMessageboardMessage(messageId);
+        response.status(200).json({success: 'deleted'});
+      } catch (error) {
+        console.log(error);
       }
+    } else {
+      response.status(403).json({error:'Access Denied'});
     }
   }
   
   public async changeMessageboardIntro(request: Request, response: Response): Promise<void> {
+    const type = request.body.type;
     const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);
     if(!session) {
@@ -197,26 +222,30 @@ class MessageboardController {
     const placeId = Number.parseInt(request.body.place_id);
     const uncleanIntro = request.body.intro;
     const cleanIntro = await this.messageboardService.sanitize(uncleanIntro);
-    try {
-      await this.messageboardService.changeMessageboardIntro(id, placeId, cleanIntro);
-      response.status(200).json({
-        success: 'intro updated',
-      });
-    } catch (error) {
-      console.log(error);
-      if (error.message === 'not authorized') {
-        response.status(403).json({
-          error: 'You are not authorized to make that change',
+    const admin = await this.adminCheck(placeId, id, type);
+    if (admin) {
+      try {
+        await this.messageboardService.changeMessageboardIntro(placeId, cleanIntro);
+        response.status(200).json({
+          success: 'intro updated',
         });
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error: 'Error on Updating'});
       }
-      response.status(400).json({
-        error: 'An error occurred when updating message board intro',
-      });
+    } else {
+      response.status(403).json({error: 'Access Denied'});
     }
   }
 }
 const memberService = Container.get(MemberService);
 const messageboardService = Container.get(MessageboardService);
+const colonyServices = Container.get(ColonyService);
+const hoodService = Container.get(HoodService);
+const blockService = Container.get(BlockService);
 export const messageboardController = new MessageboardController(
   memberService,
-  messageboardService);
+  messageboardService,
+  colonyServices,
+  hoodService,
+  blockService);

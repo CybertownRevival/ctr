@@ -1,12 +1,12 @@
 <template>
 	<div class="text-center" v-if="loaded">
-		<span class="btn-ui">Information</span>
-		<a
-			:href="'#/messageboard/' + this.$store.data.place.block.id"
-			target="_blank"
-			class="btn-ui"
-			>Messages</a
-		>
+    <button class="btn-ui"
+            v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
+    <button class="btn-ui"
+            v-on:click="opener('#/information/'
+     +$store.data.place.type
+     +'/'
+     +$store.data.place.id)">Information</button>
 		<router-link
 			v-if="this.$store.data.place.hood"
 			:to="'/neighborhood/' + this.$store.data.place.hood.id"
@@ -57,6 +57,9 @@ export default Vue.extend({
       } catch (e) {
         console.log(e);
       }
+    },
+    async opener(link) {
+      window.open(link, "targetWindow", "height=650,width=800,menubar=no,status=no");
     },
   },
   mounted() {

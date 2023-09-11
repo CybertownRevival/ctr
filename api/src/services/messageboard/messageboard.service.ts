@@ -2,6 +2,7 @@ import { Service } from 'typedi';
 
 import {
   MessageboardRepository,
+  ColonyRepository,
 } from '../../repositories';
 import sanitizeHtml from 'sanitize-html';
 
@@ -17,26 +18,23 @@ export class MessageboardService {
   ) {}
   
   public async changeMessageboardIntro(
-    memberId,
     placeId,
     Intro,
   ): Promise<any> {
-    console.log('Service' + placeId);
-    return await this.messageboardRepository.changeMessageboardIntro(memberId, placeId, Intro);
+    console.log(`Service${  placeId}`);
+    return await this.messageboardRepository.changeMessageboardIntro(placeId, Intro);
   }
   public async deleteMessageboardMessage(
-    placeId,
-    memberId,
     messageId,
   ): Promise<any> {
     return await this
       .messageboardRepository
-      .deleteMessageboardMessage(placeId, memberId, messageId);
+      .deleteMessageboardMessage(messageId);
   }
   
   public async getAdminInfo(
-   placeId,
-   memberId,
+    placeId,
+    memberId,
   ): Promise<any> {
     return await this.messageboardRepository.getAdminInfo(placeId, memberId);
   }
@@ -78,16 +76,16 @@ export class MessageboardService {
   public async sanitize(
     uncleanInfo: string,
   ): Promise<any>{
-    let cleanInfo = sanitizeHtml(uncleanInfo, {
+    const cleanInfo = sanitizeHtml(uncleanInfo, {
       allowedTags: [
-        "address", "article", "aside", "footer", "header", "h1", "h2", "h3", "h4",
-        "h5", "h6", "hgroup", "main", "nav", "section", "blockquote", "dd", "div",
-        "dl", "dt", "figcaption", "figure", "hr", "li", "main", "ol", "p", "pre",
-        "ul", "a", "abbr", "b", "bdi", "bdo", "br", "cite", "code", "data", "dfn",
-        "em", "i", "kbd", "mark", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp",
-        "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr", "caption",
-        "col", "colgroup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "img",
-        "font", "center",
+        'address', 'article', 'aside', 'footer', 'header', 'h1', 'h2', 'h3', 'h4',
+        'h5', 'h6', 'hgroup', 'main', 'nav', 'section', 'blockquote', 'dd', 'div',
+        'dl', 'dt', 'figcaption', 'figure', 'hr', 'li', 'main', 'ol', 'p', 'pre',
+        'ul', 'a', 'abbr', 'b', 'bdi', 'bdo', 'br', 'cite', 'code', 'data', 'dfn',
+        'em', 'i', 'kbd', 'mark', 'q', 'rb', 'rp', 'rt', 'rtc', 'ruby', 's', 'samp',
+        'small', 'span', 'strong', 'sub', 'sup', 'time', 'u', 'var', 'wbr', 'caption',
+        'col', 'colgroup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'img',
+        'font', 'center',
       ],
       disallowedTagsMode: 'discard',
       allowedAttributes: {

@@ -77,6 +77,7 @@ const appStore = Vue.observable<AppStore>({
             appStore.data.view3d = value;
         },
         setPlace(placeData: Place): void {
+            console.log('place set')
             appStore.data.place = placeData;
         },
         setUser(userData: User): void {

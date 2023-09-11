@@ -33,21 +33,21 @@ class SocketManager {
    * @param userToken user's unique token
    * @returns promise to be resolved on join
    */
-  public joinRoom(roomId: string, userToken: string): Promise<void> {
+  public joinRoom(roomId: string|number, userToken: string): Promise<void> {
     return new Promise(resolve => {
       this.socket.emit("JOIN", {
         room: roomId,
-        token: userToken
+        token: userToken,
       });
       resolve();
-    })
+    });
   }
 
   /**
    * Tells the server to unsubscribe the socket from the room with the given id.
    * @param roomId id of room to leave
    */
-  public leaveRoom(roomId: string): void {
+  public leaveRoom(roomId: string|number): void {
     this.socket.emit("unsubscribe", { room: roomId });
   }
 

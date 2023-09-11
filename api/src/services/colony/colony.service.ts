@@ -28,9 +28,9 @@ export class ColonyService {
   }
   
   public async postAccessInfo(
-   colonyId: number,
-   givenDeputies: any,
-   givenOwner: string): Promise<void> {
+    colonyId: number,
+    givenDeputies: any,
+    givenOwner: string): Promise<void> {
     /**
      * old is coming from database
      * new is coming from access rights page
@@ -104,7 +104,7 @@ export class ColonyService {
     ) {
       return true;
     }
-    return false;
+    else return false;
   }
 
   public async canManageAccess(colonyId: number, memberId: number): Promise<boolean> {

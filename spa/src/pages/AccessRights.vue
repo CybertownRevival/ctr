@@ -177,7 +177,6 @@ export default Vue.extend({
     },
     async getData(): Promise<void> {
       let infopoint = null;
-      console.log(this.$store.data.place.type);
       switch (this.$store.data.place.type) {
       case "block":
         infopoint = `/block/${
