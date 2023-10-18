@@ -56,6 +56,11 @@ export default [
       title: "Banned Notice",
     },
   },
+  { path: "/banned", component:BannedNotice, name: "banned", meta:
+     {
+       title: "Banned Notice",
+     },
+  },
   {
     path: "/place/:id",
     components: {
