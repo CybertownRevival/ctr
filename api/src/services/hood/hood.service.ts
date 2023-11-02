@@ -47,7 +47,11 @@ export class HoodService {
     const oldDeputies = [0,0,0,0,0,0,0,0];
     const newDeputies = [0,0,0,0,0,0,0,0];
     const data = await this.hoodRepository.getAccessInfoByID(hoodId, ownerCode, deputyCode);
-    oldOwner = data.owner[0].member_id;
+    if (data.owner.length > 0) {
+      oldOwner = data.owner[0].member_id;
+    } else {
+      oldOwner = 0;
+    }
     try {
       newOwner = await this.memberRepository.findIdByUsername(givenOwner);
       newOwner = newOwner[0].id;
@@ -55,7 +59,9 @@ export class HoodService {
       newOwner = 0;
     }
     if (newOwner !== 0) {
-      await this.hoodRepository.removeIdFromAssignment(hoodId, oldOwner, ownerCode);
+      if (oldOwner !== 0) {
+        await this.hoodRepository.removeIdFromAssignment(hoodId, oldOwner, ownerCode);
+      }
       await this.hoodRepository.addIdToAssignment(hoodId, newOwner, ownerCode);
     }
     data.deputies.forEach((deputies, index) => {

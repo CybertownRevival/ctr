@@ -38,8 +38,7 @@
 						<tr>
 							<td><b>Owner</b>:</td>
 							<td>
-								<input class="input-text" SIZE="16" v-if="!owner" />
-								<input class="input-text" SIZE="16" v-model="owner" v-else />
+								<input class="input-text" SIZE="16" v-model="owner" />
 							</td>
 						</tr>
 					</table>
@@ -198,7 +197,11 @@ export default Vue.extend({
       }
       this.loaded = true;
       return this.$http.get(infopoint).then((response) => {
-        this.owner = response.data.data.owner[0].username;
+        if (response.data.data.owner.length !== 0) {
+          this.owner = response.data.data.owner[0].username;
+        } else {
+          this.owner = "";
+        }
         response.data.data.deputies.forEach((username, index) => {
           this.deputies[index] = username;
         });
@@ -228,8 +231,10 @@ export default Vue.extend({
       try {
         await this.$http.post(updatepoint, {deputies: this.deputies, owner: this.owner});
         this.success = true;
+        this.getData();
       } catch (error) {
         this.access = false;
+        this.getData();
       }
     },
   },

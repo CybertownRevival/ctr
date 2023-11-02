@@ -53,7 +53,11 @@ export class BlockService {
     const oldDeputies = [0,0,0,0,0,0,0,0];
     const newDeputies = [0,0,0,0,0,0,0,0];
     const data = await this.blockRepository.getAccessInfoByID(blockId, ownerCode, deputyCode);
-    oldOwner = data.owner[0].member_id;
+    if (data.owner.length > 0) {
+      oldOwner = data.owner[0].member_id;
+    } else {
+      oldOwner = 0;
+    }
     try {
       newOwner = await this.memberRepository.findIdByUsername(givenOwner);
       newOwner = newOwner[0].id;
@@ -61,7 +65,9 @@ export class BlockService {
       newOwner = 0;
     }
     if (newOwner !== 0) {
-      await this.blockRepository.removeIdFromAssignment(blockId, oldOwner, ownerCode);
+      if (oldOwner !== 0){
+        await this.blockRepository.removeIdFromAssignment(blockId, oldOwner, ownerCode);
+      }
       await this.blockRepository.addIdToAssignment(blockId, newOwner, ownerCode);
     }
     data.deputies.forEach((deputies, index) => {

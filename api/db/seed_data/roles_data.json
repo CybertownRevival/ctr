@@ -1,5 +1,10 @@
 [
   {
+    "name": "Admin",
+    "income_xp": 0,
+    "income_cc": 0
+  },
+  {
     "name": "Administrative Secretary",
     "income_xp": 22,
     "income_cc": 260
