@@ -1,6 +1,6 @@
 import Router from 'express';
 
-import { placeController } from '../controllers';
+import {placeController} from '../controllers';
 
 const placeRoutes = Router();
 placeRoutes.get('/:placeId/object_instance',

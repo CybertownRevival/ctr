@@ -11,6 +11,7 @@ import {
   WalletRepository,
   PlaceRepository,
   MapLocationRepository,
+  RoleAssignmentRepository,
 } from '../../repositories';
 import { Member, Place } from '../../types/models';
 import { MemberInfoView } from '../../types/views';
@@ -24,6 +25,10 @@ export class MemberService {
   public static readonly DAILY_CC_AMOUNT = 50;
   /** Amount of experience points a member received each day they log in */
   public static readonly DAILY_XP_AMOUNT = 5;
+  /** Amount of cityccash an employed member receives each day they log in */
+  public static readonly DAILY_CC_EMPLOYED_AMOUNT = 100;
+  /** Amount of experience points an employed member received each day they log in */
+  public static readonly DAILY_XP_EMPLOYED_AMOUNT = 10;
   /** Duration in minutes until a password reset attempt expires */
   public static readonly PASSWORD_RESET_EXPIRATION_DURATION = 15;
   /** Number of times to salt member passwords */
@@ -36,6 +41,7 @@ export class MemberService {
     private walletRepository: WalletRepository,
     private placeRepository: PlaceRepository,
     private mapLocationRespository: MapLocationRepository,
+    private roleAssignmentRepository: RoleAssignmentRepository,
   ) {}
 
   /**
@@ -46,8 +52,11 @@ export class MemberService {
    * @param password  raw member password
    * @returns promise resolving in the session token for the newly created member
    */
-  public async createMemberAndLogin(email: string, username: string, password: string):
-  Promise<string> {
+  public async createMemberAndLogin(
+    email: string,
+    username: string,
+    password: string,
+  ): Promise<string> {
     const hashedPassword = await this.encryptPassword(password);
     const memberId = await this.memberRepository.create({
       email,
@@ -64,7 +73,7 @@ export class MemberService {
    * @returns decoded session info
    */
   public decodeMemberToken(token: string): SessionInfo {
-    return (<SessionInfo> jwt.verify(token, process.env.JWT_SECRET));
+    return <SessionInfo>jwt.verify(token, process.env.JWT_SECRET);
   }
 
   /**
@@ -173,7 +182,7 @@ export class MemberService {
    * @returns `true` if the member has received their daily login bonus today, `false` otherwise
    */
   public hasReceivedLoginCreditToday(member: Member): boolean {
-    const today = new Date().setHours(0, 0, 0, 0); 
+    const today = new Date().setHours(0, 0, 0, 0);
     return member.last_daily_login_credit.getTime() >= today;
   }
 
@@ -196,7 +205,7 @@ export class MemberService {
    * Validates the given username and password and logs a user in.
    * @param username username of member to be logged in
    * @param password password of member to be logged in
-   * @returns 
+   * @returns
    */
   public async login(username: string, password: string): Promise<string> {
     const member = await this.memberRepository.find({ username });
@@ -217,17 +226,20 @@ export class MemberService {
   public async maybeGiveDailyCredits(memberId: number): Promise<void> {
     const member = await this.memberRepository.findById(memberId);
     if (!this.hasReceivedLoginCreditToday(member)) {
-      await this.transactionRepository.createDailyCreditTransaction(
-        member.wallet_id,
-        MemberService.DAILY_CC_AMOUNT,
-      );
-      await this.memberRepository.update(
-        memberId,
-        {
-          last_daily_login_credit: new Date(),
-          xp: member.xp + MemberService.DAILY_XP_AMOUNT,
-        },
-      );
+      let ccIncrease = MemberService.DAILY_CC_AMOUNT;
+      let xpIncrease = MemberService.DAILY_XP_AMOUNT;
+
+      const roles = await this.roleAssignmentRepository.getByMemberId(memberId);
+      if (roles.length > 0) {
+        ccIncrease = MemberService.DAILY_CC_EMPLOYED_AMOUNT;
+        xpIncrease = MemberService.DAILY_XP_EMPLOYED_AMOUNT;
+      }
+
+      await this.transactionRepository.createDailyCreditTransaction(member.wallet_id, ccIncrease);
+      await this.memberRepository.update(memberId, {
+        last_daily_login_credit: new Date(),
+        xp: member.xp + xpIncrease,
+      });
     }
   }
 
@@ -247,7 +259,7 @@ export class MemberService {
     if (_.isUndefined(avatar)) throw new Error(`No avatar exists with id ${avatarId}`);
     await this.memberRepository.update(memberId, { avatar_id: avatarId });
   }
-
+  
   /**
    * Sets the password for the member with the given id to a hashed version of the provided
    * password.
@@ -328,7 +340,7 @@ export class MemberService {
    */
   public decryptSession(request: Request, response: Response): SessionInfo {
     const { apitoken } = request.headers;
-    const session = this.decodeMemberToken(<string> apitoken);
+    const session = this.decodeMemberToken(<string>apitoken);
     if (!session) {
       response.status(400).json({
         error: 'Invalid or missing token.',
@@ -337,5 +349,4 @@ export class MemberService {
     }
     return session;
   }
-
 }

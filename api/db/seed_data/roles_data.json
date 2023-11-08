@@ -1,0 +1,367 @@
+[
+  {
+    "name": "Admin",
+    "income_xp": 0,
+    "income_cc": 0
+  },
+  {
+    "name": "Administrative Secretary",
+    "income_xp": 22,
+    "income_cc": 260
+  },
+  {
+    "name": "Ambassador",
+    "income_xp": 18,
+    "income_cc": 250
+  },
+  {
+    "name": "Apprentice builder",
+    "income_xp": 22,
+    "income_cc": 250
+  },
+  {
+    "name": "Bank Cashier",
+    "income_xp": 12,
+    "income_cc": 200
+  },
+  {
+    "name": "Bank Manager",
+    "income_xp": 24,
+    "income_cc": 250
+  },
+  {
+    "name": "Block Deputy",
+    "income_xp": 14,
+    "income_cc": 225
+  },
+  {
+    "name": "Block Leader",
+    "income_xp": 18,
+    "income_cc": 250
+  },
+  {
+    "name": "CERB",
+    "income_xp": 26,
+    "income_cc": 300
+  },
+  {
+    "name": "CERB Chief",
+    "income_xp": 28,
+    "income_cc": 325
+  },
+  {
+    "name": "City Advisor",
+    "income_xp": 40,
+    "income_cc": 420
+  },
+  {
+    "name": "City Architect",
+    "income_xp": 25,
+    "income_cc": 300
+  },
+  {
+    "name": "City Council",
+    "income_xp": 30,
+    "income_cc": 350
+  },
+  {
+    "name": "City Guide",
+    "income_xp": 20,
+    "income_cc": 250
+  },
+  {
+    "name": "City Mayor",
+    "income_xp": 34,
+    "income_cc": 400
+  },
+  {
+    "name": "Club Assistant",
+    "income_xp": 10,
+    "income_cc": 150
+  },
+  {
+    "name": "Club Owner",
+    "income_xp": 14,
+    "income_cc": 200
+  },
+  {
+    "name": "Clubs Chief",
+    "income_xp": 24,
+    "income_cc": 280
+  },
+  {
+    "name": "Clubs Deputy",
+    "income_xp": 16,
+    "income_cc": 250
+  },
+  {
+    "name": "Colony Deputy",
+    "income_xp": 26,
+    "income_cc": 325
+  },
+  {
+    "name": "Colony Leader",
+    "income_xp": 30,
+    "income_cc": 350
+  },
+  {
+    "name": "Colony Secretary",
+    "income_xp": 20,
+    "income_cc": 275
+  },
+  {
+    "name": "Com Graphics",
+    "income_xp": 28,
+    "income_cc": 325
+  },
+  {
+    "name": "Com tech",
+    "income_xp": 30,
+    "income_cc": 350
+  },
+  {
+    "name": "CVN Cartoonist",
+    "income_xp": 16,
+    "income_cc": 235
+  },
+  {
+    "name": "CVN Cy-tographer",
+    "income_xp": 16,
+    "income_cc": 235
+  },
+  {
+    "name": "CVN Cyto. Exec.",
+    "income_xp": 16,
+    "income_cc": 235
+  },
+  {
+    "name": "CVN Deputy",
+    "income_xp": 16,
+    "income_cc": 250
+  },
+  {
+    "name": "CVN Editor",
+    "income_xp": 26,
+    "income_cc": 325
+  },
+  {
+    "name": "CVN Film Critic Exec.",
+    "income_xp": 18,
+    "income_cc": 250
+  },
+  {
+    "name": "CVN Flim Critic",
+    "income_xp": 16,
+    "income_cc": 235
+  },
+  {
+    "name": "CVN Publisher",
+    "income_xp": 14,
+    "income_cc": 235
+  },
+  {
+    "name": "CVN staff",
+    "income_xp": 16,
+    "income_cc": 235
+  },
+  {
+    "name": "Deputy Ambassador",
+    "income_xp": 16,
+    "income_cc": 225
+  },
+  {
+    "name": "Deputy Mayor",
+    "income_xp": 32,
+    "income_cc": 375
+  },
+  {
+    "name": "Deputy Security Chief",
+    "income_xp": 26,
+    "income_cc": 300
+  },
+  {
+    "name": "Deputy Senior City Guide",
+    "income_xp": 20,
+    "income_cc": 250
+  },
+  {
+    "name": "Employment Chief",
+    "income_xp": 24,
+    "income_cc": 280
+  },
+  {
+    "name": "Employment Deputy",
+    "income_xp": 16,
+    "income_cc": 250
+  },
+  {
+    "name": "ePlex Chief",
+    "income_xp": 24,
+    "income_cc": 280
+  },
+  {
+    "name": "ePlex Deputy",
+    "income_xp": 16,
+    "income_cc": 250
+  },
+  {
+    "name": "Flea Market Chief",
+    "income_xp": 24,
+    "income_cc": 280
+  },
+  {
+    "name": "Flea Market Deputy",
+    "income_xp": 16,
+    "income_cc": 225
+  },
+  {
+    "name": "Founder",
+    "income_xp": 50,
+    "income_cc": 500
+  },
+  {
+    "name": "Homebuilder Manager",
+    "income_xp": 22,
+    "income_cc": 225
+  },
+  {
+    "name": "HTML Tech Support",
+    "income_xp": 12,
+    "income_cc": 230
+  },
+  {
+    "name": "Jail Guard",
+    "income_xp": 18,
+    "income_cc": 230
+  },
+  {
+    "name": "Mall Deputy",
+    "income_xp": 16,
+    "income_cc": 250
+  },
+  {
+    "name": "Mall Manager",
+    "income_xp": 24,
+    "income_cc": 280
+  },
+  {
+    "name": "Master World Builder",
+    "income_xp": 24,
+    "income_cc": 300
+  },
+  {
+    "name": "Mayors Secretary",
+    "income_xp": 26,
+    "income_cc": 325
+  },
+  {
+    "name": "Neighborhood Deputy",
+    "income_xp": 20,
+    "income_cc": 275
+  },
+  {
+    "name": "Neighborhood Leader",
+    "income_xp": 24,
+    "income_cc": 300
+  },
+  {
+    "name": "News Editor",
+    "income_xp": 22,
+    "income_cc": 275
+  },
+  {
+    "name": "Outlands Chief",
+    "income_xp": 24,
+    "income_cc": 320
+  },
+  {
+    "name": "Outlands Deputy",
+    "income_xp": 22,
+    "income_cc": 275
+  },
+  {
+    "name": "Place Chief",
+    "income_xp": 22,
+    "income_cc": 260
+  },
+  {
+    "name": "Place Deputy",
+    "income_xp": 12,
+    "income_cc": 225
+  },
+  {
+    "name": "Post Office Manager",
+    "income_xp": 20,
+    "income_cc": 250
+  },
+  {
+    "name": "Security Advisor",
+    "income_xp": 20,
+    "income_cc": 250
+  },
+  {
+    "name": "Security Captain",
+    "income_xp": 26,
+    "income_cc": 300
+  },
+  {
+    "name": "Security Chief",
+    "income_xp": 28,
+    "income_cc": 325
+  },
+  {
+    "name": "Security Commissioner",
+    "income_xp": 30,
+    "income_cc": 350
+  },
+  {
+    "name": "Security Lieutenant",
+    "income_xp": 24,
+    "income_cc": 280
+  },
+  {
+    "name": "Security Officer",
+    "income_xp": 22,
+    "income_cc": 240
+  },
+  {
+    "name": "Security Sergeant",
+    "income_xp": 22,
+    "income_cc": 260
+  },
+  {
+    "name": "Senior City Guide",
+    "income_xp": 24,
+    "income_cc": 300
+  },
+  {
+    "name": "Sponsor IC",
+    "income_xp": 25,
+    "income_cc": 300
+  },
+  {
+    "name": "Sponsor Team Member",
+    "income_xp": 25,
+    "income_cc": 300
+  },
+  {
+    "name": "Suburbs Chief",
+    "income_xp": 24,
+    "income_cc": 260
+  },
+  {
+    "name": "Tech CD",
+    "income_xp": 26,
+    "income_cc": 325
+  },
+  {
+    "name": "VRML Doc",
+    "income_xp": 18,
+    "income_cc": 230
+  },
+  {
+    "name": "World Builder",
+    "income_xp": 22,
+    "income_cc": 275
+  }
+]

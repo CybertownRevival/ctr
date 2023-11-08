@@ -18,9 +18,11 @@
     >
       <div class="flex flex-1">
         <router-view
-          v-if="this.$route.name !== 'world-browser' && this.$route.name !== 'user-home'"></router-view>
+          v-if="this.$route.name !== 'world-browser' &&
+          this.$route.name !== 'user-home'" />
         <world-browser-page
-          v-show="this.$route.name === 'world-browser' || this.$route.name === 'user-home'"></world-browser-page>
+          v-show="this.$route.name === 'world-browser' ||
+          this.$route.name === 'user-home'"></world-browser-page>
       </div>
       <div
         class="flex-none w-60 bg-lines overflow-y-auto"
@@ -29,6 +31,9 @@
         <div class="flex flex-col">
           <div class="flex justify-center">
             <img src="/assets/img/logo-action.gif" />
+          </div>
+          <div class="text-clock text-center w-full py-0.5">
+            <ClockPage />
           </div>
           <div class="flex flex-row justify-center">
             <img src="/assets/img/b2dchat.gif" @click="$store.methods.setView3d(false)"
@@ -114,12 +119,14 @@ import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 import ModalRoot from "./components/modals/ModalRoot.vue";
 import InfoModal from "./components/modals/InfoModal.vue";
 import ModalService from "./components/modals/services/ModalService.vue";
+import ClockPage from "./components/Clock.vue";
 
 declare const X3D: any;
 
 export default Vue.extend({
   name: "App",
   components: {
+    ClockPage,
     WorldBrowserPage,
     ModalRoot,
   },

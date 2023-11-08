@@ -14,6 +14,8 @@ export enum TransactionReason {
   SystemToMember = 'system-to-member',
   /** Used for refunding payments to users when they sell a house */
   HomeRefund = 'home-refund',
+  /** Used for weekly job credits to user */
+  WeeklyCredit = 'weekly-role-credit',
 }
 
 /** Defines a Transaction object as stored in the db */
@@ -21,7 +23,7 @@ export interface Transaction extends Model {
   /** Number of CCs moved */
   amount: number;
   /** The reason the transaction was created */
-  reason: TransactionReason;
+  reason: string;
   /** ID of the wallet that received CCs. Can be null if the recipient is the system. */
   recipient_wallet_id?: number;
   /** ID of the wallet that sent CCS. Can be null if the sender is the system. */

@@ -1,15 +1,14 @@
 import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
-import {
-  Member,
-  Wallet,
-} from 'models';
+import { Member, Wallet } from 'models';
+import { join } from 'path';
+import { result } from 'lodash';
+import {stringify} from "ts-jest";
 
 /** Repository for interacting with member table data in the database. */
 @Service()
 export class MemberRepository {
-
   constructor(private db: Db) {}
   
   /**
@@ -25,7 +24,7 @@ export class MemberRepository {
         wallet_id: walletId,
       });
       return memberId;
-    }); 
+    });
   }
 
   /**
@@ -45,6 +44,13 @@ export class MemberRepository {
    */
   public async findById(memberId: number): Promise<Member> {
     return this.find({ id: memberId });
+  }
+  
+  public async findIdByUsername(username: string): Promise<any> {
+    return this.db.knex
+      .select('id')
+      .from('member')
+      .where('username', username);
   }
 
   /**
@@ -67,13 +73,12 @@ export class MemberRepository {
    * @param returning optional. defaults to false. returns the updated record if true.
    * @returns promise resolving in the updated member object, or rejecting on error
    */
-  public async update(memberId: number, props: Partial<Member>, returning = false):
-   Promise<Member | undefined> {
-    await this.db.member
-      .where({ id: memberId })
-      .update(props);
-    return returning
-      ? this.findById(memberId)
-      : undefined;
+  public async update(
+    memberId: number,
+    props: Partial<Member>,
+    returning = false,
+  ): Promise<Member | undefined> {
+    await this.db.member.where({ id: memberId }).update(props);
+    return returning ? this.findById(memberId) : undefined;
   }
 }

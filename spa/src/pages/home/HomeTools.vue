@@ -2,7 +2,8 @@
   <!-- archive template: property/action_standard.tmpl -->
   <div class="text-center" v-if="loaded">
     <span class="btn-ui" >Information</span>
-    <a :href="'#/messageboard/' + this.$store.data.place.id" target="_blank" class="btn-ui">Messages</a>
+    <button class="btn-ui"
+      v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
     <router-link
       v-if="this.$store.data.place.block"
       :to="'/block/'+this.$store.data.place.block.id">
@@ -31,6 +32,11 @@ export default Vue.extend({
     return {
       loaded: false,
     };
+  },
+  methods: {
+    async opener(link) {
+      window.open(link, "targetWindow", "height=650,width=800,menubar=no,status=no");
+    },
   },
   mounted() {
     this.loaded = true;

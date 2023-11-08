@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full bg-black flex flex-col p-2" v-if="loaded">
+  <div v-if="loaded">
 
     <div v-if="!complete">
       <div v-if="relocating">
@@ -50,7 +50,7 @@
         <div class="grid grid-cols-3 gap-4">
           <template v-if="colonyData[colony.slug].map_theme === 'grass'">
             <template v-for="index in 33">
-              <div>
+              <div :key="index">
               <input type="radio" :value="index" v-model="icon2d">
               <img
                 class="ml-2"
@@ -61,7 +61,7 @@
           </template>
           <template v-else-if="colonyData[colony.slug].map_theme === 'desert'">
             <template v-for="index in 7">
-              <div>
+              <div :key="index">
               <input type="radio" :value="index" v-model="icon2d">
               <img
                 class="ml-2"
@@ -72,7 +72,7 @@
           </template>
           <template v-else-if="colonyData[colony.slug].map_theme === 'cyberhood'">
             <template v-for="index in 5">
-              <div>
+              <div :key="index">
               <input type="radio" :value="index" v-model="icon2d">
               <img
                 class="ml-2"
@@ -99,7 +99,7 @@
           </div>
           <div></div>
           <template v-for="(item,key) in homeData" >
-            <div>
+            <div :key="key">
               <input type="radio" :value="key" v-model="home3d" class="mr-3"/>
               <img :src="'/assets/img/homes/Picon3D' + key + '.gif'" /><br/>
               Price: <strong>{{ item.price }}cc</strong>
@@ -135,14 +135,16 @@ import { colonyDataHelper, homeDataHelper } from "@/helpers";
 
 export default Vue.extend({
   name: "BlockMovePage",
+  props: [
+    "block",
+    "hood",
+    "colony",
+  ],
   data: () => {
     return {
       loaded: false,
       showError: false,
       error: "",
-      block: undefined,
-      hood: undefined,
-      colony: undefined,
       homeResponse: undefined,
       relocating: null,
       complete: false,
@@ -160,16 +162,11 @@ export default Vue.extend({
   methods: {
     getData(): Promise<void> {
       return Promise.all([
-        this.$http.get("/block/" + this.$route.params.id),
         this.$http.get("/block/" + this.$route.params.id + "/locations"),
         this.$http.get("/home"),
       ]).then((response) => {
-        this.block = response[0].data.block;
-        this.hood = response[0].data.hood;
-        this.colony = response[0].data.colony;
-        this.locations = response[1].data.locations;
-        this.$store.methods.setPlace(response[0].data);
-        this.homeResponse = response[2].data;
+        this.locations = response[0].data.locations;
+        this.homeResponse = response[1].data;
 
         if(this.homeResponse.homeData) {
           this.relocating = true;

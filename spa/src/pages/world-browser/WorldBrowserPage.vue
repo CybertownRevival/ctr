@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from "vue";
 
 import * as avatarsDataJson from "../../libs/data/avatars.json";
 import * as worldDataJson from "../../libs/data/worlds.json";
@@ -36,8 +36,8 @@ import Chat from "../../components/Chat.vue";
 import {
   debugMsg,
   environment,
-} from '@/helpers';
-import { WorldBrowserData } from './world-browser-data.interface';
+} from "@/helpers";
+import { WorldBrowserData } from "./world-browser-data.interface";
 
 export default Vue.extend({
   name: "WorldBrowserPage",
@@ -84,21 +84,21 @@ export default Vue.extend({
         };
       }
 
-      let sharedObject = browser.currentScene.createProto("SharedObject");
+      const sharedObject = browser.currentScene.createProto("SharedObject");
       sharedObject.name = obj.name;
       sharedObject.id = obj.id;
       sharedObject.translation = new X3D.SFVec3f(
         obj.position.x,
         obj.position.y,
-        obj.position.z
+        obj.position.z,
       );
       sharedObject.rotation = new X3D.SFRotation(
         obj.rotation.x,
         obj.rotation.y,
         obj.rotation.z,
-        obj.rotation.angle
+        obj.rotation.angle,
       );
-      let inline = browser.currentScene.createNode("Inline");
+      const inline = browser.currentScene.createNode("Inline");
       inline.url = new X3D.MFString(obj.url);
       sharedObject.children[0] = inline;
       browser.currentScene.addRootNode(sharedObject);
@@ -148,60 +148,28 @@ export default Vue.extend({
     debugMsg,
     async getPlace(): Promise<void> {
       this.debugMsg("get place");
+      document.title = `${this.$store.data.place.name  } - Cybertown`;
+      try {
+        const objectInstanceResponse = await this.$http.get(`/place/${  this.$store.data.place.id 
+        }/object_instance`);
 
-      if(this.$route.params.username) {
-        try {
-          const homeResponse = await this.$http.get("/home/"+this.$route.params.username);
-
-          if(typeof homeResponse.data.homeDesignData === "undefined") {
-            this.force2d = true;
-          }
-
-          const sharedObjectsResponse = await this.$http
-            .get("/place/" + homeResponse.data.homeData.id +
-            "/object_instance");
-
-          this.sharedObjects = sharedObjectsResponse.data.object_instance;
-
-          this.place = {
-            ...homeResponse.data.homeData,
-            assets_dir: homeResponse.data.homeDesignData ?
-              (homeResponse.data.homeDesignData.id + "/") : null,
-            world_filename: "home.wrl",
-            slug: "home",
-            block: homeResponse.data.blockData,
-          };
-          this.$store.methods.setPlace(this.place);
-        } catch(e) {
-          console.error("error with home response");
-          console.log(e);
-        }
-      } else {
-        try {
-          const placeResponse = await this.$http.get("/place/" + this.$route.params.id);
-          this.debugMsg(placeResponse.data.place);
-          this.place = placeResponse.data.place;
-          document.title = this.place.name + " - Cybertown";
-
-          const objectInstanceResponse = await this.$http.get("/place/" + this.place.id +
-              "/object_instance");
-
-          this.sharedObjects = objectInstanceResponse.data.object_instance;
-          this.$store.methods.setPlace(this.place);
-
-        } catch(e) {
-          console.error(e);
-        }
+        this.sharedObjects = objectInstanceResponse.data.object_instance;
+      } catch(e) {
+        console.error(e);
       }
-
     },
     async loadAndJoinPlace(): Promise<void> {
       this.loaded = false;
       this.force2d = false;
 
-      if (this.place) this.$socket.leaveRoom(this.place.id);
+      if (this.$store.data.place) this.$socket.leaveRoom(this.$store.data.place.id);
       await this.getPlace();
 
+      if(this.$route.params.username){
+        if(this.$store.data.place.assets_dir === null) {
+          this.force2d = true;
+        }
+      }
 
       if(this.browser) {
         const browser = X3D.getBrowser(this.browser);
@@ -212,19 +180,21 @@ export default Vue.extend({
         this.loaded = true;
         this.startX3DListeners(browser);
       } else {
-        this.mainComponent = () => import("@/components/place/"+this.place.slug+"/main2d.vue");
+        this.mainComponent = () => import(
+          `@/components/place/${this.$store.data.place.slug}/main2d.vue`
+        );
         this.loaded = true;
       }
       this.joinPlace();
     },
     async unloadPlace(): Promise<void> {
-      if (this.place) this.$socket.leaveRoom(this.place.id);
+      if (this.$store.data.place) this.$socket.leaveRoom(this.$store.data.place.id);
       const browser = X3D.getBrowser(this.browser);
       browser.replaceWorld(null);
     },
     async joinPlace(): Promise<void> {
-      await this.$socket.joinRoom(this.place.id, this.$store.data.user.token);
-      this.debugMsg('joined room success', this.place.id);
+      await this.$socket.joinRoom(this.$store.data.place.id, this.$store.data.user.token);
+      this.debugMsg("joined room success", this.$store.data.place.id);
       const { viewpointPosition, viewpointOrientation } = X3D.getBrowser(this.browser);
       this.$socket.emit("AV", {
         detail: {
@@ -246,7 +216,7 @@ export default Vue.extend({
       this.sharedObjectsMap.get(objectId).startMove = true;
     },
     beamTo(userId): void {
-      let user = this.users[userId];
+      const user = this.users[userId];
       if(user && user.transform && user.transform.pos && user.transform.rot) {
         let distance;
         const browser = X3D.getBrowser(this.browser);
@@ -258,11 +228,11 @@ export default Vue.extend({
         } catch(e) {
           distance = 3;
         }
-        let pos = new X3D.SFVec3f(...user.transform.pos);
-        let rot = new X3D.SFRotation(...user.transform.rot);
-        let pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -distance));
+        const pos = new X3D.SFVec3f(...user.transform.pos);
+        const rot = new X3D.SFRotation(...user.transform.rot);
+        const pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -distance));
         pos_offset.y = 0;
-        let viewpoint = browser.currentScene.createNode("Viewpoint");
+        const viewpoint = browser.currentScene.createNode("Viewpoint");
         browser.currentScene.addRootNode(viewpoint);
         viewpoint.position = pos.add(pos_offset);
         // orientation math:
@@ -277,7 +247,7 @@ export default Vue.extend({
             browser.currentScene.removeRootNode(viewpoint);
             viewpoint.dispose();
           }
-        })
+        });
       }
     },
     async onAvatarAdded(event): Promise<void> {
@@ -291,12 +261,12 @@ export default Vue.extend({
       const loadInlineAsync = (browser, url) => {
         browser.endUpdate();
         //todo: error coming from here about 'url' = ''
-        let inline = browser.currentScene.createNode("Inline");
+        const inline = browser.currentScene.createNode("Inline");
         inline.url = new X3D.MFString(url);
-        let loadSensor = browser.currentScene.createNode("LoadSensor");
+        const loadSensor = browser.currentScene.createNode("LoadSensor");
         loadSensor.watchList[0] = inline;
-        let callbackKey = {};
-        let promise = new Promise((resolve, reject) => {
+        const callbackKey = {};
+        const promise = new Promise((resolve, reject) => {
           loadSensor.addFieldCallback("isLoaded", callbackKey, (value) => {
             loadSensor.removeFieldCallback("isLoaded", callbackKey);
             if (value) {
@@ -310,7 +280,7 @@ export default Vue.extend({
         return promise;
       };
 
-      let browser = X3D.getBrowser(this.browser);
+      const browser = X3D.getBrowser(this.browser);
 
       if (!this.users[event.id]) {
         this.users[event.id] = {};
@@ -325,9 +295,9 @@ export default Vue.extend({
 
         this.users[event.id].loading = true;
         loadInlineAsync(browser, avURL).then((avInline) => {
-          let uniqueID = unique("Av-");
+          const uniqueID = unique("Av-");
           browser.currentScene.updateImportedNode(avInline, "Avatar", uniqueID);
-          var avImport = browser.currentScene.getImportedNode(uniqueID);
+          const avImport = browser.currentScene.getImportedNode(uniqueID);
           browser.currentScene.addRootNode(avInline);
           this.users[event.id].loading = false;
           this.users[event.id].loaded = true;
@@ -340,7 +310,7 @@ export default Vue.extend({
               this.users[event.id].transform.pos
             ) {
               this.users[event.id]["import"].set_position = new X3D.SFVec3f(
-                ...this.users[event.id].transform.pos
+                ...this.users[event.id].transform.pos,
               );
             }
             if (
@@ -348,7 +318,7 @@ export default Vue.extend({
               this.users[event.id].transform.rot
             ) {
               this.users[event.id]["import"].rotation = ROTATE180.multiply(
-                new X3D.SFRotation(...this.users[event.id].transform.rot)
+                new X3D.SFRotation(...this.users[event.id].transform.rot),
               );
             }
           }
@@ -357,7 +327,7 @@ export default Vue.extend({
     },
     onAvatarMoved(event): void {
       const ROTATE180 = new X3D.SFRotation(0, 1, 0, Math.PI);
-      let browser = X3D.getBrowser(this.browser);
+      const browser = X3D.getBrowser(this.browser);
 
       if (!this.users[event.id]) {
         this.users[event.id] = {};
@@ -377,18 +347,18 @@ export default Vue.extend({
       if (this.users[event.id]["inline"]) {
         if (this.users[event.id].transform.pos) {
           this.users[event.id]["import"].set_position = new X3D.SFVec3f(
-            ...this.users[event.id].transform.pos
+            ...this.users[event.id].transform.pos,
           );
         }
         if (this.users[event.id].transform.rot) {
           this.users[event.id]["import"].rotation = ROTATE180.multiply(
-            new X3D.SFRotation(...this.users[event.id].transform.rot)
+            new X3D.SFRotation(...this.users[event.id].transform.rot),
           );
         }
 
         if (typeof event.gesture === "number") {
           this.users[event.id]["import"][
-            "set_gesture" + event.gesture.toString()
+            `set_gesture${  event.gesture.toString()}`
           ] = browser.getCurrentTime();
         }
       }
@@ -409,9 +379,9 @@ export default Vue.extend({
       delete this.users[id];
     },
     onSharedEvent(event): void {
-      for (let node of this.eventNodeMap.get(event.name)) {
-        node[event.type + "FromServer"] = this.TYPES[event.type].fromJSON(
-          event.value
+      for (const node of this.eventNodeMap.get(event.name)) {
+        node[`${event.type  }FromServer`] = this.TYPES[event.type].fromJSON(
+          event.value,
         );
       }
     },
@@ -429,8 +399,8 @@ export default Vue.extend({
       window.location.reload();
     },
     saveObjectLocation(objectId): void {
-      var obj = this.sharedObjectsMap.get(objectId);
-      this.$http.post("/object_instance/" + objectId + "/position", {
+      const obj = this.sharedObjectsMap.get(objectId);
+      this.$http.post(`/object_instance/${  objectId  }/position`, {
         position: {
           x: obj.translation.x,
           y: obj.translation.y,
@@ -482,7 +452,7 @@ export default Vue.extend({
               rotation.x,
               rotation.y,
               rotation.z,
-              rotation.angle
+              rotation.angle,
             ),
         },
         string: {
@@ -516,7 +486,7 @@ export default Vue.extend({
 
       for (const eventNode of Array.from<any>(sharedZone.events)) {
         for (const typeName of Object.keys(this.TYPES)) {
-          eventNode.addFieldCallback(typeName + "ToServer", {}, val => {
+          eventNode.addFieldCallback(`${typeName  }ToServer`, {}, val => {
             // TODO: confirm validity of adding to possibly non-existent field
             this.sendSharedEvent({
               detail: {
@@ -553,20 +523,20 @@ export default Vue.extend({
       return new Promise((resolve, reject) => {
         browser.addBrowserCallback({}, eventType => {
           switch (eventType) {
-            case X3D.X3DConstants.INITIALIZED_EVENT:
-              resolve(browser);
-              break;
-            case X3D.X3DConstants.CONNECTION_ERROR:
-            case X3D.X3DConstants.INITIALIZED_ERROR:
-              reject();
-              break;
+          case X3D.X3DConstants.INITIALIZED_EVENT:
+            resolve(browser);
+            break;
+          case X3D.X3DConstants.CONNECTION_ERROR:
+          case X3D.X3DConstants.INITIALIZED_ERROR:
+            reject();
+            break;
           }
-        })
-      })
+        });
+      });
     },
     startX3DListeners(browser: any): void {
-      let browserProto = Object.getPrototypeOf(browser);
-      let prox = browser.currentScene.createNode("ProximitySensor");
+      const browserProto = Object.getPrototypeOf(browser);
+      const prox = browser.currentScene.createNode("ProximitySensor");
       prox.size = new X3D.SFVec3f(1000000, 1000000, 1000000);
       prox.enabled = true;
       prox.addFieldCallback("position_changed", {}, (val) => {
@@ -607,7 +577,7 @@ export default Vue.extend({
   },
   computed: {
     worldUrl(): string {
-      const { assets_dir, world_filename } = this.place;
+      const { assets_dir, world_filename } = this.$store.data.place;
       return `/assets/worlds/${assets_dir}${world_filename}`;
     },
   },

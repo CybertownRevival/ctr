@@ -51,7 +51,7 @@
         "
       >
         <span v-if="activePanel === 'users'" class="flex-grow">
-          ({{ this.users.length + 1 }}) {{ place.name }}
+          ({{ this.users.length + 1 }}) {{ this.$store.data.place.name }}
         </span>
         <span v-if="activePanel === 'gestures'" class="flex-grow">
           Body Language
@@ -138,7 +138,7 @@ export default Vue.extend({
           msg: this.message,
         });
         this.$http
-          .post("/message/place/" + this.place.id, {
+          .post("/message/place/" + this.$store.data.place.id, {
             body: this.message,
           })
           .then((response) => {
@@ -157,14 +157,14 @@ export default Vue.extend({
       this.messages = [];
       this.users = [];
       this.$http
-        .get(`/message/place/${this.place.id}`, {
+        .get(`/message/place/${this.$store.data.place.id}`, {
           limit: 10,
           order: "id",
           orderDirection: "desc",
         })
         .then((response) => {
           this.messages = response.data.messages.reverse();
-          this.systemMessage("Welcome to " + this.place.name);
+          this.systemMessage("Welcome to " + this.$store.data.place.name);
         });
     },
     changeActivePanel(): void {
@@ -233,7 +233,7 @@ export default Vue.extend({
   mounted() {
     this.debugMsg("starting chat page...");
     this.startSocketListeners();
-    if (this.place) {
+    if (this.$store.data.place) {
       this.startNewChat();
     }
   }

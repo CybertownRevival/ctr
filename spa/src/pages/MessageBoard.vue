@@ -27,7 +27,16 @@
               id.username,
               id.subject,
               id.parent_id,
-              id.reply);">{{ id.created_at }}</a>
+              id.reply);">{{ new Date(id.created_at)
+                .toLocaleString('en-US', {
+                  weekday: 'short',
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  timeZone: 'America/Detroit',
+                })}}</a>
             From: {{ id.username }}
             Subject: <span v-if="id.reply === 1">RE: </span> {{ id.subject }}
           </p>
@@ -60,7 +69,9 @@
         </div>
         <div class="w-full flex flex-row">
           <div class="flex-grow border-2 border-black"/>
-          <p><div class="flex-grow border-black" style="width:99%; margin-top: 10px" v-html="this.dmessage[0].message"/></p>
+          <p>
+            <div class="flex-grow border-black"
+                style="width:99%; margin-top: 10px" v-html="this.dmessage[0].message"/>
         </div>
       </div>
     </div>
@@ -140,9 +151,10 @@ export default Vue.extend({
     //manage introduction information for message board
     async changeMessageboardIntro(): Promise<void> {
       try {
-        const {data} = await this.$http.post("/messageboard/changemessageboardintro", {
+        await this.$http.post("/messageboard/changemessageboardintro", {
           place_id: this.$route.params.place_id,
           intro: this.intro,
+          type: this.placeinfo[0].type,
         });
         this.success = "Message Board Information Updated";
         this.error = "";
@@ -163,6 +175,7 @@ export default Vue.extend({
         const {data} = await this.$http.post("/messageboard/deletemessage/", {
           place_id: this.$route.params.place_id,
           message_id: this.did,
+          type: this.placeinfo[0].type,
         });
         this.success = "Message Deleted";
         this.error = "";
@@ -176,14 +189,16 @@ export default Vue.extend({
       
     },
     //get admin info from db and/or check if user is owner of message board
-    //todo add check for employee of public places
     async getAdminInfo(): Promise<any> {
+      console.log(this.placeinfo[0].type);
       return this.$http.post("/messageboard/getadmininfo", {
         place_id: this.$route.params.place_id,
+        type: this.placeinfo[0].type,
       }).then((response) => {
         this.boardadmin = response.data.admin;
       });
     },
+    
     //get message board introduction information
     async getInfo(): Promise<void> {
       return this.$http.post("/messageboard/info/", {
@@ -193,7 +208,14 @@ export default Vue.extend({
       });
     },
     //get and prepares specific information for displaying in lower div
-    async getMessage(id: number, date: string, user: string, subject: string, parentid: string, reply: string): Promise<void> {
+    async getMessage(
+      id: number,
+      date: string,
+      user: string,
+      subject: string,
+      parentid: string,
+      reply: string,
+    ): Promise<void> {
       return this.$http.post("/messageboard/getmessage/", {
         message_id: id,
       }).then((response) => {
@@ -278,10 +300,10 @@ export default Vue.extend({
       this.active = "view";
     },
   },
-  created() {
-    this.getInfo();
-    this.getMessageboardMessages();
-    this.getAdminInfo();
+  async created() {
+    await this.getInfo();
+    await this.getMessageboardMessages();
+    await this.getAdminInfo();
   },
   watch: {
     active: function(newValue) {

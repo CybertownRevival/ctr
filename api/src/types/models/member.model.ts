@@ -28,4 +28,8 @@ export interface Member extends Model {
   firstname: string;
   /** the real last name */
   lastname: string;
+  /** the role they wish to display in chat */
+  primary_role_id?: number;
+  /** this last time they received role based credits */
+  last_weekly_role_credit: Date;
 }

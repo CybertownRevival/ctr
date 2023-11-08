@@ -9,54 +9,21 @@ import {response} from 'express';
 export class MessageboardRepository {
   
   public async changeMessageboardIntro(
-    memberId: number,
     placeId: number,
     Intro: string,
   ): Promise<any> {
-    const admininfo = await knex
-      .select(
-        'admin',
-      )
-      .from<Member, Member[]>('member')
-      .where('id', memberId);
-    const placeinfo = await knex
-      .select('member_id')
-      .from<Place, Place[]>('place')
-      .where('id', placeId);
-    if (admininfo[0].admin || placeinfo[0].member_id === memberId) {
-      console.log(Intro);
-      return knex('place')
-        .where('id', placeId)
-        .update({messageboard_intro: Intro});
-    } else {
-      throw new Error('not authorized');
-    }
+    return knex('place')
+      .where('id', placeId)
+      .update({messageboard_intro: Intro});
   }
   constructor(private db: Db) {}
 
   public async deleteMessageboardMessage(
-    placeId: number,
-    memberId: number,
     messageId: number,
   ): Promise<any> {
-    const admininfo = await knex
-      .select(
-        'admin',
-      )
-      .from<Member, Member[]>('member')
-      .where('id', memberId);
-    const placeinfo = await knex
-      .select('member_id')
-      .from<Place, Place[]>('place')
-      .where('id', placeId);
-    if (admininfo[0].admin || placeinfo[0].member_id === memberId) {
-      return knex('messageboard')
-        .where('id', messageId)
-        .update({status: 0});
-    } else {
-      throw new Error('not authorized');
-      return;
-    }
+    return knex('messageboard')
+      .where('id', messageId)
+      .update({status: 0});
   }
   
   public async getAdminInfo(
@@ -88,6 +55,7 @@ export class MessageboardRepository {
       .select(
         'place.messageboard_intro as messageboard_intro',
         'place.name as name',
+        'place.type as type',
       )
       .from<Place, Place[]>('place')
       .where('place.id', placeId);
