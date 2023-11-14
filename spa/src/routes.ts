@@ -29,7 +29,12 @@ import HomeUpdateHomePage from "@/pages/home/HomeUpdateHomePage.vue";
 import MessageBoard from "@/pages/MessageBoard.vue";
 
 import AccessRights from "@/pages/AccessRights.vue";
-import Information from "@/pages/Information.vue";
+
+import admin from "@/pages/admin/admin.vue";
+import UserSearch from "@/pages/admin/user/search.vue";
+import UserMain from "@/pages/admin/user/details.vue";
+import InfoMain from "@/pages/admin/user/info.vue";
+import InfoView from "@/pages/admin/user/infoview.vue";
 
 export default [
   {
@@ -241,5 +246,54 @@ export default [
       title: "Information",
       wrapper: false,
     },
+  },
+  {
+    path: "/admin/",
+    component: admin,
+    name: "Admin",
+    meta: {
+      title: "Admin Page",
+      wrapper: false,
+    },
+    children: [
+      {
+        path: "/admin/member/",
+        component: UserSearch,
+        name: "UserSearch",
+        meta: {
+          title: "Member Search - Admin Panel",
+        },
+      },
+      {
+        path: "/admin/member/user/:id",
+        component: UserMain,
+        default: InfoMain,
+        name: "UserMain",
+        meta: {
+          title: "Member Details - Admin Panel",
+        },
+        children: [
+          {
+            path: "",
+            component: InfoMain,
+            default: InfoView,
+            name: "InfoMain",
+            meta: {
+              title: "Member Details - Admin Panel",
+            },
+            children: [
+              {
+                path: "",
+                component: InfoView,
+                name: "UserView",
+                meta: {
+                  title: "Member Details - Admin Panel",
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
 ];
