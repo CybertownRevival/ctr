@@ -9,7 +9,15 @@
               class="text-white"
               >{{ msg.msg }}</strong
             >
-            <span v-else>{{ msg.username }}: {{ msg.msg }}</span>
+            <span 
+              v-else-if="msg.username === $store.data.user.username" 
+              class="text-yellow-200"
+              >{{msg.username}}: {{ msg.msg }}</span
+            > 
+            <span 
+              v-else
+              >{{ msg.username }}: {{ msg.msg }}</span
+            >
           </li>
         </ul>
       </div>
