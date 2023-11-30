@@ -4,10 +4,10 @@ import { RoleAssignmentService } from '../services';
 module.exports = async () => {
   console.log('CRON[role-credit]: Running...');
   const roleAssignmentService = Container.get(RoleAssignmentService);
-  const batch = await roleAssignmentService.getMembersDueRoleCredit(1000);
+  const batch = await roleAssignmentService.getMembersDueRoleCredit(20);
   console.log(`CRON[role-credit]: ${  batch.length  } to process...`);
-  batch.forEach(row => {
-    roleAssignmentService.giveWeeklyRoleCredit(
+  for(const row of batch) {
+    await roleAssignmentService.giveWeeklyRoleCredit(
       row.member_id,
       row.xp,
       row.wallet_id,
@@ -15,5 +15,5 @@ module.exports = async () => {
       row.income_cc,
       row.role_id,
     );
-  });
+  }
 };
