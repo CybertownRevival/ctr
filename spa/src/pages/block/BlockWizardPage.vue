@@ -30,7 +30,7 @@
 									locations.find(b => b.location === index).id
 								"
 							>
-								<span>{{
+								<span style="padding: 3px; max-height: 40px; line-height: 13px; overflow: hidden;">{{
 									locations.find(b => b.location === index)
 										.name
 								}}</span>
