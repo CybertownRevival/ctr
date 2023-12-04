@@ -63,28 +63,6 @@ export class MemberRepository {
       .limit(1)
       .first();
   }
-  
-  public async searchUsers(search: string, limit: string, offset: string): Promise<any> {
-    return knex
-      .select(
-        'id',
-        'username',
-        'email',
-        'last_daily_login_credit',
-      )
-      .from('member')
-      .where('username', 'like', knex.raw('?',[`%${search}%`]))
-      .orderBy('id')
-      .limit(Number(limit))
-      .offset(Number(offset));
-  }
-  
-  public async getTotal(search: string): Promise<any> {
-    return knex
-      .count('id as count')
-      .from('member')
-      .where('username', 'like', knex.raw('?',[`%${search}%`]));
-  }
 
   /**
    * Updates properties on the member record with the given id.

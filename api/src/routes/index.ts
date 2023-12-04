@@ -1,3 +1,4 @@
+export * from './admin.routes';
 export * from './avatar.routes';
 export * from './block.routes';
 export * from './colony.routes';

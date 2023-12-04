@@ -45,15 +45,7 @@ export class MemberService {
     private roleAssignmentRepository: RoleAssignmentRepository,
     private roleRepository: RoleRepository,
   ) {}
-
-  /**
-   * Creates a new member with the given email, username, and password. If successful, distributes
-   * daily login bonuses, and returns an encoded member token.
-   * @param email member email address
-   * @param username member usename, used during login
-   * @param password  raw member password
-   * @returns promise resolving in the session token for the newly created member
-   */
+  
   public async canAdmin(memberId: number): Promise<boolean>{
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     
@@ -77,6 +69,16 @@ export class MemberService {
     }
     return false;
   }
+  
+  /**
+   * Creates a new member with the given email, username, and password. If successful, distributes
+   * daily login bonuses, and returns an encoded member token.
+   * @param email member email address
+   * @param username member usename, used during login
+   * @param password  raw member password
+   * @returns promise resolving in the session token for the newly created member
+   */
+  
   public async createMemberAndLogin(
     email: string,
     username: string,
@@ -198,15 +200,6 @@ export class MemberService {
   public async getMemberToken(memberId: number): Promise<string> {
     const member = await this.memberRepository.findById(memberId);
     return this.encodeMemberToken(member);
-  }
-  
-  public async searchUsers(search: string, limit: string, offset: string): Promise<any> {
-    const users = await this.memberRepository.searchUsers(search, limit, offset);
-    const total = await this.memberRepository.getTotal(search);
-    return {
-      users: users,
-      total: total,
-    };
   }
 
   /**

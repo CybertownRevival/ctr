@@ -1,3 +1,4 @@
+export * from './admin.controller';
 export * from './avatar.controller';
 export * from './block.controller';
 export * from './colony.controller';

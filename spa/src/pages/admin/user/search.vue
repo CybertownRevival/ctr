@@ -1,6 +1,6 @@
 <template>
   <div class="grid grid-cols-1 w-full place-items-center">
-    <div class="text-center w-full text-5xl">Citizen Search</div>
+    <div class="text-center w-full text-5xl mb-1">Citizen Search</div>
   <div class="grid grid-cols-2 w-4/6 justify-items-center">
     <div>
     Username Search: 
@@ -68,7 +68,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import response from "express";
 
 export default Vue.extend({
   name: "UserSearch",
@@ -86,7 +85,7 @@ export default Vue.extend({
   methods: {
     async getUsers(): Promise<any> {
       try {
-        return this.$http.post("/member/search", {
+        return this.$http.post("/admin/search", {
           search: this.search,
           limit: this.limit,
           offset: this.offset,
@@ -101,7 +100,7 @@ export default Vue.extend({
     async searchUsers(): Promise<any> {
       this.offset = 0;
       try {
-        return this.$http.post("/member/search", {
+        return this.$http.post("/admin/search", {
           search: this.search,
           limit: this.limit,
           offset: this.offset,

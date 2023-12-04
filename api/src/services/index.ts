@@ -1,3 +1,4 @@
+export * from './admin/admin.services';
 export * from './avatar/avatar.service';
 export * from './block/block.service';
 export * from './colony/colony.service';

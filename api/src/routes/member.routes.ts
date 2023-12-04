@@ -25,7 +25,5 @@ memberRoutes.get('/info',
   (request, response) => memberController.getInfo(request, response));
 memberRoutes.get('/info/:id',
   (request, response) => memberController.getInfo(request, response));
-memberRoutes.post('/search',
-  (request, response) => memberController.searchUsers(request, response));
 
 export { memberRoutes };

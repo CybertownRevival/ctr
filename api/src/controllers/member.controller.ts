@@ -61,27 +61,6 @@ class MemberController {
     }
   }
   
-  public async searchUsers(request: Request, response: Response): Promise<any> {
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) return;
-    const admin = await this.memberService.canAdmin(session.id);
-    if (admin) {
-      try {
-        const results = await this.memberService.searchUsers(
-          request.body.search,
-          request.body.limit,
-          request.body.offset,
-        );
-        response.status(200).json({results});
-      } catch (error) {
-        console.log(error);
-        response.status(400).json({error});
-      }
-    } else {
-      response.status(403).json({message: 'Access Denied'});
-    }
-  }
-  
   /** isBanned results based on member status
    * 1 = active
    * 0 = banned
