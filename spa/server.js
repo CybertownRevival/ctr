@@ -1,26 +1,26 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const http = require('http').createServer(app);
-const https = require('https');
-const io = require('socket.io')(http);
-const path = require('path');
-const jwt = require('jsonwebtoken');
-const package = require('./package.json');
+const http = require("http").createServer(app);
+const https = require("https");
+const io = require("socket.io")(http);
+const path = require("path");
+const jwt = require("jsonwebtoken");
+const package = require("./package.json");
 const USERS = new Map();
 
 function webhookMessage(from, message) {
   return;
   if (!process.env.CHAT_WEBHOOK_URL) return;
-  let body = JSON.stringify({
+  const body = JSON.stringify({
     username: from,
-    content: message
+    content: message,
   });
-  let req = https.request(process.env.CHAT_WEBHOOK_URL, {
+  const req = https.request(process.env.CHAT_WEBHOOK_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(body)
-    }
+      "Content-Length": Buffer.byteLength(body),
+    },
   });
   req.write(body);
   req.end();
@@ -37,19 +37,19 @@ function validJwt(token) {
 app.use(express.static("dist"));
 
 // serves the SPA
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   console.log(req);
   res.sendFile(path.join(__dirname, "/dist/index.html"));
 });
 
-io.on('connection', async function (socket) {
-  console.log('a user connected');
+io.on("connection", async function (socket) {
+  console.log("a user connected");
   webhookMessage("System", `${socket.id} connected.`);
 
   //setup socket's default AVATAR map reference
   USERS.set(socket, {
     pos: [0, 0, 0],
-    rot: [0, 1, 0, 0]
+    rot: [0, 1, 0, 0],
   });
 
   // inform the client about the server's version number
@@ -67,14 +67,14 @@ io.on('connection', async function (socket) {
       socket.to(room).emit("AV:new", {
         id: socket.id,
         avatar: tokenData.avatar,
-        username: tokenData.username
+        username: tokenData.username,
       });
 
       socket.join(room);
       // provide the new user with data about the current users in the room
       const clientsInRoom = io.sockets.adapter.rooms.get(room);
       for (const clientId of clientsInRoom) {
-        if (clientId == socket.id) continue;
+        if (clientId === socket.id) continue;
         const clientSocket = io.sockets.sockets.get(clientId);
         const user = USERS.get(clientSocket);
         if (user) {
@@ -124,8 +124,7 @@ io.on('connection', async function (socket) {
 
   //handle chat messages
   socket.on("CHAT", (chatData) => {
-    console.log('chat message...');
-    console.log(chatData);
+    console.log("chat message...");
     if (!chatData || !chatData.msg || typeof chatData.msg !== "string") return;
     const user = USERS.get(socket);
     const bannedwords = /(nigger)|(chinc)/i;
@@ -139,6 +138,7 @@ io.on('connection', async function (socket) {
         io.to(user.room).emit("CHAT", {
           username: user.username,
           msg: chatData.msg,
+          role: chatData.role,
         });
       }
     }
@@ -161,10 +161,10 @@ io.on('connection', async function (socket) {
   socket.on("disconnect", function () {
     const user = USERS.get(socket);
     io.to(user?.room)
-    .emit("AV:del", {
-      id: socket.id,
-      username:user.username
-    });
+      .emit("AV:del", {
+        id: socket.id,
+        username:user.username,
+      });
     USERS.delete(socket);
     console.log(`User '${user?.username}' disconnected`);
   });
@@ -172,4 +172,4 @@ io.on('connection', async function (socket) {
 
 const port = process.env.WEBSOCKET_PORT || 8000;
 http.listen(port);
-console.log('listening on port:' + port);
+console.log(`listening on port:${  port}`);

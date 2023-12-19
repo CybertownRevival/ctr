@@ -6,6 +6,8 @@
     </template>
     <template v-slot:body>
       <div class="flex-1">
+        <div style="color: #00df00" v-if="success">{{ success }}</div>
+        <div style="color: darkred" v-if="error">{{ error }}</div>
         <h3 class="text-center text-2xl">Personal Info</h3>
         <table border=0 width=100% class="text-2xl">
           <tr>
@@ -28,43 +30,80 @@
               <td><b>Money</b></td>
               <td>{{ info.walletBalance }} CC</td>
             </tr>
+            <tr>
+              <td><b>Primary Job</b></td>
+              <td v-if="!roles">
+
+              </td>
+              <td v-if="roles"><select v-model="selectedRoleId">
+                <option v-for="role in roles" :key="role.id" :value="role.id">
+                  {{ role.name }}
+                </option>
+              </select>
+              </td>
+            </tr>
         </table>
+        <div class="text-center flex-1">
+          <button
+            class="btn"
+            v-on:click="updatePrimaryRole">Update</button></div>
       </div>
     </template>
   </Modal>
 </template>
 <script lang="ts">
-  import Vue from "vue";
+import Vue from "vue";
   
-  import Modal from './Modal.vue';
-  import ModalMixin from './mixins/ModalMixin';
+import Modal from "./Modal.vue";
+import ModalMixin from "./mixins/ModalMixin";
   
-  import InfoModal from "./InfoModal.vue";
-  import ModalService from "./services/ModalService.vue";
+import InfoModal from "./InfoModal.vue";
+import ModalService from "./services/ModalService.vue";
 
-  export default Vue.extend({
-    name: "PersonalInfoModal",
-    components: {Modal},
-    async created() {
-      const { data } = await this.$http.get('/member/info');
-      this.info = data.memberInfo;
-    },
-    data: () => {
-      return {
-        info: {
-          username: undefined,
-          email: undefined,
-          immigrationDate: undefined,
-          walletBalance: undefined,
-          xp: undefined,
-        }
-      };
-    },
-    methods: {
-      backToInfoModal(): void {
-        ModalService.open(InfoModal);
+export default Vue.extend({
+  name: "PersonalInfoModal",
+  components: {Modal},
+  async created() {
+    const { data } = await this.$http.get("/member/info");
+    this.info = data.memberInfo;
+    this.selectedRoleId = this.info.primary_role_id;
+    await this.$http.get("/member/roles").then((response) => {
+      this.roles = response.data.roles;
+    });
+  },
+  data: () => {
+    return {
+      error: undefined,
+      info: {
+        username: undefined,
+        email: undefined,
+        immigrationDate: undefined,
+        walletBalance: undefined,
+        xp: undefined,
+        primary_role_id: undefined,
       },
+      roles: [],
+      selectedRoleId: null,
+      success: undefined,
+    };
+  },
+  methods: {
+    backToInfoModal(): void {
+      ModalService.open(InfoModal);
     },
-    mixins: [ModalMixin],
-  });
+    updatePrimaryRole(): void {
+      try {
+        this.$http.post("/member/update_role", {
+          primaryRoleId: this.selectedRoleId,
+        });
+        this.error = null;
+        this.success = "Primary Role Updated";
+      }catch (error) {
+        this.success = null;
+        this.error = error;
+      }
+    },
+  },
+  mixins: [ModalMixin],
+});
 </script>

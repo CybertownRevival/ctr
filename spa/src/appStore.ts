@@ -8,6 +8,7 @@ export interface User {
         filename: string;
         gestures: string[];
     };
+    roleName?: string;
     username?: string;
     token?: string;
     admin?: boolean;
@@ -77,7 +78,6 @@ const appStore = Vue.observable<AppStore>({
             appStore.data.view3d = value;
         },
         setPlace(placeData: Place): void {
-            console.log('place set')
             appStore.data.place = placeData;
         },
         setUser(userData: User): void {
