@@ -6,6 +6,7 @@ const io = require('socket.io')(http);
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const package = require('./package.json');
+const badwords = require('badwords-list');
 const USERS = new Map();
 
 function webhookMessage(from, message) {
@@ -128,7 +129,7 @@ io.on('connection', async function (socket) {
     console.log(chatData);
     if (!chatData || !chatData.msg || typeof chatData.msg !== "string") return;
     const user = USERS.get(socket);
-    const bannedwords = /(nigger)|(chinc)/i;
+    const bannedwords = badwords.regex;
     if (bannedwords.test(chatData.msg)){
       console.log(`${user.username} used a banned word in ${user.room}`);
       return;
