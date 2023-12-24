@@ -3,7 +3,6 @@ import validator from 'validator';
 import { Container } from 'typedi';
 
 import { MemberService, MessageService } from '../services';
-import { regex } from 'badwords-list';
 
 interface QueryParams {
   limit: string,
@@ -42,7 +41,7 @@ class MessageController {
       });
       return;
     }
-    const bannedwords = regex;
+    const bannedwords = /(nigger)|(chinc)/i;
     if (bannedwords.test(request.body.body)) {
       try {
         const { id } = session;
