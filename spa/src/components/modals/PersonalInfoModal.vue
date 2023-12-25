@@ -32,10 +32,10 @@
             </tr>
             <tr>
               <td><b>Primary Job</b></td>
-              <td v-if="!roles">
-
+              <td v-if="roles.length === 0">
+                No jobs reported as of now
               </td>
-              <td v-if="roles"><select v-model="selectedRoleId">
+              <td v-if="roles.length != 0"><select v-model="selectedRoleId">
                 <option v-for="role in roles" :key="role.id" :value="role.id">
                   {{ role.name }}
                 </option>
@@ -44,9 +44,12 @@
             </tr>
         </table>
         <div class="text-center flex-1">
-          <button
-            class="btn"
-            v-on:click="updatePrimaryRole">Update</button></div>
+          <p>
+          <button class="btn" v-if="roles.length != 0" v-on:click="updatePrimaryRole">
+            Update
+          </button>
+          </p>
+        </div>
       </div>
     </template>
   </Modal>

@@ -27,28 +27,8 @@ export class RoleAssignmentService {
    * then drops all other payouts to the same user
    */
   public async getMembersDueRoleCredit(limit: number): Promise<any[]> {
-    let offset = 0;
-    let response = [];
-    let continueFetch = true;
-    
-    while (continueFetch) {
-      const newRecords = await this.roleAssignmentRepository.getMembersDueRoleCredit(limit, offset);
-      
-      if (newRecords.length === 0) {
-        continueFetch = false;
-      } else {
-        response = [...response, ...newRecords];
-        offset += limit;
-      }
-    }
-    response.sort((a, b) => b.income_cc - a.income_cc);
-    const uniqueHighest = response.reduce((acc, curr) => {
-      if (!acc.some(item => item.member_id === curr.member_id)) {
-        acc.push(curr);
-      }
-      return acc;
-    }, []);
-    return uniqueHighest;
+    const response = await this.roleAssignmentRepository.getMembersDueRoleCredit(limit);
+    return response;
   }
   public async giveWeeklyRoleCredit(
     memberId: number,

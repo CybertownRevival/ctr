@@ -11,18 +11,16 @@
             </strong>
             <span 
               v-else-if="msg.username === $store.data.user.username"
-              class="text-yellow-200">
-              {{msg.username}}
-              <span class="inline" v-show="msg.role">
-                [{{msg.role}}]
+              class="text-yellow-200">{{msg.username}}<span
+                class="inline" v-show="msg.role"
+              > [{{msg.role}}]</span
+            >: {{ msg.msg }}
               </span>
-                : {{ msg.msg }}
-              </span>
-            <span v-else>
-              {{ msg.username }}<span class="inline" v-show="msg.role">
-                [{{msg.role}}]
-              </span>
-              : {{ msg.msg }}
+            <span v-else
+            >{{ msg.username }}<span
+                class="inline" v-show="msg.role"
+            > [{{msg.role}}]</span
+            >: {{ msg.msg }}
             </span>
           </li>
         </ul>
