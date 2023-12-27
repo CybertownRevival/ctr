@@ -2,7 +2,7 @@ import cron from 'node-cron';
 
 const cronTab = [
   {
-    interval: '0 0 * * 5',
+    interval: '*/5 0,1,2,3,4 * * 5',
     task: 'role-credit',
   },
 ];

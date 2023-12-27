@@ -3,6 +3,8 @@ import { Service } from 'typedi';
 import { Db } from '../../db/db.class';
 import { knex } from 'knex';
 import { RoleAssignment } from '../../types/models';
+import {each, result} from 'lodash';
+import {query} from 'express';
 
 /** Repository for fetching/interacting with role assignment data in the database. */
 @Service()
@@ -24,29 +26,55 @@ export class RoleAssignmentRepository {
       .leftJoin('role', 'role_assignment.role_id', 'role.id')
       .where('role_assignment.member_id', memberId);
   }
-
-  public async getMembersDueRoleCredit(limit: number, offset: number): Promise<any[]> {
-    const results = await this.db.knex
+  
+  /**
+   * query finds all users with job who meet pay requirements
+   * the inner join is just there to check for holding a job
+   * then the for function will gather the highest paying role information per user
+   * the for function also packages all the information for the return
+   * @param limit
+   * @returns list of users with jobs that earned pay
+   */
+  public async getMembersDueRoleCredit(limit: number): Promise<any> {
+    const query = await this.db.knex
       .select(
-        'role_assignment.member_id',
-        'role_assignment.role_id',
+        'member.id',
         'member.wallet_id',
         'member.xp',
-        'role.income_cc as income_cc',
-        'role.income_xp as income_xp',
       )
-      .from('role_assignment')
-      .innerJoin('role', 'role.id', 'role_assignment.role_id')
-      .innerJoin('member', 'member.id', 'role_assignment.member_id')
-      .where('role.active', 1)
+      .from('member')
+      .innerJoin('role_assignment', 'member.id', 'role_assignment.member_id')
       .where('member.status', 1)
-      .whereRaw('DATE(role_assignment.created_at) != DATE(NOW())')
       .whereRaw('DATE(member.last_weekly_role_credit) != DATE(NOW())')
       .whereRaw('DATE(member.last_daily_login_credit) >= DATE(NOW() - INTERVAL 7 DAY)')
-      .groupBy('role_assignment.member_id')
-      .groupBy('role_assignment.role_id')
       .limit(limit)
-      .offset(offset);
+      .distinct('member.id');
+    
+    const results = [];
+    for (const index in query) {
+      const member_info = query[index];
+      const role_info = await this.db.knex
+        .select(
+          'role_assignment.role_id',
+          'role.income_cc',
+          'role.income_xp',
+        )
+        .from('role_assignment')
+        .innerJoin('role', 'role_assignment.role_id', 'role.id')
+        .where('role_assignment.member_id', member_info.id)
+        .orderBy('role.income_cc','desc')
+        .first();
+      if (role_info) {
+        results[index] = {
+          member_id: member_info.id,
+          role_id: role_info.role_id,
+          wallet_id: member_info.wallet_id,
+          xp: member_info.xp,
+          income_cc: role_info.income_cc,
+          income_xp: role_info.income_xp,
+        };
+      }
+    }
     return results;
   }
 }
