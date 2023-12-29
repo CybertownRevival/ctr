@@ -3,8 +3,6 @@ import { Service } from 'typedi';
 import { Db } from '../../db/db.class';
 import { knex } from 'knex';
 import { RoleAssignment } from '../../types/models';
-import {each, result} from 'lodash';
-import {query} from 'express';
 
 /** Repository for fetching/interacting with role assignment data in the database. */
 @Service()
