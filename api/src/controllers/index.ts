@@ -8,3 +8,4 @@ export * from './message.controller';
 export * from './object-instance.controller';
 export * from './place.controller';
 export * from './messageboard.controller';
+export * from './inbox.controller';

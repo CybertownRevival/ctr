@@ -27,6 +27,8 @@ import HomeUpdatePage from "@/pages/home/HomeUpdatePage.vue";
 import HomeUpdateHomePage from "@/pages/home/HomeUpdateHomePage.vue";
 
 import MessageBoard from "@/pages/MessageBoard.vue";
+import Inbox from "@/pages/Inbox.vue";
+
 
 import AccessRights from "@/pages/AccessRights.vue";
 import Information from "@/pages/Information.vue";
@@ -231,6 +233,14 @@ export default [
       default: MessageBoard,
     },
     name: "message-board",
+    meta: { wrapper: false },
+  },
+  {
+    path: "/inbox/:place_id",
+    components: {
+      default: Inbox,
+    },
+    name: "inbox",
     meta: { wrapper: false },
   },
   {

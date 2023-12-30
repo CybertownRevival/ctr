@@ -2,6 +2,8 @@
   <!-- archive template: property/action_standard.tmpl -->
   <div class="text-center" v-if="loaded">
     <span class="btn-ui" >Information</span>
+	<button class="btn-ui"
+      v-on:click="opener('#/inbox/'+$store.data.place.id)">Inbox</button>
     <button class="btn-ui"
       v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
     <router-link
