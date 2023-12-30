@@ -40,7 +40,7 @@ class MemberController {
       let memberInfo;
 
       if (typeof request.params.id !== 'undefined') {
-        if (await memberService.isAdmin(session.id)) {
+        if (await memberService.canAdmin(session.id)) {
           memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
         } else if (parseInt(request.params.id) === session.id) {
           memberInfo = await this.memberService.getMemberInfo(parseInt(request.params.id));
