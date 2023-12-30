@@ -61,6 +61,29 @@ class MemberController {
     }
   }
   
+  public async getPrimaryRoleName(request: Request, response: Response): Promise<string> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const PrimaryRoleName = await this.memberService.getPrimaryRoleName(session.id);
+      response.status(200).json({PrimaryRoleName});
+    }catch (error) {
+      console.log(error);
+    }
+  }
+  
+  public async getRoles(request: Request, response: Response): Promise<object> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const roles = await this.memberService.getRoles(session.id);
+      response.status(200).json({roles});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({error});
+    }
+  }
+  
   /** isBanned results based on member status
    * 1 = active
    * 0 = banned
@@ -262,6 +285,22 @@ class MemberController {
         error: 'A problem occurred during password update.',
       });
     }
+  }
+  
+  public async updatePrimaryRoleId(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const { id } = session;
+    const { primaryRoleId } = request.body;
+    try {
+      await this.memberService.updatePrimaryRoleId(id, primaryRoleId);
+      response.status(200).json({message: 'success'});
+    }catch (error) {
+      response.status(400).json({
+        error: 'Error on Updating',
+      });
+    }
+    
   }
 
   /**

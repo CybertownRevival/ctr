@@ -20,7 +20,12 @@ export class RoleAssignmentService {
     const response = this.roleAssignmentRepository.getByMemberId(memberId);
     return response;
   }
-
+  
+  /**
+   * Grabs all payments due to users from database 50 at a time and 
+   * places them in response array sorts respone into highest cc payout 
+   * then drops all other payouts to the same user
+   */
   public async getMembersDueRoleCredit(limit: number): Promise<any[]> {
     const response = await this.roleAssignmentRepository.getMembersDueRoleCredit(limit);
     return response;

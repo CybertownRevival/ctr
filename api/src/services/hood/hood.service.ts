@@ -61,6 +61,11 @@ export class HoodService {
     if (newOwner !== 0) {
       if (oldOwner !== 0) {
         await this.hoodRepository.removeIdFromAssignment(hoodId, oldOwner, ownerCode);
+        const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
+        const primaryRoleId = response[0].primary_role_id;
+        if (ownerCode === primaryRoleId){
+          await this.memberRepository.update(oldOwner, {primary_role_id: null});
+        }
       }
       await this.hoodRepository.addIdToAssignment(hoodId, newOwner, ownerCode);
     }
@@ -78,12 +83,22 @@ export class HoodService {
         if (newDeputies[index] === 0) {
           try {
             this.hoodRepository.removeIdFromAssignment(hoodId, oldDeputies, deputyCode);
+            const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
+            const primaryRoleId = response[0].primary_role_id;
+            if (ownerCode === primaryRoleId){
+              this.memberRepository.update(oldOwner, {primary_role_id: null});
+            }
           } catch (e) {
             console.log(e);
           }
         } else {
           try {
             this.hoodRepository.removeIdFromAssignment(hoodId, oldDeputies, deputyCode);
+            const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
+            const primaryRoleId = response[0].primary_role_id;
+            if (ownerCode === primaryRoleId){
+              this.memberRepository.update(oldOwner, {primary_role_id: null});
+            }
             this.hoodRepository.addIdToAssignment(hoodId, newDeputies[index], deputyCode);
           } catch (e) {
             console.log(e);
