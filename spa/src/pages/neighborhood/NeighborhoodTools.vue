@@ -1,13 +1,14 @@
 <template>
 	<div class="text-center" v-if="loaded">
-    <button class="btn-ui"
-            v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
-    <span href="" class="btn-ui">Inbox</span>
-    <button class="btn-ui"
+	<button class="btn-ui"
             v-on:click="opener('#/information/'
      +$store.data.place.type
      +'/'
      +$store.data.place.id)">Information</button>
+    <button class="btn-ui"
+            v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
+    <span href="" class="btn-ui">Inbox</span>
+    
 		<span href="" class="btn-ui">Vote</span>
 		<router-link
 			v-if="this.$store.data.place.colony"

@@ -1,12 +1,13 @@
 <template>
 	<div class="text-center" v-if="loaded">
-    <button class="btn-ui"
-            v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
-    <button class="btn-ui"
+	<button class="btn-ui"
             v-on:click="opener('#/information/'
      +$store.data.place.type
      +'/'
      +$store.data.place.id)">Information</button>
+    <button class="btn-ui"
+            v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
+    
 		<router-link
 			v-if="this.$store.data.place.hood"
 			:to="'/neighborhood/' + this.$store.data.place.hood.id"
