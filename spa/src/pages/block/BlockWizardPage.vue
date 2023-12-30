@@ -30,7 +30,11 @@
 									locations.find(b => b.location === index).id
 								"
 							>
-								<span>{{
+								<span style="
+									padding: 3px; 
+									max-height: 40px; 
+									line-height: 13px; 
+									overflow: hidden;">{{
 									locations.find(b => b.location === index)
 										.name
 								}}</span>
@@ -118,7 +122,7 @@
 						availableLocations: this.availableLocations
 					})
 					.then(() => {
-						alert("Block Updated");
+						this.$router.push({path: `/block/${this.$store.data.place.block.id}`});
 					});
 			},
 			async checkAdmin(): Promise<boolean> {

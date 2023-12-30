@@ -4,6 +4,8 @@ import { Container } from 'typedi';
 
 import { MemberService, MessageService } from '../services';
 
+const badwords = require('badwords-list');
+
 interface QueryParams {
   limit: string,
   order: string,
@@ -41,7 +43,7 @@ class MessageController {
       });
       return;
     }
-    const bannedwords = /(nigger)|(chinc)/i;
+    const bannedwords = badwords.regex;
     if (bannedwords.test(request.body.body)) {
       try {
         const { id } = session;

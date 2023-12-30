@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.23.0",
+    "badwords-list": "^1.0.0",
     "core-js": "^3.18.3",
     "dayjs": "^1.11.7",
     "dotenv": "^10.0.0",
