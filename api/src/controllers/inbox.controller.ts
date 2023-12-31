@@ -73,7 +73,6 @@ class InboxController {
     }
     try {
       const placeinfo = await this.inboxService.getInfo(placeId);
-      console.log(placeinfo);
       response.status(200).json({placeinfo});
     } catch (error) {
       console.log(error);
