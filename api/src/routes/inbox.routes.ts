@@ -4,8 +4,8 @@ import { inboxController } from '../controllers';
 
 const inboxRoutes = Router();
 
-inboxRoutes.post('/changemessageboardintro/',
-  (request, response) => inboxController.changeMessageboardIntro(request, response));
+inboxRoutes.post('/changeinboxintro/',
+  (request, response) => inboxController.changeInboxIntro(request, response));
 inboxRoutes.post('/deletemessage/',
   (request, response) => inboxController.deleteInboxMessage(request, response));
 inboxRoutes.post('/info/',
