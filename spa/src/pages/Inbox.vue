@@ -13,7 +13,7 @@
           </div>
         </div>
         <p><h2><center>{{ this.placeinfo[0].name }}'s Inbox</center></h2></p>
-        <p><div class="content" v-html="this.placeinfo[0].messageboard_intro"/></p>
+        <p><div class="content" v-html="this.placeinfo[0].inbox_intro"/></p>
         <hr/>
        
 	<div v-show="!this.boardadmin">
@@ -118,7 +118,7 @@
           {{ this.placeinfo[0].messageboard_intro }}
         </textarea><br><br>
         <button class="btn" @click="switchView()">CANCEL</button>&nbsp;&nbsp;&nbsp;
-        <button type="submit" class="btn" @click="changeMessageboardIntro">UPDATE</button>
+        <button type="submit" class="btn" @click="changeInboxIntro">UPDATE</button>
       </center>
     </div>
   </div>
@@ -156,9 +156,9 @@ export default Vue.extend({
   },
   methods: {
     //manage introduction information for message board
-    async changeMessageboardIntro(): Promise<void> {
+    async changeInboxIntro(): Promise<void> {
       try {
-        await this.$http.post("/inbox/changemessageboardintro", {
+        await this.$http.post("/inbox/changeinboxintro", {
           place_id: this.$route.params.place_id,
           intro: this.intro,
           type: this.placeinfo[0].type,
@@ -286,7 +286,7 @@ export default Vue.extend({
     },
     //button action for manage
     switchManage(): void {
-      this.intro = this.placeinfo[0].messageboard_intro;
+      this.intro = this.placeinfo[0].inbox_intro;
       this.active = "manage";
     },
     //button action for post
