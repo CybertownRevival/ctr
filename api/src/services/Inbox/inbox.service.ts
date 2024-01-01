@@ -17,12 +17,12 @@ export class InboxService {
    private inboxRepository: InboxRepository,
   ) {}
   
-  public async changeMessageboardIntro(
+  public async changeInboxIntro(
     placeId,
     Intro,
   ): Promise<any> {
     console.log(`Service${  placeId}`);
-    return await this.inboxRepository.changeMessageboardIntro(placeId, Intro);
+    return await this.inboxRepository.changeInboxIntro(placeId, Intro);
   }
   public async deleteInboxMessage(
     messageId,
