@@ -17,4 +17,6 @@ export interface MemberInfoView {
   firstName?: string;
   /** members last name **/
   lastName?: string;
+  /**primary role id that the member wants displayed in chat**/
+  primary_role_id?: number;
 }

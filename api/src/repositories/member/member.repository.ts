@@ -4,7 +4,7 @@ import { Db } from '../../db/db.class';
 import { Member, Wallet } from 'models';
 import { join } from 'path';
 import { result } from 'lodash';
-import {stringify} from "ts-jest";
+import {stringify} from 'ts-jest';
 
 /** Repository for interacting with member table data in the database. */
 @Service()
@@ -64,6 +64,14 @@ export class MemberRepository {
       .whereRaw('password_reset_expire > NOW()')
       .limit(1)
       .first();
+  }
+  
+  public async getPrimaryRoleName(memberId: number): Promise<string> {
+    return this.db.knex
+      .select('role.name', 'member.primary_role_id')
+      .from('member')
+      .where('member.id', memberId)
+      .join('role', 'member.primary_role_id', 'role.id');
   }
 
   /**

@@ -6,16 +6,28 @@
           <li v-for="(msg, key) in messages" :key="key">
             <strong
               v-if="msg.type && msg.type === 'system'"
-              class="text-white"
-              >{{ msg.msg }}</strong
-            >
-            <span v-else>{{ msg.username }}: {{ msg.msg }}</span>
+              class="text-white">
+              {{ msg.msg }}
+            </strong>
+            <span 
+              v-else-if="msg.username === $store.data.user.username"
+              class="text-yellow-200">{{msg.username}}<span
+                class="inline" v-show="msg.role"
+              > [{{msg.role}}]</span
+            >: {{ msg.msg }}
+              </span>
+            <span v-else
+            >{{ msg.username }}<span
+                class="inline" v-show="msg.role"
+            > [{{msg.role}}]</span
+            >: {{ msg.msg }}
+            </span>
           </li>
         </ul>
       </div>
       <div
         class="flex flex-none flex-row space-x-0.5 bg-black"
-        v-if="connected"
+        v-show="connected"
       >
         <input
           type="text"
@@ -126,16 +138,23 @@ export default Vue.extend({
       message: "",
       messages: [],
       users: [],
+      primaryRole: "",
       activePanel: "users",
     };
   },
   methods: {
     debugMsg,
+    async getRole(): Promise<void> {
+      const response = await this.$http.get("/member/getrolename");
+      this.primaryRole = response.data.PrimaryRoleName[0].name;
+      console.log(`Role received ${this.primaryRole}`);
+    },
     sendMessage(): void {
       this.debugMsg("sending message...");
       if (this.message !== "" && this.connected) {
         this.$socket.emit("CHAT", {
           msg: this.message,
+          role: this.primaryRole,
         });
         this.$http
           .post("/message/place/" + this.$store.data.place.id, {
@@ -205,7 +224,10 @@ export default Vue.extend({
         this.systemMessage(event.username + " has entered.");
         this.users.push(event);
       });
-    }
+      this.$socket.on("disconnect", () => {
+        this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
+      });
+    },
   },
   watch: {
     place() {
@@ -235,8 +257,9 @@ export default Vue.extend({
     this.startSocketListeners();
     if (this.$store.data.place) {
       this.startNewChat();
+      this.getRole();
     }
-  }
+  },
 });
 </script>
 

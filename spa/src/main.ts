@@ -4,13 +4,11 @@ import VueGtag from "vue-gtag";
 
 import App from "./App.vue";
 import api from "./api";
-import appStore, {Place} from "./appStore";
-import { User } from "./appStore";
+import appStore, {User} from "./appStore";
 import * as filters from "./helpers/fiters";
 import routes from "./routes";
 import socket from "./socket";
 import "./assets/index.scss";
-import {response} from "express";
 
 Vue.config.productionTip = false;
 
@@ -57,7 +55,7 @@ router.beforeEach((to, from, next) => {
 
   if (!["login", "logout", "signup", "forgot", "password_reset", "about", "banned"]
     .includes(to.name)) {
-    api.get<{ user: User, status: number }>("/member/session").then(response => {
+    api.get<{ user: User, status: number, roleName: string }>("/member/session").then(response => {
       const { user } = response.data;
       const { status } = response.data;
       if (status === 0) {

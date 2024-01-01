@@ -56,6 +56,13 @@ export class ColonyService {
     if (newOwner !== 0) {
       if (oldOwner !== 0) {
         await this.colonyRepository.removeIdFromAssignment(colonyId, oldOwner, ownerCode);
+        const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
+        if (response) {
+          const primaryRoleId = response[0].primary_role_id;
+          if (ownerCode === primaryRoleId){
+            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          }
+        }
       }
       await this.colonyRepository.addIdToAssignment(colonyId, newOwner, ownerCode);
     }
@@ -76,9 +83,19 @@ export class ColonyService {
           } catch (e) {
             console.log(e);
           }
+          const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
+          const primaryRoleId = response[0].primary_role_id;
+          if (primaryRoleId && ownerCode === primaryRoleId){
+            this.memberRepository.update(oldOwner, {primary_role_id: null});
+          }
         } else {
           try {
             this.colonyRepository.removeIdFromAssignment(colonyId, oldDeputies, deputyCode);
+            const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
+            const primaryRoleId = response[0].primary_role_id;
+            if (ownerCode === primaryRoleId){
+              this.memberRepository.update(oldOwner, {primary_role_id: null});
+            }
             this.colonyRepository.addIdToAssignment(colonyId, newDeputies[index], deputyCode);
           } catch (e) {
             console.log(e);

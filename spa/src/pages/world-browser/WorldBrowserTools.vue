@@ -1,12 +1,12 @@
 <template>
   <div>
   <button class="btn-ui"
-     v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
-  <button class="btn-ui"
      v-on:click="opener('#/information/'
      +$store.data.place.type
      +'/'
      +$store.data.place.id)">Information</button>
+  <button class="btn-ui"
+     v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
   <br />
   <div v-if="canAdmin">
     <span href="" class="btn-ui">Message to All</span>
