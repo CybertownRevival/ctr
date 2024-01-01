@@ -207,7 +207,7 @@ class InboxController {
     }
   }
   
-  public async changeMessageboardIntro(request: Request, response: Response): Promise<void> {
+  public async changeInboxIntro(request: Request, response: Response): Promise<void> {
     const type = request.body.type;
     const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);
@@ -224,7 +224,7 @@ class InboxController {
     const admin = await this.adminCheck(placeId, id, type);
     if (admin) {
       try {
-        await this.inboxService.changeMessageboardIntro(placeId, cleanIntro);
+        await this.inboxService.changeInboxIntro(placeId, cleanIntro);
         response.status(200).json({
           success: 'intro updated',
         });
