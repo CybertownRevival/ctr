@@ -8,13 +8,13 @@ import {response} from 'express';
 @Service()
 export class InboxRepository {
   
-  public async changeMessageboardIntro(
+  public async changeInboxIntro(
     placeId: number,
     Intro: string,
   ): Promise<any> {
     return knex('place')
       .where('id', placeId)
-      .update({messageboard_intro: Intro});
+      .update({inbox_intro: Intro});
   }
   constructor(private db: Db) {}
 
@@ -53,7 +53,7 @@ export class InboxRepository {
   ): Promise<any> {
     return knex
       .select(
-        'place.messageboard_intro as messageboard_intro',
+        'place.inbox_intro as inbox_intro',
         'place.name as name',
         'place.type as type',
       )
