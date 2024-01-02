@@ -10,6 +10,7 @@ import {
   messageRoutes,
   placeRoutes,
   objectInstanceRoutes,
+  objectRoutes,
   colonyRoutes,
   hoodRoutes,
   blockRoutes,
@@ -46,6 +47,7 @@ app.use('/api/member', memberRoutes);
 app.use('/api/place', placeRoutes);
 app.use('/api/message', messageRoutes);
 app.use('/api/object_instance', objectInstanceRoutes);
+app.use('/api/object', objectRoutes);
 app.use('/api/avatar', avatarRoutes);
 app.use('/api/hood', hoodRoutes);
 app.use('/api/colony', colonyRoutes);
