@@ -31,215 +31,229 @@ import MessageBoard from "@/pages/MessageBoard.vue";
 import AccessRights from "@/pages/AccessRights.vue";
 import Information from "@/pages/Information.vue";
 
+import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
+
 export default [
-  {
-    path: "/",
-    component: HomePage,
-    name: "home",
-    meta: {
-      title: "Welcome to Cybertown",
+    {
+        path: "/",
+        component: HomePage,
+        name: "home",
+        meta: {
+            title: "Welcome to Cybertown",
+        },
     },
-  },
-  {
-    path: "/about",
-    component: AboutPage,
-    name: "about",
-    meta: {
-      title: "About Cybertown Revival",
+    {
+        path: "/about",
+        component: AboutPage,
+        name: "about",
+        meta: {
+            title: "About Cybertown Revival",
+        },
     },
-  },
-  {
-    path: "/banned",
-    component: BannedNotice,
-    name: "banned",
-    meta: {
-      title: "Banned Notice",
+    {
+        path: "/banned",
+        component: BannedNotice,
+        name: "banned",
+        meta: {
+            title: "Banned Notice",
+        },
     },
-  },
-  { path: "/banned", component:BannedNotice, name: "banned", meta:
-     {
-       title: "Banned Notice",
-     },
-  },
-  {
-    path: "/place/:id",
-    components: {
-      default: WorldPage,
-      tools: WorldBrowserTools,
+    {
+        path: "/banned",
+        component: BannedNotice,
+        name: "banned",
+        meta: {
+            title: "Banned Notice",
+        },
     },
-    name: "world-page",
-    meta: { wrapper: true },
-    children: [
-      {
-        path: "",
-        component: WorldBrowserPage,
-        name: "world-browser",
+    {
+        path: "/place/:id",
+        components: {
+            default: WorldPage,
+            tools: WorldBrowserTools,
+        },
+        name: "world-page",
         meta: { wrapper: true },
-      },
-      {
-        path: "",
-        component: AccessRights,
-        name: "worldAccessRights",
+        children: [
+            {
+                path: "",
+                component: WorldBrowserPage,
+                name: "world-browser",
+                meta: { wrapper: true },
+            },
+            {
+                path: "",
+                component: AccessRights,
+                name: "worldAccessRights",
+                meta: { wrapper: true },
+            },
+        ],
+    },
+    {
+        path: "/login",
+        component: LoginPage,
+        name: "login",
+        meta: {
+            title: "Login",
+        },
+    },
+    {
+        path: "/signup",
+        component: SignupPage,
+        name: "signup",
+        meta: {
+            title: "Immigrate",
+        },
+    },
+    {
+        path: "/logout",
+        component: LogoutPage,
+        name: "logout",
+        meta: {
+            title: "Logout",
+        },
+    },
+    {
+        path: "/forgot",
+        component: ForgotPasswordPage,
+        name: "forgot",
+        meta: {
+            title: "Forgot Password",
+        },
+    },
+    {
+        path: "/password_reset",
+        component: PasswordResetPage,
+        name: "password_reset",
+        meta: {
+            title: "Password Reset",
+        },
+    },
+    {
+        path: "/citymap",
+        component: CityMapPage,
+        name: "city_map",
+        meta: {
+            title: "City Map",
+        },
+    },
+    {
+        path: "/restricted",
+        component: RestrictedAccess,
+        name: "restrictedaccess",
+        meta: {
+            title: "Restricted Access",
+        },
+    },
+    {
+        path: "/neighborhood/:id",
+        components: {
+            default: NeighborhoodPage,
+            tools: NeighborhoodTools,
+        },
+        name: "neighborhood",
         meta: { wrapper: true },
-      },
-    ],
-  },
-  {
-    path: "/login",
-    component: LoginPage,
-    name: "login",
-    meta: {
-      title: "Login",
+        children: [
+            {
+                path: "",
+                component: NeighborhoodMapPage,
+                name: "neighborhoodpage",
+                meta: { wrapper: true },
+            },
+            {
+                path: "",
+                component: AccessRights,
+                name: "neighborhoodAccessRights",
+                meta: { wrapper: true },
+            },
+        ],
     },
-  },
-  {
-    path: "/signup",
-    component: SignupPage,
-    name: "signup",
-    meta: {
-      title: "Immigrate",
-    },
-  },
-  {
-    path: "/logout",
-    component: LogoutPage,
-    name: "logout",
-    meta: {
-      title: "Logout",
-    },
-  },
-  {
-    path: "/forgot",
-    component: ForgotPasswordPage,
-    name: "forgot",
-    meta: {
-      title: "Forgot Password",
-    },
-  },
-  {
-    path: "/password_reset",
-    component: PasswordResetPage,
-    name: "password_reset",
-    meta: {
-      title: "Password Reset",
-    },
-  },
-  {
-    path: "/citymap",
-    component: CityMapPage,
-    name: "city_map",
-    meta: {
-      title: "City Map",
-    },
-  },
-  {
-    path: "/restricted",
-    component: RestrictedAccess,
-    name: "restrictedaccess",
-    meta: {
-      title: "Restricted Access",
-    },
-  },
-  {
-    path: "/neighborhood/:id",
-    components: {
-      default: NeighborhoodPage,
-      tools: NeighborhoodTools,
-    },
-    name: "neighborhood",
-    meta: { wrapper: true },
-    children: [
-      {
-        path: "",
-        component: NeighborhoodMapPage,
-        name: "neighborhoodpage",
+    {
+        path: "/block/:id",
+        components: {
+            default: BlockPage,
+            tools: BlockTools,
+        },
+        name: "block",
         meta: { wrapper: true },
-      },
-      {
-        path: "",
-        component: AccessRights,
-        name: "neighborhoodAccessRights",
+        children: [
+            {
+                path: "",
+                component: BlockMapPage,
+                name: "blockmap",
+                meta: { wrapper: true },
+            },
+            {
+                path: "move/:location",
+                component: BlockMovePage,
+                name: "blockmove",
+                meta: { wrapper: true },
+            },
+            {
+                path: "wizard",
+                component: BlockWizardPage,
+                name: "blockwizard",
+                meta: { wrapper: true },
+            },
+            {
+                path: "",
+                component: AccessRights,
+                name: "blockaccessrights",
+                meta: { wrapper: true },
+            },
+        ],
+    },
+    {
+        path: "/home/update",
+        components: {
+            default: HomeUpdatePage,
+            tools: HomeTools,
+        },
+        name: "home-update",
         meta: { wrapper: true },
-      },
-    ],
-  },
-  {
-    path: "/block/:id",
-    components: {
-      default: BlockPage,
-      tools: BlockTools,
     },
-    name: "block",
-    meta: { wrapper: true },
-    children: [
-      {
-        path: "",
-        component: BlockMapPage,
-        name: "blockmap",
+    {
+        path: "/home/update/home",
+        components: {
+            default: HomeUpdateHomePage,
+            tools: HomeTools,
+        },
+        name: "home-update-home",
         meta: { wrapper: true },
-      },
-      {
-        path: "move/:location",
-        component: BlockMovePage,
-        name: "blockmove",
+    },
+    {
+        path: "/home/:username",
+        components: {
+            default: WorldBrowserPage,
+            tools: HomeTools,
+        },
+        name: "user-home",
         meta: { wrapper: true },
-      },
-      {
-        path: "wizard",
-        component: BlockWizardPage,
-        name: "blockwizard",
-        meta: { wrapper: true },
-      },
-      {
-        path: "",
-        component: AccessRights,
-        name: "blockaccessrights",
-        meta: { wrapper: true },
-      },
-    ],
-  },
-  {
-    path: "/home/update",
-    components: {
-      default: HomeUpdatePage,
-      tools: HomeTools,
     },
-    name: "home-update",
-    meta: { wrapper: true },
-  },
-  {
-    path: "/home/update/home",
-    components: {
-      default: HomeUpdateHomePage,
-      tools: HomeTools,
+    {
+        path: "/messageboard/:place_id",
+        components: {
+            default: MessageBoard,
+        },
+        name: "message-board",
+        meta: { wrapper: false },
     },
-    name: "home-update-home",
-    meta: { wrapper: true },
-  },
-  {
-    path: "/home/:username",
-    components: {
-      default: WorldBrowserPage,
-      tools: HomeTools,
+    {
+        path: "/information/:type/:id",
+        component: InformationPage,
+        name: "information",
+        meta: {
+            title: "Information",
+            wrapper: false,
+        },
     },
-    name: "user-home",
-    meta: { wrapper: true },
-  },
-  {
-    path: "/messageboard/:place_id",
-    components: {
-      default: MessageBoard,
+    {
+        path: "/mall/upload",
+        component: MallUploadPage,
+        name: "mall-upload",
+        meta: {
+            title: "Mall Upload",
+            wrapper: true,
+        },
     },
-    name: "message-board",
-    meta: { wrapper: false },
-  },
-  {
-    path: "/information/:type/:id",
-    component: InformationPage,
-    name: "information",
-    meta: {
-      title: "Information",
-      wrapper: false,
-    },
-  },
 ];

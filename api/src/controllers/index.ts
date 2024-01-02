@@ -6,5 +6,6 @@ export * from './hood.controller';
 export * from './member.controller';
 export * from './message.controller';
 export * from './object-instance.controller';
+export * from './object.controller';
 export * from './place.controller';
 export * from './messageboard.controller';
