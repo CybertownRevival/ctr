@@ -101,11 +101,12 @@ class InboxController {
     }
   }
   
-  public async getMessage(request: Request, response: Response): Promise<void> {
+  public async getMessage(request: Request, response: Response): Promise<any> {
     const messageId = Number.parseInt(request.body.message_id);
     try {
-      const getmessage = await this.inboxService.getMessage(messageId);
-      response.status(200).json({getmessage});
+      const [getmessage] = await this.inboxService.getMessage(messageId);
+      console.log(getmessage);
+      response.status(200).json(getmessage);
     } catch (error) {
       console.log(error);
       response.status(400).json({
@@ -163,7 +164,7 @@ class InboxController {
       return;
     }
     const { id } = session;
-    const placeId = Number.parseInt(request.body.place_id);
+    const receiverId = Number.parseInt(request.body.memberId);
     const subject = request.body.subject;
     const uncleanBody = request.body.body;
     const cleanBody = await this.inboxService.sanitize(uncleanBody);
@@ -171,12 +172,12 @@ class InboxController {
     try {
       const  data = await this
         .inboxService
-        .postInboxReply(id, placeId, subject, cleanBody, parentId);
+        .postInboxReply(id, receiverId, subject, cleanBody, parentId);
       response.status(200).json({data});
     } catch (error){
-      console.log(error);
+      console.log(error.error);
       response.status(400).json({
-        error: 'An error occurred when trying to post reply',
+        error: `${error}`,
       });
     }
   }

@@ -5,6 +5,7 @@ import {
   ColonyRepository,
 } from '../../repositories';
 import sanitizeHtml from 'sanitize-html';
+import {stringify} from 'ts-jest';
 
 /** Service for dealing with messages on message boards */
 @Service()
@@ -62,15 +63,19 @@ export class InboxService {
   }
   
   public async postInboxReply(
-    memberId: number,
-    placeId: number,
+    senderMemberId: number,
+    receiverMemberId: number,
     subject: string,
     message: string,
     parentId: number,
   ): Promise<any>{
+    const [placeId] = await this.inboxRepository.getHomeId(receiverMemberId);
+    if (placeId === undefined) {
+      throw Error('User does not have an inbox setup.');
+    }
     return await this
       .inboxRepository
-      .postInboxReply(memberId, placeId, subject, message, parentId);
+      .postInboxReply(senderMemberId, placeId.id, subject, message, parentId);
   }
   
   public async sanitize(
@@ -98,10 +103,9 @@ export class InboxService {
   }
   public async getMessage(
     messageId: number,
-  ): Promise<void>{
+  ): Promise<any>{
     return await this
       .inboxRepository
       .getMessage(messageId);
-    console.log('Service');
   }
 }

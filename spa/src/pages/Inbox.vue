@@ -15,37 +15,32 @@
         <p><h2><center>{{ this.placeinfo[0].name }}'s Inbox</center></h2></p>
         <p><div class="content" v-html="this.placeinfo[0].inbox_intro"/></p>
         <hr/>
-       
-	<div v-show="!this.boardadmin">
-	Post Access: Allowed <br>
-	View Access: Not Allowed
-	</div>
-	    <div v-show="this.boardadmin">
-		 <div v-if="inboxmessages <= 0">
-          No messages to display
-        </div>
-        <div>
-          <p v-for="(id, index) in inboxmessages" :key="id.id">
-            <span v-if="id.reply === 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <a href="#" @click.prevent="getMessage(
-              id.id,
-              id.created_at,
-              id.username,
-              id.subject,
-              id.parent_id,
-              id.reply);">{{ new Date(id.created_at)
-                .toLocaleString('en-US', {
-                  weekday: 'short',
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric',
-                  timeZone: 'America/Detroit',
-                })}}</a>
-            From: {{ id.username }}
-            Subject: <span v-if="id.reply === 1">RE: </span> {{ id.subject }}
-          </p>
+        <div v-if="this.boardadmin">
+          <div v-if="inboxmessages <= 0">
+            No messages to display
+          </div>
+          <div>
+            <p v-for="(id, index) in inboxmessages" :key="id.id">
+              <a href="#" @click.prevent="getMessage(
+            id.id,
+            id.created_at,
+            id.username,
+            id.subject,
+            id.parent_id,
+            id.reply);">{{ new Date(id.created_at)
+                  .toLocaleString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    timeZone: 'America/Detroit',
+                  })}}</a>
+              From: {{ id.username }}
+              Subject: <span v-if="id.reply === 1">RE: </span> {{ id.subject }}
+            </p>
+          </div>
         </div>
       </div>
       <div v-if="!display" class="w-full" style="height:30%">
@@ -61,28 +56,31 @@
             <p>Subject: <span v-if="this.dreply === 1">RE: </span>{{ dsubject }}</p>
             <p>From: {{ dfrom }}</p>
           </div>
-          <div class="flex-grow" style="width:19%">
-            <div class="flex-grow border-2 border-black">
-              <button class="btn-ui" @click="switchReply()">REPLY</button>
-            </div>
-            <div class="flex-grow border-2 border-black">
-              <button
-               class="btn-ui"
-               v-show="this.boardadmin"
-               @click="deleteInboxMessage()">DELETE</button>
-            </div>
+        <div class="flex-grow" style="width:19%">
+          <div class="flex-grow border-2 border-black">
+            <button class="btn-ui" @click="switchReply()">REPLY</button>
           </div>
+          <div class="flex-grow border-2 border-black">
+            <button
+                class="btn-ui"
+                v-show="this.boardadmin"
+                @click="deleteInboxMessage()">DELETE</button>
+          </div>
+        </div>
         </div>
         <div class="w-full flex flex-row">
           <div class="flex-grow border-2 border-black"/>
           <p>
             <div class="flex-grow border-black"
-                style="width:99%; margin-top: 10px" v-html="this.dmessage[0].message"/>
+                 style="width:99%; margin-top: 10px" v-html="this.dmessage"/>
         </div>
       </div>
     </div>
-	</div>
     <div v-if="this.active === 'post'">
+      <div v-if="success" class="text-chat"><center>{{ success }}</center></div>
+      <div v-if="error" class="text-red-500"><center>{{ error }}</center></div>
+      <div class="content" v-html="this.placeinfo[0].messageboard_intro"/>
+      <div class="mt-0.5 mb-0.5"><hr/></div>
       <center>
         <div class="text-red-300 justify-center" v-if="error">
           {{ error }}
@@ -99,7 +97,8 @@
         <input type="text" class="text-black" id="subject" v-model="subject" size="50"/><br><br>
         <label for="body">Message:</label><br>
         <textarea id="body" class="text-black w-2/3 h-96" v-model="body"></textarea><br><br>
-        <button class="btn" @click="switchView()">CANCEL</button>&nbsp;&nbsp;&nbsp;<button type="submit" class="btn" @click="postInboxMessage()">POST</button>
+        <button class="btn" @click="switchView()">CANCEL</button>&nbsp;&nbsp;&nbsp;
+        <button type="submit" class="btn" @click="postInboxMessage()">POST</button>
       </center>
     </div>
     <div v-if="this.active === 'reply'">
@@ -107,8 +106,14 @@
         <label for="subject">Subject:</label>&nbsp;&nbsp;
         RE: {{ dsubject }}<br><br>
         <label for="body">Message:</label><br>
-        <textarea id="body" class="text-black w-2/3 h-96" v-model="body"></textarea><br><br>
-        <button class="btn" @click="switchView()">CANCEL</button>&nbsp;&nbsp;&nbsp;<button type="submit" class="btn" @click="postInboxReply()">REPLY</button>
+        <textarea id="body" class="text-black w-2/3 h-96" v-model="body"></textarea>
+        <div class="mt-0.5 mb-0.5 text-red-500" v-show="error">
+          {{ error }}
+        </div>
+        <div class="mt-0.5">
+          <button class="btn" @click="switchView()">CANCEL</button>&nbsp;&nbsp;&nbsp;
+          <button type="submit" class="btn" @click="postInboxReply()">REPLY</button>
+        </div>
       </center>
     </div>
     <div v-if="this.active === 'manage'">
@@ -126,9 +131,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import {
-  debugMsg,
-} from "@/helpers";
+import { debugMsg } from "@/helpers";
 import {response} from "express";
 
 export default Vue.extend({
@@ -140,6 +143,7 @@ export default Vue.extend({
       body: "",
       ddate: "",
       dfrom: "",
+      dfromid: 0,
       did: 0,
       display: false,
       dmessage: "",
@@ -174,7 +178,7 @@ export default Vue.extend({
         this.getInfo();
         this.active = "view";
       }
-      
+
     },
     //delete a specific message
     async deleteInboxMessage(): Promise<void> {
@@ -193,7 +197,7 @@ export default Vue.extend({
       } finally {
         this.getInboxMessages();
       }
-      
+
     },
     //get admin info from db and/or check if user is owner of message board
     async getAdminInfo(): Promise<any> {
@@ -203,9 +207,12 @@ export default Vue.extend({
         type: this.placeinfo[0].type,
       }).then((response) => {
         this.boardadmin = response.data.admin;
+        if (!this.boardadmin){
+          this.active = "post";
+        }
       });
     },
-    
+
     //get message board introduction information
     async getInfo(): Promise<void> {
       return this.$http.post("/inbox/info/", {
@@ -226,9 +233,11 @@ export default Vue.extend({
       return this.$http.post("/inbox/getmessage/", {
         message_id: id,
       }).then((response) => {
-        this.dmessage = response.data.getmessage;
+        console.log(response.data);
+        this.dmessage = response.data.message;
         this.ddate = date;
         this.dfrom = user;
+        this.dfromid = response.data.member_id;
         this.dsubject = subject;
         this.did = id;
         this.dparentid = parentid;
@@ -254,7 +263,8 @@ export default Vue.extend({
         });
         this.success = "Message was posted";
         this.error = "";
-        this.active = "view";
+        if (this.boardadmin) this.active = "view";
+        else this.active = "post";
         this.subject = "";
         this.body = "";
         this.getInboxMessages();
@@ -268,19 +278,19 @@ export default Vue.extend({
     async postInboxReply(): Promise<void> {
       try {
         const {data} = await this.$http.post("/inbox/postreply", {
-          place_id: this.$route.params.place_id,
+          memberId: this.dfromid,
           subject: this.dsubject,
           body: this.body,
           parent_id: this.dparentid,
         });
-        this.success = "Reply was posted";
+        this.success = "Reply was sent";
         this.error = "";
         this.active = "view";
         this.subject = "";
         this.body = "";
       } catch (error) {
-        this.error = "Unauthorized HTML Tag Used. The tag(s) have been removed, hit post again to send";
-        this.body = "testing something";
+        console.log(error);
+        this.error = error.response.data.error;
         this.success = "";
       }
     },
@@ -304,13 +314,15 @@ export default Vue.extend({
       this.display = false;
       this.error = "";
       this.success = "";
-      this.active = "view";
+      if (this.boardadmin){
+        this.active = "view";
+      } else window.close();
     },
   },
   async created() {
     await this.getInfo();
-    await this.getInboxMessages();
     await this.getAdminInfo();
+    if (this.boardadmin) await this.getInboxMessages();
   },
   watch: {
     active: function(newValue) {

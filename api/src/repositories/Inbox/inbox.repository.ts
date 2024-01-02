@@ -48,6 +48,16 @@ export class InboxRepository {
       return admin;
     }
   }
+  
+  public async getHomeId(
+    memberId: number,
+  ): Promise<any> {
+    return knex
+      .select('id')
+      .from('place')
+      .where('member_id', memberId);
+  }
+  
   public async getInfo(
     placeId: number,
   ): Promise<any> {
@@ -87,6 +97,7 @@ export class InboxRepository {
     return knex
       .select(
         'message',
+        'member_id',
       )
       .from<Inbox, Inbox[]>('inbox')
       .where('id', messageId);
