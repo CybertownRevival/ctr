@@ -137,7 +137,6 @@ class InboxController {
       const [getmessage] = await this.inboxService.getMessage(messageId);
       console.log(getmessage);
       response.status(200).json(getmessage);
-	  console.log(placeId);
     } catch (error) {
       console.log(error);
       response.status(400).json({
