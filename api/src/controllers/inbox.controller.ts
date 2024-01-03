@@ -90,28 +90,60 @@ class InboxController {
       });
       return;
     }
-    try {
-      const inboxmessages = await this.inboxService.getInboxMessages(placeId);
-      response.status(200).json({inboxmessages});
-    } catch (error) {
-      console.log(error);
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
       response.status(400).json({
-        error: 'A problem occurred while trying to fetch inbox messages.',
+        err: 'Invalid or missing token.',
       });
+      return;
+    }
+    const { id } = session;
+    if (this.inboxService.getAdminInfo(placeId, id)) {
+      try {
+        const inboxmessages = await this.inboxService.getInboxMessages(placeId);
+        response.status(200).json({inboxmessages});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({
+          error: 'A problem occurred while trying to fetch inbox messages.',
+        });
+      }
+    } else {
+      response.status(403).json({error:'Access Denied'});
     }
   }
   
   public async getMessage(request: Request, response: Response): Promise<any> {
     const messageId = Number.parseInt(request.body.message_id);
+	const placeId = Number.parseInt(request.body.place_id);
+    if (placeId <= 0) {
+      response.status(400).json({
+        error: 'placeId is required.',
+      });
+      return;
+    }
+	const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
+      response.status(400).json({
+        err: 'Invalid or missing token.',
+      });
+      return;
+    }
+    const { id } = session;
+	if (this.inboxService.getAdminInfo(placeId, id)) {
     try {
       const [getmessage] = await this.inboxService.getMessage(messageId);
       console.log(getmessage);
       response.status(200).json(getmessage);
+	  console.log(placeId);
     } catch (error) {
       console.log(error);
       response.status(400).json({
         err: 'A problems occurred when getting the message',
       });
+	  }
     }
   }
   
