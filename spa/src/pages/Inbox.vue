@@ -232,6 +232,8 @@ export default Vue.extend({
     ): Promise<void> {
       return this.$http.post("/inbox/getmessage/", {
         message_id: id,
+		place_id: this.$route.params.place_id,
+		type: this.placeinfo[0].type,
       }).then((response) => {
         console.log(response.data);
         this.dmessage = response.data.message;
