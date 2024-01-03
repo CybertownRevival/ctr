@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import * as http from 'http';
 import express from 'express';
+const fileUpload = require('express-fileupload');
 import { Request, Response } from 'express';
 import morgan from 'morgan';
 import {
@@ -24,6 +25,7 @@ interface HttpException extends Error {
 }
 
 const app = express();
+app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));

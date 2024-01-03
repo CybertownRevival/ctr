@@ -75,7 +75,8 @@
           <td class="text-left">VRML-File:</td>
           <td class="text-left">
             <input type="file"
-                   ref="wrlFile"
+                   @change="setFile"
+                   data-id="wrlFile"
                    accept=".wrl" />
           </td>
         </tr>
@@ -83,7 +84,8 @@
           <td class="text-left">Texture-File:</td>
           <td class="text-left">
             <input type="file"
-                   ref="textureFile"
+                   @change="setFile"
+                   data-id="textureFile"
                    accept=".jpeg" />
           </td>
         </tr>
@@ -91,7 +93,8 @@
           <td class="text-left">Thumbnail:</td>
           <td class="text-left">
             <input type="file"
-                   ref="imageFile"
+                   @change="setFile"
+                   data-id="imageFile"
                    accept=".jpeg" />
           </td>
         </tr>
@@ -220,6 +223,7 @@ If you sell all 10 chairs, you earn 250 CCs and double your investment.
 </template>
 
 <script lang="ts">
+import { text } from 'express';
 import Vue from "vue";
 
 export default Vue.extend({
@@ -230,9 +234,12 @@ export default Vue.extend({
       error: '',
       showSuccess: false,
       loaded: false,
-      name: 10,
+      name: '',
       price: 10,
-      quantity: '',
+      quantity: 10,
+      wrlFile: {},
+      imageFile: {},
+      textureFile: {},
     };
   },
   methods: {
@@ -242,13 +249,13 @@ export default Vue.extend({
 
       try {
         await this.$http.post("/object/add", {
-          wrlFile: this.$refs.vrmlFile.files[0],
-          textureFile: this.$refs.textureFile.files[0],
-          imageFile: this.$refs.imageFile.files[0],
           name: this.name,
           price: this.price,
           quantity: this.quantity,
-        });
+          wrlFile: this.wrlFile,
+          textureFile: this.textureFile,
+          imageFile: this.imageFile,
+        }, true);
         this.showSuccess = true;
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
@@ -259,6 +266,13 @@ export default Vue.extend({
           this.showError = true;
         }
       }
+    },
+    setFile(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      console.log(files);
+      console.log(e.target.dataset.id);
+      this[e.target.dataset.id] = files[0];
+
     },
     async checkAdmin() {
       /*
