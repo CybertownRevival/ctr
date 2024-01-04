@@ -154,6 +154,7 @@ export class MemberService {
       xp: member.xp,
       firstName: member.firstname,
       lastName: member.lastname,
+      primary_role_id: member.primary_role_id,
     };
   }
 
@@ -200,6 +201,17 @@ export class MemberService {
   public async getMemberToken(memberId: number): Promise<string> {
     const member = await this.memberRepository.findById(memberId);
     return this.encodeMemberToken(member);
+  }
+  
+  public async getPrimaryRoleName(memberId: number): Promise<string> {
+    return this.memberRepository.getPrimaryRoleName(memberId);
+  }
+  
+  public async getRoles(memberId: number): Promise<any> {
+    console.log(memberId);
+    const roles = await this.roleAssignmentRepository.getRoleNameAndIdByMemberId(memberId);
+    console.log(roles);
+    return roles;
   }
 
   /**
@@ -297,6 +309,10 @@ export class MemberService {
   public async updatePassword(memberId: number, password: string): Promise<void> {
     const hashedPassword = await this.encryptPassword(password);
     await this.memberRepository.update(memberId, { password: hashedPassword });
+  }
+  
+  public async updatePrimaryRoleId(memberId: number, primaryRoleId: number): Promise<void> {
+    await this.memberRepository.update(memberId, {primary_role_id: primaryRoleId});
   }
 
   /**

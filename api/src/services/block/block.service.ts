@@ -67,6 +67,11 @@ export class BlockService {
     if (newOwner !== 0) {
       if (oldOwner !== 0){
         await this.blockRepository.removeIdFromAssignment(blockId, oldOwner, ownerCode);
+        const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
+        const primaryRoleId = response[0].primary_role_id;
+        if (ownerCode === primaryRoleId){
+          await this.memberRepository.update(oldOwner, {primary_role_id: null});
+        }
       }
       await this.blockRepository.addIdToAssignment(blockId, newOwner, ownerCode);
     }
@@ -87,9 +92,19 @@ export class BlockService {
           } catch (e) {
             console.log(e);
           }
+          const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
+          const primaryRoleId = response[0].primary_role_id;
+          if (ownerCode === primaryRoleId){
+            this.memberRepository.update(oldOwner, {primary_role_id: null});
+          }
         } else {
           try {
             this.blockRepository.removeIdFromAssignment(blockId, oldDeputies, deputyCode);
+            const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
+            const primaryRoleId = response[0].primary_role_id;
+            if (ownerCode === primaryRoleId){
+              this.memberRepository.update(oldOwner, {primary_role_id: null});
+            }
             this.blockRepository.addIdToAssignment(blockId, newDeputies[index], deputyCode);
           } catch (e) {
             console.log(e);
