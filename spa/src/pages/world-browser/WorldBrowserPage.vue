@@ -66,7 +66,7 @@ export default Vue.extend({
   },
   methods: {
     addSharedObject(obj, browser): void {
-      obj.url = `/assets/object/${obj.object_id}/${obj.filename}`;
+      obj.url = `/assets/object/${obj.directory}/${obj.filename}`;
       if (obj.position == null) {
         obj.position = {
           x: 0,
