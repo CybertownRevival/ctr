@@ -16,15 +16,15 @@
         </select>
       </div>
     </div>
-    <div class="grid grid-cols-7 text-center w-4/6">
-      <div class="border-white border w-full pl-1">Date</div>
-      <div class="col-span-2 border-white border w-full pl-1">Time</div>
+    <div class="grid grid-cols-12 text-center w-5/6">
+      <div class="col-span-1 border-white border w-full pl-1">Date</div>
+      <div class="col-span-1 border-white border w-full pl-1">Time</div>
       <div class="col-span-2 border-white border w-full pl-1">Place</div>
-      <div class="col-span-2 border-white border w-full pl-1">Message</div>
+      <div class="col-span-8 border-white border w-full pl-1">Message</div>
     </div>
-    <div class="grid grid-cols-7 w-4/6" v-for="(id) in chat" :key="id.id"
-    :class="{ 'bg-red-900': id.status === 0 }">
-      <div class="border-white border w-full pl-1 text-center">
+    <div class="grid grid-cols-12 w-5/6" v-for="(id) in chat" :key="id.id"
+    :class="{ 'bg-red-900': id.status === 0 || id.status === 2 }">
+      <div class="col-span-1 border-white border w-full pl-1 text-center">
         {{ new Date(id.created_at)
           .toLocaleString('en-US', {
             month: 'short',
@@ -33,7 +33,7 @@
             timeZone: 'America/Detroit',
           }) }}
       </div>
-      <div class="col-span-2 border-white border w-full pl-1">
+      <div class="col-span-1 border-white border w-full pl-1">
         {{ new Date(id.created_at)
           .toLocaleString('en-US', {
             hour: 'numeric',
@@ -43,7 +43,7 @@
           }) }}
       </div>
       <div class="col-span-2 border-white border w-full pl-1">{{ id.name }}</div>
-      <div class="col-span-2 border-white border w-full pl-1">{{ id.body }}</div>
+      <div class="col-span-8 border-white border w-full pl-1">{{ id.body }}</div>
     </div>
     <div class="grid grid-cols-2 w-4/6 justify-items-center">
       <div class="p-1 text-right w-full">

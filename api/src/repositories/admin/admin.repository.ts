@@ -63,6 +63,7 @@ export class AdminRepository {
       .innerJoin('place', 'message.place_id', 'place.id')
       .where('message.member_id', user)
       .where(this.like('place.name', search))
+      .orderBy('message.created_at', 'desc')
       .limit(Number(limit))
       .offset(Number(offset));
   }
