@@ -175,11 +175,11 @@ export class MemberService {
     const member = await this.memberRepository.findById(memberId);
     return this.encodeMemberToken(member);
   }
-  
+
   public async getPrimaryRoleName(memberId: number): Promise<string> {
     return this.memberRepository.getPrimaryRoleName(memberId);
   }
-  
+
   public async getRoles(memberId: number): Promise<any> {
     console.log(memberId);
     const roles = await this.roleAssignmentRepository.getRoleNameAndIdByMemberId(memberId);
@@ -207,7 +207,7 @@ export class MemberService {
     const member = await this.memberRepository.findById(memberId);
     return member.admin;
   }
-  
+
   public async isBanned(memberId: number): Promise<number> {
     const member = await this.memberRepository.findById(memberId);
     return member.status;
@@ -271,7 +271,7 @@ export class MemberService {
     if (_.isUndefined(avatar)) throw new Error(`No avatar exists with id ${avatarId}`);
     await this.memberRepository.update(memberId, { avatar_id: avatarId });
   }
-  
+
   /**
    * Sets the password for the member with the given id to a hashed version of the provided
    * password.
@@ -283,9 +283,9 @@ export class MemberService {
     const hashedPassword = await this.encryptPassword(password);
     await this.memberRepository.update(memberId, { password: hashedPassword });
   }
-  
+
   public async updatePrimaryRoleId(memberId: number, primaryRoleId: number): Promise<void> {
-    await this.memberRepository.update(memberId, {primary_role_id: primaryRoleId});
+    await this.memberRepository.update(memberId, { primary_role_id: primaryRoleId });
   }
 
   /**

@@ -1,18 +1,18 @@
 import { Request, Response } from 'express';
-import crypto from 'crypto';
 import { Container } from 'typedi';
-import { MemberService, ObjectService } from '../services';
+import { MemberService, ObjectService, WalletService } from '../services';
 import validator from 'validator';
 //import { ObjectInstanceService } from '../services';
 
 class ObjectController {
-  constructor(private memberService: MemberService, private objectService: ObjectService) {}
+  constructor(
+    private memberService: MemberService,
+    private objectService: ObjectService,
+    private walletService: WalletService,
+  ) {}
 
   /** Validates and uploads an object for approval **/
   public async add(request, response: Response): Promise<void> {
-    let wrlFileSizeLimit = 250000;
-    let textureFileSizeLimit = 250000;
-    let imageFileSizeLimit = 250000;
     let fileExtension;
     const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string>apitoken);
@@ -35,7 +35,7 @@ class ObjectController {
         error: 'Price must be a whole number.',
       });
       return;
-    } else if (parseInt(request.body.price) < 100) {
+    } else if (parseInt(request.body.price) < 10) {
       response.status(400).json({
         error: 'Price must be a minimum of 10cc.',
       });
@@ -47,14 +47,29 @@ class ObjectController {
         error: 'Quantity must be a whole number.',
       });
       return;
-    } else if (parseInt(request.body.quantity) < 130) {
+    } else if (parseInt(request.body.quantity) < 10) {
       response.status(400).json({
         error: 'Quantity must be a minimum of 10.',
       });
       return;
     }
 
-    // TODO: validate user has enough funds for upload
+    const member = await this.memberService.find({ id: session.id });
+    const wallet = await this.walletService.findById(member.wallet_id);
+    const sellerFee = this.objectService.getSellerFee(request.body.quantity, request.body.price);
+    if (sellerFee > wallet.balance) {
+      response.status(400).json({
+        error: 'Not enough funds to cover seller fee: ' + sellerFee + 'cc',
+      });
+      return;
+    }
+
+    if (!request.files) {
+      response.status(400).json({
+        error: 'VRML file is required',
+      });
+      return;
+    }
 
     if (
       typeof request.files.wrlFile === 'undefined' ||
@@ -72,7 +87,8 @@ class ObjectController {
       });
       return;
     }
-    if (request.files.wrlFile.size > wrlFileSizeLimit) {
+
+    if (request.files.wrlFile.size > ObjectService.WRL_FILESIZE_LIMIT) {
       response.status(400).json({
         error: 'VRML file must less than 250kb',
       });
@@ -90,7 +106,7 @@ class ObjectController {
         });
         return;
       }
-      if (request.files.textureFile.size > textureFileSizeLimit) {
+      if (request.files.textureFile.size > ObjectService.TEXTURE_FILESIZE_LIMIT) {
         response.status(400).json({
           error: 'Texture file must less than 250kb',
         });
@@ -99,7 +115,7 @@ class ObjectController {
     }
 
     if (
-      typeof request.files.imageFile === 'undefined' &&
+      typeof request.files.imageFile === 'undefined' ||
       validator.isEmpty(request.files.imageFile.name)
     ) {
       response.status(400).json({
@@ -115,42 +131,38 @@ class ObjectController {
       });
       return;
     }
-    if (request.files.imageFile.size > imageFileSizeLimit) {
+    if (request.files.imageFile.size > ObjectService.IMAGE_FILESIZE_LIMIT) {
       response.status(400).json({
         error: 'Thumbnail file must less than 250kb',
       });
       return;
     }
 
-    let uuid = crypto.randomUUID();
+    try {
+      await this.objectService.create(
+        request.files.wrlFile,
+        request.files.imageFile,
+        request.files.textureFile ?? null,
+        request.body.name,
+        request.body.quantity,
+        request.body.price,
+        session.id,
+      );
+    } catch (e) {
+      response.status(400).json({
+        error: e,
+      });
+      return;
+    }
 
-    // TODO: generate a uuid for this object
-    this.objectService.uploadObjectFiles(
-      uuid,
-      request.files.wrlFile,
-      request.files.imageFile,
-      request.files.textureFile ?? null,
-    );
+    await this.objectService.performObjectUploadTransaction(session.id, sellerFee);
 
-    response.status(200).json({ uuid: uuid });
-
-    // TODO: upload wrlfile (renaming)
-
-    // TODO: upload texture file (don't rename)
-
-    // TODO: upload image file (renaming)
-
-    // TODO: insert object
-
-    // TODO: deduct funds from uploader
-
-    // TODO: return
-
-    //
-
-    response.status(200).json({ status: 'happ' });
+    response.status(200).json({
+      status: 'success',
+    });
   }
 }
 const memberService = Container.get(MemberService);
 const objectService = Container.get(ObjectService);
-export const objectController = new ObjectController(memberService, objectService);
+const walletService = Container.get(WalletService);
+export const objectController = new ObjectController(memberService, objectService, walletService);

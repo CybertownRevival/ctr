@@ -16,6 +16,8 @@ export enum TransactionReason {
   HomeRefund = 'home-refund',
   /** Used for weekly job credits to user */
   WeeklyCredit = 'weekly-role-credit',
+  ObjectUpload = 'object-upload',
+  ObjectUploadRefund = 'object-upload-refund',
 }
 
 /** Defines a Transaction object as stored in the db */
