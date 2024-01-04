@@ -18,4 +18,18 @@ export class AdminService {
       total: total,
     };
   }
+  
+  public async searchUserChat(
+    search: string,
+    user: number,
+    limit: string,
+    offset: string,
+  ): Promise<any> {
+    const messages = await this.adminRepository.searchUserChat(search, user, limit, offset);
+    const total = await this.adminRepository.getChatTotal(search, user);
+    return {
+      messages: messages,
+      total: total,
+    };
+  }
 }

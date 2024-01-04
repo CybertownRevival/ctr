@@ -32,6 +32,7 @@ import AccessRights from "@/pages/AccessRights.vue";
 
 import admin from "@/pages/admin/admin.vue";
 import UserSearch from "@/pages/admin/user/search.vue";
+import UserChat from "@/pages/admin/user/ChatMessages.vue";
 import UserMain from "@/pages/admin/user/details.vue";
 import InfoMain from "@/pages/admin/user/info.vue";
 import InfoView from "@/pages/admin/user/infoview.vue";
@@ -291,6 +292,14 @@ export default [
                 },
               },
             ],
+          },
+          {
+            path: "/admin/member/user/:id/chat",
+            component: UserChat,
+            name: "UserChat",
+            meta: {
+              title: "Member Chat - Admin Panel",
+            },
           },
         ],
       },
