@@ -1,24 +1,117 @@
 import { text } from 'body-parser';
+import crypto from 'crypto';
 const fs = require('fs');
 import { Service } from 'typedi';
 
-//import { ObjectInstanceRepository } from '../../repositories';
-//import { ObjectInstancePosition, ObjectInstanceRotation } from 'models';
+import { ObjectRepository, MemberRepository, TransactionRepository } from '../../repositories';
 
 /** Service for dealing with blocks */
 @Service()
 export class ObjectService {
-  //constructor(private objectInstanceRepository: ObjectInstanceRepository) {}
+  constructor(
+    private objectRepository: ObjectRepository,
+    private memberRepository: MemberRepository,
+    private transactionRepository: TransactionRepository,
+  ) {}
 
-  public async uploadObjectFiles(directoryName, wrlFile, imageFile, textureFile?) {
+  public static readonly WRL_FILESIZE_LIMIT = 250000;
+  public static readonly TEXTURE_FILESIZE_LIMIT = 250000;
+  public static readonly IMAGE_FILESIZE_LIMIT = 250000;
+  public static readonly SELLER_FEE_PERCENT = 0.2;
+
+  public async uploadObjectFiles(
+    directoryName,
+    fileName,
+    wrlFile,
+    imageFile,
+    textureFile?,
+  ): Promise<any> {
     let uploadPath = process.env.ASSETS_DIR + '/object/' + directoryName;
+    const response = {
+      filename: null,
+      image: null,
+      texture: null,
+    };
 
     fs.mkdirSync(uploadPath);
-    wrlFile.mv(uploadPath + '/' + wrlFile.name);
-    imageFile.mv(uploadPath + '/' + imageFile.name);
+    wrlFile.mv(uploadPath + '/' + fileName + '.wrl');
+    response.filename = fileName + '.wrl';
+
+    let imageExtension = imageFile.name.split('.').pop();
+    imageFile.mv(uploadPath + '/' + fileName + '.' + imageExtension);
+    response.image = fileName + '.' + imageExtension;
+
     if (textureFile) {
       textureFile.mv(uploadPath + '/' + textureFile.name);
+      response.texture = textureFile.name;
     }
-    return true;
+    return response;
+  }
+
+  /**
+   * returns the seller fee for submitting an object
+   *
+   * @param quantity
+   * @param price
+   * @returns
+   */
+  public getSellerFee(quantity: number, price: number): number {
+    return quantity * price * ObjectService.SELLER_FEE_PERCENT;
+  }
+
+  /**
+   * create an object (file upload and record)
+   * @param wrlFile
+   * @param imageFile
+   * @param textureFile
+   * @param name
+   * @param quantity
+   * @param price
+   * @param memberId
+   */
+  public async create(wrlFile, imageFile, textureFile, name, quantity, price, memberId) {
+    let uuid = crypto.randomUUID();
+    let fileName = crypto.randomBytes(8).toString('hex');
+
+    const assets = await this.uploadObjectFiles(
+      uuid,
+      fileName,
+      wrlFile,
+      imageFile,
+      textureFile ?? null,
+    );
+
+    this.objectRepository.create(
+      uuid,
+      assets.filename,
+      assets.image,
+      name,
+      quantity,
+      price,
+      memberId,
+    );
+  }
+
+  /**
+   * Deducts the amount for an object upload from a member's wallet
+   * @param memberId id of a member
+   * @param amount amount to deduct
+   */
+  public async performObjectUploadTransaction(memberId: number, amount: number): Promise<void> {
+    const member = await this.memberRepository.findById(memberId);
+    await this.transactionRepository.createObjectUploadTransaction(member.wallet_id, amount);
+  }
+
+  /**
+   * Refunds the amount for an object upload to a member's wallet
+   * @param memberId id of a member
+   * @param amount amount to refund
+   */
+  public async performObjectUploadRefundTransaction(
+    memberId: number,
+    amount: number,
+  ): Promise<void> {
+    const member = await this.memberRepository.findById(memberId);
+    await this.transactionRepository.createObjectUploadRefundTransaction(member.wallet_id, amount);
   }
 }

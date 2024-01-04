@@ -101,7 +101,7 @@ export class TransactionRepository {
         .update({ balance: wallet.balance + amount });
       const [transactionId] = await trx<Transaction>('transaction').insert({
         amount,
-        reason: `${TransactionReason.WeeklyCredit  } for ${roleId}`,
+        reason: `${TransactionReason.WeeklyCredit} for ${roleId}`,
         recipient_wallet_id: walletId,
       });
       return this.find({ id: transactionId });
@@ -119,6 +119,42 @@ export class TransactionRepository {
       const [transactionId] = await trx<Transaction>('transaction').insert({
         amount,
         reason: TransactionReason.SystemToMember,
+        recipient_wallet_id: walletId,
+      });
+      return this.find({ id: transactionId });
+    });
+  }
+
+  public async createObjectUploadTransaction(
+    walletId: number,
+    amount: number,
+  ): Promise<Transaction> {
+    return await this.db.knex.transaction(async trx => {
+      const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
+      await trx<Wallet>('wallet')
+        .where({ id: walletId })
+        .update({ balance: wallet.balance - amount });
+      const [transactionId] = await trx<Transaction>('transaction').insert({
+        amount,
+        reason: TransactionReason.ObjectUpload,
+        recipient_wallet_id: walletId,
+      });
+      return this.find({ id: transactionId });
+    });
+  }
+
+  public async createObjectUploadRefundTransaction(
+    walletId: number,
+    amount: number,
+  ): Promise<Transaction> {
+    return await this.db.knex.transaction(async trx => {
+      const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
+      await trx<Wallet>('wallet')
+        .where({ id: walletId })
+        .update({ balance: wallet.balance + amount });
+      const [transactionId] = await trx<Transaction>('transaction').insert({
+        amount,
+        reason: TransactionReason.ObjectUploadRefund,
         recipient_wallet_id: walletId,
       });
       return this.find({ id: transactionId });

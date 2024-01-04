@@ -25,20 +25,13 @@
       upload an object, and you'll be hoping to earn enough from sales of your object to make a profit. The
       money involved here is the CCs you earn by being a citizen of Cybertown. Read more below.
     </p>
-    <div class="text-center">
-      <span class="text-red-500 -none">
-        <!--
-        Congratulations, data successfully uploaded!
-        You have to specify a name for your object!
-        Sorry, we only accept objects with a price greater than 10 CCs!
-        Sorry, we need at least one object to sell!
-        One or both of the needed files are missing!
-        The file  has the wrong type!
-          The file  could not be saved!
-            The file  is too large, maximum size is <$so_max_size_img> KB!
-                Sorry, you don't have enough money for uploading!
-                The file "<$errfile>" is too large, maximum size is <$so_max_size_wrl> KB!
-        -->
+    <div class="text-center font-bold text-green" v-if="showSuccess">
+      Congratulations! Your object has been uploaded and is awaiting approval.
+    </div>
+
+    <div class="text-center" v-if="showForm">
+      <span class="text-red-500" v-if="showError">
+        {{ this.error }}
       </span>
 
       <table class="mx-auto my-3">
@@ -231,6 +224,7 @@ export default Vue.extend({
   data: () => {
     return {
       showError: false,
+      showForm: true,
       error: '',
       showSuccess: false,
       loaded: false,
@@ -257,6 +251,7 @@ export default Vue.extend({
           imageFile: this.imageFile,
         }, true);
         this.showSuccess = true;
+        this.showForm = false;
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
           this.error = errorResponse.response.data.error;
