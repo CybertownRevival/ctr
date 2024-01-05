@@ -11,15 +11,15 @@
             </strong>
             <span 
               v-else-if="msg.username === $store.data.user.username"
-              class="text-yellow-200">{{msg.username}}<span
+              class="text-yellow-200">{{ msg.username }}<span
                 class="inline" v-show="msg.role"
-              > [{{msg.role}}]</span
+              > [{{ msg.role }}]</span
             >: {{ msg.msg }}
               </span>
             <span v-else
             >{{ msg.username }}<span
                 class="inline" v-show="msg.role"
-            > [{{msg.role}}]</span
+            > [{{ msg.role }}]</span
             >: {{ msg.msg }}
             </span>
           </li>
@@ -151,6 +151,26 @@ export default Vue.extend({
     },
     sendMessage(): void {
       this.debugMsg("sending message...");
+      const counts = {};
+      const maxWordLength = 30;
+      const maxPosts = 5;
+      
+      var messageTest = this.messages.slice(Math.max(this.messages.length - maxPosts, 1))
+      for (const num of messageTest){
+        if(num.username === this.$store.data.user.username){
+          counts[num] = counts[num] ? counts[num] + 1 : 1;
+        }
+        if(counts[num] >= maxPosts){
+          alert ("Please do not flood the chat!");
+          this.message = "";
+        }
+      }
+      this.message.split(" ").map(w => {
+        if(w.length > maxWordLength){
+          alert ("Please do not flood the chat!");
+          this.message = "";
+        }
+      });
       if (this.message !== "" && this.connected) {
         this.$socket.emit("CHAT", {
           msg: this.message,
