@@ -109,10 +109,10 @@ export default Vue.extend({
         this.$http.post("/member/update_role", {
           primaryRoleId: this.selectedRoleId,
         });
-		this.$http.post("/member/updatename", {
-		  firstName: this.info.firstName,
-		  lastName: this.info.lastName,
-		 });
+        this.$http.post("/member/updatename", {
+	  firstName: this.info.firstName,
+	  lastName: this.info.lastName,
+        });
         this.error = null;
         this.success = "Information Updated";
       }catch (error) {
