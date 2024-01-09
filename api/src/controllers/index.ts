@@ -4,6 +4,7 @@ export * from './block.controller';
 export * from './colony.controller';
 export * from './home.controller';
 export * from './hood.controller';
+export * from './mall.controller';
 export * from './member.controller';
 export * from './message.controller';
 export * from './object-instance.controller';

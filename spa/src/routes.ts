@@ -42,6 +42,7 @@ import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
 
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
+import MallApprovalPage from "@/pages/mall/MallApprovalPage.vue";
 
 export default [
     {
@@ -352,6 +353,15 @@ export default [
         name: "mall-upload",
         meta: {
             title: "Mall Upload",
+            wrapper: true,
+        },
+    },
+    {
+        path: "/mall/approval",
+        component: MallApprovalPage,
+        name: "mall-approval",
+        meta: {
+            title: "Mall Upload Approval",
             wrapper: true,
         },
     },

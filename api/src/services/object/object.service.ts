@@ -1,7 +1,7 @@
-import { text } from 'body-parser';
 import crypto from 'crypto';
 const fs = require('fs');
 import { Service } from 'typedi';
+import { Object } from '../../types/models';
 
 import { ObjectRepository, MemberRepository, TransactionRepository } from '../../repositories';
 
@@ -18,6 +18,38 @@ export class ObjectService {
   public static readonly TEXTURE_FILESIZE_LIMIT = 250000;
   public static readonly IMAGE_FILESIZE_LIMIT = 250000;
   public static readonly SELLER_FEE_PERCENT = 0.2;
+  public static readonly STATUS_DELETED = 0;
+  public static readonly STATUS_ACTIVE = 1;
+  public static readonly STATUS_PENDING = 2;
+  public static readonly MALL_EXPIRATION_DAYS = 7;
+
+  public async find(objectSearchParams: Partial<Object>): Promise<Object> {
+    return this.objectRepository.find(objectSearchParams);
+  }
+
+  public async findById(objectId: number): Promise<Object> {
+    return this.objectRepository.findById(objectId);
+  }
+
+  public async getPendingObjects() {
+    return await this.objectRepository.findByStatus(ObjectService.STATUS_PENDING);
+  }
+
+  public async updateStatusApproved(objectId: number) {
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + ObjectService.MALL_EXPIRATION_DAYS);
+
+    return await this.objectRepository.update(objectId, {
+      status: ObjectService.STATUS_ACTIVE,
+      mall_expiration: expirationDate.toJSON().slice(0, 19).replace('T', ' '),
+    });
+  }
+
+  public async updateStatusRejected(objectId: number) {
+    return await this.objectRepository.update(objectId, {
+      status: ObjectService.STATUS_DELETED,
+    });
+  }
 
   public async uploadObjectFiles(
     directoryName,

@@ -6,6 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     await knex.schema.alterTable('object', table => {
       table.string('directory');
       table.integer('price');
+      table.timestamp('mall_expiration').nullable();
     });
   }
 }
@@ -16,6 +17,7 @@ export async function down(knex: Knex): Promise<void> {
     await knex.schema.alterTable('object', table => {
       table.dropColumn('directory');
       table.dropColumn('price');
+      table.dropColumn('mall_expiration');
     });
   }
 }

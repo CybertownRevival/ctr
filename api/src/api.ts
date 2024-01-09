@@ -18,6 +18,7 @@ import {
   homeRoutes,
   messageboardRoutes,
   inboxRoutes,
+  mallRoutes,
 } from './routes';
 
 require('./cron/cron')();
@@ -58,6 +59,7 @@ app.use('/api/home', homeRoutes);
 app.use('/api/messageboard', messageboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/inbox', inboxRoutes);
+app.use('/api/mall', mallRoutes);
 
 app.use((request, response, next) => {
   const error = new Error('Not found');

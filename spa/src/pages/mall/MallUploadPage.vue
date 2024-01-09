@@ -216,7 +216,6 @@ If you sell all 10 chairs, you earn 250 CCs and double your investment.
 </template>
 
 <script lang="ts">
-import { text } from 'express';
 import Vue from "vue";
 
 export default Vue.extend({
@@ -264,22 +263,8 @@ export default Vue.extend({
     },
     setFile(e) {
       let files = e.target.files || e.dataTransfer.files;
-      console.log(files);
-      console.log(e.target.dataset.id);
       this[e.target.dataset.id] = files[0];
 
-    },
-    async checkAdmin() {
-      /*
-      try {
-        this.adminCheck = await this.$http.get(
-          `/block/${this.$store.data.place.block.id}/can_admin`,
-        );
-        this.canAdmin = true;
-      } catch (e) {
-        console.log(e);
-      }
-      */
     },
   },
   mounted() {
