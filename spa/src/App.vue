@@ -28,16 +28,16 @@
         class="flex-none w-60 bg-lines overflow-y-auto"
         v-if="$store.data.isUser && this.$route.meta.wrapper"
       >
-        <div class="flex flex-col">
-          <div class="flex justify-center">
-            <img src="/assets/img/logo-action.gif" />
-          </div>
-          <div class="text-clock text-center w-full py-0.5">
-            <ClockPage />
-          </div>
-		  <div class="flex flex-row justify-center">
-		  <font face="Arial" size=+0 color="#00FF00">{{ $store.data.place.name }}</font> 
-		  </div>
+      <div class="flex flex-col">
+        <div class="flex justify-center">
+          <img src="/assets/img/logo-action.gif" />
+      </div>
+      <div class="text-clock text-center w-full py-0.5">
+        <ClockPage />
+       </div>
+       <div class="flex flex-row justify-center">
+        <span class="inline" style="color:lime;">{{ $store.data.place.name }}</span> 
+	</div>
           <div class="flex flex-row justify-center">
             <img src="/assets/img/b2dchat.gif" @click="$store.methods.setView3d(false)"
                  class="cursor-pointer"/>
