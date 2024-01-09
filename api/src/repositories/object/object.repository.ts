@@ -7,6 +7,15 @@ import { Object } from 'models';
 export class ObjectRepository {
   constructor(private db: Db) {}
 
+  public async find(objectSearchParams: Partial<Object>): Promise<Object> {
+    const [object] = await this.db.object.where(objectSearchParams);
+    return object;
+  }
+
+  public async findById(objectId: number): Promise<Object> {
+    return this.find({ id: objectId });
+  }
+
   /**
    *
    * @param directory
@@ -38,5 +47,14 @@ export class ObjectRepository {
     });
 
     return object;
+  }
+
+  public async findByStatus(status: number): Promise<any> {
+    const objects = await this.db.object.where('status', status);
+    return objects;
+  }
+
+  public async update(objectId: number, props: object): Promise<any> {
+    await this.db.object.where({ id: objectId }).update(props);
   }
 }

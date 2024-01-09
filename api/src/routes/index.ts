@@ -3,6 +3,7 @@ export * from './block.routes';
 export * from './colony.routes';
 export * from './home.routes';
 export * from './hood.routes';
+export * from './mall.routes';
 export * from './member.routes';
 export * from './message.routes';
 export * from './object-instance.routes';

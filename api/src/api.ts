@@ -16,6 +16,7 @@ import {
   blockRoutes,
   homeRoutes,
   messageboardRoutes,
+  mallRoutes,
 } from './routes';
 
 require('./cron/cron')();
@@ -54,6 +55,7 @@ app.use('/api/colony', colonyRoutes);
 app.use('/api/block', blockRoutes);
 app.use('/api/home', homeRoutes);
 app.use('/api/messageboard', messageboardRoutes);
+app.use('/api/mall', mallRoutes);
 
 app.use((request, response, next) => {
   const error = new Error('Not found');
