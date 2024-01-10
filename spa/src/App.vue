@@ -35,7 +35,7 @@
       <div class="text-clock text-center w-full py-0.5">
         <ClockPage />
        </div>
-       <div class="flex flex-row justify-center">
+       <div class="flex flex-row justify-center" v-if="$store.data.place.name">
         <span class="inline" style="color:lime;">{{ $store.data.place.name }}</span> 
 	</div>
           <div class="flex flex-row justify-center">
