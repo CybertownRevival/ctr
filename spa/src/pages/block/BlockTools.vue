@@ -5,6 +5,8 @@
      +$store.data.place.type
      +'/'
      +$store.data.place.id)">Information</button>
+	<button class="btn-ui"
+     v-on:click="opener('#/inbox/'+$store.data.place.id)">Inbox</button>
     <button class="btn-ui"
             v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
     
@@ -19,7 +21,6 @@
 		<br />
 		<div v-if="canAdmin && this.$store.data.place.block">
 			<span class="btn-ui">Message to All</span>
-			<span class="btn-ui">Inbox</span>
 			<router-link
 				:to="'/block/' + this.$store.data.place.block.id + '/wizard'"
 				class="btn-ui"

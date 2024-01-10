@@ -10,3 +10,4 @@ export * from './object-instance.controller';
 export * from './object.controller';
 export * from './place.controller';
 export * from './messageboard.controller';
+export * from './inbox.controller';

@@ -7,6 +7,8 @@
               + '/'
               + $store.data.place.id)">Information</button>
     <button class="btn-ui"
+            v-on:click="opener('#/inbox/'+$store.data.place.id)">Inbox</button>
+    <button class="btn-ui"
             v-on:click="opener('#/messageboard/' + $store.data.place.id)">Messages</button>
     <br />
     <router-link v-if="$store.data.place.slug === 'mall'"
