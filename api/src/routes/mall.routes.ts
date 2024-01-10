@@ -14,5 +14,9 @@ mallRoutes.get('/pending_approval', (request, response) =>
 );
 mallRoutes.post('/approve', (request, response) => mallController.approveObject(request, response));
 mallRoutes.post('/reject', (request, response) => mallController.rejectObject(request, response));
+mallRoutes.get('/for_sale', (request, response) =>
+  mallController.objectsForSale(request, response),
+);
+mallRoutes.post('/buy', (request, response) => mallController.buyObject(request, response));
 
 export { mallRoutes };

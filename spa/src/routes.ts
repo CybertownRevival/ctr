@@ -34,6 +34,7 @@ import Information from "@/pages/Information.vue";
 
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
 import MallApprovalPage from "@/pages/mall/MallApprovalPage.vue";
+import MallShopPage from "@/pages/mall/MallShopPage.vue";
 
 export default [
     {
@@ -272,6 +273,15 @@ export default [
         name: "mall-approval",
         meta: {
             title: "Mall Upload Approval",
+            wrapper: true,
+        },
+    },
+    {
+        path: "/mall/shop",
+        component: MallShopPage,
+        name: "mall-shop",
+        meta: {
+            title: "Objects for Sale",
             wrapper: true,
         },
     },

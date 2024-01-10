@@ -60,30 +60,30 @@ class MemberController {
       response.status(400).json({ error });
     }
   }
-  
+
   public async getPrimaryRoleName(request: Request, response: Response): Promise<string> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
       const PrimaryRoleName = await this.memberService.getPrimaryRoleName(session.id);
-      response.status(200).json({PrimaryRoleName});
-    }catch (error) {
+      response.status(200).json({ PrimaryRoleName });
+    } catch (error) {
       console.log(error);
     }
   }
-  
+
   public async getRoles(request: Request, response: Response): Promise<object> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
       const roles = await this.memberService.getRoles(session.id);
-      response.status(200).json({roles});
+      response.status(200).json({ roles });
     } catch (error) {
       console.log(error);
-      response.status(400).json({error});
+      response.status(400).json({ error });
     }
   }
-  
+
   /** isBanned results based on member status
    * 1 = active
    * 0 = banned
@@ -92,7 +92,7 @@ class MemberController {
     const session = this.memberService.decryptSession(request, response);
     try {
       const data = await this.memberService.isBanned(session.id);
-      response.status(200).json({data});
+      response.status(200).json({ data });
     } catch (error) {
       console.log(error);
     }
@@ -286,7 +286,7 @@ class MemberController {
       });
     }
   }
-  
+
   public async updatePrimaryRoleId(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
@@ -294,13 +294,28 @@ class MemberController {
     const { primaryRoleId } = request.body;
     try {
       await this.memberService.updatePrimaryRoleId(id, primaryRoleId);
-      response.status(200).json({message: 'success'});
-    }catch (error) {
+      response.status(200).json({ message: 'success' });
+    } catch (error) {
       response.status(400).json({
         error: 'Error on Updating',
       });
     }
-    
+  }
+
+  public async getBackpack(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+
+    const { id } = session;
+
+    try {
+      const objects = await this.memberService.getBackpack(id);
+      response.status(200).json({ message: 'success', objects: objects });
+    } catch (error) {
+      response.status(400).json({
+        error: 'Error on getting backpack',
+      });
+    }
   }
 
   /**
