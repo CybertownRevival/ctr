@@ -140,6 +140,7 @@ io.on("connection", async function (socket) {
           username: user.username,
           msg: chatData.msg,
           role: chatData.role,
+          new: true,
         });
       }
     }
