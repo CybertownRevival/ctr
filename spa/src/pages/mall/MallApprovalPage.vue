@@ -23,11 +23,11 @@
       <tbody>
         <tr v-for="(object,key) in objects" :key="key">
           <td>{{ object.name }}</td>
-          <td>{{ object.image }}</td>
-          <td>{{ object.filename }}</td>
+          <td><img :src="'/assets/object/'+object.directory + '/' + object.image" style="max-width:250px;max-height:250px;height:auto;width:auto;"/></td>
+          <td><a :href="'/assets/object/'+object.directory + '/' + object.filename" target="_blank">Click to Download</a></td>
           <td class="text-right">{{ object.price }}</td>
           <td class="text-right">{{ object.quantity }}</td>
-          <td>{{ object.member_id }}</td>
+          <td>{{ object.username }}</td>
           <td>
             <button type="button" class="btn" @click="approve(object.id)">Approve</button>
             <button type="button" class="btn" @click="reject(object.id)">Reject</button>

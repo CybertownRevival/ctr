@@ -25,6 +25,7 @@ export class ObjectRepository {
    * @param quantity
    * @param price
    * @param memberId
+   * @param directory
    * @returns
    */
   public async create(

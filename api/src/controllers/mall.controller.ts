@@ -39,7 +39,14 @@ class MallController {
         return;
       }
       const objects = await this.objectService.getPendingObjects();
-      response.status(200).json({ status: 'success', objects: objects });
+      const returnObjects = [];
+
+      for (const obj of objects) {
+        const member = await this.memberService.find({ id: obj.member_id });
+        obj.username = member.username;
+        returnObjects.push(obj);
+      }
+      response.status(200).json({ status: 'success', objects: returnObjects });
     } catch (error) {
       console.error(error);
       response.status(400).json({ error });
