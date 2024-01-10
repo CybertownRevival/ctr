@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import { Container } from 'typedi';
 import validator from 'validator';
 
@@ -32,20 +32,20 @@ class MemberController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const accessLevel = await this.memberService.getAccessLevel(session.id);
-    response.status(200).json({accessLevel});
+    response.status(200).json({ accessLevel });
   }
-  
-  public async getDonorLevel(request: Request, response: Response): Promise<string>{
+
+  public async getDonorLevel(request: Request, response: Response): Promise<string> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
       const donorLevel = await this.memberService.getDonorLevel(session.id);
       response.status(200).json(donorLevel);
     } catch (e) {
-      response.status(400).json({error: 'Something went wrong try to get donor level.'});
+      response.status(400).json({ error: 'Something went wrong try to get donor level.' });
     }
   }
-  
+
   /**
    * Controller method for providing member information
    * @route /api/member/info
@@ -77,30 +77,30 @@ class MemberController {
       response.status(400).json({ error });
     }
   }
-  
+
   public async getPrimaryRoleName(request: Request, response: Response): Promise<string> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
       const PrimaryRoleName = await this.memberService.getPrimaryRoleName(session.id);
-      response.status(200).json({PrimaryRoleName});
-    }catch (error) {
+      response.status(200).json({ PrimaryRoleName });
+    } catch (error) {
       console.log(error);
     }
   }
-  
+
   public async getRoles(request: Request, response: Response): Promise<object> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
       const roles = await this.memberService.getRoles(session.id);
-      response.status(200).json({roles});
+      response.status(200).json({ roles });
     } catch (error) {
       console.log(error);
-      response.status(400).json({error});
+      response.status(400).json({ error });
     }
   }
-  
+
   public async updateName(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
@@ -108,15 +108,14 @@ class MemberController {
     const { firstName, lastName } = request.body;
     try {
       await this.memberService.updateName(id, firstName, lastName);
-      response.status(200).json({message: 'success'});
-    }catch (error) {
+      response.status(200).json({ message: 'success' });
+    } catch (error) {
       response.status(400).json({
         error: 'Error on Updating',
       });
     }
-    
   }
-  
+
   /** isBanned results based on member status
    * 1 = active
    * 0 = banned
@@ -125,7 +124,7 @@ class MemberController {
     const session = this.memberService.decryptSession(request, response);
     try {
       const data = await this.memberService.isBanned(session.id);
-      response.status(200).json({data});
+      response.status(200).json({ data });
     } catch (error) {
       console.log(error);
     }
@@ -208,7 +207,7 @@ class MemberController {
       if (session) {
         // refresh client token with latest from database
         const token = await this.memberService.getMemberToken(session.id);
-        const {banned, banInfo} = await this.memberService.isBanned(session.id);
+        const { banned, banInfo } = await this.memberService.isBanned(session.id);
         if (!banned) {
           await this.memberService.maybeGiveDailyCredits(session.id);
           const homeInfo = await this.homeService.getHome(session.id);
@@ -320,7 +319,7 @@ class MemberController {
       });
     }
   }
-  
+
   public async updatePrimaryRoleId(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
@@ -328,13 +327,28 @@ class MemberController {
     const { primaryRoleId } = request.body;
     try {
       await this.memberService.updatePrimaryRoleId(id, primaryRoleId);
-      response.status(200).json({message: 'success'});
-    }catch (error) {
+      response.status(200).json({ message: 'success' });
+    } catch (error) {
       response.status(400).json({
         error: 'Error on Updating',
       });
     }
-    
+  }
+
+  public async getBackpack(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+
+    const { id } = session;
+
+    try {
+      const objects = await this.memberService.getBackpack(id);
+      response.status(200).json({ message: 'success', objects: objects });
+    } catch (error) {
+      response.status(400).json({
+        error: 'Error on getting backpack',
+      });
+    }
   }
 
   /**

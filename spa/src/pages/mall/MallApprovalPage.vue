@@ -123,11 +123,6 @@ export default Vue.extend({
     },
   },
 	async mounted(): Promise<void> {
-		if (!(await this.checkAdmin())) {
-			this.$router.push("/restricted");
-      return;
-    }
-
     this.loaded = true;
     this.getResults();
   },

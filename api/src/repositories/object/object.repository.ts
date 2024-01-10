@@ -58,4 +58,11 @@ export class ObjectRepository {
   public async update(objectId: number, props: object): Promise<any> {
     await this.db.object.where({ id: objectId }).update(props);
   }
+
+  public async getMallForSale(status: number, mallExpiration: string): Promise<any> {
+    const objects = await this.db.object
+      .where('status', status)
+      .where('mall_expiration', '>', mallExpiration);
+    return objects;
+  }
 }

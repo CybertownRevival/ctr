@@ -14,6 +14,10 @@ import {
   RoleRepository,
   TransactionRepository,
   WalletRepository,
+  PlaceRepository,
+  MapLocationRepository,
+  RoleAssignmentRepository,
+  ObjectInstanceRepository,
 } from '../../repositories';
 import { Member } from '../../types/models';
 import { MemberInfoView, MemberAdminView } from '../../types/views';
@@ -45,6 +49,7 @@ export class MemberService {
     private placeRepository: PlaceRepository,
     private mapLocationRespository: MapLocationRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
+    private objectInstanceRepository: ObjectInstanceRepository,
     private roleRepository: RoleRepository,
   ) {}
 
@@ -450,5 +455,9 @@ export class MemberService {
       });
       return;
     }
+  }
+
+  public async getBackpack(memberId: number): Promise<any> {
+    return await this.objectInstanceRepository.getMemberBackpack(memberId);
   }
 }

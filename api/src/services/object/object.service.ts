@@ -3,7 +3,12 @@ const fs = require('fs');
 import { Service } from 'typedi';
 import { Object } from '../../types/models';
 
-import { ObjectRepository, MemberRepository, TransactionRepository } from '../../repositories';
+import {
+  ObjectRepository,
+  MemberRepository,
+  TransactionRepository,
+  ObjectInstanceRepository,
+} from '../../repositories';
 
 /** Service for dealing with blocks */
 @Service()
@@ -12,6 +17,7 @@ export class ObjectService {
     private objectRepository: ObjectRepository,
     private memberRepository: MemberRepository,
     private transactionRepository: TransactionRepository,
+    private objectInstanceRepository: ObjectInstanceRepository,
   ) {}
 
   public static readonly WRL_FILESIZE_LIMIT = 250000;
@@ -33,6 +39,18 @@ export class ObjectService {
 
   public async getPendingObjects() {
     return await this.objectRepository.findByStatus(ObjectService.STATUS_PENDING);
+  }
+
+  public async getMallForSaleObjects() {
+    const objects = await this.objectRepository.getMallForSale(
+      ObjectService.STATUS_ACTIVE,
+      new Date().toJSON().slice(0, 19).replace('T', ' '),
+    );
+    for (const obj of objects) {
+      const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
+      obj.instances = instances;
+    }
+    return objects;
   }
 
   public async updateStatusApproved(objectId: number) {
@@ -145,5 +163,15 @@ export class ObjectService {
   ): Promise<void> {
     const member = await this.memberRepository.findById(memberId);
     await this.transactionRepository.createObjectUploadRefundTransaction(member.wallet_id, amount);
+  }
+
+  public async performObjectPurchaseTransaction(memberId: number, amount: number): Promise<void> {
+    const member = await this.memberRepository.findById(memberId);
+    await this.transactionRepository.createObjectPurchaseTransaction(member.wallet_id, amount);
+  }
+
+  public async performObjectProfitTransaction(memberId: number, amount: number): Promise<void> {
+    const member = await this.memberRepository.findById(memberId);
+    await this.transactionRepository.createObjectProfitTransaction(member.wallet_id, amount);
   }
 }

@@ -80,6 +80,9 @@
         <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
           Objects
         </span>
+        <span v-if="activePanel === 'backpack'" class="flex-grow">
+          Backpack
+        </span>
         <button
           type="button"
           class="
@@ -125,6 +128,15 @@
             {{ object.name }}
           </li>
         </ul>
+        <ul v-if="activePanel === 'backpack'">
+          <li
+            v-for="object in backbackObjects"
+            :key="object.id"
+          >
+            {{ object.name }}
+          </li>
+
+        </ul>
       </div>
     </div>
   </div>
@@ -147,6 +159,7 @@ export default Vue.extend({
       message: "",
       messages: [],
       users: [],
+      backbackObjects: [],
       primaryRole: "",
       activePanel: "users",
     };
@@ -230,6 +243,9 @@ export default Vue.extend({
           this.activePanel = "sharedObjects";
           break;
         case "sharedObjects":
+          this.activePanel = "backpack";
+          break;
+        case "backpack":
           this.activePanel = "users";
           break;
       }
@@ -284,6 +300,14 @@ export default Vue.extend({
       },
       deep: true,
     },
+    async activePanel() {
+      if(this.activePanel === 'backpack') {
+        this.backbackObjects = [];
+        const response = await this.$http.get("/member/backpack");
+        console.log(response);
+        this.backbackObjects = response.data.objects;
+      }
+    }
   },
   computed: {
     connected: function() { return this.$socket.connected; },
