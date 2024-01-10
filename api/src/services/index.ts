@@ -12,3 +12,4 @@ export * from './role-assignment/role-assignment.service';
 export * from './place/place.service';
 export * from './wallet/wallet.service';
 export * from './messageboard/messageboard.service';
+export * from './inbox/inbox.service';

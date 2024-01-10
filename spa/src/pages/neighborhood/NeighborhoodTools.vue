@@ -5,9 +5,10 @@
      +$store.data.place.type
      +'/'
      +$store.data.place.id)">Information</button>
+	<button class="btn-ui"
+     v-on:click="opener('#/inbox/'+$store.data.place.id)">Inbox</button>
     <button class="btn-ui"
             v-on:click="opener('#/messageboard/'+$store.data.place.id)">Messages</button>
-    <span href="" class="btn-ui">Inbox</span>
     
 		<span href="" class="btn-ui">Vote</span>
 		<router-link

@@ -15,3 +15,4 @@ export * from './place/place.repository';
 export * from './transaction/transaction.repository';
 export * from './wallet/wallet.repository';
 export * from './messageboard/messageboard.repository';
+export * from './inbox/inbox.repository';

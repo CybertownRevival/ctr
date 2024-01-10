@@ -15,7 +15,7 @@ import {
   WalletRepository,
 } from '../../repositories';
 import {Member} from '../../types/models';
-import {MemberInfoView} from '../../types/views';
+import {MemberInfoView, MemberAdminView} from '../../types/views';
 import {SessionInfo} from 'session-info.interface';
 import {Request, Response} from 'express';
 
@@ -179,7 +179,7 @@ export class MemberService {
    * @param memberId id of member to retrieve info for
    * @returns promise resolving in a member info view object, or rejecting on error
    */
-  public async getMemberInfoAdmin(memberId: number): Promise<MemberInfoView> {
+  public async getMemberInfoAdmin(memberId: number): Promise<MemberAdminView> {
     const member = await this.find({ id: memberId });
     const wallet = await this.walletRepository.findById(member.wallet_id);
     return {
@@ -190,6 +190,8 @@ export class MemberService {
       xp: member.xp,
       firstName: member.firstname,
       lastName: member.lastname,
+      last_daily_login_credit: member.last_daily_login_credit,
+      last_weekly_role_credit: member.last_weekly_role_credit,
     };
   }
 
