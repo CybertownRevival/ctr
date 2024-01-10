@@ -18,6 +18,7 @@ import {Member} from '../../types/models';
 import {MemberInfoView, MemberAdminView} from '../../types/views';
 import {SessionInfo} from 'session-info.interface';
 import {Request, Response} from 'express';
+import * as console from "console";
 
 /** Service for dealing with members */
 @Service()
@@ -376,22 +377,41 @@ export class MemberService {
     const member = await this.memberRepository.findById(memberId);
     await this.transactionRepository.createHomeRefundTransaction(member.wallet_id, amount);
   }
-
+  
   /**
    * Attempts to decode the session token present in the request and automatically responds with a
    * 400 error if decryption is unsuccessful
-   * @param request express request object
+   * @param request Express request object
+   * @param response Express response object used for sending error messages in case of token
+   * decryption failure
    * @returns session info object if decoding was successful, `void` otherwise
    */
   public decryptSession(request: Request, response: Response): SessionInfo {
     const { apitoken } = request.headers;
-    const session = this.decodeMemberToken(<string>apitoken);
-    if (!session) {
+    
+    if (!apitoken || typeof apitoken !== 'string') {
       response.status(400).json({
-        error: 'Invalid or missing token.',
+        error: 'Invalid token.',
       });
       return;
     }
-    return session;
+    
+    try {
+      const session = this.decodeMemberToken(apitoken);
+      if (!session) {
+        console.log('Invalid or missing Token');
+        response.status(400).json({
+          error: 'Invalid or missing token.',
+        });
+        return;
+      }
+      return session;
+    } catch (error) {
+      console.log('Malformed JWT token (expected if logged out)');
+      response.status(400).json({
+        error: 'Malformed JWT token.',
+      });
+      return;
+    }
   }
 }

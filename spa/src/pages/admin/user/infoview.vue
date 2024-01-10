@@ -1,5 +1,5 @@
 <template>
-<div class="grid grid-cols-8 gap-y-2">
+<div class="w-11/12 grid grid-cols-8 gap-y-2">
   <div class="font-bold col-span-1">Username</div>
   <div class="col-span-7">{{info.username}}</div>
   <div class="font-bold col-span-1">Immigration Date</div>
@@ -11,8 +11,6 @@
       year: 'numeric',
       timeZone: 'America/New_York',
     })}}</div>
-  <div class="font-bold col-span-1">Email</div>
-  <div class="col-span-7">{{info.email}}</div>
   <div class="font-bold col-span-1">First Name</div>
   <div class="col-span-7">{{info.firstname}}</div>
   <div class="font-bold col-span-1">Last Name</div>

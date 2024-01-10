@@ -1,7 +1,13 @@
 import {Service} from 'typedi';
-import {knex} from '../../db';
 import { Db } from '../../db/db.class';
 import { Member, Wallet } from 'models';
+<<<<<<< Updated upstream
+=======
+import { join } from 'path';
+import { result } from 'lodash';
+import {stringify} from 'ts-jest';
+import {knex} from '../../db';
+>>>>>>> Stashed changes
 
 /** Repository for interacting with member table data in the database. */
 @Service()
@@ -59,6 +65,16 @@ export class MemberRepository {
     return this.db.member
       .where({ password_reset_token: resetToken })
       .whereRaw('password_reset_expire > NOW()')
+      .limit(1)
+      .first();
+  }
+  
+  public async getBanMaxDate(member_id): Promise<Member> {
+    return this.db.knex
+      .select('end_date')
+      .from('ban')
+      .where('ban_member_id', member_id)
+      .orderBy('end_date', 'desc')
       .limit(1)
       .first();
   }

@@ -33,11 +33,13 @@ import Inbox from "@/pages/Inbox.vue";
 import AccessRights from "@/pages/AccessRights.vue";
 
 import admin from "@/pages/admin/admin.vue";
+import UserMain from "@/pages/admin/user/MainMenu.vue";
+import UserSubMenu from "@/pages/admin/user/SubMenu.vue";
+import InfoView from "@/pages/admin/user/infoview.vue";
 import UserSearch from "@/pages/admin/user/search.vue";
 import UserChat from "@/pages/admin/user/ChatMessages.vue";
-import UserMain from "@/pages/admin/user/details.vue";
-import InfoMain from "@/pages/admin/user/info.vue";
-import InfoView from "@/pages/admin/user/infoview.vue";
+import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
+import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
 
 export default [
   {
@@ -278,7 +280,7 @@ export default [
       {
         path: "/admin/member/user/:id",
         component: UserMain,
-        default: InfoMain,
+        default: UserSubMenu,
         name: "UserMain",
         meta: {
           title: "Member Details - Admin Panel",
@@ -286,9 +288,9 @@ export default [
         children: [
           {
             path: "",
-            component: InfoMain,
+            component: UserSubMenu,
             default: InfoView,
-            name: "InfoMain",
+            name: "UserSubMenu",
             meta: {
               title: "Member Details - Admin Panel",
             },
@@ -301,15 +303,31 @@ export default [
                   title: "Member Details - Admin Panel",
                 },
               },
+              {
+                path: "/admin/member/user/:id/chat",
+                component: UserChat,
+                name: "UserChat",
+                meta: {
+                  title: "Member Chat - Admin Panel",
+                },
+              },
+              {
+                path: "/admin/member/user/:id/ban",
+                component: UserBanHistory,
+                name: "UserBanHistory",
+                meta: {
+                  title: "Member Ban History - Admin Panel",
+                },
+              },
+              {
+                path: "/admin/member/user/:id/addban",
+                component: UserBanAdd,
+                name: "UserBanAdd",
+                meta: {
+                  title: "Member Ban History - Admin Panel",
+                },
+              },
             ],
-          },
-          {
-            path: "/admin/member/user/:id/chat",
-            component: UserChat,
-            name: "UserChat",
-            meta: {
-              title: "Member Chat - Admin Panel",
-            },
           },
         ],
       },

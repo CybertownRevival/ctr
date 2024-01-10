@@ -1,10 +1,52 @@
-import { Request, Response } from 'express';
+import {request, Request, response, Response} from 'express';
 import { Container } from 'typedi';
 
 import { AdminService, MemberService } from '../services';
+import * as console from 'console';
 
 class AdminController {
   constructor(private adminService: AdminService, private memberService: MemberService) {}
+  
+  public async addBan(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (admin) {
+      try {
+        await this.adminService.addBan(
+          request.body.ban_member_id,
+          request.body.time_frame,
+          request.body.type,
+          session.id,
+          request.body.reason,
+        );
+        response.status(200).json({message: 'Ban added successfully'});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+  
+  public async getBanHistory(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (admin) {
+      try {
+        const banHistory = await this.adminService
+          .getBanHistory(Number(request.params.ban_member_id));
+        response.status(200).json({banHistory});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
   
   public async searchUsers(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
@@ -49,6 +91,7 @@ class AdminController {
     }
   }
 }
+
 const adminService = Container.get(AdminService);
 const memberService = Container.get(MemberService);
 export const adminController = new AdminController(adminService, memberService);
