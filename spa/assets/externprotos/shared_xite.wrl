@@ -348,6 +348,9 @@ function set_X(v,t){
   XlastChange = new SFVec3f(v[0],0,0);
 }
 function set_Y(v,t){
+  console.log('setting y', v, t);
+  console.log('browser', Browser);
+  console.log('viewpoint', Browser.viewpointOrientation);
   newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,v[1],0)).subtract(YlastChange))).multiply(rate);
   currentPosition = currentPosition.add(newPosition);
   position_changed = currentPosition;
