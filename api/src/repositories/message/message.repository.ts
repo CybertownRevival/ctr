@@ -44,6 +44,16 @@ export class MessageRepository {
       .innerJoin('member', 'message.member_id', 'member.id')
       .orderBy(orderField, orderDirection)
       .limit(limit);
+        
+  }
 
+  public async deleteMessage(
+    messageId: number,
+    placeId: number,
+  ): Promise<any> {
+    return knex('message')
+      .where('message.place_id', placeId)
+      .where('id', messageId)
+      .update({status: 0});
   }
 }
