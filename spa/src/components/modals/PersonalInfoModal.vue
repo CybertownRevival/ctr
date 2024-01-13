@@ -18,6 +18,14 @@
               <td><b>Email</b></td>
               <td>{{ info.email }}</td>
             </tr>
+          <tr>
+              <td><b>First Name</b></td>
+              <td><input type="text" class="input-text" maxlength="20" size="20" v-model="info.firstName"/></td>
+          </tr>
+          <tr>
+              <td><b>Last Name</b></td>
+              <td><input type="text" class="input-text" maxlength="32" size="20" v-model="info.lastName"/></td>
+          </tr>
             <tr>
               <td><b>Immigration</b></td>
               <td>{{ info.immigrationDate | dateFormatFilter }}</td>
@@ -45,8 +53,8 @@
         </table>
         <div class="text-center flex-1">
           <p>
-          <button class="btn" v-if="roles.length != 0" v-on:click="updatePrimaryRole">
-            Update
+          <button class="btn" v-on:click="update">
+            Update Information
           </button>
           </p>
         </div>
@@ -80,6 +88,8 @@ export default Vue.extend({
       info: {
         username: undefined,
         email: undefined,
+		firstName: undefined,
+		lastName: undefined,
         immigrationDate: undefined,
         walletBalance: undefined,
         xp: undefined,
@@ -94,13 +104,17 @@ export default Vue.extend({
     backToInfoModal(): void {
       ModalService.open(InfoModal);
     },
-    updatePrimaryRole(): void {
+    update(): void {
       try {
         this.$http.post("/member/update_role", {
           primaryRoleId: this.selectedRoleId,
         });
+        this.$http.post("/member/updatename", {
+	  firstName: this.info.firstName,
+	  lastName: this.info.lastName,
+        });
         this.error = null;
-        this.success = "Primary Role Updated";
+        this.success = "Information Updated";
       }catch (error) {
         this.success = null;
         this.error = error;
