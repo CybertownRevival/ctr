@@ -208,11 +208,11 @@ export default Vue.extend({
       });
     },
     startNewChat(): void {
-        this.messages = [];
+      this.messages = [];
       this.users = [];
       this.$http
         .get(`/message/place/${this.$store.data.place.id}`, {
-          limit: 7,
+          limit: 10,
           order: "id",
           orderDirection: "desc",
         })
