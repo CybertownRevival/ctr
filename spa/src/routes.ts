@@ -40,6 +40,7 @@ import UserSearch from "@/pages/admin/user/search.vue";
 import UserChat from "@/pages/admin/user/ChatMessages.vue";
 import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
 import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
+import UserDonor from "@/pages/admin/user/donor.vue";
 
 export default [
   {
@@ -324,7 +325,15 @@ export default [
                 component: UserBanAdd,
                 name: "UserBanAdd",
                 meta: {
-                  title: "Member Ban History - Admin Panel",
+                  title: "Add Member Ban - Admin Panel",
+                },
+              },
+              {
+                path: "/admin/member/user/:id/donor",
+                component: UserDonor,
+                name: "UserDonor",
+                meta: {
+                  title: "Add Member Donor - Admin Panel",
                 },
               },
             ],

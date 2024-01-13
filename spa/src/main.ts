@@ -55,10 +55,10 @@ router.beforeEach((to, from, next) => {
 
   if (!["login", "logout", "signup", "forgot", "password_reset", "about", "banned"]
     .includes(to.name)) {
-    api.get<{ user: User, status: number, roleName: string }>("/member/session").then(response => {
+    api.get<{ user: User, status: number, roleName: string, banned: boolean }>("/member/session").then(response => {
       const { user } = response.data;
-      const { status } = response.data;
-      if (status === 0) {
+      const banned = response.data.banned;
+      if (banned) {
         appStore.methods.destroySession();
         next({
           name: "banned",

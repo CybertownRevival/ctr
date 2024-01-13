@@ -5,6 +5,9 @@
     <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'UserView'}">DETAILS</router-link>
     <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'UserChat'}">CHAT HISTORY</router-link>
     <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'UserBanHistory'}">BAN</router-link>
+    <router-link class="btn-ui-inline mx-1 w-32"
+                 :to="{name: 'UserDonor'}"
+                 v-if="superAdmin">DONOR</router-link>
   </div>
   <div class="w-full min-w-min place-content-center">
     <router-view />
@@ -17,5 +20,8 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "UserMain",
+  props: [
+    "superAdmin",
+  ],
 });
 </script>

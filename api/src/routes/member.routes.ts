@@ -13,6 +13,8 @@ memberRoutes.post('/is_banned',
   (request, response) => memberController.isBanned(request, response));
 memberRoutes.get('/getrolename',
   (request, response) => memberController.getPrimaryRoleName(request, response));
+memberRoutes.get('/getAdminLevel',
+  (request, response) => memberController.getAdminLevel(request, response));
 memberRoutes.post('/login', (request, response) => memberController.login(request, response));
 memberRoutes.get('/session', (request, response) => memberController.session(request, response));
 memberRoutes.post('/update_password',

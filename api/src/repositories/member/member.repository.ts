@@ -1,13 +1,10 @@
 import {Service} from 'typedi';
 import { Db } from '../../db/db.class';
 import { Member, Wallet } from 'models';
-<<<<<<< Updated upstream
-=======
 import { join } from 'path';
 import { result } from 'lodash';
 import {stringify} from 'ts-jest';
 import {knex} from '../../db';
->>>>>>> Stashed changes
 
 /** Repository for interacting with member table data in the database. */
 @Service()
@@ -74,6 +71,7 @@ export class MemberRepository {
       .select('end_date')
       .from('ban')
       .where('ban_member_id', member_id)
+      .where('status', 1)
       .orderBy('end_date', 'desc')
       .limit(1)
       .first();

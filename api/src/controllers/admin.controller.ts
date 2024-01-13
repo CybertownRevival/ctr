@@ -2,7 +2,6 @@ import {request, Request, response, Response} from 'express';
 import { Container } from 'typedi';
 
 import { AdminService, MemberService } from '../services';
-import * as console from 'console';
 
 class AdminController {
   constructor(private adminService: AdminService, private memberService: MemberService) {}
@@ -30,6 +29,26 @@ class AdminController {
     }
   }
   
+  public async addDonor(request: Request, response: Response): Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const superAdmin = await this.memberService.canSuperAdmin(session.id);
+    if (superAdmin) {
+      try {
+        await this.adminService.addDonor(
+          request.body.member_id,
+          request.body.level,
+        );
+        response.status(200).json({message: 'Donor added successfully'});
+      } catch (e) {
+        console.log(e);
+        response.status(400).json({error: 'Error adding donor'});
+      }
+    } else {
+      response.status(403).json({error: 'Access Denied'});
+    }
+  }
+  
   public async getBanHistory(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
@@ -45,6 +64,39 @@ class AdminController {
       }
     } else {
       response.status(403).json({message: 'Access Denied'});
+    }
+  }
+  
+  public async deleteBan(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (admin) {
+      try {
+        const banId = Number(request.body.banId);
+        const reason = request.body.banReason;
+        const deleteBy = await this.memberService.getMemberInfoPublic(session.id);
+        const updateReason = `${reason} (Deleted by ${deleteBy.username})`;
+        await this.adminService.deleteBan(banId, updateReason);
+        response.status(200).json({message: 'Ban deleted successfully'});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+  
+  public async getDonor(request: Request, response: Response): Promise<string> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const superAdmin = await this.memberService.canSuperAdmin(session.id);
+    if (superAdmin) {
+      const currentLevel = await this.adminService.getDonor(request.body.memberId);
+      response.status(200).json({donorLevel: currentLevel});
+    } else {
+      response.status(403).json({error: 'Access Denied'});
     }
   }
   

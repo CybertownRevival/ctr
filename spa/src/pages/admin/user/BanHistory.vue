@@ -48,7 +48,41 @@
         <div class="col-span-12">
           {{ ban.reason }}
         </div>
+        <div class="flex col-span-12 justify-end">
+          <button class="btn"
+                  @click="
+                  showDeleteModal = true;
+                  banId = ban.id;
+                  banReason = ban.reason;">DELETE BAN</button>
+        </div>
       </div>
+    </div>
+    <div v-if="showDeleteModal">
+      <div class="fixed inset-0 z-50 flex justify-center items-center">
+        <div class="flex flex-col w-1/6 max-w-5xl rounded-lg shadow-lg bg-red-300 text-red-800">
+          <!-- header -->
+          <div class="p-5">
+            <div class="flex justify-between items-start">
+              <h3 class="text-2xl font-semibold">Delete Ban</h3>
+              <button class="p-1 leading-none" @click="showDeleteModal = false">
+                <div class="text-xl font-semibold h-6 w-6">
+                  <span>x</span>
+                </div>
+              </button>
+            </div>
+          </div>
+          <!-- body -->
+          <div class="p-6">
+            <p>Are you sure you want to delete this ban?</p>
+          </div>
+          <!-- footer -->
+          <div class=" p-6 flex justify-end items-center">
+            <button class="btn pr-1" @click="showDeleteModal = false">Cancel</button>
+            <button class="btn" @click="deleteban">Confirm</button>
+          </div>
+        </div>
+      </div>
+      <div class="opacity-50 fixed inset-0 z-60 bg-black"></div>
     </div>
   </div>
 </template>
@@ -61,6 +95,10 @@ export default Vue.extend({
   data() {
     return {
       info: [],
+      success: null,
+      showDeleteModal: false,
+      banId: 0,
+      banReason: "",
     };
   },
   methods:{
@@ -68,6 +106,17 @@ export default Vue.extend({
       await this.$http.get(`/admin/getbanhistory/${this.$route.params.id}`)
         .then((response) => {
           this.info = response.data.banHistory;
+        });
+    },
+    async deleteban(): Promise<void>{
+      await this.$http.post("/admin/deleteban/", {
+        banId: this.banId,
+        banReason: this.banReason,
+      })
+        .then(() => {
+          this.showDeleteModal = false;
+          this.success = "Ban Deleted";
+          this.getinfo();
         });
     },
   },

@@ -2,13 +2,11 @@ import {Service} from 'typedi';
 
 import {Db} from '../../db/db.class';
 import {knex} from '../../db';
-import {RoleRepository} from '../../repositories';
 
 @Service()
 export class AdminRepository {
   constructor(
    private db: Db,
-   private roleRepository: RoleRepository,
   ) {}
   
   /**
@@ -35,27 +33,34 @@ export class AdminRepository {
       });
   }
   
-  public async addRole(member_id: number, role: number): Promise<void> {
-    const supporter = this.roleRepository.roleMap.Supporter;
-    const advocate = this.roleRepository.roleMap.Advocate;
-    const devotee = this.roleRepository.roleMap.Devotee;
-    const champion = this.roleRepository.roleMap.Champion;
+  public async addDonor(member_id: number, roleId: any): Promise<void> {
     try{
       await knex('role_assignment')
         .where('member_id', member_id)
         .andWhere(function () {
-          this.where('role_id', supporter)
-            .orWhere('role_id', advocate)
-            .orWhere('role_id', devotee)
-            .orWhere('role_id', champion);
+          this.where('role_id', roleId.supporter)
+            .orWhere('role_id', roleId.advocate)
+            .orWhere('role_id', roleId.devotee)
+            .orWhere('role_id', roleId.champion);
         })
         .del();
     } finally {
-      await knex('role_assignment').insert({
-        member_id: member_id,
-        role_id: role,
-      });
+      if (roleId.donorLevel !== undefined) {
+        await knex('role_assignment').insert({
+          member_id: member_id,
+          role_id: roleId.donorLevel,
+        });
+      }
     }
+  }
+  
+  public async deleteBan(banId: number, updateReason: string): Promise<void> {
+    return knex('ban')
+      .where({id: banId})
+      .update({
+        status: 0,
+        reason: updateReason,
+      });
   }
   
   public async getBanHistory(ban_member_id: number): Promise<any> {
@@ -88,6 +93,22 @@ export class AdminRepository {
       .innerJoin('place', 'message.place_id', 'place.id')
       .where('message.member_id', user)
       .where(this.like('place.name', search));
+  }
+  
+  public async getDonor(memberId: number, roleId: any): Promise<string> {
+    return this.db.knex
+      .select('role.name')
+      .from('role_assignment')
+      .innerJoin('role', 'role_assignment.role_id', 'role.id')
+      .where('role_assignment.member_id', memberId)
+      .andWhere(function () {
+        this.where('role_id', roleId.supporter)
+          .orWhere('role_id', roleId.advocate)
+          .orWhere('role_id', roleId.devotee)
+          .orWhere('role_id', roleId.champion);
+      })
+      .limit(1)
+      .first();
   }
   
   /**

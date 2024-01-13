@@ -18,7 +18,7 @@ import {Member} from '../../types/models';
 import {MemberInfoView, MemberAdminView} from '../../types/views';
 import {SessionInfo} from 'session-info.interface';
 import {Request, Response} from 'express';
-import * as console from "console";
+import * as console from 'console';
 
 /** Service for dealing with members */
 @Service()
@@ -47,28 +47,27 @@ export class MemberService {
     private roleRepository: RoleRepository,
   ) {}
   
-  public async canAdmin(memberId: number): Promise<boolean>{
+  
+  public async canAdmin(memberId: number): Promise<boolean> {
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-    
-    if (
-      roleAssignments.find(assignment => {
-        return (
-          [
-            this.roleRepository.roleMap.Admin,
-            this.roleRepository.roleMap.CityMayor,
-            this.roleRepository.roleMap.DeputyMayor,
-            this.roleRepository.roleMap.CityCouncil,
-            this.roleRepository.roleMap.SecurityCaptain,
-            this.roleRepository.roleMap.SecurityChief,
-            this.roleRepository.roleMap.SecurityLieutenant,
-            this.roleRepository.roleMap.SecurityOffice,
-            this.roleRepository.roleMap.SecuritySergeant,
-          ]);
-      })
-    ) {
-      return true;
-    }
-    return false;
+    // Extracted admin roles into a constant for easy management
+    const ADMIN_ROLES = [
+      this.roleRepository.roleMap.Admin,
+      this.roleRepository.roleMap.CityMayor,
+      this.roleRepository.roleMap.DeputyMayor,
+      this.roleRepository.roleMap.CityCouncil,
+      this.roleRepository.roleMap.SecurityCaptain,
+      this.roleRepository.roleMap.SecurityChief,
+      this.roleRepository.roleMap.SecurityLieutenant,
+      this.roleRepository.roleMap.SecurityOffice,
+      this.roleRepository.roleMap.SecuritySergeant,
+    ];
+    return !!roleAssignments.find(assignment => ADMIN_ROLES.includes(assignment.role_id));
+  }
+  
+  public async canSuperAdmin(memberId: number): Promise<boolean>{
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    return roleAssignments[0].role_id === this.roleRepository.roleMap.Admin;
   }
   
   /**
@@ -238,9 +237,26 @@ export class MemberService {
     return member.admin;
   }
   
-  public async isBanned(memberId: number): Promise<number> {
+  /**
+   * Checks if the user is currently banned
+   * @param memberId
+   * @return banned boolean true if banned
+   */
+  public async isBanned(memberId: number): Promise<boolean> {
+    let banned = false;
     const member = await this.memberRepository.findById(memberId);
-    return member.status;
+    const max_end_date = await this.memberRepository.getBanMaxDate(memberId);
+    console.log(typeof max_end_date);
+    if (typeof max_end_date !== 'undefined') {
+      const endDate = new Date(max_end_date.end_date);
+      const currentDate = new Date();
+      if (member.status === 0 || endDate > currentDate) {
+        banned = true;
+      }
+    } else {
+      if (member.status === 0) banned = true;
+    }
+    return banned;
   }
 
   /**

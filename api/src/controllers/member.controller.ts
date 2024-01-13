@@ -29,6 +29,14 @@ class MemberController {
    */
   constructor(private memberService: MemberService, private homeService: HomeService) {}
 
+  public async getAdminLevel(request: Request, response: Response): Promise<object> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    const superAdmin = await this.memberService.canSuperAdmin(session.id);
+    response.status(200).json({admin, superAdmin});
+  }
+  
   /**
    * Controller method for providing member information
    * @route /api/member/info
@@ -175,9 +183,9 @@ class MemberController {
       if (session) {
         // refresh client token with latest from database
         const token = await this.memberService.getMemberToken(session.id);
-        const status = await this.memberService.isBanned(session.id);
-        if (status !== 0) {
-          this.memberService.maybeGiveDailyCredits(session.id);
+        const banned = await this.memberService.isBanned(session.id);
+        if (!banned) {
+          await this.memberService.maybeGiveDailyCredits(session.id);
           const homeInfo = await this.homeService.getHome(session.id);
           session.hasHome = !!homeInfo;
         }
@@ -185,7 +193,7 @@ class MemberController {
           message: 'success',
           token,
           user: session,
-          status: status,
+          banned: banned,
         });
       } else {
         throw new Error('Invalid or missing token');
