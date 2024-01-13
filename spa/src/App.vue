@@ -28,13 +28,16 @@
         class="flex-none w-60 bg-lines overflow-y-auto"
         v-if="$store.data.isUser && this.$route.meta.wrapper"
       >
-        <div class="flex flex-col">
-          <div class="flex justify-center">
-            <img src="/assets/img/logo-action.gif" />
-          </div>
-          <div class="text-clock text-center w-full py-0.5">
-            <ClockPage />
-          </div>
+      <div class="flex flex-col">
+        <div class="flex justify-center">
+          <img src="/assets/img/logo-action.gif" />
+      </div>
+      <div class="text-clock text-center w-full py-0.5">
+        <ClockPage />
+       </div>
+       <div class="flex flex-row justify-center" v-if="$store.data.place.name">
+        <span class="inline" style="color:lime;">{{ $store.data.place.name }}</span> 
+	</div>
           <div class="flex flex-row justify-center">
             <img src="/assets/img/b2dchat.gif" @click="$store.methods.setView3d(false)"
                  class="cursor-pointer"/>
@@ -120,6 +123,7 @@ import ModalRoot from "./components/modals/ModalRoot.vue";
 import InfoModal from "./components/modals/InfoModal.vue";
 import ModalService from "./components/modals/services/ModalService.vue";
 import ClockPage from "./components/Clock.vue";
+
 
 declare const X3D: any;
 

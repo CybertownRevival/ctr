@@ -79,7 +79,7 @@
     <div v-if="this.active === 'post'">
       <div v-if="success" class="text-chat"><center>{{ success }}</center></div>
       <div v-if="error" class="text-red-500"><center>{{ error }}</center></div>
-      <div class="content" v-html="this.placeinfo[0].messageboard_intro"/>
+      <div class="content" v-html="this.placeinfo[0].inbox_intro"/>
       <div class="mt-0.5 mb-0.5"><hr/></div>
       <center>
         <div class="text-red-300 justify-center" v-if="error">
