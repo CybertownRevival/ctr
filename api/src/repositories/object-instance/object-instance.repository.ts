@@ -7,6 +7,13 @@ import { ObjectInstance, Object } from 'models';
 export class ObjectInstanceRepository {
   constructor(private db: Db) {}
 
+  public async find(objectInstanceId: number): Promise<ObjectInstance> {
+    const [objectInstance] = await this.db.objectInstance.where({
+      id: objectInstanceId,
+    });
+    return objectInstance;
+  }
+
   public async create(objectId: number, memberId: number, placeId: number): Promise<number> {
     const [objectInstance] = await this.db.objectInstance.insert({
       object_id: objectId,
@@ -18,8 +25,15 @@ export class ObjectInstanceRepository {
 
   public async findByPlaceId(placeId: number): Promise<ObjectInstance[]> {
     return this.db.objectInstance
+      .select('object_instance.*', 'object.filename', 'object.directory', 'object.name')
       .where({ place_id: placeId })
       .join('object', 'object.id', 'object_instance.object_id');
+  }
+
+  public async updateObjectPlaceId(objectInstanceId: number, placeId: number): Promise<void> {
+    await this.db.objectInstance.where({ id: objectInstanceId }).update({
+      place_id: placeId,
+    });
   }
 
   public async updateObjectPlacement(
@@ -42,6 +56,7 @@ export class ObjectInstanceRepository {
 
   public async getMemberBackpack(memberId: number): Promise<any> {
     return await this.db.objectInstance
+      .select('object_instance.*', 'object.filename', 'object.directory', 'object.name')
       .join('object', 'object_instance.object_id', 'object.id')
       .where('object_instance.member_id', memberId)
       .where('place_id', 0);

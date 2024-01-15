@@ -2,6 +2,7 @@ import Vue from "vue";
 
 /** Represents the shape of user data object on the global app store */
 export interface User {
+    id?: number;
     avatar?: {
         id: string;
         name: string;

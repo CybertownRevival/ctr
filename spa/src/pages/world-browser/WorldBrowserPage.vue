@@ -22,6 +22,7 @@
         :shared-objects="sharedObjects"
         @move-object="moveObject"
         @beam-to="beamTo"
+        @drop-object="dropObject"
       ></chat>
     </div>
   </div>
@@ -124,6 +125,7 @@ export default Vue.extend({
       sharedObject.addFieldCallback("newPosition", {}, (pos) => {
         //todo happens when accepted
         console.log("new so position fired");
+        console.log(obj);
         this.saveObjectLocation(obj.id);
 
         /*
@@ -145,7 +147,8 @@ export default Vue.extend({
 
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
         //todo happens when accepted
-        console.log("new so position fired");
+        console.log("new so rotation fired");
+        console.log(obj);
         /*
             BxxEvents.dispatchEvent(
               new CustomEvent("SO:toServer:rotation", {
@@ -233,7 +236,60 @@ export default Vue.extend({
       });
     },
     moveObject(objectId): void {
+      console.log(objectId);
+      console.log(this.sharedObjectsMap);
       this.sharedObjectsMap.get(objectId).startMove = true;
+    },
+    dropObject(objectId): void {
+      // TODO: send ajax to update object's location
+      console.log('users',this.users);
+      console.log('objectId',objectId);
+
+      this.$http.post(`/object_instance/${  objectId  }/drop`, {
+        placeId: this.$store.data.place.id,
+        position: {
+          x: this.position[0],
+          y: this.position[1],
+          z: this.position[2]
+        },
+        rotation: {
+          x: this.rotation[0],
+          y: this.rotation[1],
+          z: this.rotation[2],
+          angle: this.rotation[3]
+        },
+      });
+
+/*
+      this.sharedObjects.push({
+
+      });
+      */
+     //this.sharedObjectsMap
+
+          //this.addSharedObject(object, browser);
+      /*
+      this.$http.post(`/object_instance/${  objectId  }/position`, {
+        position: {
+          x: obj.translation.x,
+          y: obj.translation.y,
+          z: obj.translation.z,
+        },
+        rotation: {
+          x: obj.rotation.x,
+          y: obj.rotation.y,
+          z: obj.rotation.z,
+          angle: obj.rotation.angle,
+        },
+      });
+      */
+
+      // add to the scene (just like beamTo's placement)
+
+      // update objects
+
+
+
     },
     beamTo(userId): void {
       const user = this.users[userId];
@@ -420,6 +476,9 @@ export default Vue.extend({
     },
     saveObjectLocation(objectId): void {
       const obj = this.sharedObjectsMap.get(objectId);
+      console.log('thisobj',obj.rotation);
+      console.log('thisobj',obj.position);
+      console.log('thisobj',obj.translation);
       this.$http.post(`/object_instance/${  objectId  }/position`, {
         position: {
           x: obj.translation.x,
@@ -584,23 +643,16 @@ export default Vue.extend({
       }
       browserProto.getTime = browserProto.getCurrentTime;
 
-      //todo: shared objects
       setTimeout(() => {
-        console.log('here we go');
-      this.sharedObjectsMap = new Map();
-      this.sharedObjects.forEach((object) => {
-        console.log('adding shared object');
-        this.addSharedObject(object, browser);
-      });
-
-      }, 3000
-
-      )
+        this.sharedObjectsMap = new Map();
+        this.sharedObjects.forEach((object) => {
+          console.log(object);
+          this.addSharedObject(object, browser);
+        });
+      }, 3000);
 
       this.startSharedEvents();
-
       this.start3DSocketListeners();
-
       this.loaded = true;
     }
   },
