@@ -9,6 +9,10 @@ import { Object } from 'models';
 export class ObjectInstanceService {
   constructor(private objectInstanceRepository: ObjectInstanceRepository) {}
 
+  public async find(objectInstanceId: number): Promise<any> {
+    return await this.objectInstanceRepository.find(objectInstanceId);
+  }
+
   public async updateObjectPlacement(
     objectInstanceId: number,
     positionObj: ObjectInstancePosition,
@@ -31,6 +35,10 @@ export class ObjectInstanceService {
       position,
       rotation,
     );
+  }
+
+  public async updateObjectPlaceId(objectInstanceId: number, placeId: number): Promise<void> {
+    return await this.objectInstanceRepository.updateObjectPlaceId(objectInstanceId, placeId);
   }
 
   public async add(object: Partial<Object>, memberId: number): Promise<any> {
