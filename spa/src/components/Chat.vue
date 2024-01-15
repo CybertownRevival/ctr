@@ -4,22 +4,31 @@
       <div class="flex-grow p-1 overflow-y-auto h-full" ref="chatArea">
         <ul>
           <li v-for="(msg, key) in messages" :key="key">
+            <i v-if="msg.new !== true && msg.type !== 'system'" class="text-white">
+              {{ msg.username }}: {{ msg.msg }}
+            </i>
             <strong
-              v-if="msg.type && msg.type === 'system'"
+              v-if="msg.msg && msg.type === 'system'"
               class="text-white">
               {{ msg.msg }}
             </strong>
+            <strong
+              v-else-if="msg.type && msg.type === 'system'"
+              class="text-white">
+              {{ msg.time }}
+            </strong>
             <span 
-              v-else-if="msg.username === $store.data.user.username"
-              class="text-yellow-200">{{msg.username}}<span
+              v-else-if="msg.username === $store.data.user.username && msg.new === true"
+              class="text-yellow-200">
+              {{msg.username}}<span
                 class="inline" v-show="msg.role"
-              > [{{msg.role}}]</span
+            >[{{msg.role}}]</span
             >: {{ msg.msg }}
               </span>
-            <span v-else
-            >{{ msg.username }}<span
+            <span v-else-if="msg.new === true">
+              {{ msg.username }}<span
                 class="inline" v-show="msg.role"
-            > [{{msg.role}}]</span
+            >[{{msg.role}}]</span
             >: {{ msg.msg }}
             </span>
           </li>
@@ -134,10 +143,10 @@
 </template>
 
 <script lang="ts">
+let numberOfPosts = 0;
+
 import Vue from 'vue';
-
 import { debugMsg } from '@/helpers';
-
 export default Vue.extend({
   name: "Chat",
   props: [
@@ -164,7 +173,31 @@ export default Vue.extend({
     },
     sendMessage(): void {
       this.debugMsg("sending message...");
-      if (this.message !== "" && this.connected) {
+
+      //Limits the length of a single word allowed
+      const maxWordLength = 24;
+      this.message.split(" ").map(word => {
+        if(word.length > maxWordLength){
+          this.message = "";
+          alert ("Please do not try to flood the chat with long words!");
+          }
+        }
+      )
+
+      //Limits the amount of posts allowed within 30 seconds
+      const maxPosts = 7;
+      const postInterval = .5;
+      if(this.message !== ""){
+        if(numberOfPosts === 0 || numberOfPosts <= maxPosts - 1){
+            setTimeout(() => numberOfPosts = --numberOfPosts, postInterval * 60 * 1000);
+          }
+          else{
+            alert ("Chat has been temporarily disabled. Please do not flood the chat!");
+            this.message = "";
+          }
+        }
+
+      if (this.message !== "" && this.connected && numberOfPosts < maxPosts) {
         this.$socket.emit("CHAT", {
           msg: this.message,
           role: this.primaryRole,
@@ -176,6 +209,7 @@ export default Vue.extend({
           .then((response) => {
             this.debugMsg(response.data);
           });
+        numberOfPosts = ++numberOfPosts;
         this.message = "";
       }
     },
@@ -183,6 +217,7 @@ export default Vue.extend({
       this.messages.push({
         type: "system",
         msg: msg,
+        time: new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}),
       });
     },
     startNewChat(): void {
@@ -239,7 +274,8 @@ export default Vue.extend({
       this.$socket.on("AV:new", event => {
         this.systemMessage(event.username + " has entered.");
         this.users.push(event);
-      });
+      })
+      ;
       this.$socket.on("disconnect", () => {
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
       });
@@ -282,8 +318,8 @@ export default Vue.extend({
     if (this.$store.data.place) {
       this.startNewChat();
       this.getRole();
+      setInterval(this.systemMessage, 5 * 60 * 1000);
     }
   },
 });
 </script>
-
