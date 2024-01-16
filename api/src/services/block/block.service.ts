@@ -22,7 +22,16 @@ export class BlockService {
     private roleRepository: RoleRepository,
     private memberRepository: MemberRepository,
   ) {}
-
+  
+  private async updateDeputyId(deputy: any): Promise<number> {
+    let newDeputies = 0;
+    if (deputy.username !== null) {
+      const result = await this.memberRepository.findIdByUsername(deputy.username);
+      newDeputies = result[0].id;
+    }
+    return newDeputies;
+  }
+  
   public async find(blockId: number): Promise<Place> {
     return await this.blockRepository.find(blockId);
   }
@@ -65,12 +74,14 @@ export class BlockService {
       newOwner = 0;
     }
     if (newOwner !== 0) {
-      if (oldOwner !== 0){
+      if (oldOwner !== 0) {
         await this.blockRepository.removeIdFromAssignment(blockId, oldOwner, ownerCode);
         const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
-        const primaryRoleId = response[0].primary_role_id;
-        if (ownerCode === primaryRoleId){
-          await this.memberRepository.update(oldOwner, {primary_role_id: null});
+        if (response.length !== 0) {
+          const primaryRoleId = response[0].primary_role_id;
+          if (ownerCode === primaryRoleId){
+            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          }
         }
       }
       await this.blockRepository.addIdToAssignment(blockId, newOwner, ownerCode);
@@ -78,11 +89,8 @@ export class BlockService {
     data.deputies.forEach((deputies, index) => {
       oldDeputies[index] = deputies.member_id;
     });
-    for (const [index, deputy] of givenDeputies.entries()) try {
-      const result: any = await this.memberRepository.findIdByUsername(deputy.username);
-      newDeputies[index] = result[0].id;
-    } catch (error) {
-      break;
+    for (let i = 0; i < givenDeputies.length; i++) {
+      newDeputies[i] = await this.updateDeputyId(givenDeputies[i]);
     }
     oldDeputies.forEach((oldDeputies, index) => {
       if (oldDeputies !== newDeputies[index]) {
@@ -92,19 +100,29 @@ export class BlockService {
           } catch (e) {
             console.log(e);
           }
-          const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
-          const primaryRoleId = response[0].primary_role_id;
-          if (ownerCode === primaryRoleId){
-            this.memberRepository.update(oldOwner, {primary_role_id: null});
+          if (oldDeputies !== 0) {
+            this.memberRepository.getPrimaryRoleName(oldDeputies)
+              .then((response: any) => {
+                if (response.length !== 0) {
+                  const primaryRoleId = response[0].primary_role_id;
+                  if (primaryRoleId && deputyCode === primaryRoleId) {
+                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                  }
+                }
+              });
           }
         } else {
           try {
             this.blockRepository.removeIdFromAssignment(blockId, oldDeputies, deputyCode);
-            const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
-            const primaryRoleId = response[0].primary_role_id;
-            if (ownerCode === primaryRoleId){
-              this.memberRepository.update(oldOwner, {primary_role_id: null});
-            }
+            this.memberRepository.getPrimaryRoleName(oldDeputies)
+              .then((response: any) => {
+                if (response.length !== 0) {
+                  const primaryRoleId = response[0].primary_role_id;
+                  if (deputyCode === primaryRoleId) {
+                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                  }
+                }
+              });
             this.blockRepository.addIdToAssignment(blockId, newDeputies[index], deputyCode);
           } catch (e) {
             console.log(e);
@@ -112,7 +130,6 @@ export class BlockService {
         }
       }
     });
-    return;
   }
 
   public async getMapLocationAndPlaces(blockId: number): Promise<any> {

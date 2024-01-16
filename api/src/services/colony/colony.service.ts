@@ -2,6 +2,7 @@ import { Service } from 'typedi';
 
 import { ColonyRepository, RoleAssignmentRepository, RoleRepository, MemberRepository } from '../../repositories';
 import { Place } from '../../types/models';
+import * as console from 'console';
 
 /** Service for dealing with colony */
 @Service()
@@ -12,7 +13,19 @@ export class ColonyService {
     private roleRepository: RoleRepository,
     private memberRepository: MemberRepository,
   ) {}
-
+  
+  private async updateDeputyId(deputy: any): Promise<number> {
+    let newDeputies = 0;
+    console.log(deputy.username);
+    if (deputy.username !== null) {
+      if (deputy.username.length > 0) {
+        const result = await this.memberRepository.findIdByUsername(deputy.username);
+        newDeputies = result[0].id;
+      }
+    }
+    return newDeputies;
+  }
+  
   public async find(colonyId: number): Promise<Place> {
     return await this.colonyRepository.find(colonyId);
   }
@@ -57,7 +70,7 @@ export class ColonyService {
       if (oldOwner !== 0) {
         await this.colonyRepository.removeIdFromAssignment(colonyId, oldOwner, ownerCode);
         const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
-        if (response) {
+        if (response.length !== 0) {
           const primaryRoleId = response[0].primary_role_id;
           if (ownerCode === primaryRoleId){
             await this.memberRepository.update(oldOwner, {primary_role_id: null});
@@ -69,11 +82,8 @@ export class ColonyService {
     data.deputies.forEach((deputies, index) => {
       oldDeputies[index] = deputies.member_id;
     });
-    for (const [index, deputy] of givenDeputies.entries()) try {
-      const result: any = await this.memberRepository.findIdByUsername(deputy.username);
-      newDeputies[index] = result[0].id;
-    } catch (error) {
-      break;
+    for (let i = 0; i < givenDeputies.length; i++) {
+      newDeputies[i] = await this.updateDeputyId(givenDeputies[i]);
     }
     oldDeputies.forEach((oldDeputies, index) => {
       if (oldDeputies !== newDeputies[index]) {
@@ -83,19 +93,29 @@ export class ColonyService {
           } catch (e) {
             console.log(e);
           }
-          const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
-          const primaryRoleId = response[0].primary_role_id;
-          if (primaryRoleId && ownerCode === primaryRoleId){
-            this.memberRepository.update(oldOwner, {primary_role_id: null});
+          if (oldDeputies !== 0) {
+            this.memberRepository.getPrimaryRoleName(oldDeputies)
+              .then((response: any) => {
+                if (response.length !== 0) {
+                  const primaryRoleId = response[0].primary_role_id;
+                  if (primaryRoleId && deputyCode === primaryRoleId) {
+                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                  }
+                }
+              });
           }
         } else {
           try {
             this.colonyRepository.removeIdFromAssignment(colonyId, oldDeputies, deputyCode);
-            const response: any = this.memberRepository.getPrimaryRoleName(oldOwner);
-            const primaryRoleId = response[0].primary_role_id;
-            if (ownerCode === primaryRoleId){
-              this.memberRepository.update(oldOwner, {primary_role_id: null});
-            }
+            this.memberRepository.getPrimaryRoleName(oldDeputies)
+              .then((response: any) => {
+                if (response.length !== 0) {
+                  const primaryRoleId = response[0].primary_role_id;
+                  if (deputyCode === primaryRoleId) {
+                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                  }
+                }
+              });
             this.colonyRepository.addIdToAssignment(colonyId, newDeputies[index], deputyCode);
           } catch (e) {
             console.log(e);
@@ -103,7 +123,6 @@ export class ColonyService {
         }
       }
     });
-    return;
   }
 
   public async canAdmin(colonyId: number, memberId: number): Promise<boolean> {
