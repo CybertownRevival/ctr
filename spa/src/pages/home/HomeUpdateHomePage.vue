@@ -70,7 +70,7 @@
           <h3 class="font-bold mb-3">Your 3D House</h3>
 
           <p class="mb-3">Now it's time to choose your fabulous 3D home.
-            Please check your bank account at: My Info > Personal Info >Money
+            Please check your bank account at: My Info > Personal Info > Money
             (MyInfo button on Control Panel in right frame) before deciding because
             it's really tough to get a loan around here.</p>
 
@@ -86,7 +86,9 @@
                 <input type="radio" :value="key" v-model="home3d" class="mr-3"/>
                 <img :src="'/assets/img/homes/Picon3D' + key + '.gif'" /><br />
                 Price: <strong>{{ item.price }}cc</strong>
-
+                <span v-show="key==='championhome' && donorLevel==='Champion'">
+                  <br />Thank you for your donation!
+                </span>
               </div>
             </template>
           </div>
@@ -128,13 +130,22 @@ export default Vue.extend({
       colony: undefined,
       icon2d: null,
       home3d: null,
-      homeName: '',
+      homeName: "",
+      donorLevel: undefined,
     };
   },
   methods: {
     async getHome() {
       try {
         const homeResponse = await this.$http.get("/home");
+        await this.$http.get("/member/getdonorlevel")
+          .then((response) => {
+            this.donorLevel = response.data.name;
+          });
+        
+        if(this.donorLevel === "Champion"){
+          this.homeData.championhome.price = 0;
+        }
 
         this.hasHome = !!homeResponse.data.homeData;
         if(this.hasHome) {
@@ -144,7 +155,7 @@ export default Vue.extend({
           }
           this.icon2d = this.home.map_icon_index;
           this.homeName = this.home.name;
-          const blockResponse  = await this.$http.get("/block/" + homeResponse.data.blockData.id);
+          const blockResponse  = await this.$http.get(`/block/${  homeResponse.data.blockData.id}`);
           this.colony = blockResponse.data.colony;
         }
         this.loaded = true;

@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
+import {request, Request, response, Response} from 'express';
 import { Container } from 'typedi';
 import validator from 'validator';
 
@@ -35,6 +35,17 @@ class MemberController {
     const admin = await this.memberService.canAdmin(session.id);
     const superAdmin = await this.memberService.canSuperAdmin(session.id);
     response.status(200).json({admin, superAdmin});
+  }
+  
+  public async getDonorLevel(request: Request, response: Response): Promise<string>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const donorLevel = await this.memberService.getDonorLevel(session.id);
+      response.status(200).json(donorLevel);
+    } catch (e) {
+      response.status(400).json({error: 'Something went wrong try to get donor level.'});
+    }
   }
   
   /**

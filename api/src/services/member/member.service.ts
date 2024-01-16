@@ -6,6 +6,7 @@ import {Service} from 'typedi';
 
 import {
   AvatarRepository,
+  AdminRepository,
   MapLocationRepository,
   MemberRepository,
   PlaceRepository,
@@ -38,6 +39,7 @@ export class MemberService {
 
   constructor(
     private avatarRepository: AvatarRepository,
+    private adminRepository: AdminRepository,
     private memberRepository: MemberRepository,
     private transactionRepository: TransactionRepository,
     private walletRepository: WalletRepository,
@@ -136,6 +138,16 @@ export class MemberService {
    */
   public async findByPasswordResetToken(resetToken: string): Promise<Member> {
     return this.memberRepository.findByPasswordResetToken(resetToken);
+  }
+  
+  public async getDonorLevel(memberId: number): Promise<string> {
+    const donorId = {
+      supporter: await this.roleRepository.roleMap.Supporter,
+      advocate: await this.roleRepository.roleMap.Advocate,
+      devotee: await this.roleRepository.roleMap.Devotee,
+      champion: await this.roleRepository.roleMap.Champion,
+    };
+    return await this.adminRepository.getDonor(memberId, donorId);
   }
 
   /**

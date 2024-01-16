@@ -1,10 +1,6 @@
 import {Service} from 'typedi';
 import { Db } from '../../db/db.class';
 import { Member, Wallet } from 'models';
-import { join } from 'path';
-import { result } from 'lodash';
-import {stringify} from 'ts-jest';
-import {knex} from '../../db';
 
 /** Repository for interacting with member table data in the database. */
 @Service()

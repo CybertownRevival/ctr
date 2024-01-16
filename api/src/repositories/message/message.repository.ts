@@ -25,6 +25,14 @@ export class MessageRepository {
 
     return message;
   }
+  
+  public async deleteMessage(id: number): Promise<any> {
+    return knex('message')
+      .where('id', id)
+      .update({
+        status: 0,
+      });
+  }
 
   public async getResults(
     placeId: number,
@@ -32,7 +40,7 @@ export class MessageRepository {
     orderDirection: string,
     limit:number,
   ): Promise<any> {
-    return await knex
+    return knex
       .select(
         'message.id',
         'message.body as msg',
@@ -44,6 +52,5 @@ export class MessageRepository {
       .innerJoin('member', 'message.member_id', 'member.id')
       .orderBy(orderField, orderDirection)
       .limit(limit);
-
   }
 }

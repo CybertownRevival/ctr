@@ -1,4 +1,4 @@
-export const homeDataHelper = {
+export let homeDataHelper = {
   "003": {
     "price": 160,
     "description": "Private and intimate. Lots of red brick. Beautiful dining room and cool pool table." +
@@ -52,8 +52,8 @@ export const homeDataHelper = {
     "description": "",
   },
   "championhome": {
-    "price": 0,
+    "price": 100000,
     "description": "This is a special home for Champion Donors to Cyhbertown Revival",
   },
 
-} as const;
+};
