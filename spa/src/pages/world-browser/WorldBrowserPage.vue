@@ -148,7 +148,9 @@ export default Vue.extend({
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
         //todo happens when accepted
         console.log("new so rotation fired");
-        console.log(obj);
+        console.log('OOO',obj);
+        console.log('RRRR',rot);
+        this.saveObjectLocation(obj.id);
         /*
             BxxEvents.dispatchEvent(
               new CustomEvent("SO:toServer:rotation", {
@@ -476,6 +478,8 @@ export default Vue.extend({
     },
     saveObjectLocation(objectId): void {
       const obj = this.sharedObjectsMap.get(objectId);
+      console.log('objectID:',objectId);
+      console.log('OBJECT:',obj);
       console.log('thisobj',obj.rotation);
       console.log('thisobj',obj.position);
       console.log('thisobj',obj.translation);

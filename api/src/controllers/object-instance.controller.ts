@@ -16,18 +16,22 @@ class ObjectInstanceController {
 
     try {
       if (
-        !request.body?.position.x ||
-        !request.body?.position.y ||
-        !request.body?.position.z ||
-        !request.body?.rotation.x ||
-        !request.body?.rotation.y ||
-        !request.body?.rotation.z ||
-        !request.body?.rotation.angle
+        typeof request.body?.position.x === 'undefined' ||
+        typeof request.body?.position.y === 'undefined' ||
+        typeof request.body?.position.z === 'undefined' ||
+        typeof request.body?.rotation.x === 'undefined' ||
+        typeof request.body?.rotation.y === 'undefined' ||
+        typeof request.body?.rotation.z === 'undefined' ||
+        typeof request.body?.rotation.angle === 'undefined'
       ) {
         throw new Error('Invalid position or rotation.');
       }
 
       const id = Number.parseInt(request.params.id);
+      const objectInstance = await this.objectInstanceService.find(id);
+      if (objectInstance.member_id != session.id) {
+        throw new Error('Not the owner of this object');
+      }
 
       await this.objectInstanceService.updateObjectPlacement(
         id,
@@ -48,14 +52,13 @@ class ObjectInstanceController {
 
     try {
       if (
-        !request.body?.placeId ||
-        !request.body?.position.x ||
-        !request.body?.position.y ||
-        !request.body?.position.z ||
-        !request.body?.rotation.x ||
-        !request.body?.rotation.y ||
-        !request.body?.rotation.z ||
-        !request.body?.rotation.angle
+        typeof request.body?.position.x === 'undefined' ||
+        typeof request.body?.position.y === 'undefined' ||
+        typeof request.body?.position.z === 'undefined' ||
+        typeof request.body?.rotation.x === 'undefined' ||
+        typeof request.body?.rotation.y === 'undefined' ||
+        typeof request.body?.rotation.z === 'undefined' ||
+        typeof request.body?.rotation.angle === 'undefined'
       ) {
         throw new Error('Invalid placeId, position or rotation.');
       }
@@ -64,9 +67,12 @@ class ObjectInstanceController {
       const objectInstance = await this.objectInstanceService.find(id);
       const place = await this.placeService.findById(Number.parseInt(request.body.placeId));
 
-      // TODO: check ownership of object instance and place
       if (place.member_id != session.id) {
         throw new Error('Not the owner of this place');
+      }
+
+      if (objectInstance.member_id != session.id) {
+        throw new Error('Not the owner of this object');
       }
 
       await this.objectInstanceService.updateObjectPlaceId(id, request.body.placeId);
