@@ -61,7 +61,7 @@ export class MemberService {
       this.roleRepository.roleMap.SecurityCaptain,
       this.roleRepository.roleMap.SecurityChief,
       this.roleRepository.roleMap.SecurityLieutenant,
-      this.roleRepository.roleMap.SecurityOffice,
+      this.roleRepository.roleMap.SecurityOfficer,
       this.roleRepository.roleMap.SecuritySergeant,
     ];
     return !!roleAssignments.find(assignment => ADMIN_ROLES.includes(assignment.role_id));

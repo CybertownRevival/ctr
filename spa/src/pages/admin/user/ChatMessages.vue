@@ -167,6 +167,8 @@ export default Vue.extend({
       } catch (e) {
         console.log(e);
       }
+      this.showDelete = false;
+      this.getUserChat();
     },
   },
   async created() {
