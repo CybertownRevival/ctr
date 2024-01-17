@@ -9,5 +9,8 @@ objectInstanceRoutes.post('/:id/position', (request, response) =>
 objectInstanceRoutes.post('/:id/drop', (request, response) =>
   objectInstanceController.dropObjectInstance(request, response),
 );
+objectInstanceRoutes.post('/:id/pickup', (request, response) =>
+  objectInstanceController.pickUpObjectInstance(request, response),
+);
 
 export { objectInstanceRoutes };

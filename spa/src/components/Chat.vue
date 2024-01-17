@@ -123,9 +123,17 @@
           <li
             v-for="object in sharedObjects"
             :key="object.id"
-            @click="moveObject(object.id)"
+            class="flex"
           >
-            {{ object.name }}
+            <div class="flex-1">
+              {{ object.name }}
+            </div>
+            <div class="flex-none cursor-pointer relative mr-1" v-if="canInteractWithObject" @click="moveObject(object.id)">
+              Move
+            </div>
+            <div class="flex-none cursor-pointer relative" v-if="canInteractWithObject" @click="pickUpObject(object.id)">
+              Pick Up
+            </div>
           </li>
         </ul>
         <ul v-if="activePanel === 'backpack'">
@@ -137,7 +145,7 @@
             <div class="flex-1">
               {{ object.name }}
             </div>
-            <div class="flex-none cursor-pointer relative" v-if="canDropObject" @click="dropObject(object.id)">
+            <div class="flex-none cursor-pointer relative" v-if="canInteractWithObject" @click="dropObject(object.id)">
               Drop
             </div>
           </li>
@@ -169,7 +177,7 @@ export default Vue.extend({
       primaryRole: "",
       activePanel: "users",
       objectId: null,
-      canDropObject: false,
+      canInteractWithObject: false,
     };
   },
   methods: {
@@ -230,12 +238,12 @@ export default Vue.extend({
     startNewChat(): void {
       this.messages = [];
       this.users = [];
-      this.canDropObject = false;
+      this.canInteractWithObject = false;
       if(
         this.$store.data.place.member_id === this.$store.data.user.id
         && this.$store.data.view3d
       ) {
-        this.canDropObject = true;
+        this.canInteractWithObject = true;
       }
       this.$http
         .get(`/message/place/${this.$store.data.place.id}`, {
@@ -296,6 +304,14 @@ export default Vue.extend({
     },
     dropObject(objectId) {
       this.$emit("drop-object", objectId);
+    },
+    pickUpObject(objectId) {
+      this.$emit("pickup-object", objectId);
+    },
+    async loadBackpack() {
+        this.backbackObjects = [];
+        const response = await this.$http.get("/member/backpack");
+        this.backbackObjects = response.data.objects;
     }
   },
   watch: {
@@ -319,9 +335,7 @@ export default Vue.extend({
     },
     async activePanel() {
       if(this.activePanel === 'backpack') {
-        this.backbackObjects = [];
-        const response = await this.$http.get("/member/backpack");
-        this.backbackObjects = response.data.objects;
+        await this.loadBackpack();
       }
     }
   },

@@ -88,6 +88,25 @@ class ObjectInstanceController {
       response.status(400).json({ error: error.message });
     }
   }
+
+  public async pickUpObjectInstance(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+
+    try {
+      const id = Number.parseInt(request.params.id);
+      const objectInstance = await this.objectInstanceService.find(id);
+
+      if (objectInstance.member_id != session.id) {
+        throw new Error('Not the owner of this object');
+      }
+      await this.objectInstanceService.updateObjectPlaceId(id, 0);
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error.message });
+    }
+  }
 }
 const objectInstanceService = Container.get(ObjectInstanceService);
 const placeService = Container.get(PlaceService);

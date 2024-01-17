@@ -23,6 +23,7 @@
         @move-object="moveObject"
         @beam-to="beamTo"
         @drop-object="dropObject"
+        @pickup-object="pickupObject"
       ></chat>
     </div>
   </div>
@@ -67,11 +68,7 @@ export default Vue.extend({
   },
   methods: {
     addSharedObject(obj, browser): void {
-      console.log('adding shared object', obj);
       obj.url = `/assets/object/${obj.directory}/${obj.filename}`;
-      console.log(obj.position);
-      console.log(obj.rotation);
-      console.log(obj.position.x);
       if (obj.position == null) {
         obj.position = {
           x: 0,
@@ -81,7 +78,6 @@ export default Vue.extend({
       } else {
         obj.position = JSON.parse(obj.position);
       }
-      console.log(obj.position);
 
       if (obj.rotation == null) {
         obj.rotation = {
@@ -93,13 +89,10 @@ export default Vue.extend({
       } else {
         obj.rotation = JSON.parse(obj.rotation);
       }
-      console.log('position', obj.position);
-      console.log('rotation', obj.rotation);
 
       const sharedObject = browser.currentScene.createProto("SharedObject");
       sharedObject.name = obj.name;
       sharedObject.id = obj.id;
-      console.log('SHAREDO',sharedObject);
       sharedObject.translation = new X3D.SFVec3f(
         obj.position.x,
         obj.position.y,
@@ -113,20 +106,13 @@ export default Vue.extend({
       );
       const inline = browser.currentScene.createNode("Inline");
       inline.url = new X3D.MFString(obj.url);
-      console.log('inline',inline);
       sharedObject.children[0] = inline;
       browser.currentScene.addRootNode(sharedObject);
-      console.log('SHAREDO2',sharedObject);
-      console.log('name',sharedObject.name);
-      console.log('rotation',sharedObject.rotation);
-			console.log('IMPORT',sharedObject.import);
-			console.log('MOVBE',sharedObject["startMove"]);
 
       sharedObject.addFieldCallback("newPosition", {}, (pos) => {
         //todo happens when accepted
-        console.log("new so position fired");
-        console.log(obj);
         this.saveObjectLocation(obj.id);
+        // TODO: dispatch event for new position for object
 
         /*
             BxxEvents.dispatchEvent(
@@ -147,10 +133,8 @@ export default Vue.extend({
 
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
         //todo happens when accepted
-        console.log("new so rotation fired");
-        console.log('OOO',obj);
-        console.log('RRRR',rot);
         this.saveObjectLocation(obj.id);
+        // TODO: dispatch event for new position for object
         /*
             BxxEvents.dispatchEvent(
               new CustomEvent("SO:toServer:rotation", {
@@ -238,15 +222,10 @@ export default Vue.extend({
       });
     },
     moveObject(objectId): void {
-      console.log(objectId);
-      console.log(this.sharedObjectsMap);
       this.sharedObjectsMap.get(objectId).startMove = true;
     },
     dropObject(objectId): void {
-      // TODO: send ajax to update object's location
-      console.log('users',this.users);
-      console.log('objectId',objectId);
-
+      // TODO: allow this to return an object for use
       this.$http.post(`/object_instance/${  objectId  }/drop`, {
         placeId: this.$store.data.place.id,
         position: {
@@ -262,36 +241,18 @@ export default Vue.extend({
         },
       });
 
-/*
-      this.sharedObjects.push({
-
-      });
-      */
-     //this.sharedObjectsMap
-
-          //this.addSharedObject(object, browser);
+      // TODO: add to the scene 
       /*
-      this.$http.post(`/object_instance/${  objectId  }/position`, {
-        position: {
-          x: obj.translation.x,
-          y: obj.translation.y,
-          z: obj.translation.z,
-        },
-        rotation: {
-          x: obj.rotation.x,
-          y: obj.rotation.y,
-          z: obj.rotation.z,
-          angle: obj.rotation.angle,
-        },
-      });
-      */
-
-      // add to the scene (just like beamTo's placement)
-
-      // update objects
-
-
-
+        this.sharedObjects.forEach((object) => {
+          this.addSharedObject(object, browser);
+        });
+        */
+      // TODO: update objects
+    },
+    pickupObject(objectId): void {
+      this.$http.post(`/object_instance/${  objectId  }/pickup`);
+      // TODO: remove to the scene 
+      // TODO: update objects
     },
     beamTo(userId): void {
       const user = this.users[userId];
@@ -478,11 +439,6 @@ export default Vue.extend({
     },
     saveObjectLocation(objectId): void {
       const obj = this.sharedObjectsMap.get(objectId);
-      console.log('objectID:',objectId);
-      console.log('OBJECT:',obj);
-      console.log('thisobj',obj.rotation);
-      console.log('thisobj',obj.position);
-      console.log('thisobj',obj.translation);
       this.$http.post(`/object_instance/${  objectId  }/position`, {
         position: {
           x: obj.translation.x,
@@ -650,10 +606,9 @@ export default Vue.extend({
       setTimeout(() => {
         this.sharedObjectsMap = new Map();
         this.sharedObjects.forEach((object) => {
-          console.log(object);
           this.addSharedObject(object, browser);
         });
-      }, 3000);
+      }, 2000);
 
       this.startSharedEvents();
       this.start3DSocketListeners();
