@@ -92,8 +92,6 @@
             <br />
             <router-link to="/logout" class="btn-ui">Logout</router-link>
             <br />
-            <br /><center>
-			</center>
             <p align="center">
               <a
                 href="https://kdaws.com/"
