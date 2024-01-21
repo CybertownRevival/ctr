@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void> {
     console.log(`Adding ${columnName} column to member table`);
     await knex.schema.alterTable('member', table => {
       table.integer(columnName)
+        .unsigned()
         .notNullable()
         .defaultTo(0);
     });  
