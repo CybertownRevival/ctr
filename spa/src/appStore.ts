@@ -13,8 +13,8 @@ export interface User {
     token?: string;
     admin?: boolean;
     hasHome?: boolean;
-	chatdefault?: number;
-	firstname?: string;
+    chatdefault?: number;
+    firstname?: string;
 }
 
 export interface Place {
