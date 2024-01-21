@@ -127,8 +127,14 @@ export class MemberService {
       xp: member.xp,
       firstName: member.firstname,
       lastName: member.lastname,
+	  chatdefault: member.chatdefault,
       primary_role_id: member.primary_role_id,
     };
+  }
+  
+  public async getMemberChat(memberId: number): Promise<number> {
+    const member = await this.find({ id: memberId });
+    return member.chatdefault;
   }
 
   /**
@@ -144,6 +150,7 @@ export class MemberService {
       immigrationDate: member.created_at,
       username: member.username,
       xp: member.xp,
+	  chatdefault: member.chatdefault,
     };
   }
 
@@ -163,6 +170,7 @@ export class MemberService {
       xp: member.xp,
       firstName: member.firstname,
       lastName: member.lastname,
+	  chatdefault: member.chatdefault,
     };
   }
 
@@ -325,6 +333,17 @@ export class MemberService {
     await this.memberRepository.update(memberId, {
       firstname: firstName,
       lastname: lastName,
+    });
+  }
+  
+  /**
+   * Updates a members default chat choice
+   * @param memberId id of the member
+   * @param chatdefault string of the chatdefault
+   */
+  public async updateInfo(memberId: number, chatdefault: number): Promise<void> {
+    await this.memberRepository.update(memberId, {
+      chatdefault: chatdefault,
     });
   }
 

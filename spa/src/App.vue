@@ -37,6 +37,7 @@
        </div>
        <div class="flex flex-row justify-center" v-if="$store.data.place.name">
         <span class="inline" style="color:lime;">{{ $store.data.place.name }}</span> 
+		
 	</div>
           <div class="flex flex-row justify-center">
             <img src="/assets/img/b2dchat.gif" @click="$store.methods.setView3d(false)"
@@ -91,7 +92,8 @@
             <br />
             <router-link to="/logout" class="btn-ui">Logout</router-link>
             <br />
-            <br />
+            <br /><center>
+			</center>
             <p align="center">
               <a
                 href="https://kdaws.com/"
@@ -346,7 +348,6 @@ export default Vue.extend({
   },
   mounted() {
     //todo populate jumpgate with worlds
-
     X3D(
       () => {
         console.log("starting X3d");

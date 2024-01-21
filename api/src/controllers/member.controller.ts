@@ -96,8 +96,22 @@ class MemberController {
       response.status(400).json({
         error: 'Error on Updating',
       });
-    }
-    
+    }  
+  }
+  
+  public async updateInfo(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const { id } = session;
+    const { chatdefault } = request.body;
+    try {
+      await this.memberService.updateInfo(id, chatdefault);
+      response.status(200).json({message: 'success'});
+    }catch (error) {
+      response.status(400).json({
+        error: 'Error on Updating',
+      });
+    }  
   }
   
   /** isBanned results based on member status
@@ -195,7 +209,9 @@ class MemberController {
         if (status !== 0) {
           this.memberService.maybeGiveDailyCredits(session.id);
           const homeInfo = await this.homeService.getHome(session.id);
+		  const chatdefault = await this.memberService.getMemberChat(session.id);
           session.hasHome = !!homeInfo;
+		  session.chatdefault = chatdefault;
         }
         response.status(200).json({
           message: 'success',

@@ -28,6 +28,8 @@ export interface Member extends Model {
   firstname: string;
   /** the real last name */
   lastname: string;
+  /** default chat choice */
+  chatdefault: number;
   /** the role they wish to display in chat */
   primary_role_id?: number;
   /** this last time they received role based credits */

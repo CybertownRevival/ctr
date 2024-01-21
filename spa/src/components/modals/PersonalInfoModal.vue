@@ -50,6 +50,10 @@
               </select>
               </td>
             </tr>
+            <tr>
+              <td><b>Default Chat</b></td>
+              <td><b>2D</b> <input type="radio" v-model="info.chatdefault" value="0">&nbsp;<b>3D</b> <input type="radio" v-model="info.chatdefault" value="1"></td>
+            </tr>
         </table>
         <div class="text-center flex-1">
           <p>
@@ -93,6 +97,7 @@ export default Vue.extend({
         immigrationDate: undefined,
         walletBalance: undefined,
         xp: undefined,
+		chatdefault: undefined,
         primary_role_id: undefined,
       },
       roles: [],
@@ -112,6 +117,9 @@ export default Vue.extend({
         this.$http.post("/member/updatename", {
 	  firstName: this.info.firstName,
 	  lastName: this.info.lastName,
+        });
+        this.$http.post("/member/updateinfo", {
+	  chatdefault: this.info.chatdefault,
         });
         this.error = null;
         this.success = "Information Updated";
