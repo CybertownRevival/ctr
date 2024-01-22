@@ -44,4 +44,8 @@ export class ObjectInstanceService {
   public async add(object: Partial<Object>, memberId: number): Promise<any> {
     await this.objectInstanceRepository.create(object.id, memberId, 0);
   }
+
+  public async getObjectInstanceWithObject(objectInstanceId: number): Promise<any> {
+    return await this.objectInstanceRepository.getObjectInstanceWithObject(objectInstanceId);
+  }
 }

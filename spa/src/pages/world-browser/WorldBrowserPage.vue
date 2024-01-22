@@ -224,14 +224,18 @@ export default Vue.extend({
     moveObject(objectId): void {
       this.sharedObjectsMap.get(objectId).startMove = true;
     },
-    dropObject(objectId): void {
-      // TODO: allow this to return an object for use
-      this.$http.post(`/object_instance/${  objectId  }/drop`, {
+    async dropObject(objectId): Promise<void> {
+      const browser = X3D.getBrowser();
+      const d = 4;
+      const newX = this.position[0] + (d * Math.sin(this.rotation[3]));
+      const newZ = this.position[2] + (d * Math.cos(this.rotation[3]));
+        
+      const request = await this.$http.post(`/object_instance/${  objectId  }/drop`, {
         placeId: this.$store.data.place.id,
         position: {
-          x: this.position[0],
+          x: newX,
           y: this.position[1],
-          z: this.position[2]
+          z: newZ
         },
         rotation: {
           x: this.rotation[0],
@@ -241,18 +245,43 @@ export default Vue.extend({
         },
       });
 
-      // TODO: add to the scene 
-      /*
-        this.sharedObjects.forEach((object) => {
-          this.addSharedObject(object, browser);
-        });
-        */
-      // TODO: update objects
+      this.sharedObjects.push(request.data.object_instance);
+
+      this.addSharedObject(request.data.object_instance, browser);
     },
     pickupObject(objectId): void {
       this.$http.post(`/object_instance/${  objectId  }/pickup`);
       // TODO: remove to the scene 
+      /*
+      const inline = browser.currentScene.createNode("Inline");
+      inline.url = new X3D.MFString(obj.url);
+      sharedObject.children[0] = inline;
+      browser.currentScene.addRootNode(sharedObject);
+      */
+     const browser = X3D.getBrowser();
+     console.log(browser);
+     console.log(browser.rootNodes);
+     const object = this.sharedObjectsMap.get(objectId);
+     console.log(object);
+     console.log(object[0]);
+     // sharedObject.children[0] = inline;
+      browser.currentScene.removeRootNode(object.children[0]);
+     /*
+      const { id } = event;
+
+      if (this.users[id].inline) {
+        X3D.getBrowser(this.browser)
+          .currentScene
+          .removeRootNode(this.users[id].inline);
+      }
+
+      if (this.users[id].import) {
+        this.users[id].import.dispose();
+      }
+
+      delete this.users[id];
       // TODO: update objects
+      */
     },
     beamTo(userId): void {
       const user = this.users[userId];

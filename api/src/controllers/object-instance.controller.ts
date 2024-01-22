@@ -81,8 +81,9 @@ class ObjectInstanceController {
         request.body.position,
         request.body.rotation,
       );
+      const [objectInstanceData] = await this.objectInstanceService.getObjectInstanceWithObject(id);
 
-      response.status(200).json({ status: 'success' });
+      response.status(200).json({ status: 'success', object_instance: objectInstanceData });
     } catch (error) {
       console.error(error);
       response.status(400).json({ error: error.message });

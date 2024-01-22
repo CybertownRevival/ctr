@@ -30,6 +30,13 @@ export class ObjectInstanceRepository {
       .join('object', 'object.id', 'object_instance.object_id');
   }
 
+  public async getObjectInstanceWithObject(objectInstanceId: number): Promise<ObjectInstance[]> {
+    return this.db.objectInstance
+      .select('object_instance.*', 'object.filename', 'object.directory', 'object.name')
+      .where('object_instance.id', objectInstanceId)
+      .join('object', 'object.id', 'object_instance.object_id');
+  }
+
   public async updateObjectPlaceId(objectInstanceId: number, placeId: number): Promise<void> {
     await this.db.objectInstance.where({ id: objectInstanceId }).update({
       place_id: placeId,
