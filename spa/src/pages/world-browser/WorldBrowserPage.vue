@@ -248,40 +248,21 @@ export default Vue.extend({
       this.sharedObjects.push(request.data.object_instance);
 
       this.addSharedObject(request.data.object_instance, browser);
+      // TODO: broad object drop to rest of room
     },
     pickupObject(objectId): void {
+      // update db location
       this.$http.post(`/object_instance/${  objectId  }/pickup`);
-      // TODO: remove to the scene 
-      /*
-      const inline = browser.currentScene.createNode("Inline");
-      inline.url = new X3D.MFString(obj.url);
-      sharedObject.children[0] = inline;
-      browser.currentScene.addRootNode(sharedObject);
-      */
-     const browser = X3D.getBrowser();
-     console.log(browser);
-     console.log(browser.rootNodes);
-     const object = this.sharedObjectsMap.get(objectId);
-     console.log(object);
-     console.log(object[0]);
-     // sharedObject.children[0] = inline;
-      browser.currentScene.removeRootNode(object.children[0]);
-     /*
-      const { id } = event;
 
-      if (this.users[id].inline) {
-        X3D.getBrowser(this.browser)
-          .currentScene
-          .removeRootNode(this.users[id].inline);
-      }
+      // remove to the scene 
+      const browser = X3D.getBrowser();
+      const object = this.sharedObjectsMap.get(objectId);
+      browser.currentScene.removeRootNode(object);
 
-      if (this.users[id].import) {
-        this.users[id].import.dispose();
-      }
+      this.sharedObjectsMap.delete(objectId);
+      this.sharedObjects = this.sharedObjects.filter(obj => obj.id != objectId);
 
-      delete this.users[id];
-      // TODO: update objects
-      */
+      // TODO: broadcast objects removal to rest of room
     },
     beamTo(userId): void {
       const user = this.users[userId];
@@ -481,6 +462,7 @@ export default Vue.extend({
           angle: obj.rotation.angle,
         },
       });
+      // TODO: broadcast object position to rest of the room
     },
     sendSharedEvent(event): void {
       this.$socket.emit("SE", event.detail);
