@@ -110,47 +110,11 @@ export default Vue.extend({
       browser.currentScene.addRootNode(sharedObject);
 
       sharedObject.addFieldCallback("newPosition", {}, (pos) => {
-        //todo happens when accepted
         this.saveObjectLocation(obj.id);
-        // TODO: dispatch event for new position for object
-
-        /*
-            BxxEvents.dispatchEvent(
-              new CustomEvent("SO:toServer:position", {
-                detail: {
-                  id: sharedObject.id,
-                  type: "position",
-                  value: {
-                    x: pos.x,
-                    y: pos.y,
-                    z: pos.z,
-                  },
-                },
-              })
-            );
-            */
       });
 
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
-        //todo happens when accepted
         this.saveObjectLocation(obj.id);
-        // TODO: dispatch event for new position for object
-        /*
-            BxxEvents.dispatchEvent(
-              new CustomEvent("SO:toServer:rotation", {
-                detail: {
-                  id: sharedObject.id,
-                  type: "rotation",
-                  value: {
-                    x: rot.x,
-                    y: rot.y,
-                    z: rot.z,
-                    angle: rot.angle,
-                  },
-                },
-              })
-            );
-            */
       });
       this.sharedObjectsMap.set(obj.id, sharedObject);
     },
@@ -249,6 +213,10 @@ export default Vue.extend({
 
       this.addSharedObject(request.data.object_instance, browser);
       // TODO: broad object drop to rest of room
+      this.$socket.emit('SO', {
+        event: 'add',
+        objectId: objectId
+      });
     },
     pickupObject(objectId): void {
       // update db location
@@ -263,6 +231,10 @@ export default Vue.extend({
       this.sharedObjects = this.sharedObjects.filter(obj => obj.id != objectId);
 
       // TODO: broadcast objects removal to rest of room
+      this.$socket.emit('SO', {
+        event: 'remove',
+        objectId: objectId
+      });
     },
     beamTo(userId): void {
       const user = this.users[userId];
@@ -434,6 +406,15 @@ export default Vue.extend({
         );
       }
     },
+    onSharedObjectEvent(event): void {
+      console.log('shared object event recieved', event);
+      // maybe just remove and reload object
+      const objectInstanceResponse = await this.$http.get(`/place/${  this.$store.data.place.id 
+      }/object_instance`);
+
+      this.sharedObjects = objectInstanceResponse.data.object_instance;
+
+    },
     onVersion(event: { version: string }): void {
       if (event.version !== environment.packageVersion) {
         this.showUpdateWarning = true;
@@ -449,7 +430,7 @@ export default Vue.extend({
     },
     saveObjectLocation(objectId): void {
       const obj = this.sharedObjectsMap.get(objectId);
-      this.$http.post(`/object_instance/${  objectId  }/position`, {
+      const location = {
         position: {
           x: obj.translation.x,
           y: obj.translation.y,
@@ -461,8 +442,14 @@ export default Vue.extend({
           z: obj.rotation.z,
           angle: obj.rotation.angle,
         },
-      });
+
+      }
+      this.$http.post(`/object_instance/${  objectId  }/position`, location);
       // TODO: broadcast object position to rest of the room
+      this.$socket.emit('SO', {
+        event: 'move',
+        detail: location
+      });
     },
     sendSharedEvent(event): void {
       this.$socket.emit("SE", event.detail);
@@ -562,6 +549,7 @@ export default Vue.extend({
       this.$socket.on("AV:del", event => this.onAvatarRemoved(event));
       this.$socket.on("AV:new", event => this.onAvatarAdded(event));
       this.$socket.on("SE", event => this.onSharedEvent(event));
+      this.$socket.on("SO", event => this.onSharedObjectEvent(event));
     },
     async startX3D(): Promise<any> {
       if (!this.browser) {
