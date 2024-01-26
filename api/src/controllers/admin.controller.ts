@@ -1,4 +1,4 @@
-import {request, Request, response, Response} from 'express';
+import {Request, Response} from 'express';
 import { Container } from 'typedi';
 
 import { AdminService, MemberService } from '../services';
@@ -32,8 +32,8 @@ class AdminController {
   public async addDonor(request: Request, response: Response): Promise<void>{
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    const superAdmin = await this.memberService.canSuperAdmin(session.id);
-    if (superAdmin) {
+    const accessLevel = await this.memberService.getAccessLevel(session.id);
+    if (accessLevel === 'admin') {
       try {
         await this.adminService.addDonor(
           request.body.member_id,
@@ -56,7 +56,7 @@ class AdminController {
     if (admin) {
       try {
         const banHistory = await this.adminService
-          .getBanHistory(Number(request.params.ban_member_id));
+          .getBanHistory(Number(request.query.ban_member_id.toString()));
         response.status(200).json({banHistory});
       } catch (error) {
         console.log(error);
@@ -91,9 +91,11 @@ class AdminController {
   public async getDonor(request: Request, response: Response): Promise<string> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    const superAdmin = await this.memberService.canSuperAdmin(session.id);
-    if (superAdmin) {
-      const currentLevel = await this.adminService.getDonor(request.body.memberId);
+    const accessLevel = await this.memberService.getAccessLevel(session.id);
+    if (accessLevel === 'admin') {
+      const currentLevel = await this
+        .adminService
+        .getDonor(Number(request.query.memberId));
       response.status(200).json({donorLevel: currentLevel});
     } else {
       response.status(403).json({error: 'Access Denied'});
@@ -107,9 +109,9 @@ class AdminController {
     if (admin) {
       try {
         const results = await this.adminService.searchUsers(
-          request.body.search,
-          request.body.limit,
-          request.body.offset,
+          request.query.search.toString(),
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
         );
         response.status(200).json({results});
       } catch (error) {
@@ -128,10 +130,10 @@ class AdminController {
     if (admin) {
       try {
         const results = await this.adminService.searchUserChat(
-          request.body.search,
-          parseInt(request.body.user),
-          request.body.limit,
-          request.body.offset,
+          request.query.search.toString(),
+          Number.parseInt(request.query.user.toString()),
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
         );
         response.status(200).json({results});
       } catch (error) {

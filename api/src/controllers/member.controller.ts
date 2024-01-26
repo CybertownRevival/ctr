@@ -1,10 +1,9 @@
 import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
-import {request, Request, response, Response} from 'express';
+import {Request, Response} from 'express';
 import { Container } from 'typedi';
 import validator from 'validator';
 
-import { db, knex } from '../db';
 import { sendPasswordResetEmail, sendPasswordResetUnknownEmail } from '../libs';
 import { MemberService, HomeService } from '../services';
 import { SessionInfo } from 'session-info.interface';
@@ -32,9 +31,8 @@ class MemberController {
   public async getAdminLevel(request: Request, response: Response): Promise<object> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    const admin = await this.memberService.canAdmin(session.id);
-    const superAdmin = await this.memberService.canSuperAdmin(session.id);
-    response.status(200).json({admin, superAdmin});
+    const accessLevel = await this.memberService.getAccessLevel(session.id);
+    response.status(200).json({accessLevel});
   }
   
   public async getDonorLevel(request: Request, response: Response): Promise<string>{
@@ -210,7 +208,7 @@ class MemberController {
       if (session) {
         // refresh client token with latest from database
         const token = await this.memberService.getMemberToken(session.id);
-        const banned = await this.memberService.isBanned(session.id);
+        const {banned, banInfo} = await this.memberService.isBanned(session.id);
         if (!banned) {
           await this.memberService.maybeGiveDailyCredits(session.id);
           const homeInfo = await this.homeService.getHome(session.id);
@@ -221,6 +219,7 @@ class MemberController {
           token,
           user: session,
           banned: banned,
+          banInfo: banInfo,
         });
       } else {
         throw new Error('Invalid or missing token');

@@ -55,30 +55,61 @@ router.beforeEach((to, from, next) => {
 
   if (!["login", "logout", "signup", "forgot", "password_reset", "about", "banned"]
     .includes(to.name)) {
-    api.get<{ user: User, status: number, roleName: string, banned: boolean }>("/member/session").then(response => {
-      const { user } = response.data;
-      const banned = response.data.banned;
-      if (banned) {
-        appStore.methods.destroySession();
-        next({
-          name: "banned",
-          query: { redirect: to.fullPath },
-        });
-      }
-      appStore.methods.setUser(user);
-      appStore.data.isUser = true;
-      next();
-    }).catch(() => {
-      appStore.methods.destroySession();
-      if (to.name !== "home") {
-        next({
-          name: "login",
-          query: { redirect: to.fullPath },
-        });
-      } else {
+    api.get<{
+      user: User,
+      status: number,
+      roleName: string,
+      banned: boolean,
+      banInfo: any,
+    }>("/member/session")
+      .then(response => {
+        const { user } = response.data;
+        const  { banInfo, banned } = response.data;
+        if (banned) {
+          if (
+           banInfo.type === "jail" &&
+           to.fullPath.includes("/messageboard/") ||
+           to.fullPath.includes("/inbox/") ||
+           to.fullPath.includes("/information/")
+          ){
+            next("/restricted");
+          } else if (to.fullPath === "/restricted") {
+            next();
+          } else if (to.fullPath !== "/place/jail" && banInfo.type === "jail") {
+            next("/place/jail");
+            api.get<any>("/place/jail")
+              .then(response => {
+                const Data = response.data;
+                const place = {...Data.place};
+                appStore.methods.setPlace(place);
+              });
+          } else if (to.fullPath === "/place/jail") {
+            next();
+          } else {
+            appStore.methods.destroySession();
+            next({
+              name: "banned",
+              params: {
+                reason: banInfo.reason,
+                enddate: banInfo.end_date,
+              },
+            });
+          }
+        }
+        appStore.methods.setUser(user);
+        appStore.data.isUser = true;
         next();
-      }
-    });
+      }).catch(() => {
+        appStore.methods.destroySession();
+        if (to.name !== "home") {
+          next({
+            name: "login",
+            query: { redirect: to.fullPath },
+          });
+        } else {
+          next();
+        }
+      });
   } else {
     next();
   }

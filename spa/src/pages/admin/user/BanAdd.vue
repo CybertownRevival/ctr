@@ -81,7 +81,7 @@ export default Vue.extend({
   methods:{
     async addBan(): Promise <void>{
       try {
-        await this.$http.post("/admin/addban", {
+        await this.$http.post("/admin/ban", {
           ban_member_id: this.$route.params.id,
           time_frame: this.banDuration,
           type: this.banType,

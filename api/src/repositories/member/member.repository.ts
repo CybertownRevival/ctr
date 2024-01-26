@@ -1,6 +1,7 @@
 import {Service} from 'typedi';
 import { Db } from '../../db/db.class';
 import { Member, Wallet } from 'models';
+import {knex} from '../../db';
 
 /** Repository for interacting with member table data in the database. */
 @Service()
@@ -62,23 +63,40 @@ export class MemberRepository {
       .first();
   }
   
-  public async getBanMaxDate(member_id): Promise<Member> {
-    return this.db.knex
-      .select('end_date')
-      .from('ban')
-      .where('ban_member_id', member_id)
-      .where('status', 1)
-      .orderBy('end_date', 'desc')
-      .limit(1)
-      .first();
-  }
-  
   public async getPrimaryRoleName(memberId: number): Promise<string> {
     return this.db.knex
       .select('role.name', 'member.primary_role_id')
       .from('member')
       .where('member.id', memberId)
       .join('role', 'member.primary_role_id', 'role.id');
+  }
+  
+  /**
+   * This is to assist with the pagination of the user search
+   * @param search
+   * @return number
+   */
+  public async getTotal(search: string): Promise<any> {
+    return knex
+      .count('id as count')
+      .from('member')
+      .where(this.like('username', search));
+  }
+  
+  public async searchUsers(search: string, limit: number, offset: number): Promise<any> {
+    return knex
+      .select(
+        'id',
+        'username',
+        'email',
+        'last_daily_login_credit',
+      )
+      .from('member')
+      .where(this.like('username', search))
+      .orWhere(this.like('email', search))
+      .orderBy('id')
+      .limit(limit)
+      .offset(offset);
   }
 
   /**
@@ -96,4 +114,18 @@ export class MemberRepository {
     await this.db.member.where({ id: memberId }).update(props);
     return returning ? this.findById(memberId) : undefined;
   }
+  
+  /**
+   * This is used to bind the user inputted value to prevent
+   * SQL injection attempts while using a Knex Raw
+   * @param field
+   * @param value
+   * @private
+   */
+  private like(field: string, value: string) {
+    return function() {
+      this.whereRaw('?? LIKE ?', [field, `%${value}%`]);
+    };
+  }
+  
 }

@@ -33,6 +33,15 @@ export class MessageRepository {
         status: 0,
       });
   }
+  
+  public async getChatTotal(search: string, user: number): Promise<any> {
+    return knex
+      .count('message.id as count')
+      .from('message')
+      .innerJoin('place', 'message.place_id', 'place.id')
+      .where('message.member_id', user)
+      .where(this.like('place.name', search));
+  }
 
   public async getResults(
     placeId: number,
@@ -53,4 +62,41 @@ export class MessageRepository {
       .orderBy(orderField, orderDirection)
       .limit(limit);
   }
+  
+  public async searchUserChat(
+    search: string,
+    user: number,
+    limit: number,
+    offset: number,
+  ): Promise<any> {
+    return knex
+      .select(
+        'message.id',
+        'message.body',
+        'message.created_at',
+        'message.status',
+        'place.name',
+      )
+      .from('message')
+      .innerJoin('place', 'message.place_id', 'place.id')
+      .where('message.member_id', user)
+      .where(this.like('place.name', search))
+      .orderBy('message.created_at', 'desc')
+      .limit(limit)
+      .offset(offset);
+  }
+  
+  /**
+   * This is used to bind the user inputted value to prevent
+   * SQL injection attempts while using a Knex Raw
+   * @param field
+   * @param value
+   * @private
+   */
+  private like(field: string, value: string) {
+    return function() {
+      this.whereRaw('?? LIKE ?', [field, `%${value}%`]);
+    };
+  }
+  
 }

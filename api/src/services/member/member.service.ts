@@ -6,7 +6,7 @@ import {Service} from 'typedi';
 
 import {
   AvatarRepository,
-  AdminRepository,
+  BanRepository,
   MapLocationRepository,
   MemberRepository,
   PlaceRepository,
@@ -19,7 +19,6 @@ import {Member} from '../../types/models';
 import {MemberInfoView, MemberAdminView} from '../../types/views';
 import {SessionInfo} from 'session-info.interface';
 import {Request, Response} from 'express';
-import * as console from 'console';
 
 /** Service for dealing with members */
 @Service()
@@ -39,7 +38,7 @@ export class MemberService {
 
   constructor(
     private avatarRepository: AvatarRepository,
-    private adminRepository: AdminRepository,
+    private banRepository: BanRepository,
     private memberRepository: MemberRepository,
     private transactionRepository: TransactionRepository,
     private walletRepository: WalletRepository,
@@ -67,9 +66,20 @@ export class MemberService {
     return !!roleAssignments.find(assignment => ADMIN_ROLES.includes(assignment.role_id));
   }
   
-  public async canSuperAdmin(memberId: number): Promise<boolean>{
+  public async getAccessLevel(memberId: number): Promise<string>{
+    const access = await this.canAdmin(memberId);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-    return roleAssignments[0].role_id === this.roleRepository.roleMap.Admin;
+    const admin = !!roleAssignments
+      .find(assignment => assignment.role_id === this.roleRepository.roleMap.Admin);
+    let accessLevel;
+    if (access && admin) {
+      accessLevel = 'admin';
+    } else if (access) {
+      accessLevel = 'security';
+    } else {
+      accessLevel = 'none';
+    }
+    return accessLevel;
   }
   
   /**
@@ -147,7 +157,7 @@ export class MemberService {
       devotee: await this.roleRepository.roleMap.Devotee,
       champion: await this.roleRepository.roleMap.Champion,
     };
-    return await this.adminRepository.getDonor(memberId, donorId);
+    return await this.roleAssignmentRepository.getDonor(memberId, donorId);
   }
 
   /**
@@ -254,13 +264,12 @@ export class MemberService {
    * @param memberId
    * @return banned boolean true if banned
    */
-  public async isBanned(memberId: number): Promise<boolean> {
+  public async isBanned(memberId: number): Promise<any> {
     let banned = false;
     const member = await this.memberRepository.findById(memberId);
-    const max_end_date = await this.memberRepository.getBanMaxDate(memberId);
-    console.log(typeof max_end_date);
-    if (typeof max_end_date !== 'undefined') {
-      const endDate = new Date(max_end_date.end_date);
+    const banInfo = await this.banRepository.getBanMaxDate(memberId);
+    if (typeof banInfo !== 'undefined') {
+      const endDate = new Date(banInfo.end_date);
       const currentDate = new Date();
       if (member.status === 0 || endDate > currentDate) {
         banned = true;
@@ -268,7 +277,7 @@ export class MemberService {
     } else {
       if (member.status === 0) banned = true;
     }
-    return banned;
+    return {banned, banInfo};
   }
 
   /**

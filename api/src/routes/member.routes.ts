@@ -13,7 +13,7 @@ memberRoutes.post('/is_banned',
   (request, response) => memberController.isBanned(request, response));
 memberRoutes.get('/getrolename',
   (request, response) => memberController.getPrimaryRoleName(request, response));
-memberRoutes.get('/getAdminLevel',
+memberRoutes.get('/getadminlevel',
   (request, response) => memberController.getAdminLevel(request, response));
 memberRoutes.get('/getdonorlevel',
   (request, response) => memberController.getDonorLevel(request, response));

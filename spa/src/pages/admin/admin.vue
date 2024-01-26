@@ -6,7 +6,7 @@
     <div class="mb-2"><router-link class="btn-ui" :to="{name: 'UserSearch'}">Members</router-link></div>
     <div class="btn-ui">Places</div>
   </div>
-  <div class="w-11/12 h-full p-1 overflow-y-scroll"><router-view :superAdmin="superAdmin" /></div>
+  <div class="w-11/12 h-full p-1 overflow-y-scroll"><router-view :accessLevel="accessLevel" /></div>
 </main>
 </template>
 <script lang="ts">
@@ -16,21 +16,16 @@ export default Vue.extend({
   name: "admin",
   data: () => {
     return {
-      superAdmin: false,
-      admin: false,
+      accessLevel: "none",
     };
   },
   methods: {
-    async getAdmin(): Promise<void> {
+    async getAdminLevel(): Promise<void> {
       try{
-        this.superAdmin = false;
-        this.admin = false;
-        await this.$http.get("/member/getAdminLevel")
+        await this.$http.get("/member/getadminlevel")
           .then((response) => {
-            console.log(response.data);
-            this.admin = response.data.admin;
-            this.superAdmin = response.data.superAdmin;
-            if (!this.admin){
+            this.accessLevel = response.data.accessLevel;
+            if (this.accessLevel === "none"){
               this.$router.push({name: "restrictedaccess"});
             }
           });
@@ -39,8 +34,8 @@ export default Vue.extend({
       }
     },
   },
-  mounted() {
-    this.getAdmin();
+  created() {
+    this.getAdminLevel();
   },
 });
 </script>

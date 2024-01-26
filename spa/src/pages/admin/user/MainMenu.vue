@@ -7,10 +7,10 @@
     <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'UserBanHistory'}">BAN</router-link>
     <router-link class="btn-ui-inline mx-1 w-32"
                  :to="{name: 'UserDonor'}"
-                 v-if="superAdmin">DONOR</router-link>
+                 v-if="accessLevel === 'admin'">DONOR</router-link>
   </div>
   <div class="w-full min-w-min place-content-center">
-    <router-view />
+    <router-view :accessLevel="accessLevel" />
   </div>
 </div>
 </template>
@@ -21,7 +21,7 @@ import Vue from "vue";
 export default Vue.extend({
   name: "UserMain",
   props: [
-    "superAdmin",
+    "accessLevel",
   ],
 });
 </script>

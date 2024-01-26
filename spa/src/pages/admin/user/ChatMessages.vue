@@ -120,7 +120,7 @@ export default Vue.extend({
   methods: {
     async getUserChat(): Promise<any> {
       try {
-        return this.$http.post("/admin/userchat", {
+        return this.$http.get("/admin/userchat", {
           search: this.search,
           user: this.$route.params.id,
           limit: this.limit,
@@ -137,7 +137,7 @@ export default Vue.extend({
     async searchPlace(): Promise<any> {
       this.offset = 0;
       try {
-        return this.$http.post("/admin/userchat", {
+        return this.$http.get("/admin/userchat", {
           search: this.search,
           user: this.$route.params.id,
           limit: this.limit,
@@ -161,9 +161,7 @@ export default Vue.extend({
     },
     async deletemessage(id: number): Promise<void> {
       try{
-        this.$http.post("/message/deletemessage", {
-          messageId: id,
-        });
+        this.$http.post(`/message/message/${id}`);
       } catch (e) {
         console.log(e);
       }

@@ -103,7 +103,9 @@ export default Vue.extend({
   },
   methods:{
     async getinfo(): Promise <void>{
-      await this.$http.get(`/admin/getbanhistory/${this.$route.params.id}`)
+      await this.$http.get("/admin/banhistory/", {
+        ban_member_id: this.$route.params.id,
+      })
         .then((response) => {
           this.info = response.data.banHistory;
         });

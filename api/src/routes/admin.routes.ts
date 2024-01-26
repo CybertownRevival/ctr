@@ -2,19 +2,19 @@ import Router from 'express';
 import {adminController} from '../controllers';
 
 const adminRoutes = Router();
-adminRoutes.post('/addban', (request, response) =>
+adminRoutes.post('/ban', (request, response) =>
   adminController.addBan(request, response));
-adminRoutes.post('/adddonor', (request, response) =>
+adminRoutes.post('/donor', (request, response) =>
   adminController.addDonor(request, response));
 adminRoutes.post('/deleteban', (request, response) =>
   adminController.deleteBan(request, response));
-adminRoutes.get('/getbanhistory/:ban_member_id', (request, response) =>
+adminRoutes.get('/banhistory', (request, response) =>
   adminController.getBanHistory(request, response));
-adminRoutes.post('/getdonor', (request, response) =>
- adminController.getDonor(request, response));
-adminRoutes.post('/search', (request, response) =>
+adminRoutes.get('/donor', (request, response) =>
+  adminController.getDonor(request, response));
+adminRoutes.get('/usersearch', (request, response) =>
   adminController.searchUsers(request, response));
-adminRoutes.post('/userchat', (request, response) =>
+adminRoutes.get('/userchat', (request, response) =>
   adminController.searchUserChat(request, response));
 
 export {adminRoutes};

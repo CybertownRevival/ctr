@@ -33,7 +33,7 @@ export default Vue.extend({
   },
   methods: {
     async setDonor(): Promise<void> {
-      await this.$http.post("/admin/adddonor", {
+      await this.$http.post("/admin/donor", {
         member_id: this.$route.params.id,
         level: this.donorLevel,
       })
@@ -43,7 +43,7 @@ export default Vue.extend({
         });
     },
     async getDonor(): Promise<void> {
-      await this.$http.post("/admin/getdonor", {
+      await this.$http.get("/admin/donor", {
         memberId: this.$route.params.id,
       })
         .then((response) =>{

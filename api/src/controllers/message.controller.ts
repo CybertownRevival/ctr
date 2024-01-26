@@ -1,10 +1,8 @@
-import {request, Request, response, Response} from 'express';
+import { Request, Response} from 'express';
 import validator from 'validator';
 import { Container } from 'typedi';
 
 import { MemberService, MessageService } from '../services';
-import {parseInt} from 'lodash';
-import * as console from 'console';
 
 const badwords = require('badwords-list');
 
@@ -32,7 +30,7 @@ class MessageController {
       return;
     }
 
-    if(parseInt(request.params.placeId) <= 0) {
+    if(Number.parseInt(request.params.placeId) <= 0) {
       response.status(400).json({
         error: 'placeId is required.',
       });
@@ -99,8 +97,10 @@ class MessageController {
       });
       return;
     }
+    
+    const messageId = Number.parseInt(request.params.messageid);
   
-    if(parseInt(request.body.messageId) <= 0) {
+    if(messageId <= 0) {
       response.status(400).json({
         error: 'messageId is required.',
       });
@@ -108,7 +108,6 @@ class MessageController {
     }
   
     try {
-      const messageId = Number.parseInt(request.body.messageId);
       // Check if the member has permission to delete the message
       const admin = await this.memberService.canAdmin(session.id);
       if (!admin) {
