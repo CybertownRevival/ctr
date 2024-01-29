@@ -212,15 +212,14 @@ export default Vue.extend({
       this.sharedObjects.push(request.data.object_instance);
 
       this.addSharedObject(request.data.object_instance, browser);
-      // TODO: broad object drop to rest of room
       this.$socket.emit('SO', {
         event: 'add',
         objectId: objectId
       });
     },
-    pickupObject(objectId): void {
+    async pickupObject(objectId): Promise<void> {
       // update db location
-      this.$http.post(`/object_instance/${  objectId  }/pickup`);
+      await this.$http.post(`/object_instance/${  objectId  }/pickup`);
 
       // remove to the scene 
       const browser = X3D.getBrowser();
@@ -229,8 +228,6 @@ export default Vue.extend({
 
       this.sharedObjectsMap.delete(objectId);
       this.sharedObjects = this.sharedObjects.filter(obj => obj.id != objectId);
-
-      // TODO: broadcast objects removal to rest of room
       this.$socket.emit('SO', {
         event: 'remove',
         objectId: objectId
@@ -406,14 +403,23 @@ export default Vue.extend({
         );
       }
     },
-    onSharedObjectEvent(event): void {
-      console.log('shared object event recieved', event);
-      // maybe just remove and reload object
+    async onSharedObjectEvent(event): Promise<void> {
+      const browser = X3D.getBrowser();
+      this.sharedObjects.forEach(sharedObject => {
+        const object = this.sharedObjectsMap.get(sharedObject.id);
+        browser.currentScene.removeRootNode(object);
+        this.sharedObjectsMap.delete(sharedObject.id);
+      });
+      this.sharedObjects = [];
+
       const objectInstanceResponse = await this.$http.get(`/place/${  this.$store.data.place.id 
       }/object_instance`);
 
       this.sharedObjects = objectInstanceResponse.data.object_instance;
-
+      this.sharedObjectsMap = new Map();
+      this.sharedObjects.forEach((object) => {
+        this.addSharedObject(object, browser);
+      });
     },
     onVersion(event: { version: string }): void {
       if (event.version !== environment.packageVersion) {
@@ -428,7 +434,7 @@ export default Vue.extend({
     reloadWindow(): void {
       window.location.reload();
     },
-    saveObjectLocation(objectId): void {
+    async saveObjectLocation(objectId): Promise<void> {
       const obj = this.sharedObjectsMap.get(objectId);
       const location = {
         position: {
@@ -444,10 +450,10 @@ export default Vue.extend({
         },
 
       }
-      this.$http.post(`/object_instance/${  objectId  }/position`, location);
-      // TODO: broadcast object position to rest of the room
+      await this.$http.post(`/object_instance/${  objectId  }/position`, location);
       this.$socket.emit('SO', {
         event: 'move',
+        objectId: objectId,
         detail: location
       });
     },
