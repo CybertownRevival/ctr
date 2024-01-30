@@ -43,17 +43,21 @@ export default Vue.extend({
         });
     },
     async getDonor(): Promise<void> {
-      await this.$http.get("/admin/donor", {
-        memberId: this.$route.params.id,
-      })
-        .then((response) =>{
-          console.log(response);
-          if (response.data.donorLevel.name) {
-            this.status = response.data.donorLevel.name;
-          } else {
-            this.status = "None";
-          }
-        });
+      try {
+        await this.$http.get("/admin/donor", {
+          memberId: this.$route.params.id,
+        })
+          .then((response) => {
+            console.log(response.data.donorLevel.name);
+            if (response.data.donorLevel.name) {
+              this.status = response.data.donorLevel.name;
+            } else {
+              this.status = "None";
+            }
+          });
+      } catch (e) {
+        this.status = "None";
+      }
     },
   },
   mounted() {
