@@ -55,7 +55,7 @@ router.beforeEach((to, from, next) => {
 
   if (!["login", "logout", "signup", "forgot", "password_reset", "about", "banned"]
     .includes(to.name)) {
-    api.get<{ user: User, status: number, roleName: string, chatdefault: number }>("/member/session").then(response => {
+    api.get<{ user: User, status: number, roleName: string }>("/member/session").then(response => {
       const { user } = response.data;
       const { status } = response.data;
       if (status === 0) {
@@ -67,9 +67,6 @@ router.beforeEach((to, from, next) => {
       }
       appStore.methods.setUser(user);
       appStore.data.isUser = true;
-	  if (appStore.data.user.chatdefault === 1) {
-	    appStore.data.view3d = true;
-	  }
       next();
     }).catch(() => {
       appStore.methods.destroySession();
