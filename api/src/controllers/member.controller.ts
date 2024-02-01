@@ -83,29 +83,14 @@ class MemberController {
       response.status(400).json({error});
     }
   }
-  
-  public async updateName(request: Request, response: Response): Promise<void> {
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) return;
-    const { id } = session;
-    const { firstName, lastName } = request.body;
-    try {
-      await this.memberService.updateName(id, firstName, lastName);
-      response.status(200).json({message: 'success'});
-    }catch (error) {
-      response.status(400).json({
-        error: 'Error on Updating',
-      });
-    }  
-  }
-  
+
   public async updateInfo(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const { id } = session;
-    const { chatdefault } = request.body;
+    const { firstName, lastName, chatdefault } = request.body;
     try {
-      await this.memberService.updateInfo(id, chatdefault);
+      await this.memberService.updateInfo(id, firstName, lastName, chatdefault);
       response.status(200).json({message: 'success'});
     }catch (error) {
       response.status(400).json({
