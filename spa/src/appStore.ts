@@ -91,8 +91,8 @@ const appStore = Vue.observable<AppStore>({
             }
             appStore.data.user = { ...appStore.data.user, ...userData };
             if (appStore.data.user.chatdefault === 1) {
-			  appStore.data.view3d = true;
-			}
+	        appStore.data.view3d = true;
+	    }
         },
     },
 });
