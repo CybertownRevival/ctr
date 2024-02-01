@@ -56,6 +56,9 @@
 	      <b>3D</b> <input type="radio" v-model="info.chatdefault" value="1">
 	      </td>
             </tr>
+	   <tr>
+	      <td>Note: You must refresh browser/page after choosing your new default chat choice</td>
+	   </tr>
         </table>
         <div class="text-center flex-1">
           <p>
