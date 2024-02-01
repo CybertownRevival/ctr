@@ -116,11 +116,9 @@ export default Vue.extend({
         this.$http.post("/member/update_role", {
           primaryRoleId: this.selectedRoleId,
         });
-        this.$http.post("/member/updatename", {
+        this.$http.post("/member/updateinfo", {
 	  firstName: this.info.firstName,
 	  lastName: this.info.lastName,
-        });
-        this.$http.post("/member/updateinfo", {
 	  chatdefault: this.info.chatdefault,
         });
         this.error = null;
