@@ -52,7 +52,9 @@
             </tr>
             <tr>
               <td><b>Default Chat</b></td>
-              <td><b>2D</b> <input type="radio" v-model="info.chatdefault" value="0">&nbsp;<b>3D</b> <input type="radio" v-model="info.chatdefault" value="1"></td>
+              <td><b>2D</b> <input type="radio" v-model="info.chatdefault" value="0">&nbsp;
+	      <b>3D</b> <input type="radio" v-model="info.chatdefault" value="1">
+	      </td>
             </tr>
         </table>
         <div class="text-center flex-1">
@@ -92,12 +94,12 @@ export default Vue.extend({
       info: {
         username: undefined,
         email: undefined,
-		firstName: undefined,
-		lastName: undefined,
+	firstName: undefined,
+	lastName: undefined,
         immigrationDate: undefined,
         walletBalance: undefined,
         xp: undefined,
-		chatdefault: undefined,
+	chatdefault: undefined,
         primary_role_id: undefined,
       },
       roles: [],
