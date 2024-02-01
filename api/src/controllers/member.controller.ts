@@ -92,7 +92,7 @@ class MemberController {
     try {
       await this.memberService.updateInfo(id, firstName, lastName, chatdefault);
       response.status(200).json({message: 'success'});
-    }catch (error) {
+    } catch (error) {
       response.status(400).json({
         error: 'Error on Updating',
       });
