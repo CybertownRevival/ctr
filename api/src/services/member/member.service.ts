@@ -150,7 +150,7 @@ export class MemberService {
       immigrationDate: member.created_at,
       username: member.username,
       xp: member.xp,
-	  chatdefault: member.chatdefault,
+      chatdefault: member.chatdefault,
     };
   }
 
