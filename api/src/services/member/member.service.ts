@@ -127,7 +127,7 @@ export class MemberService {
       xp: member.xp,
       firstName: member.firstname,
       lastName: member.lastname,
-	  chatdefault: member.chatdefault,
+      chatdefault: member.chatdefault,
       primary_role_id: member.primary_role_id,
     };
   }
