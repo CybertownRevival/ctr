@@ -211,7 +211,7 @@ class MemberController {
           const homeInfo = await this.homeService.getHome(session.id);
 	  const chatdefault = await this.memberService.getMemberChat(session.id);
           session.hasHome = !!homeInfo;
-	    session.chatdefault = chatdefault;
+	  session.chatdefault = chatdefault;
         }
         response.status(200).json({
           message: 'success',
