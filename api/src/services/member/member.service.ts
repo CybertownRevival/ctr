@@ -170,7 +170,7 @@ export class MemberService {
       xp: member.xp,
       firstName: member.firstname,
       lastName: member.lastname,
-	  chatdefault: member.chatdefault,
+      chatdefault: member.chatdefault,
     };
   }
 
