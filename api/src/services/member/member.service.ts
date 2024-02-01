@@ -322,28 +322,19 @@ export class MemberService {
   private encryptPassword(password: string): Promise<string> {
     return bcrypt.hash(password, MemberService.SALT_ROUNDS);
   }
-
+  
   /**
-   * Updates a members first and last name
+   * Updates a members default chat choice firstname and lastname
    * @param memberId id of the member
    * @param firstName string of the first name
    * @param lastName string of the last name
-   */
-  public async updateName(memberId: number, firstName: string, lastName: string): Promise<void> {
-    await this.memberRepository.update(memberId, {
-      firstname: firstName,
-      lastname: lastName,
-    });
-  }
-  
-  /**
-   * Updates a members default chat choice
-   * @param memberId id of the member
    * @param chatdefault string of the chatdefault
    */
-  public async updateInfo(memberId: number, chatdefault: number): Promise<void> {
+  public async updateInfo(memberId: number, firstName: string, lastName: string, chatdefault: number): Promise<void> {
     await this.memberRepository.update(memberId, {
-      chatdefault: chatdefault,
+	  firstname: firstName,
+	  lastname: lastName,
+    chatdefault: chatdefault,
     });
   }
 
