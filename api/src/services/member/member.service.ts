@@ -329,12 +329,19 @@ export class MemberService {
    * @param firstName string of the first name
    * @param lastName string of the last name
    * @param chatdefault string of the chatdefault
+   * Must retain updateName here for first time home firstname/lastname addition
    */
+  public async updateName(memberId: number, firstName: string, lastName: string): Promise<void> {
+    await this.memberRepository.update(memberId, {
+	  firstname: firstName,
+	  lastname: lastName,
+    });
+  }
   public async updateInfo(memberId: number, firstName: string, lastName: string, chatdefault: number): Promise<void> {
     await this.memberRepository.update(memberId, {
 	  firstname: firstName,
 	  lastname: lastName,
-    chatdefault: chatdefault,
+          chatdefault: chatdefault,
     });
   }
 
