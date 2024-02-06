@@ -34,4 +34,8 @@ export interface Member extends Model {
   primary_role_id?: number;
   /** this last time they received role based credits */
   last_weekly_role_credit: Date;
+  /** this is the max end date of the last ban the user has */
+  end_date?: string;
+  /** this is the ban status for the user */
+  banned: boolean;
 }

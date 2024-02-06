@@ -2,21 +2,23 @@ import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import { Service } from 'typedi';
+import {Service} from 'typedi';
 
 import {
   AvatarRepository,
+  BanRepository,
+  MapLocationRepository,
   MemberRepository,
+  PlaceRepository,
+  RoleAssignmentRepository,
+  RoleRepository,
   TransactionRepository,
   WalletRepository,
-  PlaceRepository,
-  MapLocationRepository,
-  RoleAssignmentRepository,
 } from '../../repositories';
-import { Member, Place } from '../../types/models';
-import { MemberInfoView } from '../../types/views';
-import { SessionInfo } from 'session-info.interface';
-import { Request, Response } from 'express';
+import {Member} from '../../types/models';
+import {MemberInfoView, MemberAdminView} from '../../types/views';
+import {SessionInfo} from 'session-info.interface';
+import {Request, Response} from 'express';
 
 /** Service for dealing with members */
 @Service()
@@ -36,14 +38,50 @@ export class MemberService {
 
   constructor(
     private avatarRepository: AvatarRepository,
+    private banRepository: BanRepository,
     private memberRepository: MemberRepository,
     private transactionRepository: TransactionRepository,
     private walletRepository: WalletRepository,
     private placeRepository: PlaceRepository,
     private mapLocationRespository: MapLocationRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
+    private roleRepository: RoleRepository,
   ) {}
-
+  
+  
+  public async canAdmin(memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    // Extracted admin roles into a constant for easy management
+    const ADMIN_ROLES = [
+      this.roleRepository.roleMap.Admin,
+      this.roleRepository.roleMap.CityMayor,
+      this.roleRepository.roleMap.DeputyMayor,
+      this.roleRepository.roleMap.CityCouncil,
+      this.roleRepository.roleMap.SecurityCaptain,
+      this.roleRepository.roleMap.SecurityChief,
+      this.roleRepository.roleMap.SecurityLieutenant,
+      this.roleRepository.roleMap.SecurityOfficer,
+      this.roleRepository.roleMap.SecuritySergeant,
+    ];
+    return !!roleAssignments.find(assignment => ADMIN_ROLES.includes(assignment.role_id));
+  }
+  
+  public async getAccessLevel(memberId: number): Promise<string>{
+    const access = await this.canAdmin(memberId);
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    const admin = !!roleAssignments
+      .find(assignment => assignment.role_id === this.roleRepository.roleMap.Admin);
+    let accessLevel;
+    if (access && admin) {
+      accessLevel = 'admin';
+    } else if (access) {
+      accessLevel = 'security';
+    } else {
+      accessLevel = 'none';
+    }
+    return accessLevel;
+  }
+  
   /**
    * Creates a new member with the given email, username, and password. If successful, distributes
    * daily login bonuses, and returns an encoded member token.
@@ -52,6 +90,7 @@ export class MemberService {
    * @param password  raw member password
    * @returns promise resolving in the session token for the newly created member
    */
+  
   public async createMemberAndLogin(
     email: string,
     username: string,
@@ -110,6 +149,16 @@ export class MemberService {
   public async findByPasswordResetToken(resetToken: string): Promise<Member> {
     return this.memberRepository.findByPasswordResetToken(resetToken);
   }
+  
+  public async getDonorLevel(memberId: number): Promise<string> {
+    const donorId = {
+      supporter: await this.roleRepository.roleMap.Supporter,
+      advocate: await this.roleRepository.roleMap.Advocate,
+      devotee: await this.roleRepository.roleMap.Devotee,
+      champion: await this.roleRepository.roleMap.Champion,
+    };
+    return await this.roleAssignmentRepository.getDonor(memberId, donorId);
+  }
 
   /**
    * Builds a member info view.
@@ -159,7 +208,7 @@ export class MemberService {
    * @param memberId id of member to retrieve info for
    * @returns promise resolving in a member info view object, or rejecting on error
    */
-  public async getMemberInfoAdmin(memberId: number): Promise<MemberInfoView> {
+  public async getMemberInfoAdmin(memberId: number): Promise<MemberAdminView> {
     const member = await this.find({ id: memberId });
     const wallet = await this.walletRepository.findById(member.wallet_id);
     return {
@@ -171,6 +220,8 @@ export class MemberService {
       firstName: member.firstname,
       lastName: member.lastname,
       chatdefault: member.chatdefault,
+      last_daily_login_credit: member.last_daily_login_credit,
+      last_weekly_role_credit: member.last_weekly_role_credit,
     };
   }
 
@@ -216,9 +267,25 @@ export class MemberService {
     return member.admin;
   }
   
-  public async isBanned(memberId: number): Promise<number> {
+  /**
+   * Checks if the user is currently banned
+   * @param memberId
+   * @return banned boolean true if banned
+   */
+  public async isBanned(memberId: number): Promise<any> {
+    let banned = false;
     const member = await this.memberRepository.findById(memberId);
-    return member.status;
+    const banInfo = await this.banRepository.getBanMaxDate(memberId);
+    if (typeof banInfo !== 'undefined') {
+      const endDate = new Date(banInfo.end_date);
+      const currentDate = new Date();
+      if (member.status === 0 || endDate > currentDate) {
+        banned = true;
+      }
+    } else {
+      if (member.status === 0) banned = true;
+    }
+    return {banned, banInfo};
   }
 
   /**
@@ -364,22 +431,41 @@ export class MemberService {
     const member = await this.memberRepository.findById(memberId);
     await this.transactionRepository.createHomeRefundTransaction(member.wallet_id, amount);
   }
-
+  
   /**
    * Attempts to decode the session token present in the request and automatically responds with a
    * 400 error if decryption is unsuccessful
-   * @param request express request object
+   * @param request Express request object
+   * @param response Express response object used for sending error messages in case of token
+   * decryption failure
    * @returns session info object if decoding was successful, `void` otherwise
    */
   public decryptSession(request: Request, response: Response): SessionInfo {
     const { apitoken } = request.headers;
-    const session = this.decodeMemberToken(<string>apitoken);
-    if (!session) {
+    
+    if (!apitoken || typeof apitoken !== 'string') {
       response.status(400).json({
-        error: 'Invalid or missing token.',
+        error: 'Invalid token.',
       });
       return;
     }
-    return session;
+    
+    try {
+      const session = this.decodeMemberToken(apitoken);
+      if (!session) {
+        console.log('Invalid or missing Token');
+        response.status(400).json({
+          error: 'Invalid or missing token.',
+        });
+        return;
+      }
+      return session;
+    } catch (error) {
+      console.log('Malformed JWT token (expected if logged out)');
+      response.status(400).json({
+        error: 'Malformed JWT token.',
+      });
+      return;
+    }
   }
 }

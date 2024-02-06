@@ -103,6 +103,9 @@
               <input type="radio" :value="key" v-model="home3d" class="mr-3"/>
               <img :src="'/assets/img/homes/Picon3D' + key + '.gif'" /><br/>
               Price: <strong>{{ item.price }}cc</strong>
+              <span v-show="key==='championhome' && donorLevel==='Champion'">
+                <br/>Thank you for your donation!
+              </span>
             </div>
           </template>
         </div>
@@ -157,6 +160,7 @@ export default Vue.extend({
       lastName: "",
       icon2d: null,
       home3d: null,
+      donorLevel: undefined,
     };
   },
   methods: {
@@ -164,9 +168,16 @@ export default Vue.extend({
       return Promise.all([
         this.$http.get("/block/" + this.$route.params.id + "/locations"),
         this.$http.get("/home"),
+        this.$http.get("/member/getdonorlevel"),
       ]).then((response) => {
         this.locations = response[0].data.locations;
         this.homeResponse = response[1].data;
+        this.donorLevel = response[2].data.name;
+        console.log(this.donorLevel);
+
+        if(this.donorLevel === "Champion"){
+          this.homeData.championhome.price = 0;
+        }
 
         if(this.homeResponse.homeData) {
           this.relocating = true;

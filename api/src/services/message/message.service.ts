@@ -24,6 +24,10 @@ export class MessageService {
   ): Promise<number> {
     return await this.messageRepository.create(memberId, placeId, messageBody, status);
   }
+  
+  public async deleteMessage(messageId: number): Promise<void> {
+    await this.messageRepository.deleteMessage(messageId);
+  }
 
   public async getResults(
     placeId: number,

@@ -51,6 +51,10 @@ export class HomeDesignRepository {
       'id': '008',
       'price': 100000,
     },
+    {
+      'id': 'championhome',
+      'price': 0,
+    },
   ]
 
   constructor() {}

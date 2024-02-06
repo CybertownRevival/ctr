@@ -4,6 +4,7 @@ import express from 'express';
 import { Request, Response } from 'express';
 import morgan from 'morgan';
 import {
+  adminRoutes,
   avatarRoutes,
   memberRoutes,
   messageRoutes,
@@ -51,6 +52,7 @@ app.use('/api/colony', colonyRoutes);
 app.use('/api/block', blockRoutes);
 app.use('/api/home', homeRoutes);
 app.use('/api/messageboard', messageboardRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/inbox', inboxRoutes);
 
 app.use((request, response, next) => {

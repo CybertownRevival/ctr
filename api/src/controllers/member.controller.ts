@@ -1,10 +1,9 @@
 import * as _ from 'lodash';
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import { Container } from 'typedi';
 import validator from 'validator';
 
-import { db, knex } from '../db';
 import { sendPasswordResetEmail, sendPasswordResetUnknownEmail } from '../libs';
 import { MemberService, HomeService } from '../services';
 import { SessionInfo } from 'session-info.interface';
@@ -29,6 +28,24 @@ class MemberController {
    */
   constructor(private memberService: MemberService, private homeService: HomeService) {}
 
+  public async getAdminLevel(request: Request, response: Response): Promise<object> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const accessLevel = await this.memberService.getAccessLevel(session.id);
+    response.status(200).json({accessLevel});
+  }
+  
+  public async getDonorLevel(request: Request, response: Response): Promise<string>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const donorLevel = await this.memberService.getDonorLevel(session.id);
+      response.status(200).json(donorLevel);
+    } catch (e) {
+      response.status(400).json({error: 'Something went wrong try to get donor level.'});
+    }
+  }
+  
   /**
    * Controller method for providing member information
    * @route /api/member/info
@@ -40,7 +57,7 @@ class MemberController {
       let memberInfo;
 
       if (typeof request.params.id !== 'undefined') {
-        if (await memberService.isAdmin(session.id)) {
+        if (await this.memberService.canAdmin(session.id)) {
           memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
         } else if (parseInt(request.params.id) === session.id) {
           memberInfo = await this.memberService.getMemberInfo(parseInt(request.params.id));
@@ -190,9 +207,9 @@ class MemberController {
       if (session) {
         // refresh client token with latest from database
         const token = await this.memberService.getMemberToken(session.id);
-        const status = await this.memberService.isBanned(session.id);
-        if (status !== 0) {
-          this.memberService.maybeGiveDailyCredits(session.id);
+        const {banned, banInfo} = await this.memberService.isBanned(session.id);
+        if (!banned) {
+          await this.memberService.maybeGiveDailyCredits(session.id);
           const homeInfo = await this.homeService.getHome(session.id);
 	  const chatdefault = await this.memberService.getMemberChat(session.id);
           session.hasHome = !!homeInfo;
@@ -202,7 +219,8 @@ class MemberController {
           message: 'success',
           token,
           user: session,
-          status: status,
+          banned: banned,
+          banInfo: banInfo,
         });
       } else {
         throw new Error('Invalid or missing token');
