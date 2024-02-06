@@ -14,10 +14,6 @@ import {
   RoleRepository,
   TransactionRepository,
   WalletRepository,
-  PlaceRepository,
-  MapLocationRepository,
-  RoleAssignmentRepository,
-  ObjectInstanceRepository,
   ObjectInstanceRepository,
 } from '../../repositories';
 import { Member } from '../../types/models';

@@ -1,5 +1,4 @@
 import Router, { response } from 'express';
-import Router, { response } from 'express';
 
 import { memberController } from '../controllers';
 
