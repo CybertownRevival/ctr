@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Supporter",
+    "income_xp": 0,
+    "income_cc": 0
+  },
+  {
+    "name": "Advocate",
+    "income_xp": 0,
+    "income_cc": 0
+  },
+  {
+    "name": "Devotee",
+    "income_xp": 0,
+    "income_cc": 0
+  },
+  {
+    "name": "Champion",
+    "income_xp": 0,
+    "income_cc": 0
+  }
+]

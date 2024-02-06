@@ -1,8 +1,14 @@
 import { Service } from 'typedi';
 
-import { ColonyRepository, RoleAssignmentRepository, RoleRepository, MemberRepository } from '../../repositories';
+import {
+  ColonyRepository,
+  RoleAssignmentRepository,
+  RoleRepository,
+  MemberRepository,
+} from '../../repositories';
 import { Place } from '../../types/models';
 import * as console from 'console';
+import {includes} from 'lodash';
 
 /** Service for dealing with colony */
 @Service()

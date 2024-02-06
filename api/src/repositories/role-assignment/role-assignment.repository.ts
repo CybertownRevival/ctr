@@ -8,10 +8,47 @@ import { RoleAssignment } from '../../types/models';
 @Service()
 export class RoleAssignmentRepository {
   constructor(private db: Db) {}
-
+  
+  public async addDonor(member_id: number, roleId: any): Promise<void> {
+    try{
+      await this.db.knex('role_assignment')
+        .where('member_id', member_id)
+        .whereIn('role_id', [
+          roleId.supporter,
+          roleId.advocate,
+          roleId.devotee,
+          roleId.champion,
+        ])
+        .del();
+    } finally {
+      if (roleId.donorLevel !== undefined) {
+        await this.db.knex('role_assignment').insert({
+          member_id: member_id,
+          role_id: roleId.donorLevel,
+        });
+      }
+    }
+  }
+  
   public async getByMemberId(memberId: number): Promise<RoleAssignment[]> {
     const roleResults = await this.db.roleAssignment.where('member_id', memberId);
     return roleResults;
+  }
+  
+  public async getDonor(memberId: number, roleId: any): Promise<string> {
+    return this.db.knex
+      .select('role.name')
+      .from('role_assignment')
+      .innerJoin('role', 'role_assignment.role_id', 'role.id')
+      .where('role_assignment.member_id', memberId)
+      .whereIn('role_id', [
+        roleId.supporter,
+        roleId.advocate,
+        roleId.devotee,
+        roleId.champion,
+      ])
+      .limit(1)
+      .first();
   }
   
   public async getRoleNameAndIdByMemberId(memberId: number): Promise<any> {

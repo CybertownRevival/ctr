@@ -9,7 +9,7 @@ import {
   MemberRepository,
 } from '../../repositories';
 import {Member, Place} from '../../types/models';
-import {request} from 'express';
+import {includes} from 'lodash';
 
 /** Service for dealing with blocks */
 @Service()

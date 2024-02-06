@@ -30,7 +30,7 @@ class MessageController {
       return;
     }
 
-    if(parseInt(request.params.placeId) <= 0) {
+    if(Number.parseInt(request.params.placeId) <= 0) {
       response.status(400).json({
         error: 'placeId is required.',
       });
@@ -84,6 +84,46 @@ class MessageController {
           error: 'A problem occurred creating message.',
         });
       }
+    }
+  }
+  
+  /** delete a message from the chat **/
+  public async deleteMessage(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    
+    const messageId = Number.parseInt(request.params.messageid);
+  
+    if(messageId <= 0) {
+      response.status(400).json({
+        error: 'messageId is required.',
+      });
+      return;
+    }
+  
+    try {
+      // Check if the member has permission to delete the message
+      const admin = await this.memberService.canAdmin(session.id);
+      if (!admin) {
+        response.status(403).json({
+          error: 'You do not have permission to delete this message.',
+        });
+        return;
+      }
+  
+      await this.messageService.deleteMessage(messageId);
+      response.status(200).json({ success: true });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({
+        error: 'A problem occurred while trying to delete the message.',
+      });
     }
   }
 
