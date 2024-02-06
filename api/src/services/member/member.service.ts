@@ -18,6 +18,7 @@ import {
   MapLocationRepository,
   RoleAssignmentRepository,
   ObjectInstanceRepository,
+  ObjectInstanceRepository,
 } from '../../repositories';
 import { Member } from '../../types/models';
 import { MemberInfoView, MemberAdminView } from '../../types/views';
@@ -357,6 +358,7 @@ export class MemberService {
   }
 
   public async updatePrimaryRoleId(memberId: number, primaryRoleId: number): Promise<void> {
+    await this.memberRepository.update(memberId, { primary_role_id: primaryRoleId });
     await this.memberRepository.update(memberId, { primary_role_id: primaryRoleId });
   }
 

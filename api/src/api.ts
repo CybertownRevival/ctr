@@ -17,6 +17,7 @@ import {
   blockRoutes,
   homeRoutes,
   messageboardRoutes,
+  mallRoutes,
   inboxRoutes,
   mallRoutes,
 } from './routes';
