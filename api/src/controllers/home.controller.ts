@@ -120,7 +120,7 @@ class HomeController {
         if(home3d) {
           // check they have enough in their wallet to buy the 3d home
           // this is optional (if not null)
-          const homeDesignInfo = this.homeService.getHomeDesign(home3d);
+          const homeDesignInfo = await this.homeService.getHomeDesign(session.id, home3d);
           if(homeDesignInfo.price > memberInfo.walletBalance) {
             throw new Error('Not enough funds to purchase house.');
           }
@@ -239,7 +239,7 @@ class HomeController {
         ) {
           // check they have enough in their wallet to buy the 3d home
           // this is optional (if not null)
-          const homeDesignInfo = this.homeService.getHomeDesign(home3d);
+          const homeDesignInfo = await this.homeService.getHomeDesign(session.id, home3d);
           if(typeof homeDesignInfo.id === 'undefined') {
             throw new Error('Home design not found.');
           }
