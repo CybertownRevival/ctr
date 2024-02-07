@@ -19,6 +19,8 @@ export interface MemberInfoView {
   lastName?: string;
   /**primary role id that the member wants displayed in chat**/
   primary_role_id?: number;
+  /**add chatdefault */
+  chatdefault?: number;
 }
 
 export interface MemberAdminView {
@@ -42,4 +44,6 @@ export interface MemberAdminView {
   last_daily_login_credit: Date;
   /**last date the user was paid out by the system**/
   last_weekly_role_credit: Date;
+  /**add chatdefault */
+  chatdefault?: number;
 }

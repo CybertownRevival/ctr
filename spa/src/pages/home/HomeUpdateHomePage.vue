@@ -141,8 +141,9 @@ export default Vue.extend({
         await this.$http.get("/member/getdonorlevel")
           .then((response) => {
             this.donorLevel = response.data.name;
+            console.log(this.donorLevel);
           });
-        
+
         if(this.donorLevel === "Champion"){
           this.homeData.championhome.price = 0;
         }

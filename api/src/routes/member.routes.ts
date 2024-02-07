@@ -29,8 +29,8 @@ memberRoutes.post('/update_password', (request, response) =>
 memberRoutes.post('/update_role', (request, response) =>
   memberController.updatePrimaryRoleId(request, response),
 );
-memberRoutes.post('/updatename', (request, response) =>
-  memberController.updateName(request, response),
+memberRoutes.post('/updateinfo', (request, response) =>
+  memberController.updateInfo(request, response),
 );
 memberRoutes.post('/update_avatar', (request, response) =>
   memberController.updateAvatar(request, response),

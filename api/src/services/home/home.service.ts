@@ -5,6 +5,8 @@ import {
   MapLocationRepository,
   HomeDesignRepository,
   HomeRepository,
+  RoleAssignmentRepository,
+  RoleRepository,
 } from '../../repositories';
 import { Place, HomeDesign } from '../../types/models';
 
@@ -17,6 +19,8 @@ export class HomeService {
     private mapLocationRespository: MapLocationRepository,
     private homeDesignRespository: HomeDesignRepository,
     private homeRepository: HomeRepository,
+    private roleAssignmentRepository: RoleAssignmentRepository,
+    private roleRepository: RoleRepository,
   ) {}
 
 
@@ -42,7 +46,23 @@ export class HomeService {
 
   }
 
-  public getHomeDesign(homeDesignId: string): HomeDesign {
+  public async getHomeDesign(memberId: number, homeDesignId: string): Promise<HomeDesign> {
+    const donorId = {
+      supporter: await this.roleRepository.roleMap.Supporter,
+      advocate: await this.roleRepository.roleMap.Advocate,
+      devotee: await this.roleRepository.roleMap.Devotee,
+      champion: await this.roleRepository.roleMap.Champion,
+    };
+    
+    try {
+      const donorLevel: any = await this.roleAssignmentRepository.getDonor(memberId, donorId);
+      if (homeDesignId === 'championhome' && donorLevel.name === 'Champion'){
+        homeDesignId = 'free';
+      }
+    } catch (e) {
+      const donorLevel= 'none';
+    }
+    
     return this.homeDesignRespository.find(homeDesignId);
   }
 

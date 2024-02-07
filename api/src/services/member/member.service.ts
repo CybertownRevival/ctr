@@ -178,8 +178,14 @@ export class MemberService {
       xp: member.xp,
       firstName: member.firstname,
       lastName: member.lastname,
+      chatdefault: member.chatdefault,
       primary_role_id: member.primary_role_id,
     };
+  }
+  
+  public async getMemberChat(memberId: number): Promise<number> {
+    const member = await this.find({ id: memberId });
+    return member.chatdefault;
   }
 
   /**
@@ -195,6 +201,7 @@ export class MemberService {
       immigrationDate: member.created_at,
       username: member.username,
       xp: member.xp,
+      chatdefault: member.chatdefault,
     };
   }
 
@@ -214,6 +221,7 @@ export class MemberService {
       xp: member.xp,
       firstName: member.firstname,
       lastName: member.lastname,
+      chatdefault: member.chatdefault,
       last_daily_login_credit: member.last_daily_login_credit,
       last_weekly_role_credit: member.last_weekly_role_credit,
     };
@@ -383,17 +391,26 @@ export class MemberService {
   private encryptPassword(password: string): Promise<string> {
     return bcrypt.hash(password, MemberService.SALT_ROUNDS);
   }
-
+  
   /**
-   * Updates a members first and last name
+   * Updates a members default chat choice firstname and lastname
    * @param memberId id of the member
    * @param firstName string of the first name
    * @param lastName string of the last name
+   * @param chatdefault string of the chatdefault
+   * Must retain updateName here for first time home creation firstname/lastname addition
    */
   public async updateName(memberId: number, firstName: string, lastName: string): Promise<void> {
     await this.memberRepository.update(memberId, {
-      firstname: firstName,
-      lastname: lastName,
+	  firstname: firstName,
+	  lastname: lastName,
+    });
+  }
+  public async updateInfo(memberId: number, firstName: string, lastName: string, chatdefault: number): Promise<void> {
+    await this.memberRepository.update(memberId, {
+	  firstname: firstName,
+	  lastname: lastName,
+          chatdefault: chatdefault,
     });
   }
 
