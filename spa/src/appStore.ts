@@ -13,6 +13,8 @@ export interface User {
     token?: string;
     admin?: boolean;
     hasHome?: boolean;
+    chatdefault?: number;
+    firstname?: string;
 }
 
 export interface Place {
@@ -88,6 +90,9 @@ const appStore = Vue.observable<AppStore>({
                 userData.avatar.gestures = JSON.parse(userData.avatar.gestures);
             }
             appStore.data.user = { ...appStore.data.user, ...userData };
+            if (appStore.data.user.chatdefault === 1) {
+	        appStore.data.view3d = true;
+	    }
         },
     },
 });

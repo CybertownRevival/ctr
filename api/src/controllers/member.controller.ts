@@ -100,21 +100,20 @@ class MemberController {
       response.status(400).json({error});
     }
   }
-  
-  public async updateName(request: Request, response: Response): Promise<void> {
+
+  public async updateInfo(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const { id } = session;
-    const { firstName, lastName } = request.body;
+    const { firstName, lastName, chatdefault } = request.body;
     try {
-      await this.memberService.updateName(id, firstName, lastName);
+      await this.memberService.updateInfo(id, firstName, lastName, chatdefault);
       response.status(200).json({message: 'success'});
-    }catch (error) {
+    } catch (error) {
       response.status(400).json({
         error: 'Error on Updating',
       });
-    }
-    
+    }  
   }
   
   /** isBanned results based on member status
@@ -212,7 +211,9 @@ class MemberController {
         if (!banned) {
           await this.memberService.maybeGiveDailyCredits(session.id);
           const homeInfo = await this.homeService.getHome(session.id);
+	  const chatdefault = await this.memberService.getMemberChat(session.id);
           session.hasHome = !!homeInfo;
+	  session.chatdefault = chatdefault;
         }
         response.status(200).json({
           message: 'success',

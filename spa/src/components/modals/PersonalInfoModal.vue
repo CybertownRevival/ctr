@@ -50,7 +50,14 @@
               </select>
               </td>
             </tr>
+            <tr>
+              <td><b>Default Chat</b></td>
+              <td><b>2D</b> <input type="radio" v-model="info.chatdefault" value="0">&nbsp;
+	      <b>3D</b> <input type="radio" v-model="info.chatdefault" value="1">
+	      </td>
+            </tr>
         </table>
+	<center>Note: You must refresh/reload CTR after changing default chat value for it to take effect</center>
         <div class="text-center flex-1">
           <p>
           <button class="btn" v-on:click="update">
@@ -88,11 +95,12 @@ export default Vue.extend({
       info: {
         username: undefined,
         email: undefined,
-		firstName: undefined,
-		lastName: undefined,
+	firstName: undefined,
+	lastName: undefined,
         immigrationDate: undefined,
         walletBalance: undefined,
         xp: undefined,
+	chatdefault: undefined,
         primary_role_id: undefined,
       },
       roles: [],
@@ -109,9 +117,10 @@ export default Vue.extend({
         this.$http.post("/member/update_role", {
           primaryRoleId: this.selectedRoleId,
         });
-        this.$http.post("/member/updatename", {
+        this.$http.post("/member/updateinfo", {
 	  firstName: this.info.firstName,
 	  lastName: this.info.lastName,
+	  chatdefault: this.info.chatdefault,
         });
         this.error = null;
         this.success = "Information Updated";
