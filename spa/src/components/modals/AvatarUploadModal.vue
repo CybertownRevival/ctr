@@ -2,26 +2,18 @@
   <Modal>
     <template v-slot:header>
         <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
-        <button type="button" class="btn-ui-inline" @click="openInfoModal">&lt;</button>
+        <button type="button" class="btn-ui-inline" @click="back">&lt;</button>
     </template>
-    <!-- avatars/avlib.html -->
     <template v-slot:body>
       <div class="flex-1">
-        <h3 align="center">Update Your Avatar</h3>
+        <h3 align="center">Upload an Avatar</h3>
         <p align="center" v-if="showError" class="text-red-500">{{ error }}</p>
         <p align="center" v-if="showSuccess" color="#00FF00">
-          Account Details Updated!
+          Avatar uploaded, pending approval!
         </p>
         <div align="center">
 
-          <button class="btn-ui" @click="openAvatarUploadModal">Upload Avatar</button>
-          <select v-model="avatarId">
-            <option v-for="avatar in avatars" :value="avatar.id" :key="avatar.id">
-              {{ avatar.name }}
-            </option>
-          </select>
-          <br />
-          <button type="button" class="btn" @click="save">Update Avatar</button>
+          <button type="button" class="btn" @click="save">Upload Avatar</button>
         </div>
       </div>
     </template>
@@ -33,12 +25,11 @@ import Vue from "vue";
 
 import Modal from './Modal.vue';
 import ModalMixin from './mixins/ModalMixin';
-import InfoModal from "./InfoModal.vue";
-import AvatarUploadModal from "./AvatarUploadModal.vue";
+import AvatarModal from "./AvatarModal.vue";
 import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
-  name: "TestModal",
+  name: "AvatarUploadModal",
   components: {Modal},
   data: () => {
     return {
@@ -50,13 +41,11 @@ export default Vue.extend({
     };
   },
   methods: {
-    openInfoModal(): void {
-      ModalService.open(InfoModal);
-    },
-    openAvatarUploadModal(): void {
-      ModalService.open(AvatarUploadModal);
+    back(): void {
+      ModalService.open(AvatarModal);
     },
     async save() {
+      /*
       this.showError = false;
       //todo validate a value
       if (this.avatarId === null || this.avatarId <= 0) {
@@ -82,14 +71,17 @@ export default Vue.extend({
         }
       }
     },
+    */
   },
   mounted() {
+    /*
     this.$http.get("/avatar")
       .then(response => {
         this.avatars = response.data.avatars;
       });
 
     this.avatarId = this.$store.data.user.avatar.id;
+    */
   },
   mixins: [ModalMixin],
 });
