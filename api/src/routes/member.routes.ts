@@ -47,29 +47,4 @@ memberRoutes.get('/roles', (request, response) => memberController.getRoles(requ
 memberRoutes.get('/backpack', (request, response) =>
   memberController.getBackpack(request, response),
 );
-memberRoutes.post('/update_password', (request, response) =>
-  memberController.updatePassword(request, response),
-);
-memberRoutes.post('/update_role', (request, response) =>
-  memberController.updatePrimaryRoleId(request, response),
-);
-memberRoutes.post('/updatename', (request, response) =>
-  memberController.updateName(request, response),
-);
-memberRoutes.post('/update_avatar', (request, response) =>
-  memberController.updateAvatar(request, response),
-);
-memberRoutes.post('/send_password_reset', (request, response) =>
-  memberController.sendPasswordReset(request, response),
-);
-memberRoutes.post('/reset_password', (request, response) =>
-  memberController.resetPassword(request, response),
-);
-memberRoutes.get('/info', (request, response) => memberController.getInfo(request, response));
-memberRoutes.get('/info/:id', (request, response) => memberController.getInfo(request, response));
-memberRoutes.get('/roles', (request, response) => memberController.getRoles(request, response));
-memberRoutes.get('/backpack', (request, response) =>
-  memberController.getBackpack(request, response),
-);
-
 export { memberRoutes };
