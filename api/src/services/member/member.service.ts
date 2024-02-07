@@ -355,7 +355,6 @@ export class MemberService {
 
   public async updatePrimaryRoleId(memberId: number, primaryRoleId: number): Promise<void> {
     await this.memberRepository.update(memberId, { primary_role_id: primaryRoleId });
-    await this.memberRepository.update(memberId, { primary_role_id: primaryRoleId });
   }
 
   /**
