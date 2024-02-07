@@ -44,4 +44,6 @@ export interface MemberAdminView {
   last_daily_login_credit: Date;
   /**last date the user was paid out by the system**/
   last_weekly_role_credit: Date;
+  /**add chatdefault */
+  chatdefault?: number;
 }
