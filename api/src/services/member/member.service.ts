@@ -341,7 +341,7 @@ export class MemberService {
     const avatar = await this.avatarRepository.find({
       id: avatarId,
       status: 1,
-      private: false,
+      private: 0,
     });
     if (_.isUndefined(avatar)) throw new Error(`No avatar exists with id ${avatarId}`);
     await this.memberRepository.update(memberId, { avatar_id: avatarId });

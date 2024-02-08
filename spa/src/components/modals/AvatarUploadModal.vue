@@ -12,8 +12,74 @@
           Avatar uploaded, pending approval!
         </p>
         <div align="center">
-
-          <button type="button" class="btn" @click="save">Upload Avatar</button>
+          <p>Upload your own avatar file to be used in Cybertown. You can also choose to allow other members to use it too. All avatars uploaded will require approval by the Admins before being made available.</p>
+          <table v-if="showForm">
+          <tr>
+            <td>Avatar VRML File:</td>
+            <td><input 
+              type="file" 
+              size="32" 
+              class="mb-2"
+              @change="setFile"
+              data-id="wrlFile"
+              accept=".wrl"
+            ></td>
+          </tr>
+          <tr>
+            <td>Avatar Texture File:</td>
+            <td><input 
+              type="file" 
+              size="32" 
+              class="mb-2"
+              @change="setFile"
+              data-id="textureFile"
+              accept=".jpeg"
+            ></td>
+          </tr>
+          <tr>
+            <td>Avatar Thumbnail File:</td>
+            <td><input 
+              type="file" 
+              size="32" 
+              class="mb-2"
+              @change="setFile"
+              data-id="imageFile"
+              accept=".jpeg"
+            ></td>
+          </tr>
+          <tr>
+            <td>Avatar Name:</td>
+            <td><input 
+              type="text" 
+              class="input-text mb-2" 
+              maxlength="64" 
+              size="32"
+              v-model="name"
+            ></td>
+          </tr>
+          <tr>
+            <td>Gestures List (optional):</td>
+            <td><input 
+              type="text" 
+              class="input-text mb-2" 
+              maxlength="64" 
+              size="32" 
+              placeholder="Example: Hello, GoodBye, Cool"
+              v-model="gestures"
+            ></td>
+          </tr>
+          <tr>
+            <td>Usage Access:</td>
+            <td>
+              <select class="mb-2" v-model="avatarPrivate">
+                <option v-for="(option,key) in avatarPrivateOptions" :value="option.value" :key="key">
+                  {{ option.label}}
+                </option>
+              </select>
+            </td>
+          </tr>
+          </table>
+          <button type="button" class="btn" @click="upload" v-if="showForm">Upload Avatar</button>
         </div>
       </div>
     </template>
@@ -22,7 +88,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-
 import Modal from './Modal.vue';
 import ModalMixin from './mixins/ModalMixin';
 import AvatarModal from "./AvatarModal.vue";
@@ -33,34 +98,54 @@ export default Vue.extend({
   components: {Modal},
   data: () => {
     return {
-      avatarId: null,
-      avatars: [],
       showError: false,
       showSuccess: false,
+      showForm: true,
       error: "",
+      name: '',
+      gestures: '',
+      wrlFile: {},
+      imageFile: {},
+      textureFile: {},
+      avatarPrivate: '',
+      avatarPrivateOptions: [
+        {
+          value: '',
+          label: 'Select One',
+        },
+        {
+          value: 0,
+          label: 'Anyone',
+        },
+        {
+          value: 1,
+          label: 'Only Me',
+        }
+      ],
     };
   },
   methods: {
     back(): void {
       ModalService.open(AvatarModal);
     },
-    async save() {
-      /*
+    setFile(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      this[e.target.dataset.id] = files[0];
+    },
+    async upload(): Promise<void> {
       this.showError = false;
-      //todo validate a value
-      if (this.avatarId === null || this.avatarId <= 0) {
-        this.error = "Please select an avatar";
-        this.showError = true;
-        return;
-      }
-
+      this.showSuccess = false;
       try {
-        const response = await this.$http.post("/member/update_avatar", {
-          avatarId: this.avatarId,
-        });
-        this.$store.data.user.username = response.data.username;
-        this.$store.methods.setToken(response.data.token);
+        await this.$http.post("/avatar/add", {
+          name: this.name,
+          wrlFile: this.wrlFile,
+          textureFile: this.textureFile,
+          imageFile: this.imageFile,
+          gestures: this.gestures,
+          private: this.avatarPrivate
+        }, true);
         this.showSuccess = true;
+        this.showForm = false;
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
           this.error = errorResponse.response.data.error;
@@ -70,18 +155,9 @@ export default Vue.extend({
           this.showError = true;
         }
       }
-    },
-    */
+    }
   },
   mounted() {
-    /*
-    this.$http.get("/avatar")
-      .then(response => {
-        this.avatars = response.data.avatars;
-      });
-
-    this.avatarId = this.$store.data.user.avatar.id;
-    */
   },
   mixins: [ModalMixin],
 });

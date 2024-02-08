@@ -28,4 +28,54 @@ export class AvatarRepository {
   public async findAll(): Promise<Avatar[]> {
     return this.db.avatar.where({'status': 1});
   }
+
+  /**
+   * gets all the avatars a memberId can access
+   * @param memberId 
+   * @returns 
+   */
+  public async findAllForMemberId(memberId): Promise<Avatar[]> {
+    return this.db.avatar.where({
+      status: 1,
+    })
+    .andWhere((builder) => {
+      builder.where({private: 0})
+      .orWhere({private: 1, member_id: memberId})
+    });
+  }
+
+  /**
+   *
+   * @param directory
+   * @param fileName
+   * @param image
+   * @param name
+   * @param gestures
+   * @param privateStatus
+   * @param memberId
+   * @returns
+   */
+  public async create(
+    directory: string,
+    fileName: string,
+    image: string,
+    name: string,
+    gestures: string,
+    privateStatus: number,
+    memberId: number,
+    status: number
+  ): Promise<number> {
+    const [avatar] = await this.db.avatar.insert({
+      directory: directory,
+      filename: fileName,
+      image: image,
+      name: name,
+      gestures: gestures,
+      private: privateStatus,
+      member_id: memberId,
+      status: status
+    });
+
+    return avatar;
+  }
 }
