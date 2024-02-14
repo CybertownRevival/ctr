@@ -81,7 +81,15 @@ class ObjectController {
       return;
     }
     fileExtension = request.files.wrlFile.name.split('.').pop();
-    if (fileExtension !== 'wrl' || request.files.wrlFile.mimetype !== 'application/octet-stream') {
+    if (
+      fileExtension !== 'wrl' 
+      || ![
+        'application/octet-stream',
+        'model/vrml',
+        'x-world/x-vrml',
+        'application/x-world'
+      ].includes(request.files.wrlFile.mimetype) 
+    ) {
       response.status(400).json({
         error: 'VRML file must be a .wrl file',
       });
@@ -90,7 +98,7 @@ class ObjectController {
 
     if (request.files.wrlFile.size > ObjectService.WRL_FILESIZE_LIMIT) {
       response.status(400).json({
-        error: 'VRML file must less than 250kb',
+        error: 'VRML file must less than 80kb',
       });
       return;
     }
@@ -108,7 +116,7 @@ class ObjectController {
       }
       if (request.files.textureFile.size > ObjectService.TEXTURE_FILESIZE_LIMIT) {
         response.status(400).json({
-          error: 'Texture file must less than 250kb',
+          error: 'Texture file must less than 80kb',
         });
         return;
       }
@@ -133,7 +141,7 @@ class ObjectController {
     }
     if (request.files.imageFile.size > ObjectService.IMAGE_FILESIZE_LIMIT) {
       response.status(400).json({
-        error: 'Thumbnail file must less than 250kb',
+        error: 'Thumbnail file must less than 80kb',
       });
       return;
     }
