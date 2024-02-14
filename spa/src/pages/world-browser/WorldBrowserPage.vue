@@ -22,6 +22,8 @@
         :shared-objects="sharedObjects"
         @move-object="moveObject"
         @beam-to="beamTo"
+        @drop-object="dropObject"
+        @pickup-object="pickupObject"
       ></chat>
     </div>
   </div>
@@ -66,13 +68,15 @@ export default Vue.extend({
   },
   methods: {
     addSharedObject(obj, browser): void {
-      obj.url = `/assets/object/${obj.object_id}/${obj.filename}`;
+      obj.url = `/assets/object/${obj.directory}/${obj.filename}`;
       if (obj.position == null) {
         obj.position = {
           x: 0,
           y: 0,
           z: 0,
         };
+      } else {
+        obj.position = JSON.parse(obj.position);
       }
 
       if (obj.rotation == null) {
@@ -82,6 +86,8 @@ export default Vue.extend({
           z: 0,
           angle: 0,
         };
+      } else {
+        obj.rotation = JSON.parse(obj.rotation);
       }
 
       const sharedObject = browser.currentScene.createProto("SharedObject");
@@ -104,44 +110,11 @@ export default Vue.extend({
       browser.currentScene.addRootNode(sharedObject);
 
       sharedObject.addFieldCallback("newPosition", {}, (pos) => {
-        //todo happens when accepted
         this.saveObjectLocation(obj.id);
-
-        /*
-            BxxEvents.dispatchEvent(
-              new CustomEvent("SO:toServer:position", {
-                detail: {
-                  id: sharedObject.id,
-                  type: "position",
-                  value: {
-                    x: pos.x,
-                    y: pos.y,
-                    z: pos.z,
-                  },
-                },
-              })
-            );
-            */
       });
 
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
-        //todo happens when accepted
-        /*
-            BxxEvents.dispatchEvent(
-              new CustomEvent("SO:toServer:rotation", {
-                detail: {
-                  id: sharedObject.id,
-                  type: "rotation",
-                  value: {
-                    x: rot.x,
-                    y: rot.y,
-                    z: rot.z,
-                    angle: rot.angle,
-                  },
-                },
-              })
-            );
-            */
+        this.saveObjectLocation(obj.id);
       });
       this.sharedObjectsMap.set(obj.id, sharedObject);
     },
@@ -214,6 +187,51 @@ export default Vue.extend({
     },
     moveObject(objectId): void {
       this.sharedObjectsMap.get(objectId).startMove = true;
+    },
+    async dropObject(objectId): Promise<void> {
+      const browser = X3D.getBrowser();
+      const d = 4;
+      const newX = this.position[0] + (d * Math.sin(this.rotation[3]));
+      const newZ = this.position[2] + (d * Math.cos(this.rotation[3]));
+        
+      const request = await this.$http.post(`/object_instance/${  objectId  }/drop`, {
+        placeId: this.$store.data.place.id,
+        position: {
+          x: newX,
+          y: this.position[1],
+          z: newZ
+        },
+        rotation: {
+          x: this.rotation[0],
+          y: this.rotation[1],
+          z: this.rotation[2],
+          angle: this.rotation[3]
+        },
+      });
+
+      this.sharedObjects.push(request.data.object_instance);
+
+      this.addSharedObject(request.data.object_instance, browser);
+      this.$socket.emit('SO', {
+        event: 'add',
+        objectId: objectId
+      });
+    },
+    async pickupObject(objectId): Promise<void> {
+      // update db location
+      await this.$http.post(`/object_instance/${  objectId  }/pickup`);
+
+      // remove to the scene 
+      const browser = X3D.getBrowser();
+      const object = this.sharedObjectsMap.get(objectId);
+      browser.currentScene.removeRootNode(object);
+
+      this.sharedObjectsMap.delete(objectId);
+      this.sharedObjects = this.sharedObjects.filter(obj => obj.id != objectId);
+      this.$socket.emit('SO', {
+        event: 'remove',
+        objectId: objectId
+      });
     },
     beamTo(userId): void {
       const user = this.users[userId];
@@ -385,6 +403,24 @@ export default Vue.extend({
         );
       }
     },
+    async onSharedObjectEvent(event): Promise<void> {
+      const browser = X3D.getBrowser();
+      this.sharedObjects.forEach(sharedObject => {
+        const object = this.sharedObjectsMap.get(sharedObject.id);
+        browser.currentScene.removeRootNode(object);
+        this.sharedObjectsMap.delete(sharedObject.id);
+      });
+      this.sharedObjects = [];
+
+      const objectInstanceResponse = await this.$http.get(`/place/${  this.$store.data.place.id 
+      }/object_instance`);
+
+      this.sharedObjects = objectInstanceResponse.data.object_instance;
+      this.sharedObjectsMap = new Map();
+      this.sharedObjects.forEach((object) => {
+        this.addSharedObject(object, browser);
+      });
+    },
     onVersion(event: { version: string }): void {
       if (event.version !== environment.packageVersion) {
         this.showUpdateWarning = true;
@@ -398,9 +434,9 @@ export default Vue.extend({
     reloadWindow(): void {
       window.location.reload();
     },
-    saveObjectLocation(objectId): void {
+    async saveObjectLocation(objectId): Promise<void> {
       const obj = this.sharedObjectsMap.get(objectId);
-      this.$http.post(`/object_instance/${  objectId  }/position`, {
+      const location = {
         position: {
           x: obj.translation.x,
           y: obj.translation.y,
@@ -412,6 +448,13 @@ export default Vue.extend({
           z: obj.rotation.z,
           angle: obj.rotation.angle,
         },
+
+      }
+      await this.$http.post(`/object_instance/${  objectId  }/position`, location);
+      this.$socket.emit('SO', {
+        event: 'move',
+        objectId: objectId,
+        detail: location
       });
     },
     sendSharedEvent(event): void {
@@ -512,6 +555,7 @@ export default Vue.extend({
       this.$socket.on("AV:del", event => this.onAvatarRemoved(event));
       this.$socket.on("AV:new", event => this.onAvatarAdded(event));
       this.$socket.on("SE", event => this.onSharedEvent(event));
+      this.$socket.on("SO", event => this.onSharedObjectEvent(event));
     },
     async startX3D(): Promise<any> {
       if (!this.browser) {
@@ -534,7 +578,9 @@ export default Vue.extend({
         });
       });
     },
-    startX3DListeners(browser: any): void {
+    startX3DListeners(browserbak: any): void {
+      console.log('starting 3d listeners');
+      const browser = X3D.getBrowser();
       const browserProto = Object.getPrototypeOf(browser);
       const prox = browser.currentScene.createNode("ProximitySensor");
       prox.size = new X3D.SFVec3f(1000000, 1000000, 1000000);
@@ -562,18 +608,17 @@ export default Vue.extend({
       }
       browserProto.getTime = browserProto.getCurrentTime;
 
-      //todo: shared objects
-      this.sharedObjectsMap = new Map();
-      this.sharedObjects.forEach((object) => {
-        this.addSharedObject(object, browser);
-      });
+      setTimeout(() => {
+        this.sharedObjectsMap = new Map();
+        this.sharedObjects.forEach((object) => {
+          this.addSharedObject(object, browser);
+        });
+      }, 2000);
 
       this.startSharedEvents();
-
       this.start3DSocketListeners();
-
       this.loaded = true;
-    },
+    }
   },
   computed: {
     worldUrl(): string {

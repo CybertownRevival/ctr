@@ -80,6 +80,9 @@
         <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
           Objects
         </span>
+        <span v-if="activePanel === 'backpack'" class="flex-grow">
+          Backpack
+        </span>
         <button
           type="button"
           class="
@@ -120,10 +123,33 @@
           <li
             v-for="object in sharedObjects"
             :key="object.id"
-            @click="moveObject(object.id)"
+            class="flex"
           >
-            {{ object.name }}
+            <div class="flex-1">
+              {{ object.name }}
+            </div>
+            <div class="flex-none cursor-pointer relative mr-1" v-if="canInteractWithObject" @click="moveObject(object.id)">
+              Move
+            </div>
+            <div class="flex-none cursor-pointer relative" v-if="canInteractWithObject" @click="pickUpObject(object.id)">
+              Pick Up
+            </div>
           </li>
+        </ul>
+        <ul v-if="activePanel === 'backpack'">
+          <li
+            v-for="object in backbackObjects"
+            :key="object.id"
+            class="flex"
+          >
+            <div class="flex-1">
+              {{ object.name }}
+            </div>
+            <div class="flex-none cursor-pointer relative" v-if="canInteractWithObject" @click="dropObject(object.id)">
+              Drop
+            </div>
+          </li>
+
         </ul>
       </div>
     </div>
@@ -147,8 +173,11 @@ export default Vue.extend({
       message: "",
       messages: [],
       users: [],
+      backbackObjects: [],
       primaryRole: "",
       activePanel: "users",
+      objectId: null,
+      canInteractWithObject: false,
     };
   },
   methods: {
@@ -156,7 +185,6 @@ export default Vue.extend({
     async getRole(): Promise<void> {
       const response = await this.$http.get("/member/getrolename");
       this.primaryRole = response.data.PrimaryRoleName[0].name;
-      console.log(`Role received ${this.primaryRole}`);
     },
     sendMessage(): void {
       this.debugMsg("sending message...");
@@ -210,6 +238,13 @@ export default Vue.extend({
     startNewChat(): void {
       this.messages = [];
       this.users = [];
+      this.canInteractWithObject = false;
+      if(
+        this.$store.data.place.member_id === this.$store.data.user.id
+        && this.$store.data.view3d
+      ) {
+        this.canInteractWithObject = true;
+      }
       this.$http
         .get(`/message/place/${this.$store.data.place.id}`, {
           limit: 10,
@@ -230,6 +265,9 @@ export default Vue.extend({
           this.activePanel = "sharedObjects";
           break;
         case "sharedObjects":
+          this.activePanel = "backpack";
+          break;
+        case "backpack":
           this.activePanel = "users";
           break;
       }
@@ -264,6 +302,17 @@ export default Vue.extend({
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
       });
     },
+    dropObject(objectId) {
+      this.$emit("drop-object", objectId);
+    },
+    pickUpObject(objectId) {
+      this.$emit("pickup-object", objectId);
+    },
+    async loadBackpack() {
+        this.backbackObjects = [];
+        const response = await this.$http.get("/member/backpack");
+        this.backbackObjects = response.data.objects;
+    }
   },
   watch: {
     place() {
@@ -284,6 +333,11 @@ export default Vue.extend({
       },
       deep: true,
     },
+    async activePanel() {
+      if(this.activePanel === 'backpack') {
+        await this.loadBackpack();
+      }
+    }
   },
   computed: {
     connected: function() { return this.$socket.connected; },

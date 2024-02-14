@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import * as http from 'http';
 import express from 'express';
+const fileUpload = require('express-fileupload');
 import { Request, Response } from 'express';
 import morgan from 'morgan';
 import {
@@ -10,12 +11,14 @@ import {
   messageRoutes,
   placeRoutes,
   objectInstanceRoutes,
+  objectRoutes,
   colonyRoutes,
   hoodRoutes,
   blockRoutes,
   homeRoutes,
   messageboardRoutes,
   inboxRoutes,
+  mallRoutes,
 } from './routes';
 
 require('./cron/cron')();
@@ -25,6 +28,7 @@ interface HttpException extends Error {
 }
 
 const app = express();
+app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
@@ -46,6 +50,7 @@ app.use('/api/member', memberRoutes);
 app.use('/api/place', placeRoutes);
 app.use('/api/message', messageRoutes);
 app.use('/api/object_instance', objectInstanceRoutes);
+app.use('/api/object', objectRoutes);
 app.use('/api/avatar', avatarRoutes);
 app.use('/api/hood', hoodRoutes);
 app.use('/api/colony', colonyRoutes);
@@ -54,6 +59,7 @@ app.use('/api/home', homeRoutes);
 app.use('/api/messageboard', messageboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/inbox', inboxRoutes);
+app.use('/api/mall', mallRoutes);
 
 app.use((request, response, next) => {
   const error = new Error('Not found');
