@@ -1,5 +1,26 @@
 #VRML V2.0 utf8
 
+EXTERNPROTO BlaxxunZone [ 
+eventIn         MFNode   addEvents 
+eventIn         MFNode   removeEvents 
+eventIn         MFNode   addAvatars 
+eventIn         MFNode   removeAvatars 
+exposedField    MFNode   events 
+exposedField    MFNode   avatars 
+eventOut        MFNode   events_added 
+eventOut        MFNode   events_removed 
+eventOut        MFNode   avatars_added 
+eventOut        MFNode   avatars_removed
+eventIn         SFInt32  set_myAvatarGesture 
+eventIn         SFInt32  myAvatarGestureFromServer 
+eventOut        SFInt32  myAvatarGesture_changed 
+eventOut        SFInt32  myAvatarGestureToServer 
+exposedField    MFString sendToChat
+exposedField    SFFloat  beamToDistance
+exposedField    MFString groupChatName
+exposedField    MFString groupChat
+] "/externprotos/shared_xite.wrl#BlaxxunZone"
+
 EXTERNPROTO SharedObject [
 exposedField SFVec3f translation
 exposedField SFRotation rotation
@@ -11,7 +32,7 @@ eventOut SFBool isOver
 eventOut SFTime touchTime
 eventOut SFVec3f newPosition
 eventOut SFRotation newRotation
-] "/externprotos/bxx/shared_xite.wrl#SharedObject"
+] "/externprotos/shared_xite.wrl#SharedObject"
 
 PROTO CeilingFan1[
 field SFVec3f position 0 0 0
