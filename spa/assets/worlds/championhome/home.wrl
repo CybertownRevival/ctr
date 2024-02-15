@@ -4,6 +4,20 @@ WorldInfo {
  info ["Created with Vivaty Studio, a Web3D authoring tool"
 ]
 }
+
+EXTERNPROTO SharedObject [
+exposedField SFVec3f translation
+exposedField SFRotation rotation
+exposedField MFNode children 
+exposedField SFString name
+exposedField SFString id
+eventIn SFBool startMove
+eventOut SFBool isOver
+eventOut SFTime touchTime
+eventOut SFVec3f newPosition
+eventOut SFRotation newRotation
+] "/externprotos/shared_xite.wrl#SharedObject"
+
 PROTO BooleanFilter [
    eventIn        SFBool set_boolean 
    eventOut     SFBool inputFalse

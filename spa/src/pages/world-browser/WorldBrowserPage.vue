@@ -579,7 +579,6 @@ export default Vue.extend({
       });
     },
     startX3DListeners(browserbak: any): void {
-      console.log('starting 3d listeners');
       const browser = X3D.getBrowser();
       const browserProto = Object.getPrototypeOf(browser);
       const prox = browser.currentScene.createNode("ProximitySensor");
@@ -633,7 +632,8 @@ export default Vue.extend({
       }
     },
     "$store.data.view3d": function () {
-      if (this.$route.name === "world-browser" || this.$route.name === "user-home") {
+      if (this.$route.name === "world-browser" || this.$route.name === "user-home" 
+      && this.$store.data.x3dReady) {
         this.loadAndJoinPlace();
       }
     },
