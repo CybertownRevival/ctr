@@ -304,9 +304,13 @@ export default Vue.extend({
     },
     dropObject(objectId) {
       this.$emit("drop-object", objectId);
+      this.backbackObjects = this.backbackObjects.filter(obj  => {
+        return obj.id !== objectId;
+      });
     },
     pickUpObject(objectId) {
       this.$emit("pickup-object", objectId);
+      this.loadBackpack();
     },
     async loadBackpack() {
         this.backbackObjects = [];

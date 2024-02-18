@@ -191,24 +191,22 @@ export default Vue.extend({
     async dropObject(objectId): Promise<void> {
       const browser = X3D.getBrowser();
       const d = 4;
-      const newX = this.position[0] + (d * Math.sin(this.rotation[3]));
-      const newZ = this.position[2] + (d * Math.cos(this.rotation[3]));
-        
+      const pos = new X3D.SFVec3f(...this.position);
+      const rot = new X3D.SFRotation(...this.rotation);
+      const pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -d));
+      pos_offset.y = 0;
+      const dropPosition = pos.add(pos_offset);
+      const dropRotation= new X3D.SFRotation(0, 1, 0, Math.atan2(pos_offset.x, pos_offset.z));
       const request = await this.$http.post(`/object_instance/${  objectId  }/drop`, {
         placeId: this.$store.data.place.id,
-        position: {
-          x: newX,
-          y: this.position[1],
-          z: newZ
-        },
+        position: dropPosition._value,
         rotation: {
-          x: this.rotation[0],
-          y: this.rotation[1],
-          z: this.rotation[2],
-          angle: this.rotation[3]
-        },
+          x: dropRotation._value.x_,
+          y: dropRotation._value.y_,
+          z: dropRotation._value.z_,
+          angle: dropRotation._value.angle,
+        }
       });
-
       this.sharedObjects.push(request.data.object_instance);
 
       this.addSharedObject(request.data.object_instance, browser);
