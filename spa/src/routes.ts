@@ -45,6 +45,8 @@ import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
 import MallApprovalPage from "@/pages/mall/MallApprovalPage.vue";
 import MallShopPage from "@/pages/mall/MallShopPage.vue";
 
+import ObjectProperties from './pages/ObjectProperties.vue';
+
 export default [
     {
         path: "/",
@@ -374,5 +376,13 @@ export default [
             title: "Objects for Sale",
             wrapper: true,
         },
+    },
+    {
+        path: "/object/:object_id",
+        components: {
+            default: ObjectProperties,
+        },
+        name: "object-properties",
+        meta: {wrapper: false},
     },
 ];
