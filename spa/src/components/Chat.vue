@@ -548,7 +548,6 @@ export default Vue.extend({
     pickUpObject() {
       this.$emit("pickup-object", this.objectId);
       this.closeMenu();
-      this.loadBackpack();
     },
     async loadBackpack() {
         this.backpackObjects = [];
