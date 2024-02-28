@@ -4,6 +4,9 @@ import { Model } from './model';
 export interface ObjectInstance extends Model {
   id: number;
   object_id: number;
+  object_name: string;
+  object_price: number;
+  object_buyer: string;
   member_id: number;
   place_id: number;
   position: string;
