@@ -2,6 +2,7 @@ export * from './avatar.model';
 export * from './map-location.model';
 export * from './member.model';
 export * from './message.model';
+export * from './approved-object.model';
 export * from './object.model';
 export * from './object-instance.model';
 export * from './object-instance.position.model';
