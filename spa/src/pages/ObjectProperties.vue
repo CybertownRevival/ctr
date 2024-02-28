@@ -47,7 +47,8 @@
           <div>Click <span style="color:limegreen; font-weight:bold; cursor: pointer;" @click="changeACtive()">HERE</span> to view the object in 3D!</div>
           <span style="display:flex;" v-show="this.displayModel">Created by scott99</span>
           <span style="height:5px"></span>
-          <span v-show="this.placeId === 0">This object is located in your backpack.</span>
+          <span v-if="this.placeId === 0 && this.canModify">This object is located in your backpack.</span>
+          <span v-else>This object is located in {{ memberUsername }}'s backpack.</span>
           <span style="height:5px"></span>
           <span>You have {{ this.walletBalance }} CC's.</span>
           <span style="height:20px"></span>
