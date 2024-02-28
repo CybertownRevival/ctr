@@ -45,7 +45,7 @@
         style="min-width: 450px;">
           <span id=name class="font-bold text-3xl">{{ this.name }}</span>
           <div>Click <span style="color:limegreen; font-weight:bold; cursor: pointer;" @click="changeACtive()">HERE</span> to view the object in 3D!</div>
-          <span style="display:flex;" v-show="this.displayModel">Created by scott99</span>
+          <span style="display:flex;" v-show="this.displayModel">Created by {{ this.creator }}</span>
           <span style="height:5px"></span>
           <span v-if="this.placeId === 0 && this.memberId === this.sessionId">This object is located in your backpack.</span>
           <span v-else-if="this.memberid !== this.sessionId && this.placeId === 0">This object is located in {{ this.memberUsername }}'s backpack.</span>
@@ -101,6 +101,7 @@ export default Vue.extend({
       price: null,
       buyer: null,
       qty: null,
+      creator: null,
       active: "properties",
     };
   },
