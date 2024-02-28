@@ -402,15 +402,16 @@ export class MemberService {
    */
   public async updateName(memberId: number, firstName: string, lastName: string): Promise<void> {
     await this.memberRepository.update(memberId, {
-	  firstname: firstName,
-	  lastname: lastName,
+      firstname: firstName,
+      lastname: lastName,
     });
   }
-  public async updateInfo(memberId: number, firstName: string, lastName: string, chatdefault: number): Promise<void> {
+  public async updateInfo(
+    memberId: number, firstName: string, lastName: string, chatdefault: number): Promise<void> {
     await this.memberRepository.update(memberId, {
-	  firstname: firstName,
-	  lastname: lastName,
-          chatdefault: chatdefault,
+      firstname: firstName,
+      lastname: lastName,
+      chatdefault: chatdefault,
     });
   }
 
@@ -432,6 +433,11 @@ export class MemberService {
   public async performHomeRefundTransaction(memberId: number, amount: number): Promise<void> {
     const member = await this.memberRepository.findById(memberId);
     await this.transactionRepository.createHomeRefundTransaction(member.wallet_id, amount);
+  }
+
+  public async getMemberId(username: string): Promise<void> {
+    const userId = await this.memberRepository.findIdByUsername(username);
+    return userId;
   }
 
   /**
