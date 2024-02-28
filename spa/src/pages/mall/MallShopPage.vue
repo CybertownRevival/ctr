@@ -15,7 +15,7 @@
         />
         <div>{{ object.name }}</div>
         <div>Price: {{ object.price }}cc</div>
-        <div>Quantity: {{ object.quantity }}</div>
+        <div>Quantity Available: {{ object.quantity - object.instances}}</div>
         <button type="button" class="btn-ui" @click="buy(object.id)" v-if="(object.quantity > object.instances)">Buy</button>
         <button type="button" v-else disabled>Sold Out</button>
       </div>
