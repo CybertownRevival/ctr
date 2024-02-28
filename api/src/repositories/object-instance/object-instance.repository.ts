@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-
+import {knex} from '../../db';
 import { Db } from '../../db/db.class';
 import { ObjectInstance, Object } from 'models';
 
@@ -14,9 +14,11 @@ export class ObjectInstanceRepository {
     return objectInstance;
   }
 
-  public async create(objectId: number, memberId: number, placeId: number): Promise<number> {
+  public async create(
+    objectId: number, objectName: string, memberId: number, placeId: number): Promise<number> {
     const [objectInstance] = await this.db.objectInstance.insert({
       object_id: objectId,
+      object_name: objectName,
       member_id: memberId,
       place_id: placeId,
     });
@@ -52,6 +54,33 @@ export class ObjectInstanceRepository {
       position: positionStr,
       rotation: rotationStr,
     });
+  }
+
+  public async updateObjectInstanceName(
+    objectId: number,
+    objectName: string,
+  ): Promise<any> {
+    return knex('object_instance')
+      .where('id', objectId)
+      .update({object_name: objectName});
+  }
+
+  public async updateObjectInstancePrice(
+    objectId: number,
+    objectPrice: string,
+  ): Promise<any> {
+    return knex('object_instance')
+      .where('id', objectId)
+      .update({object_price: objectPrice});
+  }
+
+  public async updateObjectInstanceBuyer(
+    objectId: number,
+    objectBuyer: string,
+  ): Promise<any> {
+    return knex('object_instance')
+      .where('id', objectId)
+      .update({object_buyer: objectBuyer});
   }
 
   public async countByObjectId(objectId: number): Promise<number> {
