@@ -1,5 +1,30 @@
 <template>
 	<div v-if="loaded" class="w-full flex-1 text-center p-5">
+    <div id="blackSurround" @click="closePreview()" class="
+    absolute
+    hidden
+    p-0
+    left-0
+    top-0
+    w-full
+    h-full
+    bg-black
+    z-10
+    opacity-60
+    "></div>
+    <div id="previewContainer" class="
+    flex
+    absolute
+    hidden
+    inset-0
+    m-auto
+    items-center
+    justify-center
+    z-20
+    "
+    @click="closePreview()">
+      <span id="preview"></span>
+    </div>
     <div class="text-center font-bold text-green" v-if="showSuccess">
       {{ this.success }}
     </div>
@@ -11,22 +36,24 @@
     <table class="mx-auto">
       <thead>
         <tr>
-          <th>Object Name</th>
+          <th style="min-width: 300px;">Object Name</th>
           <th>Image</th>
           <th>WRL</th>
+          <th>Texture</th>
           <th>Price</th>
-          <th>Quantity</th>
+          <th>Qty</th>
           <th>Uploader</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(object,key) in objects" :key="key">
+        <tr v-for="(object,key) in objects" :key="key" style="border: 3px solid gray;">
           <td>{{ object.name }}</td>
-          <td><img :src="'/assets/object/'+object.directory + '/' + object.image" style="max-width:250px;max-height:250px;height:auto;width:auto;"/></td>
-          <td><a :href="'/assets/object/'+object.directory + '/' + object.filename" target="_blank">Click to Download</a></td>
-          <td class="text-right">{{ object.price }}</td>
-          <td class="text-right">{{ object.quantity }}</td>
+          <td><button type="button" class="btn" @click="preview(object.image, object.directory)">Thumbnail</button></td>
+          <td><button type="button" class="btn" @click="getWrlFile(object.filename, object.directory)">Object</button></td>
+          <td><button v-if="object.texture !== null" type="button" class="btn" @click="preview(object.texture, object.directory)">Texture</button></td>
+          <td class="text-center">{{ object.price }}</td>
+          <td class="text-center">{{ object.quantity }}</td>
           <td>{{ object.username }}</td>
           <td>
             <button type="button" class="btn" @click="approve(object.id)">Approve</button>
@@ -69,6 +96,25 @@ export default Vue.extend({
           this.showError = true;
         }
       }
+    },
+    preview(...target){
+      const preview = document.getElementById("preview");
+      const previewContainer = document.getElementById("previewContainer");
+      const blackSurround = document.getElementById("blackSurround");
+      blackSurround.style.display = "flex";
+      previewContainer.style.display = "flex";
+      preview.innerHTML = `<img src="/assets/object/${target[1]}/${target[0]}" />`;
+    },
+    getWrlFile(...target){
+      location.href = `/assets/object/${target[1]}/${target[0]}`;
+    },
+    closePreview(){
+      const preview = document.getElementById("preview");
+      const previewContainer = document.getElementById("previewContainer");
+      const blackSurround = document.getElementById("blackSurround");
+      blackSurround.style.display = "none";
+      previewContainer.style.display = "none"
+      preview.innerHTML = "";
     },
     async approve(objectId): Promise<void> {
       this.showSuccess = false;
