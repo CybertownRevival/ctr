@@ -555,9 +555,6 @@ export default Vue.extend({
         const response = await this.$http.get(`/member/backpack/${this.$store.data.user.id}`);
         this.backpackObjects = response.data.objects;
     },
-    updateBackpack(){
-      this.backpackObjects = [];
-    },
     async userBackpack(){
       this.activePanel = "userBackpack";
       await this.loadUserBackpack();
