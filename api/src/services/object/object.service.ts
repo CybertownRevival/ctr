@@ -135,6 +135,7 @@ export class ObjectService {
       uuid,
       assets.filename,
       assets.image,
+      assets.texture,
       name,
       quantity,
       price,
