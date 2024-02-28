@@ -168,22 +168,24 @@ export default Vue.extend({
     async joinPlace(): Promise<void> {
       await this.$socket.joinRoom(this.$store.data.place.id, this.$store.data.user.token);
       this.debugMsg("joined room success", this.$store.data.place.id);
-      const { viewpointPosition, viewpointOrientation } = X3D.getBrowser(this.browser);
-      this.$socket.emit("AV", {
-        detail: {
-          pos: [
-            viewpointPosition.x,
-            viewpointPosition.y,
-            viewpointPosition.z,
-          ],
-          rot: [
-            viewpointOrientation.x,
-            viewpointOrientation.y,
-            viewpointOrientation.z,
-            viewpointOrientation.angle,
-          ],
-        },
-      });
+      if(this.$store.data.view3d){
+        const { viewpointPosition, viewpointOrientation } = X3D.getBrowser(this.browser);
+        this.$socket.emit("AV", {
+          detail: {
+            pos: [
+              viewpointPosition.x,
+              viewpointPosition.y,
+              viewpointPosition.z,
+            ],
+            rot: [
+              viewpointOrientation.x,
+              viewpointOrientation.y,
+              viewpointOrientation.z,
+              viewpointOrientation.angle,
+            ],
+          },
+        });
+      }
     },
     moveObject(objectId): void {
       this.sharedObjectsMap.get(objectId).startMove = true;
@@ -231,9 +233,24 @@ export default Vue.extend({
         objectId: objectId
       });
     },
-    beamTo(userId): void {
-      const user = this.users[userId];
-      if(user && user.transform && user.transform.pos && user.transform.rot) {
+    beamTo(id): void {
+      let target;
+      let position;
+      let rotation;
+      // Checks to see if the id only consists of numbers 
+      // This identifies object_instance selection from user av selection.
+      // Object_instance id's only use numbers while user av id's use letters and numbers.
+      if(/^[0-9]+$/.test(id)){
+        target = this.sharedObjectsMap.get(id);
+        position = Object.values(target.translation._value);
+        rotation = Object.values(Object.values(target.rotation._value));
+        rotation.pop();
+      } else {
+        target = this.users[id];
+        position = target.transform.pos;
+        rotation = target.transform.rot;
+      }
+      if(target && position && rotation) {
         let distance;
         const browser = X3D.getBrowser(this.browser);
         if(!browser.currentScene) {
@@ -244,8 +261,8 @@ export default Vue.extend({
         } catch(e) {
           distance = 3;
         }
-        const pos = new X3D.SFVec3f(...user.transform.pos);
-        const rot = new X3D.SFRotation(...user.transform.rot);
+        const pos = new X3D.SFVec3f(...position);
+        const rot = new X3D.SFRotation(...rotation);
         const pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -distance));
         pos_offset.y = 0;
         const viewpoint = browser.currentScene.createNode("Viewpoint");
@@ -674,6 +691,7 @@ export default Vue.extend({
   },
   mounted() {
     this.startSocketListeners();
+    //setInterval(this.getPlace, 10000);
   },
   beforeDestroy() {},
   async beforeCreate() {
