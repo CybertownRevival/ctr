@@ -90,6 +90,56 @@ class ObjectInstanceController {
     }
   }
 
+  public async updateObjectInstance(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+
+  
+    const objectInstance = await this.objectInstanceService.find(request.body.id);
+    if (objectInstance.member_id != session.id) {
+      throw new Error('You do not own this object!');
+    }
+
+    const objectId = Number.parseInt(request.body.id);
+    let objectName = request.body.name;
+    const objectPrice = request.body.price;
+    const objectBuyer = request.body.buyer;
+
+    if(
+      objectName.length === 0 || 
+      objectName === 'undefined'){
+      objectName = null;
+    }
+    if(objectName === null){
+      throw new Error('Object must have a name.');
+    }
+    
+    if(objectName !== null){
+      await this.objectInstanceService.updateObjectInstanceName(objectId, objectName);
+      await this.objectInstanceService.updateObjectInstancePrice(objectId, objectPrice);
+      await this.objectInstanceService.updateObjectInstanceBuyer(objectId, objectBuyer);
+    }
+  }
+
+  public async openObjectProperties(request: Request, response: Response): Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    try {
+      const id = Number.parseInt(request.params.id);
+      const objectInstance = await this.objectInstanceService.getObjectInstanceWithObject(id);
+      response.status(200).json({objectInstance});
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error.message });
+    }
+  }
+
   public async pickUpObjectInstance(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
