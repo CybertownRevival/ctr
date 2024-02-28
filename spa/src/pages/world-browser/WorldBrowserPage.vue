@@ -691,7 +691,6 @@ export default Vue.extend({
   },
   mounted() {
     this.startSocketListeners();
-    //setInterval(this.getPlace, 10000);
   },
   beforeDestroy() {},
   async beforeCreate() {
