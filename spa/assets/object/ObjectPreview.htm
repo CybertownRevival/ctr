@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+  <html>
+   <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.create3000.de/x_ite/4.5.16/dist/x_ite.min.js"></script>
+    <style>
+         body {
+        border: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        background-color: #000;
+      }
+      x3d-canvas {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100vw;
+        height: 100vh;
+        border: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        z-index:0;
+      }
+      #content{
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="display:flex; position:absolute; z-index: 0;" id="content"></div>
+  </body>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const dir = urlParams.get('dir');
+    const file = urlParams.get('file');
+    const content = document.getElementById('content');
+    content.innerHTML = `<x3d-canvas src='./${dir}/${file}.wrl'></x3d-canvas>`;   
+  </script>
+</html>
