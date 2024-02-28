@@ -78,6 +78,19 @@ class MemberController {
     }
   }
 
+  public async getMemberId(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+
+    try {
+      const userId = await this.memberService.getMemberId(request.params.username);
+      response.status(200).json({ userId });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
   public async getPrimaryRoleName(request: Request, response: Response): Promise<string> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
@@ -340,11 +353,11 @@ class MemberController {
   public async getBackpack(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-
-    const { id } = session;
+    
+    const userId = Number.parseInt(request.params.id);
 
     try {
-      const objects = await this.memberService.getBackpack(id);
+      const objects = await this.memberService.getBackpack(userId);
       response.status(200).json({ message: 'success', objects: objects });
     } catch (error) {
       response.status(400).json({
