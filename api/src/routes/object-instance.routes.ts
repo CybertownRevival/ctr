@@ -12,5 +12,11 @@ objectInstanceRoutes.post('/:id/drop', (request, response) =>
 objectInstanceRoutes.post('/:id/pickup', (request, response) =>
   objectInstanceController.pickUpObjectInstance(request, response),
 );
+objectInstanceRoutes.post('/:id/properties', (request, response) =>
+  objectInstanceController.openObjectProperties(request, response),
+);
+objectInstanceRoutes.post('/update/', (request, response) =>
+  objectInstanceController.updateObjectInstance(request, response),
+);
 
 export { objectInstanceRoutes };
