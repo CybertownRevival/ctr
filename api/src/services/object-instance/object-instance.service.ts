@@ -41,8 +41,23 @@ export class ObjectInstanceService {
     return await this.objectInstanceRepository.updateObjectPlaceId(objectInstanceId, placeId);
   }
 
+  public async updateObjectInstanceName(objectId,objectName): Promise<any> {
+    return await this.objectInstanceRepository.updateObjectInstanceName(
+      objectId, objectName);
+  }
+
+  public async updateObjectInstancePrice(objectId,objectPrice): Promise<any> {
+    return await this.objectInstanceRepository.updateObjectInstancePrice(
+      objectId, objectPrice);
+  }
+
+  public async updateObjectInstanceBuyer(objectId,objectBuyer): Promise<any> {
+    return await this.objectInstanceRepository.updateObjectInstanceBuyer(
+      objectId, objectBuyer);
+  }
+
   public async add(object: Partial<Object>, memberId: number): Promise<any> {
-    await this.objectInstanceRepository.create(object.id, memberId, 0);
+    await this.objectInstanceRepository.create(object.id, object.name, memberId, 0);
   }
 
   public async getObjectInstanceWithObject(objectInstanceId: number): Promise<any> {
