@@ -5,6 +5,7 @@ export interface Object extends Model {
   id: number;
   filename: string;
   image: string;
+  texture: string;
   member_id: number;
   name: string;
   quantity: number;
