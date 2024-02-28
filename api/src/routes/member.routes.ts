@@ -44,7 +44,10 @@ memberRoutes.post('/reset_password', (request, response) =>
 memberRoutes.get('/info', (request, response) => memberController.getInfo(request, response));
 memberRoutes.get('/info/:id', (request, response) => memberController.getInfo(request, response));
 memberRoutes.get('/roles', (request, response) => memberController.getRoles(request, response));
-memberRoutes.get('/backpack', (request, response) =>
+memberRoutes.get('/backpack/:id', (request, response) =>
   memberController.getBackpack(request, response),
 );
+memberRoutes.get('/memberId/:username', (request, response) => 
+  memberController.getMemberId(request, response));
+  
 export { memberRoutes };
