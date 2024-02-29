@@ -47,8 +47,8 @@
           <div>Click <span style="color:limegreen; font-weight:bold; cursor: pointer;" @click="changeACtive()">HERE</span> to view the object in 3D!</div>
           <span style="display:flex;" v-show="this.displayModel">Created by {{ this.creator }}</span>
           <span style="height:5px"></span>
-          <span v-if="this.placeId === 0 && this.memberId === this.sessionId">This object is located in your backpack.</span>
-          <span v-else-if="this.memberid !== this.sessionId && this.placeId === 0">This object is located in {{ this.memberUsername }}'s backpack.</span>
+          <span v-if="this.placeId === 0 && this.ownerId === this.sessionId">This object is located in your backpack.</span>
+          <span v-else-if="this.ownerId !== this.sessionId && this.placeId === 0">This object is located in {{ this.memberUsername }}'s backpack.</span>
           <span style="height:5px"></span>
           <span>You have {{ this.walletBalance }} CC's.</span>
           <span style="height:20px"></span>
@@ -56,7 +56,7 @@
           <span v-show="this.price !== null && this.price !== ''">Price: {{ this.price }} CC's</span>
           <span v-show="this.price !== null && this.price !== '' && this.buyer !=='' && this.buyer !==null">Reserved for {{ this.buyer }}</span>
           <span style="height:20px"></span>
-          <div class="objectOwner grid" style="gap:.5rem;" v-show="this.sessionId === this.memberId">
+          <div class="objectOwner grid" style="gap:.5rem;" v-show="this.sessionId === this.ownerId">
             <div style="display:flex;"><div style="min-width:70px;">Name: </div><span id="nameChange"></span></div>
             <div id="qty" style="display:flex;"><div style="min-width:70px;">Price: </div><span id="priceChange"></span></div>
             <div style="display:none;"><div style="min-width:70px;">Qty: </div><span id="qtyChange"></span></div>
@@ -65,11 +65,11 @@
       </div>
     </div>
     <div style="display: flex; justify-content: center;">
-      <button  type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" @click="changeDetails()" v-if="this.sessionId === this.memberId">Update</button>
+      <button  type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" @click="changeDetails()" v-if="this.sessionId === this.ownerId">Update</button>
       <button  type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" 
         v-if="
-        this.sessionId !== this.memberId && this.price !== '' && this.buyer === this.$store.data.user.username ||
-        this.sessionId !== this.memberId && this.price !== '' && this.buyer === ''">
+        this.sessionId !== this.ownerId && this.price !== '' && this.buyer === this.$store.data.user.username ||
+        this.sessionId !== this.ownerId && this.price !== '' && this.buyer === ''">
         Buy
       </button>
       <button type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" onclick="window.close()">Close</button></div>
@@ -87,6 +87,7 @@ export default Vue.extend({
       sessionId: null,
       memberId: null,
       memberUsername: null,
+      ownerId: null,
       objectId: null,
       placeId: null,
       filename: "",
@@ -117,7 +118,7 @@ methods: {
         let object = response.data.objectInstance[0];
         this.filename = object.filename.split(".", 1);
         this.directory = object.directory;
-        this.memberId = object.member_id;
+        this.ownerId = object.member_id;
         this.sessionId = this.$store.data.user.id;
         this.placeId = object.place_id;
         this.originalName = object.name;
@@ -125,7 +126,7 @@ methods: {
         this.price = object.object_price;
         this.buyer = object.object_buyer;
 
-        if(this.sessionId === this.memberId){
+        if(this.sessionId === this.ownerId){
           this.canModify = true;
         }
         if(this.price === null){
@@ -140,12 +141,13 @@ methods: {
           qty.style.display= "flex";
           qtyInput.innerHTML= `<input style="color:black;" type="input" id="objectPrice" value="${this.qty}" />`;
         }
+        console.log(object)
         this.loadData();
         this.getOwner();
       });
   },
   async getOwner(){
-    const ownerInfo = await this.$http.get(`/member/info/${this.memberId}`);
+    const ownerInfo = await this.$http.get(`/member/info/${this.ownerId}`);
     this.memberUsername = ownerInfo.data.memberInfo.username;
   },
   async loadData(){
