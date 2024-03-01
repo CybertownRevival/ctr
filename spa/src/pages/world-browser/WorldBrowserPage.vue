@@ -64,8 +64,6 @@ export default Vue.extend({
       showUpdateWarning: false,
       mainComponent: null,
       force2d: false,
-      rotation_offset: 3.15,
-      objectSelected: false,
     };
   },
   methods: {
@@ -208,7 +206,7 @@ export default Vue.extend({
           x: dropRotation._value.x_,
           y: dropRotation._value.y_,
           z: dropRotation._value.z_,
-          angle: dropRotation._value.angle + this.rotation_offset,
+          angle: dropRotation._value.angle + 3.15,
         }
       });
       this.sharedObjects.push(request.data.object_instance);
@@ -239,12 +237,12 @@ export default Vue.extend({
       let target;
       let position;
       let rotation;
-      this.objectSelected = false;
+      let objectSelected = false;
       // Checks to see if the id only consists of numbers 
       // This identifies object_instance selection from user av selection.
       // Object_instance id's only use numbers while user av id's use letters and numbers.
       if(/^[0-9]+$/.test(id)){
-        this.objectSelected = true;
+        objectSelected = true;
         target = this.sharedObjectsMap.get(id);
         position = Object.values(target.translation._value);
         rotation = Object.values(Object.values(target.rotation._value));
@@ -261,11 +259,12 @@ export default Vue.extend({
           return;
         }
         try {
-          if(this.objectSelected === true){
+          if(objectSelected === true){
             distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? -4; 
           } else {
             distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? 3;
-          }   
+          }
+          
         } catch(e) {
           distance = 3;
         }
