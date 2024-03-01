@@ -239,6 +239,7 @@ export default Vue.extend({
       let target;
       let position;
       let rotation;
+      this.objectSelected = false;
       // Checks to see if the id only consists of numbers 
       // This identifies object_instance selection from user av selection.
       // Object_instance id's only use numbers while user av id's use letters and numbers.
@@ -260,12 +261,11 @@ export default Vue.extend({
           return;
         }
         try {
-          if(this.objectSelected === false){
-            distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? 3; 
+          if(this.objectSelected === true){
+            distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? -4; 
           } else {
-            distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? -4;
-          }
-          
+            distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? 3;
+          }   
         } catch(e) {
           distance = 3;
         }
