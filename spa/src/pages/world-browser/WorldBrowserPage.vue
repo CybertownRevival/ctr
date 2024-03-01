@@ -193,6 +193,7 @@ export default Vue.extend({
     async dropObject(objectId): Promise<void> {
       const browser = X3D.getBrowser();
       const d = 4;
+      const rotation_offset= 3.15;
       const pos = new X3D.SFVec3f(...this.position);
       const rot = new X3D.SFRotation(...this.rotation);
       const pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -d));
@@ -206,7 +207,7 @@ export default Vue.extend({
           x: dropRotation._value.x_,
           y: dropRotation._value.y_,
           z: dropRotation._value.z_,
-          angle: dropRotation._value.angle,
+          angle: dropRotation._value.angle + rotation_offset,
         }
       });
       this.sharedObjects.push(request.data.object_instance);
