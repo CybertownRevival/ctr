@@ -64,6 +64,8 @@ export default Vue.extend({
       showUpdateWarning: false,
       mainComponent: null,
       force2d: false,
+      rotation_offset: 3.15,
+      objectSelected: false,
     };
   },
   methods: {
@@ -193,7 +195,6 @@ export default Vue.extend({
     async dropObject(objectId): Promise<void> {
       const browser = X3D.getBrowser();
       const d = 4;
-      const rotation_offset= 3.15;
       const pos = new X3D.SFVec3f(...this.position);
       const rot = new X3D.SFRotation(...this.rotation);
       const pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -d));
@@ -207,7 +208,7 @@ export default Vue.extend({
           x: dropRotation._value.x_,
           y: dropRotation._value.y_,
           z: dropRotation._value.z_,
-          angle: dropRotation._value.angle + rotation_offset,
+          angle: dropRotation._value.angle + this.rotation_offset,
         }
       });
       this.sharedObjects.push(request.data.object_instance);
@@ -242,6 +243,7 @@ export default Vue.extend({
       // This identifies object_instance selection from user av selection.
       // Object_instance id's only use numbers while user av id's use letters and numbers.
       if(/^[0-9]+$/.test(id)){
+        this.objectSelected = true;
         target = this.sharedObjectsMap.get(id);
         position = Object.values(target.translation._value);
         rotation = Object.values(Object.values(target.rotation._value));
@@ -258,7 +260,12 @@ export default Vue.extend({
           return;
         }
         try {
-          distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? 3;
+          if(this.objectSelected === false){
+            distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? 3; 
+          } else {
+            distance = browser.currentScene?.getNamedNode("SharedZone")?.beamToDistance ?? -4;
+          }
+          
         } catch(e) {
           distance = 3;
         }
@@ -692,6 +699,7 @@ export default Vue.extend({
   },
   mounted() {
     this.startSocketListeners();
+    //setInterval(this.getPlace, 10000);
   },
   beforeDestroy() {},
   async beforeCreate() {
