@@ -23,6 +23,4 @@ export interface WorldBrowserData {
     showUpdateWarning: boolean;
     mainComponent: any;
     force2d: boolean;
-    rotation_offset: number;
-    objectSelected: boolean;
 }
