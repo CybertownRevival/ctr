@@ -66,12 +66,15 @@
     </div>
     <div style="display: flex; justify-content: center;">
       <button  type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" @click="changeDetails()" v-if="this.sessionId === this.ownerId">Update</button>
-      <button  type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" 
+      <!--Button removed until functionality is added<
+        
+        button  type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" 
         v-if="
         this.sessionId !== this.ownerId && this.price !== '' && this.buyer === this.$store.data.user.username ||
         this.sessionId !== this.ownerId && this.price !== '' && this.buyer === ''">
         Buy
-      </button>
+        
+      </>-->
       <button type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" onclick="window.close()">Close</button></div>
     </div>
   </div>
