@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { Container } from 'typedi';
 import validator from 'validator';
+import * as badwords from 'badwords-list';
 
 import { sendPasswordResetEmail, sendPasswordResetUnknownEmail } from '../libs';
 import { MemberService, HomeService } from '../services';
@@ -258,6 +259,11 @@ class MemberController {
       if (await this.memberService.find({ username })) {
         throw new Error('An account with this nickname already exists.');
       }
+      const bannedwords = badwords.regex;
+      if(username.match(bannedwords) || email.match(bannedwords)){
+        throw new Error('This language can not be used on CTR!');
+      }
+
       const token = await this.memberService.createMemberAndLogin(email, username, password);
       response.status(200).json({
         message: 'Signup Completed',
