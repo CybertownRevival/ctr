@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Container } from 'typedi';
 import { MemberService, ObjectInstanceService, PlaceService } from '../services';
+import * as badwords from 'badwords-list';
 
 class ObjectInstanceController {
   constructor(
@@ -100,7 +101,6 @@ class ObjectInstanceController {
       return;
     }
 
-  
     const objectInstance = await this.objectInstanceService.find(request.body.id);
     if (objectInstance.member_id != session.id) {
       throw new Error('You do not own this object!');
@@ -119,6 +119,12 @@ class ObjectInstanceController {
     if(objectName === null){
       throw new Error('Object must have a name.');
     }
+
+    const bannedwords = badwords.regex;
+    if(objectName.match(bannedwords) || objectBuyer.match(bannedwords)){
+      console.log('This language can not be used on CTR!');
+      return;
+    } 
     
     if(objectName !== null){
       await this.objectInstanceService.updateObjectInstanceName(objectId, objectName);
