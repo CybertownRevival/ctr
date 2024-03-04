@@ -69,11 +69,12 @@
       <!--Button removed until functionality is added
         
         <button  type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" 
-        v-if="
-        this.sessionId !== this.ownerId && this.price !== '' && this.buyer === this.$store.data.user.username ||
-        this.sessionId !== this.ownerId && this.price !== '' && this.buyer === ''">
-        Buy</button>
-      
+          v-if="
+          this.sessionId !== this.ownerId && this.price !== '' && this.buyer === this.$store.data.user.username ||
+          this.sessionId !== this.ownerId && this.price !== '' && this.buyer === ''">
+          Buy
+        </button>
+    
       -->
       <button type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" onclick="window.close()">Close</button></div>
     </div>
@@ -98,6 +99,7 @@ export default Vue.extend({
       originalName: "",
       name: "",
       error: "",
+      showError: false,
       success: "",
       walletBalance: null,
       canModify: false,
@@ -161,13 +163,19 @@ methods: {
 
     thumbnail.innerHTML = `<img src="/assets/object/${this.directory}/${this.filename}.jpeg" />`;
     nameInput.innerHTML = `<input style="color:black;" type="text" v-model="objectName" id="objectName" value="${this.name}"/>`;
-    priceInput.innerHTML = `<input style="color:black;" type="input" id="objectPrice" value="${this.price}" />`;
+    priceInput.innerHTML = `<input style="color:black;" type="input" id="objectPrice" value="${this.price}" maxlength='7' />`;
     buyerInput.innerHTML = `<input style="color:black;" type="input" id="objectBuyer" value="${this.buyer}" />`;
 
   },
   changeDetails() {
     this.name = (<HTMLInputElement>document.getElementById('objectName')).value.replace(/[^0-9a-zA-Z \-\[\]()]/g, '');
     this.price = (<HTMLInputElement>document.getElementById('objectPrice')).value.replace(/[^0-9]/g, '');
+    const badwords = require("badwords-list");
+    const bannedwords = badwords.regex;
+    if (this.name.match(bannedwords)) {
+      alert('You can not use this type of language on CTR!');
+      this.name = this.originalName;
+    }
     if(this.name === ""){
       this.name = this.originalName;
     }
@@ -185,6 +193,8 @@ methods: {
     objectModel.innerHTML = `<iframe src="/assets/object/ObjectPreview.htm?dir=${this.directory}&&file=${this.filename}" style="height:100%; width: 100%;"></iframe>`;
   },
   async update(): Promise<void> {
+    this.showError = false;
+    this.error = "";
     try{
       await this.$http.post(`/object_instance/update/`, {
         id: this.objectId,
@@ -195,9 +205,8 @@ methods: {
       this.success = 'Object properties have been updated successfully!';
       this.error = '';
     } catch (error) {
-      this.error = 'Updating the object details has failed.';
-      this.success = '';
-      console.error(error); 
+      this.error = error.response.data.error;
+      this.showError = true;
     }
   },
   changeACtive(){
