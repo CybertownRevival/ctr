@@ -151,7 +151,7 @@ io.on("connection", async function(socket) {
             return;
         const user = USERS.get(socket);
         const bannedwords = badwords.regex;
-        if (bannedwords.test(chatData.msg)) {
+        if(chatData.msg.match(bannedwords)){
             console.log(`${user.username} used a banned word in ${user.room}`);
             return;
         } else {
