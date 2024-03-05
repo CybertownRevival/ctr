@@ -1,7 +1,22 @@
 <template>
   <div v-if="this.active === 'model'">
-    <button class="btn" style="position: absolute; padding-inline: 10px; z-index: 1; left: 10px; top: 10px;" @click="changeACtive()">BACK</button>
-    <div id="objectModel" style="position:absolute; width:100%; height: 100%; z-index: 0; background-color: black; justify-content:center; align-items: center; display:flex; font-size: 3rem;">Loading item...</div>
+    <button class="
+    btn
+    absolute
+    p-2.5
+    left-2.5
+    top-2.5
+    z-10" 
+    @click="changeACtive()">BACK</button>
+    <div id="objectModel" class="
+    flex
+    absolute
+    w-full
+    h-full
+    bg-black
+    justify-center
+    items-center
+    text-5xl">Loading item...</div>
   </div>
   <div v-else
   id="objectProperties" class="
@@ -44,31 +59,31 @@
         "
         style="min-width: 450px;">
           <span id=name class="font-bold text-3xl">{{ this.name }}</span>
-          <div>Click <span style="color:limegreen; font-weight:bold; cursor: pointer;" @click="changeACtive()">HERE</span> to view the object in 3D!</div>
-          <span style="display:flex;" v-show="this.displayModel">Created by {{ this.creator }}</span>
-          <span style="height:5px"></span>
+          <div>Click <span class="font-bold cursor-pointer" style="color:lime" @click="changeACtive()">HERE</span> to view the object in 3D!</div>
+          <span class="flex" v-show="this.displayModel">Created by {{ this.creator }}</span>
+          <span class="h-1.5"></span>
           <span v-if="this.placeId === 0 && this.ownerId === this.sessionId">This object is located in your backpack.</span>
           <span v-else-if="this.ownerId !== this.sessionId && this.placeId === 0">This object is located in {{ this.memberUsername }}'s backpack.</span>
-          <span style="height:5px"></span>
+          <span class="h-1.5"></span>
           <span>You have {{ this.walletBalance }} CC's.</span>
-          <span style="height:20px"></span>
+          <span class="h-5"></span>
           <span v-show="this.displayModel">Quantity: {{ this.qty }}</span>
           <span v-show="this.price !== null && this.price !== ''">Price: {{ this.price }} CC's</span>
           <span v-show="this.price !== null && this.price !== '' && this.buyer !=='' && this.buyer !==null">Reserved for {{ this.buyer }}</span>
-          <span style="height:20px"></span>
-          <div class="objectOwner grid" style="gap:.5rem;" v-show="this.sessionId === this.ownerId">
-            <div style="display:flex;"><div style="min-width:70px;">Name: </div><span id="nameChange"></span></div>
-            <div id="qty" style="display:flex;"><div style="min-width:70px;">Price: </div><span id="priceChange"></span></div>
-            <div style="display:none;"><div style="min-width:70px;">Qty: </div><span id="qtyChange"></span></div>
-            <div style="display:flex;"><div style="min-width:70px;">Buyer: </div><span id="buyerChange"></span></div>
+          <span class="h-5"></span>
+          <div class="objectOwner grid gap-2" v-show="this.sessionId === this.ownerId">
+            <div class="flex"><div style="min-width: 70px;">Name: </div><span id="nameChange"></span></div>
+            <div class="flex"><div style="min-width: 70px;">Price: </div><span id="priceChange"></span></div>
+            <div id="qty" class="hidden"><div style="min-width: 70px;">Qty: </div><span id="qtyChange"></span></div>
+            <div class="flex"><div style="min-width: 70px;">Buyer: </div><span id="buyerChange"></span></div>
           </div>
       </div>
     </div>
-    <div style="display: flex; justify-content: center;">
-      <button  type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" @click="changeDetails()" v-if="this.sessionId === this.ownerId">Update</button>
+    <div class="flex justify-center">
+      <button  type="button" class="btn mx-1 mt-10" @click="changeDetails()" v-if="this.sessionId === this.ownerId">Update</button>
       <!--Button removed until functionality is added
         
-        <button  type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" 
+        <button  type="button" class="btn mx-1 mt-10" 
           v-if="
           this.sessionId !== this.ownerId && this.price !== '' && this.buyer === this.$store.data.user.username ||
           this.sessionId !== this.ownerId && this.price !== '' && this.buyer === ''">
@@ -76,7 +91,7 @@
         </button>
     
       -->
-      <button type="button" class="btn" style="margin-inline: 5px; margin-top: 40px;" onclick="window.close()">Close</button></div>
+      <button type="button" class="btn mx-1 mt-10" onclick="window.close()">Close</button></div>
     </div>
   </div>
 </template>
