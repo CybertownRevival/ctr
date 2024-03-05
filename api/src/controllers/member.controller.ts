@@ -260,7 +260,7 @@ class MemberController {
         throw new Error('An account with this nickname already exists.');
       }
       const bannedwords = badwords.regex;
-      if(username.match(bannedwords) || email.match(bannedwords)){
+      if(username.match(bannedwords)){
         throw new Error('This language can not be used on CTR!');
       }
 
