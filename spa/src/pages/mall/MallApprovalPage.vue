@@ -47,7 +47,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(object,key) in objects" :key="key" style="border: 3px solid gray;">
+        <tr v-for="(object,key) in objects" :key="key" class="border-2 border-solid border-gray-200">
           <td>{{ object.name }}</td>
           <td><button type="button" class="btn" @click="preview(object.image, object.directory)">Thumbnail</button></td>
           <td><button type="button" class="btn" @click="getWrlFile(object.filename, object.directory)">Object</button></td>
