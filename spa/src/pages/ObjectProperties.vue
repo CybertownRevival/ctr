@@ -205,7 +205,7 @@ methods: {
   },
   loadObjectModel() {
     const objectModel = document.getElementById('objectModel');
-    objectModel.innerHTML = `<iframe src="/assets/object/ObjectPreview.htm?dir=${this.directory}&&file=${this.filename}" style="height:100%; width: 100%;"></iframe>`;
+    objectModel.innerHTML = `<iframe src="/assets/object/ObjectPreview.htm?dir=${this.directory}&&file=${this.filename}" class="h-full w-full"></iframe>`;
   },
   async update(): Promise<void> {
     this.showError = false;
