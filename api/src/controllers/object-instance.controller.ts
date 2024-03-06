@@ -100,27 +100,27 @@ class ObjectInstanceController {
       });
       return;
     }
+    try{
+      const objectInstance = await this.objectInstanceService.find(request.body.id);
+      if (objectInstance.member_id != session.id) {
+        throw new Error('You do not own this object!');
+      }
 
-    const objectInstance = await this.objectInstanceService.find(request.body.id);
-    if (objectInstance.member_id != session.id) {
-      throw new Error('You do not own this object!');
-    }
+      const objectId = Number.parseInt(request.body.id);
+      let objectName = request.body.name;
+      const objectPrice = request.body.price;
+      const objectBuyer = request.body.buyer;
 
-    const objectId = Number.parseInt(request.body.id);
-    let objectName = request.body.name;
-    const objectPrice = request.body.price;
-    const objectBuyer = request.body.buyer;
+      if(
+        objectName.length === 0 || 
+        objectName === 'undefined'){
+        objectName = null;
+      }
+      if(objectName === null){
+        throw new Error('Object must have a name.');
+      }
 
-    if(
-      objectName.length === 0 || 
-      objectName === 'undefined'){
-      objectName = null;
-    }
-    if(objectName === null){
-      throw new Error('Object must have a name.');
-    }
-
-    const bannedwords = badwords.regex;
+      const bannedwords = badwords.regex;
       if(objectName.match(bannedwords)){
         throw new Error('This language can not be used on CTR!');
       }
@@ -129,11 +129,15 @@ class ObjectInstanceController {
           throw new Error('This language can not be used on CTR!');
         }
       }
-    
-    if(objectName !== null){
-      await this.objectInstanceService.updateObjectInstanceName(objectId, objectName);
-      await this.objectInstanceService.updateObjectInstancePrice(objectId, objectPrice);
-      await this.objectInstanceService.updateObjectInstanceBuyer(objectId, objectBuyer);
+      
+      if(objectName !== null){
+        await this.objectInstanceService.updateObjectInstanceName(objectId, objectName);
+        await this.objectInstanceService.updateObjectInstancePrice(objectId, objectPrice);
+        await this.objectInstanceService.updateObjectInstanceBuyer(objectId, objectBuyer);
+      }
+    } catch(error) {
+      console.error(error);
+      response.status(400).json({'error': error.message});
     }
   }
 
@@ -146,7 +150,7 @@ class ObjectInstanceController {
       response.status(200).json({objectInstance});
     } catch (error) {
       console.error(error);
-      response.status(400).json({ error: error.message });
+      response.status(400).json({ error: error });
     }
   }
 
