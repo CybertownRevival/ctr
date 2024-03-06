@@ -16,6 +16,42 @@ eventOut SFVec3f newPosition
 eventOut SFRotation newRotation
 ] "/externprotos/shared_xite.wrl#SharedObject"
 
+EXTERNPROTO SharedEvent [ 
+exposedField   SFString	name
+exposedField   SFString	type
+eventIn	       SFTime   set_time 
+eventOut       SFTime   timeToServer 
+eventIn	       SFTime   timeFromServer 
+eventOut       SFTime   time_changed 
+] [ "/externprotos/shared_xite.wrl#SharedEvent" ]
+
+PROTO BlaxxunZone [#PROTO supplied by BLAXXUN  
+eventIn         MFNode   addEvents  
+eventIn         MFNode   removeEvents  
+eventIn         MFNode   addAvatars  
+eventIn         MFNode   removeAvatars  
+exposedField    MFNode   events NULL 
+exposedField    MFNode   avatars NULL 
+exposedField    SFString myAvatarURL "" 
+exposedField    SFString myAvatarName ""
+exposedField    SFFloat  number_avatars 0
+eventOut        MFNode   avatars_added 
+eventOut        MFNode   avatars_removed
+exposedField    MFNode   avatarLOD []
+exposedField    MFFloat   avatarRange []
+]{ 
+Transform { 
+addChildren IS addEvents 
+removeChildren IS removeEvents 
+children IS events 
+} 
+Transform { 
+        addChildren IS addAvatars
+        removeChildren IS removeAvatars 
+        children IS avatars 
+}
+}# END BlaxxunZone
+
 #############################################################################
 #Random Trigger
 #############################################################################
