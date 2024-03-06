@@ -133,8 +133,11 @@
             :key="object.id"
             class="flex cursor-default"
           >
-            <div class="flex-1 whitespace-nowrap overflow-x-hidden"  @mouseup="userMenu(object.id)">
+          <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
               {{ object.object_name }}
+            </div>
+            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+              {{ object.name }}
             </div>
           </li>
         </ul>
@@ -144,8 +147,11 @@
             :key="object.id"
             class="flex cursor-default"
           >
-            <div class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+            <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
               {{ object.object_name }}
+            </div>
+            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+              {{ object.name }}
             </div>
           </li>
 
@@ -317,6 +323,7 @@
 
 import Vue from 'vue';
 import { debugMsg } from '@/helpers';
+import socket from '@/socket';
 export default Vue.extend({
   name: "Chat",
   props: [
