@@ -121,10 +121,14 @@ class ObjectInstanceController {
     }
 
     const bannedwords = badwords.regex;
-    if(objectName.match(bannedwords) || objectBuyer.match(bannedwords)){
-      console.log('This language can not be used on CTR!');
-      return;
-    } 
+      if(objectName.match(bannedwords)){
+        throw new Error('This language can not be used on CTR!');
+      }
+      if(objectBuyer !== null){
+        if(objectBuyer.match(bannedwords)){
+          throw new Error('This language can not be used on CTR!');
+        }
+      }
     
     if(objectName !== null){
       await this.objectInstanceService.updateObjectInstanceName(objectId, objectName);
