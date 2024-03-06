@@ -190,6 +190,7 @@ methods: {
     if (this.name.match(bannedwords)) {
       alert('You can not use this type of language on CTR!');
       this.name = this.originalName;
+      this.loadData();
     }
     if(this.name === ""){
       this.name = this.originalName;
@@ -208,21 +209,12 @@ methods: {
     objectModel.innerHTML = `<iframe src="/assets/object/ObjectPreview.htm?dir=${this.directory}&&file=${this.filename}" class="h-full w-full"></iframe>`;
   },
   async update(): Promise<void> {
-    this.showError = false;
-    this.error = "";
-    try{
-      await this.$http.post(`/object_instance/update/`, {
-        id: this.objectId,
-        name: this.name,
-        price: this.price,
-        buyer: this.buyer,
-      });
-      this.success = 'Object properties have been updated successfully!';
-      this.error = '';
-    } catch (error) {
-      this.error = error.response.data.error;
-      this.showError = true;
-    }
+    await this.$http.post(`/object_instance/update/`, {
+      id: this.objectId,
+      name: this.name,
+      price: this.price,
+      buyer: this.buyer,
+    });
   },
   changeACtive(){
     switch (this.active) {
