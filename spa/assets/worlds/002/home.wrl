@@ -21,28 +21,6 @@ exposedField    MFString groupChatName
 exposedField    MFString groupChat
 ] "/externprotos/shared_xite.wrl#BlaxxunZone"
 
-EXTERNPROTO SharedObject [
-exposedField SFVec3f translation
-exposedField SFRotation rotation
-exposedField MFNode children 
-exposedField SFString name
-exposedField SFString id
-eventIn SFBool startMove
-eventOut SFBool isOver
-eventOut SFTime touchTime
-eventOut SFVec3f newPosition
-eventOut SFRotation newRotation
-] "/externprotos/shared_xite.wrl#SharedObject"
-
-EXTERNPROTO SharedEvent [ 
-exposedField   SFString	name
-exposedField   SFString	type
-eventIn	       SFTime   set_time 
-eventOut       SFTime   timeToServer 
-eventIn	       SFTime   timeFromServer 
-eventOut       SFTime   time_changed 
-] [ "/externprotos/shared_xite.wrl#SharedEvent" ]
-
 PROTO BlaxxunZone [#PROTO supplied by BLAXXUN  
 eventIn         MFNode   addEvents  
 eventIn         MFNode   removeEvents  
