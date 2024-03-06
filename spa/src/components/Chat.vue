@@ -323,7 +323,6 @@
 
 import Vue from 'vue';
 import { debugMsg } from '@/helpers';
-import socket from '@/socket';
 export default Vue.extend({
   name: "Chat",
   props: [
@@ -527,7 +526,6 @@ export default Vue.extend({
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {
         this.debugMsg("chat message received...", data);
-        this.debugMsg(this.blockedMembers.includes(data.username));
         if(this.blockedMembers.includes(data.username) === false){
           this.messages.push(data);
         } 
