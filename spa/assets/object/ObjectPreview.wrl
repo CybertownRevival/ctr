@@ -1,9 +1,8 @@
 #VRML V2.0 utf8
 WorldInfo {
- title "5000exp"
+ title "ObjectPreview"
  info [
-  "This VRML World was created with Spazz3D, a VRML 97 authoring tool"
-  "www.spazz3d.com"
+  "Blank world to view objects in."
  ]
 }
 
