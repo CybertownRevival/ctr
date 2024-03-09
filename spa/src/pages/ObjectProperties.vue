@@ -6,8 +6,8 @@
     p-2.5
     left-2.5
     top-2.5
-    z-10" 
-    @click="changeACtive()">BACK</button>
+    z-20" 
+    @click="reload()">BACK</button>
     <div id="objectModel" class="
     flex
     absolute
@@ -16,7 +16,8 @@
     bg-black
     justify-center
     items-center
-    text-5xl">Loading item...</div>
+    text-5xl
+    z-10"></div>
   </div>
   <div v-else
   id="objectProperties" class="
@@ -48,7 +49,7 @@
       <div class="grid" style="
         grid-template-columns: 450px auto;
       ">
-        <div id="thumbnail" class="justify-self-center"></div>
+        <div id="thumbnail" class="justify-self-center"><img :src="imgFile" /></div>
         <div class="
         flex
         flex-col
@@ -109,8 +110,8 @@ export default Vue.extend({
       ownerId: null,
       objectId: null,
       placeId: null,
-      filename: "",
-      directory: "",
+      imgFile: null,
+      objectFile: null,
       originalName: "",
       name: "",
       error: "",
@@ -136,8 +137,9 @@ methods: {
     return await this.$http.post(`/object_instance/${ this.objectId }/properties/`)
       .then((response) => {
         let object = response.data.objectInstance[0];
-        this.filename = object.filename.split(".", 1);
-        this.directory = object.directory;
+        let filename = object.filename.split(".", 1);
+        this.imgFile = `/assets/object/${object.directory}/${filename}.jpeg`;
+        this.objectFile = `/assets/object/${object.directory}/${object.filename}`;
         this.ownerId = object.member_id;
         this.sessionId = this.$store.data.user.id;
         this.placeId = object.place_id;
@@ -170,17 +172,17 @@ methods: {
     const ownerInfo = await this.$http.get(`/member/info/${this.ownerId}`);
     this.memberUsername = ownerInfo.data.memberInfo.username;
   },
+  reload(){
+    window.location.reload();
+  },
   async loadData(){
-    const thumbnail = document.getElementById("thumbnail");
     const nameInput = document.getElementById("nameChange");
     const priceInput = document.getElementById("priceChange");
     const buyerInput = document.getElementById("buyerChange");
 
-    thumbnail.innerHTML = `<img src="/assets/object/${this.directory}/${this.filename}.jpeg" />`;
     nameInput.innerHTML = `<input style="color:black;" type="text" v-model="objectName" id="objectName" value="${this.name}"/>`;
     priceInput.innerHTML = `<input style="color:black;" type="input" id="objectPrice" value="${this.price}" maxlength='7' />`;
     buyerInput.innerHTML = `<input style="color:black;" type="input" id="objectBuyer" value="${this.buyer}" />`;
-
   },
   changeDetails() {
     this.name = (<HTMLInputElement>document.getElementById('objectName')).value.replace(/[^0-9a-zA-Z \-\[\]()]/g, '');
@@ -204,9 +206,20 @@ methods: {
     }
     this.update();
   },
-  loadObjectModel() {
-    const objectModel = document.getElementById('objectModel');
-    objectModel.innerHTML = `<iframe src="/assets/object/ObjectPreview.htm?dir=${this.directory}&&file=${this.filename}" class="h-full w-full"></iframe>`;
+  loadObjectPreview() {
+    const browser = X3D.createBrowser();
+    document.querySelector("#objectModel").appendChild(browser);
+    const objectURL = '/assets/object/ObjectPreview.wrl';
+    const objectViewer = X3D.getBrowser();
+    objectViewer.loadURL(new X3D.MFString(objectURL));
+    setTimeout(this.loadObject, 500);
+  },
+  loadObject(){
+    console.log('adding object');
+    const browser = X3D.getBrowser();
+    const inline = browser.currentScene.createNode("Inline");
+    inline.url = new X3D.MFString(this.objectFile);
+    browser.currentScene.addRootNode(inline);
   },
   async update(): Promise<void> {
     await this.$http.post(`/object_instance/update/`, {
@@ -220,13 +233,7 @@ methods: {
     switch (this.active) {
       case "properties":
         this.active = "model";
-        setTimeout(this.loadObjectModel, 1000);
-        break;
-      case "model":
-        this.active = "properties";
-        this.objectProperties();
-        const objectModel = document.getElementById('objectModel');
-        objectModel.innerHTML = "";
+        setTimeout(this.loadObjectPreview, 100);
         break;
     }
   },
