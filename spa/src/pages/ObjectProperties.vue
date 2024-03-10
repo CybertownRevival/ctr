@@ -212,7 +212,7 @@ methods: {
     const objectURL = '/assets/object/ObjectPreview.wrl';
     const objectViewer = X3D.getBrowser();
     objectViewer.loadURL(new X3D.MFString(objectURL));
-    setTimeout(this.loadObject, 500);
+    setTimeout(this.loadObject, 3000);
   },
   loadObject(){
     console.log('adding object');
