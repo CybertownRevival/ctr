@@ -249,7 +249,7 @@
           Move
         </li>
         <li v-if="activePanel === 'sharedObjects' &&
-          candModify" 
+          canModify" 
           class="
             p-1
             pl-3.5
@@ -340,13 +340,11 @@ export default Vue.extend({
       activePanel: "users",
       objectId: null,
       canInteractWithObject: false,
-      candModify: false,
+      canModify: false,
       memberId: null,
       username: null,
       blockedUser: false,
       blockedMembers: [],
-      whisper: null,
-      privateChat: null,
       cursorX: null,
       cursorY: null,
       numberOfPosts: 0,
@@ -458,7 +456,7 @@ export default Vue.extend({
       this.users = [];
       this.canInteractWithObject = false;
       if(this.$store.data.place.member_id === this.$store.data.user.id) {
-        this.candModify = true;
+        this.canModify = true;
         if(this.$store.data.view3d){
           this.canInteractWithObject = true;
         }
