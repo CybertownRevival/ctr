@@ -477,7 +477,17 @@ export class MemberService {
     }
   }
 
-  public async getBackpack(memberId: number): Promise<any> {
-    return await this.objectInstanceRepository.getMemberBackpack(memberId);
+  public async getBackpack(username: string): Promise<any> {
+    let memberId = null;
+    let userId = null;
+    try {
+      memberId = await this.memberRepository.findIdByUsername(username);
+      userId = memberId[0].id;
+    } catch (error) {
+      userId = null;
+    }
+    if(userId !== null){
+      return await this.objectInstanceRepository.getMemberBackpack(userId);
+    }
   }
 }
