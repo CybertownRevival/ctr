@@ -356,14 +356,14 @@ class MemberController {
     }
   }
 
-  public async getBackpack(request: Request, response: Response): Promise<void> {
+ public async getBackpack(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     
-    const userId = Number.parseInt(request.params.id);
+    const username = request.params.username;
 
     try {
-      const objects = await this.memberService.getBackpack(userId);
+      const objects = await this.memberService.getBackpack(username);
       response.status(200).json({ message: 'success', objects: objects });
     } catch (error) {
       response.status(400).json({
