@@ -274,6 +274,9 @@
                 ><br /><br />
 
                 <h2><router-link to="/about">About Cybertown Revival</router-link></h2>
+                <br/>
+                <span class="text-ctyellow text-2xl">Fan Made Not For Profit Recreation</span>
+                <br/>
 
                <a
                   href="https://kdaws.com/"
