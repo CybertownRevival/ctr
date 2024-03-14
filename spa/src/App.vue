@@ -190,10 +190,6 @@ export default Vue.extend({
           slug: "enter",
         },
         {
-          title: "Employment Office",
-          slug: "employment",
-        },
-        {
           title: "Flea Market",
           slug: "fleamarket",
         },
@@ -289,6 +285,50 @@ export default Vue.extend({
                 },
 
                  */
+        {
+          title: "-----------------------",
+          slug: "",
+        },
+        {
+          title: "HOME DEMOS:",
+          slug: "",
+        },
+        {
+          slug: "home03",
+          title: "Home 1",
+        },
+        {
+          slug: "home00",
+          title: "Home 1 (Furnished)",
+        },
+        {
+          slug: "home04",
+          title: "Home 2",
+        },
+        {
+          slug: "home01",
+          title: "Home 2 (Furnished)",
+        },
+        {
+          slug: "home05",
+          title: "Home 3",
+        },
+        {
+          slug: "home02",
+          title: "Home 3 (Furnished)",
+        },
+        {
+          slug: "home06",
+          title: "Home 4",
+        },
+        {
+          slug: "home07",
+          title: "Home 5",
+        },
+        {
+          slug: "home0a",
+          title: "Home 6",
+        },
       ],
       jumpGate: "",
     };
