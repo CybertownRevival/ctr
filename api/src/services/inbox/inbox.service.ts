@@ -146,7 +146,7 @@ export class InboxService {
         img: ['src', 'srcset', 'alt', 'title', 'width', 'height'],
         font: ['color', 'size'],
         map: [ 'name' ],
-        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target' ],
+        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target', 'class' ],
       },
     });
     return cleanInfo;
