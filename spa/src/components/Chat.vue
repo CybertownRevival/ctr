@@ -87,7 +87,7 @@
           My Backpack ({{  this.backpackObjects.length }})
         </span>
         <span v-if="activePanel === 'userBackpack'" class="flex-grow">
-          <span id="userBackpack"></span>'s Backpack ({{ this.backpackObjects.length }})
+          {{ this.usernameBackPack }}'s Backpack ({{ this.backpackObjects.length }})
         </span>
         <button
           type="button"
@@ -343,6 +343,7 @@ export default Vue.extend({
       canModify: false,
       memberId: null,
       username: null,
+      usernameBackPack: null,
       blockedUser: false,
       blockedMembers: [],
       cursorX: null,
@@ -554,21 +555,18 @@ export default Vue.extend({
     },
     async loadBackpack() {
         this.backpackObjects = [];
-        const response = await this.$http.get(`/member/backpack/${this.$store.data.user.id}`);
+        const response = await this.$http.get(`/member/backpack/${this.$store.data.user.username}`);
         this.backpackObjects = response.data.objects;
     },
     async userBackpack(){
+      this.closeMenu();
       this.activePanel = "userBackpack";
       await this.loadUserBackpack();
-      this.closeMenu();
     },
     async loadUserBackpack(){
-      const memberIdRequest = await this.$http.get(`/member/memberId/${this.username}`);
-      this.memberId = memberIdRequest.data.userId[0].id;
+      this.usernameBackPack = this.username;
       this.backpackObjects = [];
-      let userBP = document.getElementById("userBackpack");
-      userBP.textContent = this.username;
-      const response = await this.$http.get(`/member/backpack/${this.memberId}`);
+      const response = await this.$http.get(`/member/backpack/${this.username}`);
       this.backpackObjects = response.data.objects;
     },
   },
