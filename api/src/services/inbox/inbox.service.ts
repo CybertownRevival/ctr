@@ -137,12 +137,16 @@ export class InboxService {
         'img',
         'font',
         'center',
+        'map',
+        'area',
       ],
       disallowedTagsMode: 'discard',
       allowedAttributes: {
         a: ['href', 'name', 'target'],
         img: ['src', 'srcset', 'alt', 'title', 'width', 'height'],
         font: ['color', 'size'],
+        map: [ 'name' ],
+        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target' ],
       },
     });
     return cleanInfo;
