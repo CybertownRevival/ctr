@@ -6,10 +6,16 @@
               + $store.data.place.type
               + '/'
               + $store.data.place.id)">Information</button>
+    <span v-if="$store.data.place.slug === 'employment'">
+      <button class="btn-ui"
+              v-on:click="opener('#/messageboard/' + $store.data.place.id)">Job Offers</button>
+    </span>
+    <span v-else>
     <button class="btn-ui"
             v-on:click="opener('#/inbox/'+$store.data.place.id)">Inbox</button>
     <button class="btn-ui"
             v-on:click="opener('#/messageboard/' + $store.data.place.id)">Messages</button>
+    </span>
     <br />
     <div v-if="$store.data.place.slug === 'mall'">
     <router-link 
