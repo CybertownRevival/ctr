@@ -38,8 +38,8 @@ export class MessageboardService {
     placeId,
     memberId,
   ): Promise<any> {
-    const securityCode = this.roleRepository.roleMap.SecurityChief;
-    return await this.messageboardRepository.getAdminInfo(placeId, memberId, securityCode);
+    const securityRoleId = this.roleRepository.roleMap.SecurityChief;
+    return await this.messageboardRepository.getAdminInfo(placeId, memberId, securityRoleId);
   }
   public async getInfo(
     placeId: number,
