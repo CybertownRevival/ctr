@@ -22,6 +22,11 @@ class MessageboardController {
   }
   
   public async adminCheck(placeId, id, type): Promise<any> {
+    try {
+      return await this.messageboardService.getAdminInfo(placeId, id);
+    } catch (e) {
+      console.log(e);
+    }
     if (type === 'colony') {
       try {
         return await this.colonyService.canAdmin(placeId, id);
@@ -41,11 +46,7 @@ class MessageboardController {
         console.log(e);
       }
     } else {
-      try {
-        return await this.messageboardService.getAdminInfo(placeId, id);
-      } catch (e) {
-        console.log(e);
-      }
+      return;
     }
   }
   public async getAdminInfo(request: Request, response: Response): Promise<any> {
