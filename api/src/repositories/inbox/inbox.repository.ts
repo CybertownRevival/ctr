@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 
 import { Db } from '../../db';
 import {knex} from '../../db';
-import {Member, Inbox, Place} from 'models';
+import {Member, Inbox, Place, RoleAssignment} from 'models';
 import {response} from 'express';
 
 @Service()
@@ -36,11 +36,20 @@ export class InboxRepository {
       )
       .from<Member, Member[]>('member')
       .where('id', memberId);
+    const securityinfo = await knex
+      .select(
+        'member_id',
+      )
+      .from<RoleAssignment, RoleAssignment[]>('role_assignment')
+      .where('role_id', '62')
+      .where('member_id', memberId);
     const placeinfo = await knex
       .select('member_id')
       .from<Place, Place[]>('place')
       .where('id', placeId);
-    if (admininfo[0].admin || placeinfo[0].member_id === memberId) {
+    if (admininfo[0].admin || 
+      placeinfo[0].member_id === memberId || 
+      securityinfo[0].member_id === memberId) {
       const admin = 1;
       return admin;
     } else {
