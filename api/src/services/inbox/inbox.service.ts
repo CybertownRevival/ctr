@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 
-import { InboxRepository, ColonyRepository } from '../../repositories';
+import { InboxRepository, ColonyRepository, RoleRepository } from '../../repositories';
 import sanitizeHtml from 'sanitize-html';
 import { stringify } from 'ts-jest';
 
@@ -11,7 +11,9 @@ export class InboxService {
   public static readonly VALID_ORDERS = ['id', 'date'];
   public static readonly VALID_ORDER_DIRECTIONS = ['asc', 'desc'];
 
-  constructor(private inboxRepository: InboxRepository) {}
+  constructor(
+    private inboxRepository: InboxRepository,
+    private roleRepository: RoleRepository) {}
 
   public async changeInboxIntro(placeId, Intro): Promise<any> {
     console.log(`Service${placeId}`);
@@ -22,7 +24,8 @@ export class InboxService {
   }
 
   public async getAdminInfo(placeId, memberId): Promise<any> {
-    return await this.inboxRepository.getAdminInfo(placeId, memberId);
+    const securityCode = this.roleRepository.roleMap.SecurityChief;
+    return await this.inboxRepository.getAdminInfo(placeId, memberId, securityCode);
   }
   public async getInfo(placeId: number): Promise<any> {
     return await this.inboxRepository.getInfo(placeId);
@@ -146,7 +149,7 @@ export class InboxService {
         img: ['src', 'srcset', 'alt', 'title', 'width', 'height'],
         font: ['color', 'size'],
         map: [ 'name' ],
-        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target', 'class' ],
+        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target' ],
       },
     });
     return cleanInfo;
