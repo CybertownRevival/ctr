@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import {
   MessageboardRepository,
   ColonyRepository,
+  RoleRepository,
 } from '../../repositories';
 import sanitizeHtml from 'sanitize-html';
 
@@ -15,6 +16,7 @@ export class MessageboardService {
   
   constructor(
    private messageboardRepository: MessageboardRepository,
+   private roleRepository: RoleRepository,
   ) {}
   
   public async changeMessageboardIntro(
@@ -36,7 +38,8 @@ export class MessageboardService {
     placeId,
     memberId,
   ): Promise<any> {
-    return await this.messageboardRepository.getAdminInfo(placeId, memberId);
+    const securityCode = this.roleRepository.roleMap.SecurityChief;
+    return await this.messageboardRepository.getAdminInfo(placeId, memberId, securityCode);
   }
   public async getInfo(
     placeId: number,
@@ -93,7 +96,7 @@ export class MessageboardService {
         img: [ 'src', 'srcset', 'alt', 'title', 'width', 'height', 'usemap' ],
         font: [ 'color', 'size' ],
         map: [ 'name' ],
-        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target', 'class' ],
+        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target' ],
       },
     });
     return cleanInfo;
