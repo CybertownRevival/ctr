@@ -29,6 +29,7 @@ export class MessageboardRepository {
   public async getAdminInfo(
     placeId: number,
     memberId: number,
+    security: number,
   ): Promise<any> {
     const admininfo = await knex
       .select(
@@ -41,7 +42,7 @@ export class MessageboardRepository {
         'member_id',
       )
       .from<RoleAssignment, RoleAssignment[]>('role_assignment')
-      .where('role_id', '62')
+      .where('role_id', security)
       .where('member_id', memberId);
     const placeinfo = await knex
       .select('member_id')
