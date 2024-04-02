@@ -22,6 +22,11 @@ class InboxController {
   }
   
   public async adminCheck(placeId, id, type): Promise<any> {
+    try {
+      return await this.inboxService.getAdminInfo(placeId, id);
+    } catch (e) {
+      console.log(e);
+    }
     if (type === 'colony') {
       try {
         return await this.colonyService.canAdmin(placeId, id);
@@ -41,11 +46,7 @@ class InboxController {
         console.log(e);
       }
     } else {
-      try {
-        return await this.inboxService.getAdminInfo(placeId, id);
-      } catch (e) {
-        console.log(e);
-      }
+      return;
     }
   }
   public async getAdminInfo(request: Request, response: Response): Promise<any> {
@@ -116,14 +117,14 @@ class InboxController {
   
   public async getMessage(request: Request, response: Response): Promise<any> {
     const messageId = Number.parseInt(request.body.message_id);
-	const placeId = Number.parseInt(request.body.place_id);
+    const placeId = Number.parseInt(request.body.place_id);
     if (placeId <= 0) {
       response.status(400).json({
         error: 'placeId is required.',
       });
       return;
     }
-	const { apitoken } = request.headers;
+    const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);
     if(!session) {
       response.status(400).json({
@@ -132,17 +133,17 @@ class InboxController {
       return;
     }
     const { id } = session;
-	if (this.inboxService.getAdminInfo(placeId, id)) {
-    try {
-      const [getmessage] = await this.inboxService.getMessage(messageId);
-      console.log(getmessage);
-      response.status(200).json(getmessage);
-    } catch (error) {
-      console.log(error);
-      response.status(400).json({
-        err: 'A problems occurred when getting the message',
-      });
-	  }
+    if (this.inboxService.getAdminInfo(placeId, id)) {
+      try {
+        const [getmessage] = await this.inboxService.getMessage(messageId);
+        console.log(getmessage);
+        response.status(200).json(getmessage);
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({
+          err: 'A problems occurred when getting the message',
+        });
+      }
     }
   }
   
