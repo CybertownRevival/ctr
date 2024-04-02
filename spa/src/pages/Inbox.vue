@@ -12,8 +12,8 @@
             <button class="btn-ui" @click="switchManage()" v-show="this.boardadmin">MANAGE</button>
           </div>
         </div>
-        <p><h2><center>{{ this.placeinfo[0].name }}'s Inbox</center></h2></p>
-        <p><div class="content" v-html="this.placeinfo[0].inbox_intro"/></p>
+        <p><h2><center>{{ this.placeName }}'s Inbox</center></h2></p>
+        <p><div class="content" v-html="this.inboxIntro"/></p>
         <hr/>
         <div v-if="this.boardadmin">
           <div v-if="inboxmessages <= 0">
@@ -79,7 +79,7 @@
     <div v-if="this.active === 'post'">
       <div v-if="success" class="text-chat"><center>{{ success }}</center></div>
       <div v-if="error" class="text-red-500"><center>{{ error }}</center></div>
-      <div class="content" v-html="this.placeinfo[0].inbox_intro"/>
+      <div class="content" v-html="this.inboxIntro"/>
       <div class="mt-0.5 mb-0.5"><hr/></div>
       <center>
         <div class="text-red-300 justify-center" v-if="error">
@@ -118,9 +118,9 @@
     </div>
     <div v-if="this.active === 'manage'">
       <center>
-        <h2>{{ this.placeinfo[0].name }} Manager</h2>
+        <h2>{{ this.placeName }} Manager</h2>
         <textarea id="intro" class="text-black w-2/3 h-96" v-model="intro">
-          {{ this.placeinfo[0].messageboard_intro }}
+          {{ this.inboxIntro }}
         </textarea><br><br>
         <button class="btn" @click="switchView()">CANCEL</button>&nbsp;&nbsp;&nbsp;
         <button type="submit" class="btn" @click="changeInboxIntro">UPDATE</button>
@@ -156,6 +156,8 @@ export default Vue.extend({
       placeinfo: [],
       subject: "",
       success: "",
+      placeName: "",
+      inboxIntro: "",
     };
   },
   methods: {
@@ -219,6 +221,8 @@ export default Vue.extend({
         place_id: this.$route.params.place_id,
       }).then((response) => {
         this.placeinfo = response.data.placeinfo;
+        this.placeName = this.placeinfo[0].name;
+        this.inboxIntro = this.placeinfo[0].inbox_intro;
       });
     },
     //get and prepares specific information for displaying in lower div
