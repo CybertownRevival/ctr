@@ -96,7 +96,7 @@ export class MessageboardService {
         img: [ 'src', 'srcset', 'alt', 'title', 'width', 'height', 'usemap' ],
         font: [ 'color', 'size' ],
         map: [ 'name' ],
-        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target' ],
+        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target', 'class' ],
       },
     });
     return cleanInfo;
