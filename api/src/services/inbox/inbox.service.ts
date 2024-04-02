@@ -24,8 +24,8 @@ export class InboxService {
   }
 
   public async getAdminInfo(placeId, memberId): Promise<any> {
-    const securityCode = this.roleRepository.roleMap.SecurityChief;
-    return await this.inboxRepository.getAdminInfo(placeId, memberId, securityCode);
+    const securityRoleId = this.roleRepository.roleMap.SecurityChief;
+    return await this.inboxRepository.getAdminInfo(placeId, memberId, securityRoleId);
   }
   public async getInfo(placeId: number): Promise<any> {
     return await this.inboxRepository.getInfo(placeId);
