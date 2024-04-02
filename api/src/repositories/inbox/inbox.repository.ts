@@ -29,7 +29,7 @@ export class InboxRepository {
   public async getAdminInfo(
     placeId: number,
     memberId: number,
-    security: number,
+    securityId: number,
   ): Promise<any> {
     const admininfo = await knex
       .select(
@@ -42,7 +42,7 @@ export class InboxRepository {
         'member_id',
       )
       .from<RoleAssignment, RoleAssignment[]>('role_assignment')
-      .where('role_id', security)
+      .where('role_id', securityId)
       .where('member_id', memberId);
     const placeinfo = await knex
       .select('member_id')
