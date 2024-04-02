@@ -12,8 +12,8 @@
             <button class="btn-ui" @click="switchManage()" v-show="this.boardadmin">MANAGE</button>
           </div>
         </div>
-        <p><h2><center>{{ this.placeinfo[0].name }}'s Message Board</center></h2></p>
-        <p><div class="content" v-html="this.placeinfo[0].messageboard_intro"/></p>
+        <p><h2><center>{{ this.placeName }}'s Message Board</center></h2></p>
+        <p><div class="content" v-html="this.boardIntro"/></p>
         <hr/>
         <div v-if="messageboardmessages <= 0">
           No messages to display
@@ -106,9 +106,9 @@
     </div>
     <div v-if="this.active === 'manage'">
       <center>
-        <h2>{{ this.placeinfo[0].name }} Manager</h2>
+        <h2>{{ this.placeName }} Manager</h2>
         <textarea id="intro" class="text-black w-2/3 h-96" v-model="intro">
-          {{ this.placeinfo[0].messageboard_intro }}
+          {{ this.boardIntro }}
         </textarea><br><br>
         <button class="btn" @click="switchView()">CANCEL</button>&nbsp;&nbsp;&nbsp;
         <button type="submit" class="btn" @click="changeMessageboardIntro">UPDATE</button>
@@ -145,6 +145,8 @@ export default Vue.extend({
       placeinfo: [],
       subject: "",
       success: "",
+      placeName: "",
+      boardIntro: "",
     };
   },
   methods: {
@@ -190,12 +192,13 @@ export default Vue.extend({
     },
     //get admin info from db and/or check if user is owner of message board
     async getAdminInfo(): Promise<any> {
-      console.log(this.placeinfo[0].type);
       return this.$http.post("/messageboard/getadmininfo", {
         place_id: this.$route.params.place_id,
         type: this.placeinfo[0].type,
       }).then((response) => {
-        this.boardadmin = response.data.admin;
+        if(response.data.admin){
+          this.boardadmin = response.data.admin;
+        }
       });
     },
     
@@ -205,6 +208,8 @@ export default Vue.extend({
         place_id: this.$route.params.place_id,
       }).then((response) => {
         this.placeinfo = response.data.placeinfo;
+        this.placeName = this.placeinfo[0].name;
+        this.boardIntro = this.placeinfo[0].messageboard_intro;
       });
     },
     //get and prepares specific information for displaying in lower div
@@ -279,7 +284,7 @@ export default Vue.extend({
     },
     //button action for manage
     switchManage(): void {
-      this.intro = this.placeinfo[0].messageboard_intro;
+      this.intro = this.boardIntro;
       this.active = "manage";
     },
     //button action for post
