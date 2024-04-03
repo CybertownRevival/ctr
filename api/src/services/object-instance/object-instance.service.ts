@@ -1,13 +1,18 @@
 import { Service } from 'typedi';
 
-import { ObjectInstanceRepository } from '../../repositories';
+import { 
+  ObjectInstanceRepository, 
+  WalletRepository, 
+  TransactionRepository } from '../../repositories';
 import { ObjectInstancePosition, ObjectInstanceRotation } from 'models';
 import { Object } from 'models';
 
 /** Service for dealing with blocks */
 @Service()
 export class ObjectInstanceService {
-  constructor(private objectInstanceRepository: ObjectInstanceRepository) {}
+  constructor(private objectInstanceRepository: ObjectInstanceRepository,
+    private walletRepository: WalletRepository,
+    private transactionRepository: TransactionRepository) {}
 
   public async find(objectInstanceId: number): Promise<any> {
     return await this.objectInstanceRepository.find(objectInstanceId);
@@ -62,5 +67,21 @@ export class ObjectInstanceService {
 
   public async getObjectInstanceWithObject(objectInstanceId: number): Promise<any> {
     return await this.objectInstanceRepository.getObjectInstanceWithObject(objectInstanceId);
+  }
+
+  public async buyObjectInstance(objectId: number, buyerId: number): Promise<any> {
+    const object = await this.objectInstanceRepository.getObjectInstanceWithObject(objectId);
+    const sellerWallet= await this.walletRepository.findById(object[0].member_id);
+    const buyerWallet = await this.walletRepository.findById(buyerId);
+
+    if(buyerWallet.balance >= object[0].object_price){
+      await this.transactionRepository
+        .createObjectPurchaseTransaction(buyerWallet.id, object[0].object_price);
+      await this.transactionRepository
+        .createObjectProfitTransaction(sellerWallet.id, object[0].object_price);
+      await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
+    } else {
+      throw new Error('Insufficient funds');
+    }
   }
 }
