@@ -56,6 +56,19 @@ export class ObjectInstanceRepository {
     });
   }
 
+  public async updateObjectInstanceOwner(
+    objectId: number,
+    buyerId: number,
+  ): Promise<any> {
+    return knex('object_instance')
+      .where('id', objectId)
+      .update({
+        member_id: buyerId, 
+        place_id: '0',
+        object_price: null,
+        object_buyer: null});
+  }
+
   public async updateObjectInstanceName(
     objectId: number,
     objectName: string,
