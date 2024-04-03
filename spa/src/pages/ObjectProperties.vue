@@ -80,18 +80,16 @@
           </div>
       </div>
     </div>
+    <span class="flex w-full justify-center text-red-600 mt-10" v-show="error">{{ this.error }}</span>
     <div class="flex justify-center">
+      
       <button  type="button" class="btn mx-1 mt-10" @click="changeDetails()" v-if="this.sessionId === this.ownerId">Update</button>
-      <!--Button removed until functionality is added
-        
         <button  type="button" class="btn mx-1 mt-10" 
           v-if="
-          this.sessionId !== this.ownerId && this.price !== '' && this.buyer === this.$store.data.user.username ||
-          this.sessionId !== this.ownerId && this.price !== '' && this.buyer === ''">
+          this.sessionId !== this.ownerId && this.price !== '' && this.buyer === this.$store.data.user.username && this.walletBalance >= this.price ||
+          this.sessionId !== this.ownerId && this.price !== '' && this.buyer === '' && this.walletBalance >= this.price" @click="buy()">
           Buy
         </button>
-    
-      -->
       <button type="button" class="btn mx-1 mt-10" onclick="window.close()">Close</button></div>
     </div>
   </div>
@@ -163,7 +161,6 @@ methods: {
           qty.style.display= "flex";
           qtyInput.innerHTML= `<input style="color:black;" type="input" id="objectPrice" value="${this.qty}" />`;
         }
-        console.log(object)
         this.loadData();
         this.getOwner();
       });
@@ -237,6 +234,17 @@ methods: {
         break;
     }
   },
+  async buy(){
+    if(this.walletBalance >= this.price){
+      await this.$http.post(`/object_instance/buy/`, {
+        id: this.objectId,
+        buyer_id: this.$store.data.user.id,
+      })
+      .then(this.reload());
+    } else {
+      this.error = "You don't have enough cc's.";
+    }
+  }
 },
 mounted() {
   this.objectProperties();
