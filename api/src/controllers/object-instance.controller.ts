@@ -141,6 +141,18 @@ class ObjectInstanceController {
     }
   }
 
+  public async buyObjectInstance(request: Request, response: Response): Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    try {
+      const objectId = Number.parseInt(request.body.id);
+      const buyerId = Number.parseInt(request.body.buyer_id);
+      await this.objectInstanceService.buyObjectInstance(objectId, buyerId);
+    } catch (error) {
+      response.status(400).json({ error: error});
+    }
+  }
+
   public async openObjectProperties(request: Request, response: Response): Promise<void>{
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;
