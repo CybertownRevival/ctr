@@ -75,14 +75,18 @@ export class ObjectInstanceService {
     const sellerWallet= await this.walletRepository.findById(object[0].member_id);
     const buyerWallet = await this.walletRepository.findById(buyerId);
 
-    if(buyerWallet.balance >= object[0].object_price){
-      await this.transactionRepository
-        .createObjectPurchaseTransaction(buyerWallet.id, object[0].object_price);
-      await this.transactionRepository
-        .createObjectProfitTransaction(sellerWallet.id, object[0].object_price);
-      await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
-    } else {
-      throw new Error('Insufficient funds');
+    try{
+      if(buyerWallet.balance >= object[0].object_price){
+        await this.transactionRepository
+          .createObjectPurchaseTransaction(buyerWallet.id, object[0].object_price);
+        await this.transactionRepository
+          .createObjectProfitTransaction(sellerWallet.id, object[0].object_price);
+        await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
+      } else {
+        throw new Error('Insufficient funds');
+      }
+    } catch(error) {
+      console.error(error);
     }
   }
 }
