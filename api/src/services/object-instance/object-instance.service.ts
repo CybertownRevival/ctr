@@ -10,7 +10,8 @@ import { Object } from 'models';
 /** Service for dealing with blocks */
 @Service()
 export class ObjectInstanceService {
-  constructor(private objectInstanceRepository: ObjectInstanceRepository,
+  constructor(
+    private objectInstanceRepository: ObjectInstanceRepository,
     private walletRepository: WalletRepository,
     private transactionRepository: TransactionRepository) {}
 
