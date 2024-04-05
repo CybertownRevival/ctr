@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
       });
   }
 
-  if (!["login", "logout", "signup", "forgot", "password_reset", "about", "banned"]
+  if (!["login", "logout", "signup", "forgot", "password_reset", "about", "privacypolicy", "rulesandregulations", "banned"]
     .includes(to.name)) {
     api.get<{
       user: User,
