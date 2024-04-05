@@ -278,7 +278,7 @@
                 </div>
                 <h2><router-link to="/about">About Cybertown Revival</router-link></h2>
                 <br/>
-                <span class="text-ctyellow text-2xl">Fan Made Not For Profit Recreation</span>
+                <span class="text-ctyellow text-2xl">Fan Made Not For Profit Historical Recreation</span>
                 <br/>
 
                <a
