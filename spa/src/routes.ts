@@ -1,5 +1,7 @@
 import HomePage from "./pages/HomePage.vue";
 import AboutPage from "./pages/AboutPage.vue";
+import RulesRegulationsPage from "./pages/RulesandRegulationPage.vue";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.vue";
 import BannedNotice from "./pages/Banned.vue";
 import LoginPage from "./pages/LoginPage.vue";
 import SignupPage from "./pages/SignupPage.vue";
@@ -62,6 +64,22 @@ export default [
         name: "about",
         meta: {
             title: "About Cybertown Revival",
+        },
+    },
+    {
+        path: "/rulesandregulations",
+        component: RulesRegulationsPage,
+        name: "rulesandregulations",
+        meta: {
+            title: "Rules and Regulations",
+        },
+    },
+    {
+        path: "/privacypolicy",
+        component: PrivacyPolicyPage,
+        name: "privacypolicy",
+        meta: {
+            title: "Privacy Policy",
         },
     },
     {
