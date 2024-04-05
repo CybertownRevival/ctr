@@ -271,11 +271,14 @@
                     />
                     <a href="#" class="links"> CONTACT</a></span
                   ></b
-                ><br /><br />
-
+                ><br />
+                <div class="flex justify-center">
+                  <h3 class="p-2"><router-link to="/privacypolicy"> Privacy Policy </router-link></h3>
+                  <h3 class="p-2"><router-link to="/rulesandregulations"> Rules and Regulations </router-link></h3>
+                </div>
                 <h2><router-link to="/about">About Cybertown Revival</router-link></h2>
                 <br/>
-                <span class="text-ctyellow text-2xl">Fan Made Not For Profit Historical Recreation</span>
+                <span class="text-ctyellow text-2xl">Fan Made Not For Profit Recreation</span>
                 <br/>
 
                <a
