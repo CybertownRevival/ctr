@@ -91,14 +91,6 @@ export default [
         },
     },
     {
-        path: "/banned",
-        component: BannedNotice,
-        name: "banned",
-        meta: {
-            title: "Banned Notice",
-        },
-    },
-    {
         path: "/place/:id",
         components: {
             default: WorldPage,
