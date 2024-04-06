@@ -426,10 +426,12 @@ export default Vue.extend({
     userMenu(...target){
       let userMenu = document.getElementById('userMenu');
       userMenu.style.display = "block";
-      if(this.cursorY >= window.innerHeight - 90){
-        userMenu.style.top = this.cursorY - 55 + "px";
+       if(this.cursorY >= window.innerHeight - 90){
+        userMenu.style.top = null;
+        userMenu.style.bottom = "0px";
       }
       else{
+        userMenu.style.bottom = null;
         userMenu.style.top = this.cursorY - 15 + "px";
       }
       if(this.cursorX >= window.innerWidth - 315){
