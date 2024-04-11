@@ -131,12 +131,13 @@ export class ColonyService {
     });
   }
 
-  public async canAdmin(colonyId: number, memberId: number): Promise<boolean> {
+  public async canAdmin(colonyId: number, memberId: number, access: string): Promise<boolean> {
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-
     if (
       roleAssignments.find(assignment => {
         return (
+          ([this.roleRepository.roleMap.SecurityChief].includes(assignment.role_id) &&
+            access === 'security') ||
           [
             this.roleRepository.roleMap.Admin,
             this.roleRepository.roleMap.CityMayor,
@@ -146,8 +147,7 @@ export class ColonyService {
             this.roleRepository.roleMap.ColonyLeader,
             this.roleRepository.roleMap.ColonyDeputy,
           ].includes(assignment.role_id) &&
-            assignment.place_id === colonyId)
-        );
+            assignment.place_id === colonyId));
       })
     ) {
       return true;
