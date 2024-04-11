@@ -1,5 +1,5 @@
 <template>
-  <div id="chat" class="flex flex-row chat space-x-1 p-1 text-chat w-full">
+  <div class="flex flex-row chat space-x-1 p-1 text-chat w-full">
     <div class="messages-pane flex flex-col flex-1">
       <div class="flex-grow p-1 overflow-y-auto h-full" ref="chatArea">
         <ul>
@@ -104,7 +104,7 @@
           Next
         </button>
       </div>
-      <div class="flex-grow overflow-y-auto p-1 messages-pane">
+      <div id="chatList" class="flex-grow overflow-y-auto p-1 messages-pane">
         <ul v-if="activePanel === 'users'">
           <li class="text-white">
             <img src="/assets/img/av_me.gif" class="inline" />
@@ -133,7 +133,7 @@
             :key="object.id"
             class="flex cursor-default"
           >
-          <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+          <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="userMenu(object.id)">
               {{ object.object_name }}
             </div>
             <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
@@ -147,10 +147,10 @@
             :key="object.id"
             class="flex cursor-default"
           >
-            <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+            <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="userMenu(object.id)">
               {{ object.object_name }}
             </div>
-            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="userMenu(object.id)">
               {{ object.name }}
             </div>
           </li>
@@ -411,8 +411,12 @@ export default Vue.extend({
       });
     },
     preventMenu(){
-      let chat = document.getElementById("chat")
+      let chat = document.getElementById("chatList")
+      let menu = document.getElementById("userMenu")
       chat.addEventListener("contextmenu", function(e){
+        e.preventDefault()
+      })
+      menu.addEventListener("contextmenu", function(e){
         e.preventDefault()
       })
       document.addEventListener('mousemove', this.onMouseUpdate, false);
@@ -426,7 +430,7 @@ export default Vue.extend({
     userMenu(...target){
       let userMenu = document.getElementById('userMenu');
       userMenu.style.display = "block";
-       if(this.cursorY >= window.innerHeight - 90){
+      if(this.cursorY >= window.innerHeight - 90){
         userMenu.style.top = null;
         userMenu.style.bottom = "0px";
       }
