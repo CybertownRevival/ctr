@@ -411,9 +411,9 @@ export default Vue.extend({
       });
     },
     preventMenu(){
-      let chat = document.getElementById("chatList")
+      let chatList = document.getElementById("chatList")
       let menu = document.getElementById("userMenu")
-      chat.addEventListener("contextmenu", function(e){
+      chatList.addEventListener("contextmenu", function(e){
         e.preventDefault()
       })
       menu.addEventListener("contextmenu", function(e){
