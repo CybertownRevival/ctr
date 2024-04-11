@@ -21,37 +21,38 @@ class InboxController {
   ) {
   }
   
-  public async adminCheck(placeId, id, type): Promise<any> {
-    try {
-      return await this.inboxService.getAdminInfo(placeId, id);
-    } catch (e) {
-      console.log(e);
-    }
+  public async adminCheck(placeId, id, type, access): Promise<any> {
     if (type === 'colony') {
       try {
-        return await this.colonyService.canAdmin(placeId, id);
+        return await this.colonyService.canAdmin(placeId, id, access);
       } catch (e) {
         console.log(e);
       }
     } else if (type === 'hood') {
       try {
-        return await this.hoodService.canAdmin(placeId, id);
+        return await this.hoodService.canAdmin(placeId, id, access);
       } catch (e) {
         console.log(e);
       }
     } else if (type === 'block') {
       try {
-        return await this.blockService.canAdmin(placeId, id);
+        return await this.blockService.canAdmin(placeId, id, access);
       } catch (e) {
         console.log(e);
       }
     } else {
-      return;
+      try {
+        return await this.inboxService.getAdminInfo(placeId, id);
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
+
   public async getAdminInfo(request: Request, response: Response): Promise<any> {
     const placeId = Number.parseInt(request.body.place_id);
     const type = request.body.type;
+    const access = request.body.access;
     const {apitoken} = request.headers;
     const session = this.memberService.decodeMemberToken(<string>apitoken);
     if (!session) {
@@ -61,9 +62,10 @@ class InboxController {
       return;
     }
     const {id} = session;
-    const admin = await this.adminCheck(placeId, id, type);
+    const admin = await this.adminCheck(placeId, id, type, access);
     response.status(200).json({admin});
   }
+
   public async getInfo(request: Request, response: Response): Promise<void> {
     const placeId = Number.parseInt(request.body.place_id);
     if (placeId <= 0) {
@@ -218,6 +220,7 @@ class InboxController {
     const placeId = Number.parseInt(request.body.place_id);
     const messageId = Number.parseInt(request.body.message_id);
     const type = request.body.type;
+    const access = request.body.access;
     const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);
     if(!session) {
@@ -227,7 +230,7 @@ class InboxController {
       return;
     }
     const { id } = session;
-    const admin = await this.adminCheck(placeId, id, type);
+    const admin = await this.adminCheck(placeId, id, type, access);
     if (admin) {
       try {
         await this.inboxService.deleteInboxMessage(messageId);
@@ -253,8 +256,9 @@ class InboxController {
     const { id } = session;
     const placeId = Number.parseInt(request.body.place_id);
     const uncleanIntro = request.body.intro;
+    const access = request.body.access;
     const cleanIntro = await this.inboxService.sanitize(uncleanIntro);
-    const admin = await this.adminCheck(placeId, id, type);
+    const admin = await this.adminCheck(placeId, id, type, access);
     if (admin) {
       try {
         await this.inboxService.changeInboxIntro(placeId, cleanIntro);
