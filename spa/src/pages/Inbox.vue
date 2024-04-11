@@ -168,6 +168,7 @@ export default Vue.extend({
           place_id: this.$route.params.place_id,
           intro: this.intro,
           type: this.placeinfo[0].type,
+          access: 'security'
         });
         this.success = "Inbox Information Updated";
         this.error = "";
@@ -189,6 +190,7 @@ export default Vue.extend({
           place_id: this.$route.params.place_id,
           message_id: this.did,
           type: this.placeinfo[0].type,
+          access: 'security'
         });
         this.success = "Message Deleted";
         this.error = "";
@@ -207,6 +209,7 @@ export default Vue.extend({
       return this.$http.post("/inbox/getadmininfo", {
         place_id: this.$route.params.place_id,
         type: this.placeinfo[0].type,
+        access: "security"
       }).then((response) => {
         this.boardadmin = response.data.admin;
         if (!this.boardadmin){
