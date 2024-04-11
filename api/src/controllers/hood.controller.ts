@@ -75,7 +75,7 @@ class HoodController {
 
     try {
       const session = this.memberService.decodeMemberToken(<string>apitoken);
-      if (!session || !(await this.hoodService.canAdmin(parseInt(id), session.id))) {
+      if (!session || !(await this.hoodService.canAdmin(parseInt(id), session.id, null))) {
         response.status(400).json({
           error: 'Invalid or missing token.',
         });
