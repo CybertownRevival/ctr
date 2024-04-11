@@ -136,13 +136,15 @@ export class HoodService {
     return await this.hoodRepository.getBlocks(hoodId);
   }
 
-  public async canAdmin(hoodId: number, memberId: number): Promise<boolean> {
+  public async canAdmin(hoodId: number, memberId: number, access: string): Promise<boolean> {
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     const colony = await this.getColony(hoodId);
 
     if (
       roleAssignments.find(assignment => {
         return (
+          ([this.roleRepository.roleMap.SecurityChief].includes(assignment.role_id) &&
+            access === 'security') ||
           [
             this.roleRepository.roleMap.Admin,
             this.roleRepository.roleMap.CityMayor,
