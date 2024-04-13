@@ -211,6 +211,7 @@ class HomeController {
       homeName,
       icon2d,
       home3d,
+      donor,
     } = request.body;
 
 
