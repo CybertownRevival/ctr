@@ -95,9 +95,9 @@
       <br />
       <h2>9. PENALTIES AND APPEALS</h2>
       <br />
-      <p>(a) An official warning will be given for any violations that fall under sections 2, 6, or 7. Any additional violations may lead to a temporary or a permanent ban, depending on the severity of the infraction(s).</p>
+      <p>(a) An official warning will be given for any violations that fall under sections 1, 5, 6, or 12. Any additional violations may lead to a temporary or a permanent ban, depending on the severity of the infraction(s).</p>
       <br />
-      <p>(b) A permanent ban will be given to any violations that fall under sections 3, 4, 5, or 8.</p>
+      <p>(b) A permanent ban will be given to any violations that fall under sections 2, 3, 4, or 7.</p>
       <br />
       <p>(c) Bans applied in the Cybertown Revival Discord server may also be applied to the banned Discord user's Cybertown Revival account, and vice-versa.</p>
       <br />
@@ -116,7 +116,28 @@
       <p>Cybertown Revival monitors and/or records communications when you use the service. By creating an account, you acknowledge and agree that you have no expectation that your communications will be private. Cybertown Revival may disclose your communications for reasons including; illegal discussions, to enforce any of the above Rules and Regulations, to protect the health and safety of any of our users that may be threatened, or to report a crime.</p>
       <br />
       <br />
-      <h2>12. SUBJECT TO CHANGE</h2>
+      <h2>GLITCH REPORTS AND ABUSE POLICY</h2>
+      <br />
+      <p>Cybertown Revival is considered in open Beta. Glitches and Glitch Abuse are taken seriously as they may damage the integrity of the restoration project and cause other unintended consequences to current citizens or new users.</p>
+      <br />
+      <p>All users are required to report any glitches or bugs encountered while using the platform so we can improve the platform. Glitches may include but are not limited to errors, malfunctions, or unintended behaviors that compromise the integrity or functionality of the system.</p>
+      <br />
+      <p>Please report all glitches in ⁠bug-report and write a short summary of what happened. You may include screenshots.</p>
+      <br />
+      <p>Potential "Game Breaking" glitches that other people may exploit must be reported privately via direct message (DM) to a Developer or City Leader. These may include but are not limited to the following examples:</p>
+      <br />
+      <p>* Duplication (Of objects)</p>
+      <p>* CityCash related (Getting more CCs or copying CCs)</p>
+      <p>* Crash related (causing the platform to go down or other users to crash)</p>
+      <br />
+      <h3>PENALTIES FOR ABUSE</h3>
+      <br />
+      <p>Any attempt to exploit, manipulate, or abuse glitches for personal gain, advantage, or disruption of Cybertown Revival's operation is prohibited. Violators will be subject to disciplinary action, which may include temporary or permanent suspension of privileges, account deletion, or other appropriate measures determined by the Developers or City Leaders. </p>
+      <br />
+      <p>Please refer to Rule 9, Section (a) for more details.</p>
+      <br />
+      <br />
+      <h2>13. SUBJECT TO CHANGE</h2>
       <br />
       <p>These guidelines can be changed at any time and without warning. Therefore, we encourage everyone to check these guidelines regularly. If these guidelines are updated, the date of the last edit will be posted near the top of this document.</p>
       <br />
@@ -135,4 +156,3 @@ export default Vue.extend({
   },
 });
 </script>
-
