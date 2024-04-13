@@ -238,11 +238,12 @@ class HomeController {
         const currentHomeDesign = await this.homeService.getPlaceHomeDesign(homeInfo.id);
         let refund = 0;
         let currentHomeDesignId = null;
-        if(currentHomeDesign) {
+        if(currentHomeDesign.id === 'championhome' && donor === 'Champion') {
+          currentHomeDesignId = currentHomeDesign.id;
+        } else {
           refund = currentHomeDesign.price;
           currentHomeDesignId = currentHomeDesign.id;
         }
-
 
         // check if they have enough for the home
         const memberInfo = await this.memberService.getMemberInfo(session.id);
