@@ -240,7 +240,7 @@ class HomeController {
         let currentHomeDesignId = null;
         if(currentHomeDesign.id === 'championhome' && donor === 'Champion') {
           currentHomeDesignId = currentHomeDesign.id;
-        } else {
+        } else if (currentHomeDesign) {
           refund = currentHomeDesign.price;
           currentHomeDesignId = currentHomeDesign.id;
         }
