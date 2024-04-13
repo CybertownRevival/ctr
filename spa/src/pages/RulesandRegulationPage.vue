@@ -116,7 +116,7 @@
       <p>Cybertown Revival monitors and/or records communications when you use the service. By creating an account, you acknowledge and agree that you have no expectation that your communications will be private. Cybertown Revival may disclose your communications for reasons including; illegal discussions, to enforce any of the above Rules and Regulations, to protect the health and safety of any of our users that may be threatened, or to report a crime.</p>
       <br />
       <br />
-      <h2>GLITCH REPORTS AND ABUSE POLICY</h2>
+      <h2>12. GLITCH REPORTS AND ABUSE POLICY</h2>
       <br />
       <p>Cybertown Revival is considered in open Beta. Glitches and Glitch Abuse are taken seriously as they may damage the integrity of the restoration project and cause other unintended consequences to current citizens or new users.</p>
       <br />
