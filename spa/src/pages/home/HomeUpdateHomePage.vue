@@ -176,7 +176,6 @@ export default Vue.extend({
           homeName: this.homeName,
           icon2d: this.icon2d,
           home3d: this.home3d,
-          donor: this.donorLevel,
         });
 
         this.complete = true;
