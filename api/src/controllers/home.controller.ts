@@ -49,7 +49,7 @@ class HomeController {
 
       if(homeData) {
         const blockData = await this.homeService.getHomeBlock(homeData.id);
-        const homeDesignData = await this.homeService.getPlaceHomeDesign(homeData.id);
+        const homeDesignData = await this.homeService.getPlaceHomeDesign(userId, homeData.id);
         response.status(200).json({
           homeData: homeData,
           blockData: blockData,
@@ -235,7 +235,9 @@ class HomeController {
         throw new Error('You don\'t have a home yet.');
       } else {
 
-        const currentHomeDesign = await this.homeService.getPlaceHomeDesign(homeInfo.id);
+        const currentHomeDesign = await this
+          .homeService
+          .getPlaceHomeDesign(session.id, homeInfo.id);
         let refund = 0;
         let currentHomeDesignId = null;
         if(currentHomeDesign) {
