@@ -78,9 +78,7 @@ export class ObjectInstanceService {
     try{
       if(buyerWallet.balance >= object[0].object_price){
         await this.transactionRepository
-          .createObjectPurchaseTransaction(buyerWallet.id, object[0].object_price);
-        await this.transactionRepository
-          .createObjectProfitTransaction(sellerWallet.id, object[0].object_price);
+          .createObjectSellTransaction(buyerWallet.id, sellerWallet.id, object[0].object_price);
         await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
       } else {
         throw new Error('Insufficient funds');
