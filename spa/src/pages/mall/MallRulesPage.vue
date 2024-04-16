@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 flex justify-center">
     <div class="py-5" style="max-width:600px;">
-      <button class="btn" onclick="window.location.assign('#/mall/upload')">Back</button>
+      <router-link to="/mall/upload"><button class="btn">Back</button></router-link>
       <h1 class="font-bold text-center">Mall Rules</h1>
       <br />
       <h2 class="underline font-bold">Files</h2>
