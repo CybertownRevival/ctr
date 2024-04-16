@@ -5,8 +5,8 @@
       <h2>Object Upload</h2>
     </div>
     <p class="text-red-500">
-      Before uploading, please read and understand the <a href="#/mall/rules">Rules for Creating Objects
-        for Cybertown</a>
+      Before uploading, please read and understand the <router-link to="/mall/rules">Rules for Creating Objects
+        for Cybertown</router-link>
       <br />
       These are the technical rules by which your Object will be judged fit or unfit for use in Cybertown.
       <br />
@@ -122,13 +122,8 @@
       value="Accept & Upload"
       @click="upload"
       class="btn" v-if="!showSuccess"/>
-    <input type="button"
-      value="Upload More"
-      onclick="window.location.reload()"
-      class="btn" v-else/>
-      <a href="#/place/mall"><input type="button"
-      value="Back"
-      class="btn" onclick="window.location.assign(`#/place/mall`)"/></a>
+      <button class="btn" @click="reload()" v-else>Upload More</button>
+      <router-link to="/place/mall"><button class="btn">Back</button></router-link>
     </div>
 
     <hr class="my-3" />
@@ -274,6 +269,9 @@ export default Vue.extend({
       this[e.target.dataset.id] = files[0];
 
     },
+    reload(){
+      window.location.reload();
+    }
   },
   mounted() {
     this.loaded = true;
