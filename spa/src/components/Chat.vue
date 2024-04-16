@@ -161,7 +161,6 @@
       </div>
     </div>
     <div v-show="userMenu" 
-      id="menu"
       class="
         absolute
         flex-none
