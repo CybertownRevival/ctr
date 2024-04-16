@@ -86,8 +86,7 @@
       <button  type="button" class="btn mx-1 mt-10" @click="changeDetails()" v-if="this.sessionId === this.ownerId">Update</button>
         <button  type="button" class="btn mx-1 mt-10" 
           v-if="
-          this.sessionId !== this.ownerId && this.price !== '' && this.buyer === this.$store.data.user.username && this.walletBalance >= this.price ||
-          this.sessionId !== this.ownerId && this.price !== '' && this.buyer === '' && this.walletBalance >= this.price" @click="buy()">
+          this.sessionId !== this.ownerId && this.price !== '' && (this.buyer === '' || this.buyer === this.$store.data.user.username) && this.walletBalance >= this.price" @click="buy()">
           Buy
         </button>
       <button type="button" class="btn mx-1 mt-10" onclick="window.close()">Close</button></div>
@@ -237,10 +236,8 @@ methods: {
   async buy(){
     if(this.walletBalance >= this.price){
       await this.$http.post(`/object_instance/buy/`, {
-        id: this.objectId,
-        buyer_id: this.$store.data.user.id,
-      })
-      .then(this.reload());
+        id: this.objectId})
+      .then(setTimeout(this.reload, 500));
     } else {
       this.error = "You don't have enough cc's.";
     }
