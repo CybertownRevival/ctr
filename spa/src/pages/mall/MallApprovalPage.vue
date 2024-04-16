@@ -8,7 +8,7 @@
     </span>
     <h3 v-show="window === 'list'">Objects Pending Approval</h3>
     <button type="button" class="btn" @click="changeWindow()" v-show="window === 'object'">Back to Pending</button>
-    <div v-show="window === 'object'"><img :src="preview" /></div>
+    <div id="preview" v-show="window === 'object'"></div>
     <table class="mx-auto" v-show="window === 'list'">
       <thead>
         <tr>
@@ -56,7 +56,6 @@ export default Vue.extend({
       showSuccess: false,
       loaded: false,
       window: "list",
-      preview: null,
     };
   },
   methods: {
@@ -76,6 +75,8 @@ export default Vue.extend({
       }
     },
     changeWindow(){
+      const preview = document.getElementById("preview");
+      preview.textContent="";
       if(this.window === 'list'){
         this.window = "object";
       } else {
@@ -83,10 +84,19 @@ export default Vue.extend({
       }
     },
     preview(...target){
-      this.preview = `/assets/object/${target[1]}/${target[0]}`;
+      const preview = document.getElementById("preview");
+      preview.innerHTML = `<img src="/assets/object/${target[1]}/${target[0]}" />`;
     },
     getWrlFile(...target){
       window.location.assign(`/assets/object/${target[1]}/${target[0]}`);
+    },
+    closePreview(){
+      const preview = document.getElementById("preview");
+      const previewContainer = document.getElementById("previewContainer");
+      const blackSurround = document.getElementById("blackSurround");
+      blackSurround.style.display = "none";
+      previewContainer.style.display = "none"
+      preview.innerHTML = "";
     },
     async approve(objectId): Promise<void> {
       this.showSuccess = false;
