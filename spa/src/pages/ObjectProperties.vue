@@ -71,9 +71,9 @@
           <span v-show="this.price !== null && this.price !== '' && this.buyer !=='' && this.buyer !==null">Reserved for {{ this.buyer }}</span>
           <span class="h-5"></span>
           <div class="objectOwner grid gap-2" v-show="canModify">
-            <div class="flex"><div style="min-width: 70px;">Name: </div><input style="color:black;" type="text" id="objectName" :value="name" @input="event => name = event.target.value"/></div>
-            <div class="flex"><div style="min-width: 70px;">Price: </div><input style="color:black;" type="text" id="objectPrice" maxlength="7" :value="price" @input="event => price = event.target.value"/></div>
-            <div class="flex"><div style="min-width: 70px;">Buyer: </div><input style="color:black;" type="text" id="objectBuyer" :value="buyer" @input="event => buyer = event.target.value"/></div>
+            <div class="flex"><div style="min-width: 70px;">Name: </div><input style="color:black;" type="text" id="objectName" :value="name" /></div>
+            <div class="flex"><div style="min-width: 70px;">Price: </div><input style="color:black;" type="text" id="objectPrice" maxlength="7" :value="price" /></div>
+            <div class="flex"><div style="min-width: 70px;">Buyer: </div><input style="color:black;" type="text" id="objectBuyer" :value="buyer" /></div>
           </div>
       </div>
     </div>
