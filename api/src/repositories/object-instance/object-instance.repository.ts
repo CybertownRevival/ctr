@@ -29,7 +29,8 @@ export class ObjectInstanceRepository {
     return this.db.objectInstance
       .select('object_instance.*', 'object.filename', 'object.directory', 'object.name')
       .where({ place_id: placeId })
-      .join('object', 'object.id', 'object_instance.object_id');
+      .join('object', 'object.id', 'object_instance.object_id')
+      .orderBy('object_instance.object_name', 'asc');
   }
 
   public async getObjectInstanceWithObject(objectInstanceId: number): Promise<ObjectInstance[]> {
@@ -95,6 +96,7 @@ export class ObjectInstanceRepository {
       .select('object_instance.*', 'object.filename', 'object.directory', 'object.name')
       .join('object', 'object_instance.object_id', 'object.id')
       .where('object_instance.member_id', memberId)
-      .where('place_id', 0);
+      .where('place_id', 0)
+      .orderBy('object_instance.object_name', 'asc');
   }
 }
