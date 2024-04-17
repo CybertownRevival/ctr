@@ -123,7 +123,7 @@
       @click="upload"
       class="btn" v-if="!showSuccess"/>
       <button class="btn" @click="reload()" v-else>Upload More</button>
-      <router-link class="btn" to="/place/mall">Back</router-link>
+      <router-link to="/place/mall"><button class="btn">Back</button></router-link>
     </div>
 
     <hr class="my-3" />
