@@ -85,13 +85,15 @@ export class MessageboardService {
         'em', 'i', 'kbd', 'mark', 'q', 'rb', 'rp', 'rt', 'rtc', 'ruby', 's', 'samp',
         'small', 'span', 'strong', 'sub', 'sup', 'time', 'u', 'var', 'wbr', 'caption',
         'col', 'colgroup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'img',
-        'font', 'center',
+        'font', 'center', 'map', 'area',
       ],
       disallowedTagsMode: 'discard',
       allowedAttributes: {
         a: [ 'href', 'name', 'target' ],
-        img: [ 'src', 'srcset', 'alt', 'title', 'width', 'height' ],
+        img: [ 'src', 'srcset', 'alt', 'title', 'width', 'height', 'usemap' ],
         font: [ 'color', 'size' ],
+        map: [ 'name' ],
+        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target', 'class' ],
       },
     });
     return cleanInfo;

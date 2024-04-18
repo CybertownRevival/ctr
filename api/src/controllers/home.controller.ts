@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Container } from 'typedi';
 import validator from 'validator';
+import * as badwords from 'badwords-list';
 
 import {
   MemberService,
@@ -48,7 +49,7 @@ class HomeController {
 
       if(homeData) {
         const blockData = await this.homeService.getHomeBlock(homeData.id);
-        const homeDesignData = await this.homeService.getPlaceHomeDesign(homeData.id);
+        const homeDesignData = await this.homeService.getPlaceHomeDesign(userId, homeData.id);
         response.status(200).json({
           homeData: homeData,
           blockData: blockData,
@@ -106,6 +107,13 @@ class HomeController {
         throw new Error('2D house is required');
       }
 
+      const bannedwords = badwords.regex;
+      if(houseName.match(bannedwords) || 
+      houseDescription.match(bannedwords) ||
+      firstName.match(bannedwords) ||
+      lastName.match(bannedwords)){
+        throw new Error('This language can not be used on CTR!');
+      } 
 
       // check they don't already have a home
       const homeInfo = await this.homeService.getHome(session.id);
@@ -216,13 +224,20 @@ class HomeController {
         throw new Error('2D house is required');
       }
 
+      const bannedwords = badwords.regex;
+      if(homeName.match(bannedwords)){
+        throw new Error('This language can not be used on CTR!');
+      } 
+
       // check they already have a home
       const homeInfo = await this.homeService.getHome(session.id);
       if(!homeInfo) {
         throw new Error('You don\'t have a home yet.');
       } else {
 
-        const currentHomeDesign = await this.homeService.getPlaceHomeDesign(homeInfo.id);
+        const currentHomeDesign = await this
+          .homeService
+          .getPlaceHomeDesign(session.id, homeInfo.id);
         let refund = 0;
         let currentHomeDesignId = null;
         if(currentHomeDesign) {

@@ -28,6 +28,9 @@ export class Db {
   get message() {
     return this.knex<Models.Message, Models.Message[]>('message');
   }
+  get object() {
+    return this.knex<Models.Object, Models.Object[]>('object');
+  }
   get objectInstance() {
     return this.knex<Models.ObjectInstance, Models.ObjectInstance[]>('object_instance');
   }

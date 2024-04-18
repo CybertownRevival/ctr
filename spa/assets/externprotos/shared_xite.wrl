@@ -342,19 +342,19 @@ function set_enable(v,t){
  choice_changed = 0;
 }
 function set_X(v,t){
-  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(v[0],0,0)).subtract(XlastChange))).multiply(rate);
+  newPosition = new X3D.SFRotation(X3D.getBrowser().viewpointOrientation).multVec((new SFVec3f(v[0],0,0)).subtract(XlastChange)).multiply(rate);
   currentPosition = currentPosition.add(newPosition);
   position_changed = currentPosition;
   XlastChange = new SFVec3f(v[0],0,0);
 }
 function set_Y(v,t){
-  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,v[1],0)).subtract(YlastChange))).multiply(rate);
+  newPosition = new X3D.SFRotation(X3D.getBrowser().viewpointOrientation).multVec((new SFVec3f(0,v[1],0)).subtract(YlastChange)).multiply(rate);
   currentPosition = currentPosition.add(newPosition);
   position_changed = currentPosition;
   YlastChange = new SFVec3f(0,v[1],0);
 }
 function set_Z(v,t){
-  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,0,v[1])).subtract(ZlastChange))).multiply(rate);
+  newPosition = new X3D.SFRotation(X3D.getBrowser().viewpointOrientation).multVec((new SFVec3f(0,0,v[1])).subtract(ZlastChange)).multiply(rate);
   currentPosition = currentPosition.add(newPosition);
   position_changed = currentPosition;
   ZlastChange = new SFVec3f(0,0,v[1]);
