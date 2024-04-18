@@ -6,7 +6,6 @@ import { Avatar } from 'models';
 /** Repository for fetching/interacting with avatar data in the database. */
 @Service()
 export class AvatarRepository {
-
   constructor(private db: Db) {}
 
   /**
@@ -26,22 +25,32 @@ export class AvatarRepository {
    * @returns promise resolving in the found avatars object, or rejecting on error
    */
   public async findAll(): Promise<Avatar[]> {
-    return this.db.avatar.where({'status': 1});
+    return this.db.avatar.where({ status: 1 });
   }
 
   /**
    * gets all the avatars a memberId can access
-   * @param memberId 
-   * @returns 
+   * @param memberId
+   * @returns
    */
   public async findAllForMemberId(memberId): Promise<Avatar[]> {
-    return this.db.avatar.where({
-      status: 1,
-    })
-    .andWhere((builder) => {
-      builder.where({private: 0})
-      .orWhere({private: 1, member_id: memberId})
-    });
+    return this.db.avatar
+      .where({
+        status: 1,
+      })
+      .andWhere(builder => {
+        builder.where({ private: 0 }).orWhere({ private: 1, member_id: memberId });
+      });
+  }
+
+  public async updateStatus(id, status): Promise<any> {
+    return this.db.avatar
+      .update({
+        status: status,
+      })
+      .where({
+        id: id
+      });
   }
 
   /**
@@ -63,7 +72,7 @@ export class AvatarRepository {
     gestures: string,
     privateStatus: number,
     memberId: number,
-    status: number
+    status: number,
   ): Promise<number> {
     const [avatar] = await this.db.avatar.insert({
       directory: directory,
@@ -73,9 +82,39 @@ export class AvatarRepository {
       gestures: gestures,
       private: privateStatus,
       member_id: memberId,
-      status: status
+      status: status,
     });
 
     return avatar;
+  }
+
+  /**
+   * This is to assist with the pagination of the avatar search
+   * @param status
+   * @return number
+   */
+  public async totalByStatus(status: number): Promise<any> {
+    return this.db.avatar.count('id as count').where({
+      status: status,
+    });
+  }
+
+  /**
+   * returns results of avatars by status (pagination)
+   * @param status
+   * @param limit
+   * @param offset
+   * @returns
+   */
+  public async findByStatus(status: number, limit: number, offset: number): Promise<any> {
+    return this.db.avatar
+      .select(['avatar.*', 'member.username'])
+      .leftJoin('member', 'avatar.member_id', 'member.id')
+      .where({
+        'avatar.status': status,
+      })
+      .orderBy('avatar.id')
+      .limit(limit)
+      .offset(offset);
   }
 }

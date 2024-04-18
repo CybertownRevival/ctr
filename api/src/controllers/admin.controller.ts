@@ -1,10 +1,10 @@
 import {Request, Response} from 'express';
 import { Container } from 'typedi';
 
-import { AdminService, MemberService } from '../services';
+import { AdminService, MemberService, AvatarService } from '../services';
 
 class AdminController {
-  constructor(private adminService: AdminService, private memberService: MemberService) {}
+  constructor(private adminService: AdminService, private memberService: MemberService, private avatarService: AvatarService,) {}
   
   public async addBan(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
@@ -144,8 +144,68 @@ class AdminController {
       response.status(403).json({message: 'Access Denied'});
     }
   }
+
+  public async avatars(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (admin) {
+      try {
+        const results = await this.adminService.searchAvatars(
+          parseInt(request.query.status.toString()),
+          parseInt(request.query.limit.toString()),
+          parseInt(request.query.offset.toString()),
+        );
+        response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async avatarApprove(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (!admin) {
+      response.status(403).json({message: 'Access Denied'});
+      return;
+    }
+    try {
+      this.avatarService.approve(
+        parseInt(request.body.id.toString()),
+      );
+      response.status(200).json({'status':'success'});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({error});
+    }
+  }
+  public async avatarReject(request: Request, response: Response): Promise<any> {
+    // TODO: make rejection call
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (!admin) {
+      response.status(403).json({message: 'Access Denied'});
+      return;
+    }
+    try {
+      this.avatarService.reject(
+        parseInt(request.body.id.toString()),
+      );
+      response.status(200).json({'status':'success'});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({error});
+    }
+  }
 }
 
 const adminService = Container.get(AdminService);
 const memberService = Container.get(MemberService);
-export const adminController = new AdminController(adminService, memberService);
+const avatarService = Container.get(AvatarService);
+export const adminController = new AdminController(adminService, memberService, avatarService);

@@ -6,6 +6,7 @@ import {
   MessageRepository,
   RoleAssignmentRepository,
   RoleRepository,
+  AvatarRepository,
 } from '../../repositories';
 
 @Service()
@@ -16,6 +17,7 @@ export class AdminService {
    private messageRepository: MessageRepository,
    private roleAssignmentRepository: RoleAssignmentRepository,
    private roleRepository: RoleRepository,
+   private avatarRespository: AvatarRepository,
   ) {}
   
   public async addBan(ban_member_id, time_frame, type, assigner_member_id, reason): Promise<void> {
@@ -81,6 +83,15 @@ export class AdminService {
     const total = await this.messageRepository.getChatTotal(search, user);
     return {
       messages: messages,
+      total: total,
+    };
+  }
+
+  public async searchAvatars(status: number, limit: number, offset: number): Promise<any> {
+    const avatars = await this.avatarRespository.findByStatus(status, limit, offset);
+    const total = await this.avatarRespository.totalByStatus(status);
+    return {
+      avatars: avatars,
       total: total,
     };
   }

@@ -1,71 +1,70 @@
 <template>
   <div class="grid grid-cols-1 w-full place-items-center">
-    <div class="text-center w-full text-5xl mb-1">Avatar Search</div>
+    <div class="text-center w-full text-5xl mb-1">Avatars</div>
     <div class="grid grid-cols-2 w-4/6 justify-items-center">
       <div>
-        Name Search:
-        <input class="text-black"
-               type="text"
-               v-model="search"
-               @input="searchUsers" />
+        Status:
+        <select v-model="status"
+                @change="getResults">
+          <option value="2">Pending Approval</option>
+          <option value="1">Live</option>
+          <option value="0">Rejected</option>
+        </select>
       </div>
       <div>
         View Amount:
-        <select v-model.number="limit"
-                @change="searchUsers">
-          <option value=10>10</option>
-          <option value=20>20</option>
-          <option value=50>50</option>
-          <option value=100>100</option>
+        <select v-model="limit"
+                @change="getResults">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
         </select>
       </div>
     </div>
     <div class="grid-cols-1 w-4/6 justify-items-center text-center">
-      Total Count: {{ this.totalCount }}
+      Total Count: {{ totalCount }}
     </div>
-    <div class="grid grid-cols-5 text-center w-4/6"
-         :class="{ 'grid-cols-7': accessLevel === 'admin' }">
-      <div class="border-white border w-full pl-1">ID</div>
-      <div class="col-span-2 border-white border w-full pl-1">Username</div>
-      <div class="col-span-2 border-white border w-full pl-1"
-           v-show="accessLevel === 'admin'">Email</div>
-      <div class="col-span-2 border-white border w-full pl-1">Last Login</div>
-    </div>
-    <div class="grid grid-cols-5 w-4/6"
-         v-for="(id) in users"
-         :key="id.id"
-         :class="{ 'grid-cols-7': accessLevel === 'admin' }">
-      <div class="border-white border w-full pl-1 text-center">{{ id.id }}</div>
-      <div class="col-span-2 border-white border w-full pl-1">
-        <router-link :to="'/admin/member/user/' + id.id">
-          {{ id.username }}
-        </router-link>
-      </div>
-      <div class="col-span-2 border-white border w-full pl-1"
-           v-show="accessLevel === 'admin'">{{ id.email }}</div>
-      <div class="col-span-2 border-white border w-full pl-1">{{ new Date(id.last_daily_login_credit)
-        .toLocaleString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        timeZone: 'America/Detroit',
-        }) }}</div>
-    </div>
+    <table class="table-auto border-collapse">
+      <tr>
+        <th class="p-4">ID</th>
+        <th class="p-4">Name</th>
+        <th class="p-4">Member</th>
+        <th class="p-4">Access</th>
+        <th class="p-4">Status</th>
+        <th class="p-4">Files</th>
+        <th class="p-4">Actions</th>
+      </tr>
+      <tr v-for="avatar in avatars"
+          :key="avatar.id">
+        <td class="p-4">{{ avatar.id }}</td>
+        <td class="p-4">{{ avatar.name }}</td>
+        <td class="p-4">{{ avatar.username ? avatar.username : '' }}</td>
+        <td class="p-4">{{ accessLabel[avatar.private] }}</td>
+        <td class="p-4">{{ statusLabel[avatar.status] }}</td>
+        <td class="p-4">
+          <button class="btn">WRL</button>
+          <button class="btn">Texture</button>
+          <button class="btn">Thumbnail</button>
+        </td>
+        <td class="p-4">
+          <button class="btn" @click="approve(avatar.id)">Approve</button>
+          <button class="btn" @click="reject(avatar.id)">Reject</button>
+        </td>
+      </tr>
+    </table>
     <div class="grid grid-cols-2 w-4/6 justify-items-center">
       <div class="p-1 text-right w-full">
-        <button class="bg-gray-300 text-black w-4/6"
+        <button class="btn"
                 @click="back"
                 v-show="offset != 0">
           BACK
         </button>
       </div>
       <div class="p-1 text-left w-full">
-        <button class="bg-gray-300 text-black w-4/6"
+        <button class="btn"
                 @click="next"
-                v-show="this.offset + this.limit <= this.totalCount">
+                v-show="offset + limit <= totalCount">
           NEXT
         </button>
       </div>
@@ -81,46 +80,65 @@ export default Vue.extend({
   data: () => {
     return {
       totalCount: 0,
-      users: [],
-      search: "",
+      avatars: [],
+      status: 2,
       limit: 10,
       offset: 0,
       showNext: true,
       error: null,
+      statusLabel: [
+        'Deleted',
+        'Live',
+        'Pending Approval',
+      ],
+      accessLabel: [
+        'Private',
+        'Public'
+      ]
     };
   },
   props: [
     "accessLevel",
   ],
   methods: {
-    async getUsers(): Promise<any> {
+    async getResults(): Promise<any> {
       try {
         return this.$http.get(
-          "/admin/usersearch/", {
+          "/admin/avatars/", {
           limit: this.limit,
           offset: this.offset,
-          search: this.search,
+          status: this.status,
         },
         ).then((response) => {
-          this.users = response.data.results.users;
+          this.avatars = response.data.results.avatars;
           this.totalCount = response.data.results.total[0].count;
         });
       } catch (error) {
         this.error = error;
       }
     },
-    async searchUsers(): Promise<any> {
-      this.offset = 0;
+
+    async approve(id): Promise<any> {
       try {
-        return this.$http.get(
-          "/admin/usersearch/", {
-          limit: this.limit,
-          offset: this.offset,
-          search: this.search,
+        return this.$http.post(
+          "/admin/avatars/approve", {
+          id: id,
         },
         ).then((response) => {
-          this.users = response.data.results.users;
-          this.totalCount = response.data.results.total[0].count;
+          this.getResults();
+        });
+      } catch (error) {
+        this.error = error;
+      }
+    },
+    async reject(id): Promise<any> {
+      try {
+        return this.$http.post(
+          "/admin/avatars/reject", {
+          id: id,
+        },
+        ).then((response) => {
+          this.getResults();
         });
       } catch (error) {
         this.error = error;
@@ -128,16 +146,16 @@ export default Vue.extend({
     },
     async next() {
       this.offset = this.offset + this.limit;
-      await this.getUsers();
+      await this.getResults();
     },
     async back() {
       this.offset = this.offset - this.limit;
-      await this.getUsers();
+      await this.getResults();
       this.showNext = true;
     },
   },
   async created() {
-    await this.getUsers();
+    await this.getResults();
   },
 });
 </script>

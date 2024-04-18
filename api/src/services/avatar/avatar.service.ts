@@ -101,4 +101,11 @@ export class AvatarService {
     }
     return response;
   }
+
+  public async approve(id): Promise<any> {
+    await this.avatarRepository.updateStatus(id,AvatarService.STATUS_ACTIVE);
+  }
+  public async reject(id): Promise<any> {
+    await this.avatarRepository.updateStatus(id,AvatarService.STATUS_DELETED);
+  }
 }
