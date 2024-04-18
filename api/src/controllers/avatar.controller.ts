@@ -51,7 +51,7 @@ class AvatarController {
 
     if (validator.isEmpty(request.body.name)) {
       response.status(400).json({
-        error: 'Object name is required.',
+        error: 'Avatar name is required.',
       });
       return;
     }
@@ -130,14 +130,32 @@ class AvatarController {
       return;
     }
 
+    let gesturesString = "";
+    if (
+      typeof request.body.gestures !== 'undefined'|| 
+      !validator.isEmpty(request.body.gestures)
+    ) {
+      gesturesString = JSON.stringify(request.body.gestures.split(","));
+    }
+
+    if (
+      typeof request.body.private === 'undefined'|| 
+      validator.isEmpty(request.body.private)
+    ) {
+      response.status(400).json({
+        error: 'Usage access is required',
+      });
+      return;
+    }
+
     try {
       await this.avatarService.create(
         request.files.wrlFile,
         request.files.imageFile,
         request.files.textureFile ?? null,
         request.body.name,
-        request.body.gestures,
-        request.body.private,
+        gesturesString,
+        parseInt(request.body.private),
         session.id,
       );
     } catch (e) {
