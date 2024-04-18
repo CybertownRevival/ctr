@@ -42,6 +42,7 @@ import UserChat from "@/pages/admin/user/ChatMessages.vue";
 import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
 import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
+import AvatarSearch from "@/pages/admin/avatar/search.vue";
 
 import MallRulesPage from "@/pages/mall/MallRulesPage.vue";
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
@@ -358,6 +359,14 @@ export default [
                         ],
                     },
                 ],
+            },
+            {
+                path: "/admin/avatar/",
+                component: AvatarSearch,
+                name: "AvatarSearch",
+                meta: {
+                    title: "Avatar Search - Admin Panel",
+                },
             },
         ],
     },
