@@ -41,45 +41,11 @@ export class HomeService {
   }
 
   public async getPlaceHomeDesign(memberId: number, homePlaceId: number): Promise<HomeDesign> {
-    const homeInfo = await this.homeRepository.findById(homePlaceId);
-    
-    const donorId = {
-      supporter: await this.roleRepository.roleMap.Supporter,
-      advocate: await this.roleRepository.roleMap.Advocate,
-      devotee: await this.roleRepository.roleMap.Devotee,
-      champion: await this.roleRepository.roleMap.Champion,
-    };
-    
-    try {
-      const donorLevel: any = await this.roleAssignmentRepository.getDonor(memberId, donorId);
-      if (homeInfo.home_design_id === 'championhome' && donorLevel.name === 'Champion'){
-        homeInfo.home_design_id = 'free';
-      }
-    } catch (e) {
-      const donorLevel= 'none';
-    }
-    
+    const homeInfo = await this.homeRepository.findById(homePlaceId);    
     return this.homeDesignRespository.find(homeInfo.home_design_id);
-
   }
 
   public async getHomeDesign(memberId: number, homeDesignId: string): Promise<HomeDesign> {
-    const donorId = {
-      supporter: await this.roleRepository.roleMap.Supporter,
-      advocate: await this.roleRepository.roleMap.Advocate,
-      devotee: await this.roleRepository.roleMap.Devotee,
-      champion: await this.roleRepository.roleMap.Champion,
-    };
-    
-    try {
-      const donorLevel: any = await this.roleAssignmentRepository.getDonor(memberId, donorId);
-      if (homeDesignId === 'championhome' && donorLevel.name === 'Champion'){
-        homeDesignId = 'free';
-      }
-    } catch (e) {
-      const donorLevel= 'none';
-    }
-    
     return this.homeDesignRespository.find(homeDesignId);
   }
 
