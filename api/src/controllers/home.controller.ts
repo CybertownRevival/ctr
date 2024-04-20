@@ -237,7 +237,7 @@ class HomeController {
 
         const currentHomeDesign = await this
           .homeService
-          .getPlaceHomeDesign(session.id, homeInfo.id);
+          .getHomeDesign(session.id, homeInfo.id.toString());
         let refund = 0;
         let currentHomeDesignId = null;
         if(currentHomeDesign) {
