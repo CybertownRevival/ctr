@@ -254,10 +254,13 @@ class HomeController {
         let refund = 0;
         let currentHomeDesignId = null;
         if(currentHomeDesign) {
-          refund = currentHomeDesign.price;
+          if(donorLevel === 'Champion' && currentHomeDesign.id === 'championhome'){
+            refund = 0;
+          } else {
+            refund = currentHomeDesign.price;
+          }
           currentHomeDesignId = currentHomeDesign.id;
         }
-
 
         // check if they have enough for the home
         const memberInfo = await this.memberService.getMemberInfo(session.id);
@@ -291,9 +294,6 @@ class HomeController {
 
         if(home3d !== currentHomeDesignId) {
           if(refund > 0) {
-            if(donorLevel === 'Champion' && currentHomeDesign.id === 'championhome'){
-              refund = 0;
-            }
             await this.memberService
               .performHomeRefundTransaction(session.id, refund);
           }
