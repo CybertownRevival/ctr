@@ -234,7 +234,11 @@ class HomeController {
       if(!homeInfo) {
         throw new Error('You don\'t have a home yet.');
       } else {
-
+        const donor = await this.memberService.getDonorLevel(session.id);
+        let donorLevel = null;
+        if(donor){
+          donorLevel = Object.values(donor).toString();
+        }
         const currentHomeDesign = await this
           .homeService
           .getPlaceHomeDesign(session.id, homeInfo.id);
@@ -265,7 +269,7 @@ class HomeController {
           purchaseAmount = homeDesignInfo.price;
 
         }
-
+        
         await this.homeService.updateHome(
           session.id,
           homeName,
@@ -275,11 +279,17 @@ class HomeController {
 
         if(home3d !== currentHomeDesignId) {
           if(refund > 0) {
+            if(donorLevel === 'Champion' && currentHomeDesign.id === 'championhome'){
+              refund = 0;
+            }
             await this.memberService
-              .performHomeRefundTransaction(session.id, currentHomeDesign.price);
+              .performHomeRefundTransaction(session.id, refund);
           }
 
           if(purchaseAmount > 0) {
+            if(donorLevel === 'Champion' && home3d === 'championhome'){
+              purchaseAmount = 0;
+            }
             await this.memberService.performHomePurchaseTransaction(session.id, purchaseAmount);
           }
         }
