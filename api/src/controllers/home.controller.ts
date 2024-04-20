@@ -284,7 +284,7 @@ class HomeController {
             purchaseAmount = homeDesignInfo.price;
           }
         }
-        
+
         await this.homeService.updateHome(
           session.id,
           homeName,
