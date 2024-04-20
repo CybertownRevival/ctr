@@ -124,15 +124,24 @@ class HomeController {
 
         // check if they have enough for the home
         const memberInfo = await this.memberService.getMemberInfo(session.id);
+        const donor = await this.memberService.getDonorLevel(session.id);
+        let donorLevel = null;
+        if(donor){
+          donorLevel = Object.values(donor).toString();
+        }
         let purchaseAmount = 0;
         if(home3d) {
           // check they have enough in their wallet to buy the 3d home
           // this is optional (if not null)
           const homeDesignInfo = await this.homeService.getHomeDesign(session.id, home3d);
-          if(homeDesignInfo.price > memberInfo.walletBalance) {
-            throw new Error('Not enough funds to purchase house.');
+          if(donorLevel === 'Champion' && home3d === 'championhome'){
+            purchaseAmount = 0;
+          } else {
+            if(homeDesignInfo.price > memberInfo.walletBalance) {
+              throw new Error('Not enough funds to purchase house.');
+            }
+            purchaseAmount = homeDesignInfo.price;
           }
-          purchaseAmount = homeDesignInfo.price;
         }
 
         await this.homeService.createHome(
@@ -263,11 +272,14 @@ class HomeController {
             throw new Error('Home design not found.');
           }
 
-          if(homeDesignInfo.price > (memberInfo.walletBalance + refund)) {
-            throw new Error('Not enough funds to purchase house.');
+          if(donorLevel === 'Champion' && home3d === 'championhome'){
+            purchaseAmount = 0;
+          } else {
+            if(homeDesignInfo.price > (memberInfo.walletBalance + refund)) {
+              throw new Error('Not enough funds to purchase house.');
+            }
+            purchaseAmount = homeDesignInfo.price;
           }
-          purchaseAmount = homeDesignInfo.price;
-
         }
         
         await this.homeService.updateHome(
@@ -287,9 +299,6 @@ class HomeController {
           }
 
           if(purchaseAmount > 0) {
-            if(donorLevel === 'Champion' && home3d === 'championhome'){
-              purchaseAmount = 0;
-            }
             await this.memberService.performHomePurchaseTransaction(session.id, purchaseAmount);
           }
         }
