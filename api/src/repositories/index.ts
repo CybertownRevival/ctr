@@ -8,7 +8,6 @@ export * from './hood/hood.repository';
 export * from './map-location/map-location.repository';
 export * from './member/member.repository';
 export * from './message/message.repository';
-export * from './mall/mall.repository';
 export * from './object/object.repository';
 export * from './object-instance/object-instance.repository';
 export * from './role/role.repository';
