@@ -35,6 +35,21 @@ class MallController {
       response.status(400).json({ error });
     }
   }
+
+  public async findStores(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+
+    try{
+      const stores = await this.mallService.getMallStores();
+      response.status(200).json({ status: 'success', stores: stores });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+
+  }
+
   public async objectsPendingApproval(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
 
@@ -181,3 +196,4 @@ export const mallController = new MallController(
   walletService,
   objectInstanceService,
 );
+
