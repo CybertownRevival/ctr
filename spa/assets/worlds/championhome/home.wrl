@@ -181,7 +181,7 @@ DEF dad_House_Master Transform {
              rotation 1.571
             }
             material DEF White Material {
-             ambientIntensity 0.000
+             ambientIntensity 0.100
              shininess 0.000
              diffuseColor 0.500 0.500 0.500
              specularColor 0 0 0
