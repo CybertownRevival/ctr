@@ -77,7 +77,6 @@ export default Vue.extend({
   mounted() {
     this.checkAdmin();
     this.getMallId();
-    console.log(this.$store.data.place)
   },
   watch: {
     async $route(to, from) {
