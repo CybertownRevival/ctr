@@ -43,6 +43,7 @@ import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
 import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
 
+import MallRulesPage from "@/pages/mall/MallRulesPage.vue";
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
 import MallApprovalPage from "@/pages/mall/MallApprovalPage.vue";
 import MallShopPage from "@/pages/mall/MallShopPage.vue";
@@ -359,6 +360,15 @@ export default [
                 ],
             },
         ],
+    },
+    {
+        path: "/mall/rules",
+        component: MallRulesPage,
+        name: "mall-rules",
+        meta: {
+            title: "Mall Rules",
+            wrapper: true,
+        },
     },
     {
         path: "/mall/upload",
