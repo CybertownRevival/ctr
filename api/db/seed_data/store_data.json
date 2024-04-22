@@ -1,0 +1,218 @@
+[
+  {
+    "name": "Antique Shop",
+    "description": "Antique Shop",
+    "slug": "antiqueshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Appliance Shop",
+    "description": "Appliance Shop",
+    "slug": "applianceshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Aquatics Shop",
+    "description": "Aquatics Shop",
+    "slug": "aquaticsshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Bargain Outlet",
+    "description": "Bargain Outlet",
+    "slug": "bargainoutlet",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Bedroom Showcase",
+    "description": "Bedroom Showcase",
+    "slug": "bedroomshowcase",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Car Dealer",
+    "description": "Car Dealer",
+    "slug": "cardealer",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Carpet Shop",
+    "description": "Carpet Shop",
+    "slug": "carpetshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Collectibles",
+    "description": "collectibles",
+    "slug": "collectibles",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Electronics Store",
+    "description": "Electronics Store",
+    "slug": "electronicsstore",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Fine Art Shop",
+    "description": "Fine Art Shop",
+    "slug": "fineartshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Furniture Store",
+    "description": "Furniture Store",
+    "slug": "furniturestore",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Garden Store",
+    "description": "Garden Store",
+    "slug": "gardenstore",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "General Store",
+    "description": "General Store",
+    "slug": "generalstore",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Gift Shop",
+    "description": "Gift Shop",
+    "slug": "giftshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "HOLDS DEPOT",
+    "description": "HOLDS DEPOT",
+    "slug": "holdsdepot",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Holiday Shop",
+    "description": "Holiday Shop",
+    "slug": "holidayshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Homebuilder",
+    "description": "Homebuilder",
+    "slug": "homebuilder",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Jewelry Store",
+    "description": "Jewelry Store",
+    "slug": "jewelrystore",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Kitchen Store",
+    "description": "Kitchen Store",
+    "slug": "kitchenstore",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Large Item Shop",
+    "description": "Large Item Shop",
+    "slug": "largeitemshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/largeitems/largeitems.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Magical Corner",
+    "description": "Magical Corner",
+    "slug": "magicalcorner",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Novelty Store",
+    "description": "Novelty Store",
+    "slug": "noveltystore",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Pet Shop",
+    "description": "Pet Shop",
+    "slug": "petshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Space Port",
+    "description": "Space Port",
+    "slug": "spaceport",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Toy Store",
+    "description": "Toy Store",
+    "slug": "toystore",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Weapon Displays",
+    "description": "Weapon Displays",
+    "slug": "weapondisplays",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  },
+  {
+    "name": "Wedding Shop",
+    "description": "Wedding Shop",
+    "slug": "weddingshop",
+    "assets_dir": "/shop/",
+    "world_filename": "vrml/shop.wrl",
+    "type": "shop"
+  }
+]
