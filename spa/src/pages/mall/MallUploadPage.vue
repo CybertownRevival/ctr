@@ -5,16 +5,21 @@
       <h2>Object Upload</h2>
     </div>
     <p class="text-red-500">
-      Before uploading, please read and understand the <a href="/places/shopping/rules.html">Rules for Creating Objects
-        for Cybertown</a>
+      Before uploading, please read and understand the <router-link to="/mall/rules">Rules for Creating Objects
+        for Cybertown</router-link>
       <br />
       These are the technical rules by which your Object will be judged fit or unfit for use in Cybertown.
       <br />
       These Rules contain very important information you need to know, plus some technical tips.
       <br />
-      <a href="http://www.cybertown.com/graphics.html"
+      <!--I commented this out because I'm uncertain how this differs from the mall rules.
+        
+        <a href="http://www.cybertown.com/graphics.html"
          target="_blank">Here are the Graphics and Objects Content Guidelines.</a>
+        
+        -->
     </p>
+    <br />
     <p>
       Use this form to "import" new objects into the community and offer them
       for sale.
@@ -25,10 +30,6 @@
       upload an object, and you'll be hoping to earn enough from sales of your object to make a profit. The
       money involved here is the CCs you earn by being a citizen of Cybertown. Read more below.
     </p>
-    <div class="text-center font-bold text-green" v-if="showSuccess">
-      Congratulations! Your object has been uploaded and is awaiting approval.
-    </div>
-
     <div class="text-center" v-if="showForm">
       <span class="text-red-500" v-if="showError">
         {{ this.error }}
@@ -98,7 +99,7 @@
       property. You are giving Cybertown the right, without time limit, of use
       and of distribution to other members of this community. Cybertown does
       not grant the right to demand removal of objects already distributed.
-    <p>
+    </p>
     <p class="text-yellow-200">By clicking on Accept & Upload below I hereby affirm that the item I am uploading is an
       original creation by me and does not infringe upon the copyright or trademark of any other person or group. I also
       affirm that it is not an alteration of another's original creation without their express permission.
@@ -114,13 +115,15 @@
     </p>
 
     <div align=center>
-      <input type="button"
-             value="Accept & Upload"
-             @click="upload"
-             class="btn" />
-      <input type="button"
-             value="Back"
-             class="btn" />
+      <div class="text-center font-bold text-green" v-if="showSuccess">
+      Congratulations! Your object has been uploaded and is awaiting approval.
+    </div>
+    <input type="button"
+      value="Accept & Upload"
+      @click="upload"
+      class="btn" v-if="!showSuccess"/>
+      <button class="btn" @click="reload()" v-else>Upload More</button>
+      <router-link to="/place/mall"><button class="btn">Back</button></router-link>
     </div>
 
     <hr class="my-3" />
@@ -266,6 +269,9 @@ export default Vue.extend({
       this[e.target.dataset.id] = files[0];
 
     },
+    reload(){
+      window.location.reload();
+    }
   },
   mounted() {
     this.loaded = true;

@@ -1,5 +1,5 @@
 <template>
-  <div id="chat" class="flex flex-row chat space-x-1 p-1 text-chat w-full">
+  <div class="flex flex-row chat space-x-1 p-1 text-chat w-full">
     <div class="messages-pane flex flex-col flex-1">
       <div class="flex-grow p-1 overflow-y-auto h-full" ref="chatArea">
         <ul>
@@ -110,7 +110,7 @@
             <img src="/assets/img/av_me.gif" class="inline" />
             {{ this.$store.data.user.username }}
           </li>
-          <li class="cursor-default" v-for="(user, key) in users" :key="key" @mouseup="userMenu(user.id, user.username)">
+          <li class="cursor-default" v-for="(user, key) in users" :key="key" @click="handler($event)" @contextmenu="handler($event)" @mouseup="menu(user.id, user.username)">
             <img src="/assets/img/av_mute.gif" class="inline" v-if="blockedMembers.includes(user.username) === true" />
             <img src="/assets/img/av_def.gif" class="inline" v-else />
             
@@ -132,11 +132,12 @@
             v-for="object in sharedObjects"
             :key="object.id"
             class="flex cursor-default"
+            @click="handler($event)" @contextmenu="handler($event)"
           >
-          <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+          <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id)">
               {{ object.object_name }}
             </div>
-            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id)">
               {{ object.name }}
             </div>
           </li>
@@ -146,11 +147,12 @@
             v-for="object in backpackObjects"
             :key="object.id"
             class="flex cursor-default"
+            @click="handler($event)" @contextmenu="handler($event)"
           >
-            <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+            <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id)">
               {{ object.object_name }}
             </div>
-            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" style="max-width: 165px;" @mouseup="userMenu(object.id)">
+            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id)">
               {{ object.name }}
             </div>
           </li>
@@ -158,7 +160,7 @@
         </ul>
       </div>
     </div>
-    <div id="userMenu" 
+    <div v-show="userMenu" 
       class="
         absolute
         flex-none
@@ -166,8 +168,10 @@
         text-black
         bg-gray-300
         cursor-pointer
+        cls-context-menu
       " 
       style="border: outset #EEE;" 
+      :style="{left: menuLeft, top: menuTop, bottom: menuBottom}"
       @mouseleave="closeMenu()"
     >
       <ul>
@@ -349,9 +353,33 @@ export default Vue.extend({
       cursorX: null,
       cursorY: null,
       numberOfPosts: 0,
+      userMenu: false,
+      menuTop: null,
+      menuLeft: null,
+      menuBottom: null,
     };
   },
   methods: {
+    handler: function(e) {
+      this.userMenu = true;
+      this.cursorX = e.x;
+      this.cursorY = e.y;
+      if(this.cursorY >= window.innerHeight - 90){
+        this.menuTop = null;
+        this.menuBottom = "5px";
+      }
+      else{
+        this.menuBottom = null;
+        this.menuTop = this.cursorY - 15 + "px";
+      }
+      if(this.cursorX >= window.innerWidth - 115){
+        this.menuLeft = this.cursorX - 115 + "px";
+      }
+      else{
+        this.menuLeft = this.cursorX - 15 + "px";
+      }
+      e.preventDefault();
+    },
     async getRole(): Promise<void> {
       const response = await this.$http.get("/member/getrolename");
       if(response.data.PrimaryRoleName.length === 0 ){
@@ -410,51 +438,18 @@ export default Vue.extend({
         time: new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}),
       });
     },
-    preventMenu(){
-      let chat = document.getElementById("chat")
-      chat.addEventListener("contextmenu", function(e){
-        e.preventDefault()
-      })
-      document.addEventListener('mousemove', this.onMouseUpdate, false);
-      document.addEventListener('mouseenter', this.onMouseUpdate, false);
-    },
-    onMouseUpdate(e){
-      this.cursorX = e.pageX;
-      this.cursorY = e.pageY;
-    },
-
-    userMenu(...target){
-      let userMenu = document.getElementById('userMenu');
-      userMenu.style.display = "block";
-       if(this.cursorY >= window.innerHeight - 90){
-        userMenu.style.top = null;
-        userMenu.style.bottom = "0px";
-      }
-      else{
-        userMenu.style.bottom = null;
-        userMenu.style.top = this.cursorY - 15 + "px";
-      }
-      if(this.cursorX >= window.innerWidth - 315){
-        userMenu.style.left = this.cursorX - 115 + "px";
-      }
-      else{
-        userMenu.style.left = this.cursorX - 15 + "px";
-      }
+    menu(...target){
       this.objectId = target[0];
       this.username = target[1];
     },
     closeMenu(){
-      let userMenu = document.getElementById('userMenu');
-      userMenu.style.display = "none";
+      this.userMenu = false;
     },
     objectOpener() {
       this.closeMenu();
       window.open("/#/object/"+this.objectId, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
     startNewChat(): void {
-      this.preventMenu();
-      let userMenu = document.getElementById('userMenu');
-      userMenu.style.display = "none";
       this.messages = [];
       this.users = [];
       this.canInteractWithObject = false;
