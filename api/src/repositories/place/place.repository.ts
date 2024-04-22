@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
-import {Home, Place} from '../../types/models';
+import {Home, Place, Store} from '../../types/models';
 
 /** Repository for fetching/interacting with place data in the database. */
 @Service()
@@ -21,6 +21,10 @@ export class PlaceRepository {
 
   public async findBySlug(slug: string): Promise<Place> {
     return this.db.place.where({ slug: slug }).first();
+  }
+
+  public async findAllStores(): Promise<Store[]> {
+    return this.db.place.where({type: 'shop', status: 1});
   }
 
   /**
