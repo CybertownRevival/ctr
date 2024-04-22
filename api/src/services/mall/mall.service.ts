@@ -5,6 +5,7 @@ import {
   RoleRepository,
   ObjectInstanceRepository,
   ObjectRepository,
+  MallRepository,
 } from '../../repositories';
 
 /** Service for dealing with blocks */
@@ -15,6 +16,7 @@ export class MallService {
     private roleRepository: RoleRepository,
     private objectRespository: ObjectRepository,
     private objectInstanceRepository: ObjectInstanceRepository,
+    private mallRepository: MallRepository,
   ) {}
 
   public async canAdmin(memberId: number): Promise<boolean> {
@@ -54,5 +56,10 @@ export class MallService {
       return false;
     }
     return true;
+  }
+
+  public async getMallStores(){
+    const stores = await this.mallRepository.findAll();
+    return stores;
   }
 }
