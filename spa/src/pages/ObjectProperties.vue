@@ -78,8 +78,8 @@
       </div>
     </div>
     <span class="flex w-full justify-center text-red-600 mt-10" v-show="error">{{ this.error }}</span>
+    <span class="flex w-full justify-center" style="color: lime;" v-show="success">{{ success }}</span>
     <div class="flex justify-center">
-      
       <button  type="button" class="btn mx-1 mt-10" @click="changeDetails()" v-show="this.canModify">Update</button>
         <button  type="button" class="btn mx-1 mt-10" 
           v-if="
@@ -194,6 +194,7 @@ methods: {
     browser.currentScene.addRootNode(inline);
   },
   async update(): Promise<void> {
+    this.success = 'Object updated';
     await this.$http.post(`/object_instance/update/`, {
       id: this.objectId,
       name: this.name,
@@ -211,9 +212,21 @@ methods: {
   },
   async buy(){
     if(this.walletBalance >= this.price){
-      await this.$http.post(`/object_instance/buy/`, {
-        id: this.objectId})
-      .then(setTimeout(this.reload, 500));
+      const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
+        id: this.objectId});
+        await this.objectProperties();
+        if(objectPurchase.data.status === 'success'){
+          this.success = 'Object purchased!';
+        }
+        if(!this.price){
+          this.error = 'This object is not for sale!'
+        }
+        if(this.buyer && this.$store.data.user.username !== this.buyer) {
+          this.error = 'This object is reserved for someone else!';
+        }
+        if(this.price > this.walletBalance){
+          this.error = "You don't have enough cc's.";
+        }
     } else {
       this.error = "You don't have enough cc's.";
     }
