@@ -3,7 +3,8 @@ import { Service } from 'typedi';
 import { 
   ObjectInstanceRepository, 
   WalletRepository, 
-  TransactionRepository } from '../../repositories';
+  TransactionRepository,
+  MemberRepository } from '../../repositories';
 import { ObjectInstancePosition, ObjectInstanceRotation } from 'models';
 import { Object } from 'models';
 
@@ -13,7 +14,8 @@ export class ObjectInstanceService {
   constructor(
     private objectInstanceRepository: ObjectInstanceRepository,
     private walletRepository: WalletRepository,
-    private transactionRepository: TransactionRepository) {}
+    private transactionRepository: TransactionRepository,
+    private memberRepository: MemberRepository) {}
 
   public async find(objectInstanceId: number): Promise<any> {
     return await this.objectInstanceRepository.find(objectInstanceId);
@@ -74,14 +76,32 @@ export class ObjectInstanceService {
     const object = await this.objectInstanceRepository.getObjectInstanceWithObject(objectId);
     const sellerWallet= await this.walletRepository.findById(object[0].member_id);
     const buyerWallet = await this.walletRepository.findById(buyerId);
+    const buyer = await this.memberRepository.findById(buyerId);
 
     try{
-      if(buyerWallet.balance >= object[0].object_price){
-        await this.transactionRepository
-          .createObjectSellTransaction(buyerWallet.id, sellerWallet.id, object[0].object_price);
-        await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
+      if(object[0].object_price){
+        if(buyerWallet.balance >= object[0].object_price){
+          if(object[0].object_buyer){
+            if(buyer.username === object[0].object_buyer.toLowerCase()){
+              await this.transactionRepository
+                .createObjectSellTransaction(
+                  buyerWallet.id, sellerWallet.id, object[0].object_price);
+              await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
+              return true;
+            } else {
+              throw new Error('You are not the buyer that is listed on the object.');
+            }
+          } else {
+            await this.transactionRepository
+              .createObjectSellTransaction(buyerWallet.id, sellerWallet.id, object[0].object_price);
+            await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
+            return true;
+          }
+        } else {
+          throw new Error('Insufficient funds');
+        }
       } else {
-        throw new Error('Insufficient funds');
+        throw new Error('Object is not for sale');
       }
     } catch(error) {
       console.error(error);
