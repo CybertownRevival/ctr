@@ -157,7 +157,6 @@ methods: {
     window.close();
   },
   changeDetails() {
-    console.log(this.name, this.price, this.buyer)
     this.name = (<HTMLInputElement>document.getElementById('objectName')).value.replace(/[^0-9a-zA-Z \-\[\]()]/g, '');
     this.price = (<HTMLInputElement>document.getElementById('objectPrice')).value.replace(/[^0-9]/g, '');
     const badwords = require("badwords-list");
