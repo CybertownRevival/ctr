@@ -147,8 +147,14 @@ class ObjectInstanceController {
     try {
       const objectId = Number.parseInt(request.body.id);
       const buyerId = session.id;
-      await this.objectInstanceService.buyObjectInstance(objectId, buyerId);
+      const purchase = await this.objectInstanceService.buyObjectInstance(objectId, buyerId);
+      if(purchase){
+        response.status(200).json({ status: 'success' });
+      } else {
+        response.status(200).json({ status: 'failed' });
+      }  
     } catch (error) {
+      console.error(error);
       response.status(400).json({ error: error});
     }
   }
