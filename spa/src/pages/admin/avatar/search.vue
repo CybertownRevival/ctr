@@ -43,9 +43,8 @@
         <td class="p-4">{{ accessLabel[avatar.private] }}</td>
         <td class="p-4">{{ statusLabel[avatar.status] }}</td>
         <td class="p-4">
-          <button class="btn">WRL</button>
-          <button class="btn">Texture</button>
-          <button class="btn">Thumbnail</button>
+          <button class="btn" @click="downloadWrl(avatar.id)">WRL</button>
+          <button class="btn" @click="downloadThumbnail(avatar.id)">Thumbnail</button>
         </td>
         <td class="p-4">
           <button class="btn" @click="approve(avatar.id)">Approve</button>
@@ -143,6 +142,15 @@ export default Vue.extend({
       } catch (error) {
         this.error = error;
       }
+    },
+
+    downloadWrl(id) {
+      const avatar = this.avatars.find(av => av.id === id);
+      window.location.assign(`/assets/avatars/${avatar.directory}/${avatar.filename}`);
+    },
+    downloadThumbnail(id) {
+      const avatar = this.avatars.find(av => av.id === id);
+      window.location.assign(`/assets/avatars/${avatar.directory}/${avatar.image}`);
     },
     async next() {
       this.offset = this.offset + this.limit;
