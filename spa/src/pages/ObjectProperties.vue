@@ -211,20 +211,26 @@ methods: {
   },
   async buy(){
     if(this.walletBalance >= this.price){
-      const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
-        id: this.objectId});
-        await this.objectProperties();
-        if(objectPurchase.data.status === 'success'){
-          this.success = 'Object purchased!';
-        }
-        if(!this.price){
-          this.error = 'This object is not for sale!'
-        }
-        if(this.buyer && this.$store.data.user.username !== this.buyer) {
-          this.error = 'This object is reserved for someone else!';
-        }
-        if(this.price > this.walletBalance){
-          this.error = "You don't have enough cc's.";
+      try{
+        const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
+          id: this.objectId});
+          console.log(objectPurchase);
+          await this.objectProperties();
+          if(!this.price){
+            this.error = 'This object is not for sale!'
+          }
+          if(this.buyer && this.$store.data.user.username !== this.buyer) {
+            this.error = 'This object is reserved for someone else!';
+          }
+          if(this.price > this.walletBalance){
+            this.error = "You don't have enough cc's.";
+          }
+          if(objectPurchase.data.status === 'success'){
+            this.success = 'Object purchased!';
+            this.error = '';
+          }
+        } catch(errorResponse: any) {
+          console.log(errorResponse.response.data.error);
         }
     } else {
       this.error = "You don't have enough cc's.";
