@@ -79,30 +79,19 @@ export class ObjectInstanceService {
     const buyer = await this.memberRepository.findById(buyerId);
 
     try{
-      if(object[0].object_price){
-        if(buyerWallet.balance >= object[0].object_price){
-          if(object[0].object_buyer){
-            if(buyer.username === object[0].object_buyer.toLowerCase()){
-              await this.transactionRepository
-                .createObjectSellTransaction(
-                  buyerWallet.id, sellerWallet.id, object[0].object_price);
-              await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
-              return true;
-            } else {
-              throw new Error('You are not the buyer that is listed on the object.');
-            }
-          } else {
-            await this.transactionRepository
-              .createObjectSellTransaction(buyerWallet.id, sellerWallet.id, object[0].object_price);
-            await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
-            return true;
-          }
-        } else {
-          throw new Error('Insufficient funds');
-        }
-      } else {
-        throw new Error('Object is not for sale');
+      if(!object[0].object_price){
+        throw new Error('The object is not for sale!');
       }
+      if(buyerWallet.balance < object[0].object_price){
+        throw new Error('Insufficient funds.');
+      }
+      if(object[0].object_buyer && buyer.username !== object[0].object_buyer.toLowerCase()){
+        throw new Error('You are not the buyer that is listed on the object!');
+      }
+      await this.transactionRepository
+        .createObjectSellTransaction(buyerWallet.id, sellerWallet.id, object[0].object_price);
+      await this.objectInstanceRepository.updateObjectInstanceOwner(objectId, buyerId);
+      return true;
     } catch(error) {
       console.error(error);
     }
