@@ -214,7 +214,11 @@ methods: {
       try{
         const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
           id: this.objectId});
-          console.log(objectPurchase);
+          await this.objectProperties();
+          this.success = 'Object purchased!';
+          this.error = '';
+        } catch(error) {
+          console.log(error)
           await this.objectProperties();
           if(!this.price){
             this.error = 'This object is not for sale!'
@@ -225,12 +229,6 @@ methods: {
           if(this.price > this.walletBalance){
             this.error = "You don't have enough cc's.";
           }
-          if(objectPurchase.data.status === 'success'){
-            this.success = 'Object purchased!';
-            this.error = '';
-          }
-        } catch(errorResponse: any) {
-          console.log(errorResponse.response.data.error);
         }
     } else {
       this.error = "You don't have enough cc's.";
