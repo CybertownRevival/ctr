@@ -185,7 +185,6 @@ class AdminController {
     }
   }
   public async avatarReject(request: Request, response: Response): Promise<any> {
-    // TODO: make rejection call
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.canAdmin(session.id);
