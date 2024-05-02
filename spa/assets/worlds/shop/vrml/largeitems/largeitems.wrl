@@ -1,0 +1,1893 @@
+#VRML V2.0 utf8
+#hg 09/2001 VRML syntax fixes
+EXTERNPROTO HUD[
+ 	field SFVec3f bboxSize 
+	field SFVec3f bboxCenter 
+	exposedField MFNode children 
+	eventIn MFNode addChildren
+	eventIn MFNode removeChildren
+]
+["urn:inet:blaxxun.com:node:HUD","http://www.blaxxun.com/vrml/protos/nodes.wrl#HUD"]
+
+
+PROTO PopUp[
+eventIn SFTime set_pop
+field SFString url ""
+field SFString status "yes"
+field SFString scrollbars "auto"
+field SFInt32  height 300
+field SFInt32  width 200
+field MFNode children []
+eventOut SFBool isOver
+]{
+Group{children[
+DEF button TouchSensor{isOver IS isOver}
+Group{children IS children}
+DEF pop Script{
+eventIn SFTime set_pop
+field SFString linkURL IS url
+field SFString status IS status
+field SFString scrollbars IS scrollbars
+field SFInt32  height IS height
+field SFInt32  width IS width
+field MFString param ["","","target=_self"]
+url"vrmlscript:
+function set_pop(v,t){
+ st = new MFString('OnEvent(status,'+status+')');
+ sc = new MFString('OnEvent(scrollbars,'+scrollbars+')');
+ h = new MFString('OnEvent(height,'+height+')');
+ w = new MFString('OnEvent(width,'+width+')');
+ u = new MFString('OnEvent(load,'+linkURL+')');
+ Browser.loadURL(st,param);
+ Browser.loadURL(sc,param); 
+ Browser.loadURL(h,param);
+ Browser.loadURL(w,param);
+ Browser.loadURL(u,param);
+}
+"}
+]}
+ROUTE button.touchTime TO pop.set_pop
+}#END PopUp PROTO
+
+PROTO SharedObject [
+exposedField SFVec3f translation 0 0 0
+exposedField SFRotation rotation 0 1 0 0
+exposedField SFString name ""
+exposedField SFString id ""
+exposedField MFNode children []
+eventIn SFBool startMove
+eventOut SFTime touchTime
+eventOut SFBool isOver
+eventOut SFVec3f newPosition
+eventOut SFRotation newRotation
+exposedField MFString attributes ["PRC","1","CNT","1","IMG","","CLA","A"]
+exposedField MFFloat range [50]
+]{
+
+DEF T1 Transform {
+translation IS translation
+rotation IS rotation
+children[
+DEF TS TouchSensor{ isOver IS isOver touchTime IS touchTime}
+
+DEF SOLOD LOD{range IS range level[
+DEF SO Group{children IS children} 
+Group{}
+]}#END LOD
+]}#END T1
+
+DEF ATT Script{
+eventIn SFBool set_name
+field SFString name IS name
+field SFNode self USE ATT
+eventOut SFInt32 nameChoice_changed
+eventOut MFString name_changed
+
+eventIn  SFFloat      set_windowAspect
+field    SFVec3f      offset -0.2 0 0
+eventOut SFVec3f      offset_changed
+
+directOutput TRUE
+
+url"vrmlscript:
+function set_windowAspect(v,t){
+ offset[0] = -0.1*(1+((v-1.01)));
+ offset_changed = offset;
+}
+function parseInt(v){
+  n = new MFNode();
+  newString = new SFString('Switch{whichChoice '+v+'}');
+  n = Browser.createVrmlFromString(newString);
+  return n[0].whichChoice;
+}
+function parseFloat(v){
+ newString = 'Sphere{radius '+v+'}';
+ n = Browser.createVrmlFromString(newString);
+ return n[0].radius;
+}
+function set_name(v){
+ if(v){nameChoice_changed = 0;}
+ else{nameChoice_changed = -1;}
+}
+function initialize(){
+  set_windowAspect( Browser.getWindowAspect() );
+  Browser.addRoute( Browser, 'windowAspect', self, 'set_windowAspect' );
+  name_changed = new MFString(name);
+}
+"}
+
+#BEGIN MOVE HUD CODE#
+DEF SOSwitch Switch{
+whichChoice -1
+choice[
+Collision{
+collide FALSE
+children[
+DEF HUD HUD { 
+children[Transform{translation 0.15 0.08 -0.3 scale 0.8 0.8 0.8 children[
+DirectionalLight{direction 0 0 -1 }
+Transform{ #Done Button
+translation -0.033 -.063 0
+scale .08 .08 .08
+children[
+DEF DoneButton TouchSensor{}
+Shape{
+appearance Appearance{material Material{diffuseColor 0 1 0 specularColor 0 1 0}}
+geometry IndexedFaceSet{
+coord Coordinate{point[0 0 0,-.15 .1 0,-.05 .15 0,0 .05 0,.085 .3 0,.15 .4 0,.2 .25 0,.05 0 0 ]}
+coordIndex[0,3,2,1,-1,6,4,3,0,-1]
+}}
+Transform{ translation 0 .1 0
+children Shape{appearance Appearance{material Material{transparency 1}}geometry Sphere{radius .3}}
+}
+]}#END DoneButton
+Transform{ #CancelButton
+translation 0.033 -.054 0
+scale .07 .07 .07
+children[
+DEF CancelButton TouchSensor{}
+Shape{
+appearance Appearance{material Material{diffuseColor 1 0 0 specularColor 1 0 0}}
+geometry IndexedFaceSet{coord Coordinate{point[0 0 0,.15 -.1 0,.1 -.15 0,.15 .1 0,.1 .15 0,-.15 -.1 0,-.1 -.15 0,-.15 .1 0,-.1 .15 0]}coordIndex[0,2,1,-1,0,3,4,-1,0,5,6,-1,0,8,7,-1]}
+}
+Shape{appearance Appearance{material Material{transparency 1}}geometry Sphere{radius .2}}
+]}#END CancelButton
+
+Transform{ #Rotation Control
+translation 0 -.054 0
+scale .16 .16 .16
+children[
+DEF RotControlKnob Transform{ scale 1 .5 1 children[ 
+Shape{appearance Appearance{material Material{diffuseColor 0 0 .5 specularColor 1 1 1 }}geometry Sphere{radius .1}}
+]}
+DEF RotControlSensor CylinderSensor{minAngle -3.142 maxAngle 3.142}
+]}#END RotationControl
+Transform{#Panel
+translation 0 0 0 scale 0.1 0.1 0.1 children[
+Transform{
+translation .14 -.05 -.3
+children [ 
+Shape { appearance Appearance { material Material{ diffuseColor 0 0 0 transparency .5}  } geometry Box { size 1 1.2 .01 } } ] }
+Transform{# Y-axis
+children[
+Transform{translation 0 .05 0 rotation 0 0 1 0 children[ 
+Shape{appearance Appearance{material Material{transparency .1 diffuseColor 0 1 0 specularColor 0 1 0}}geometry DEF arrow IndexedFaceSet{solid FALSE coord Coordinate{point[-.05 0 0,-.05 .2 0,-.15 .2 0,0 .35 0,.15 .2 0,.05 .2 0,.05 0 0]}coordIndex[0,1,5,6,-1,2,3,4,-1]}}
+]}
+Transform{translation 0 -.05 0 rotation 0 0 1 3.142 children[
+Shape{appearance Appearance{material Material{diffuseColor 0 1 0  specularColor 0 1 0}}geometry USE arrow}
+]}
+DEF Y PlaneSensor{}
+]}#END Y-axis
+Transform{# X-axis
+children[
+Transform{translation -.05 0 0 rotation 0 0 1 1.571 children[
+Shape{appearance Appearance{material Material{diffuseColor 1 0 0 specularColor 1 0 0}}geometry USE arrow}
+]}
+Transform{translation .05 0 0 rotation 0 0 1 -1.571 children[
+Shape{appearance Appearance{material Material{diffuseColor 1 0 0 specularColor 1 0 0}}geometry USE arrow}
+]}
+DEF X PlaneSensor{}
+]}#END X-axis
+Transform{translation 0 0 0 rotation 1 -.2 0 .8 children[          
+Transform{#Z-axis
+rotation 1 0 0 1.571
+children[
+Transform{translation 0 .05 0 rotation 0 0 1 -.1 children[
+Shape{appearance Appearance{material Material{transparency .1 diffuseColor .2 .2 1 specularColor 0 0 1}}geometry USE arrow}
+]}
+Transform{translation 0 -.05 0 rotation 0 0 1 3.042 children[
+Shape{appearance Appearance{material Material{diffuseColor .2 .2 1 specularColor 0 0 1}}geometry USE arrow}
+]}
+DEF Z PlaneSensor{}
+]}#END Z-axis
+]}
+]}#END panel
+DEF SOScript Script{
+eventIn SFVec3f set_X
+eventIn SFVec3f set_Y
+eventIn SFVec3f set_Z
+eventIn SFRotation set_rotation
+eventIn SFBool set_done
+eventIn SFBool set_cancel
+eventIn SFBool set_over
+eventIn SFBool set_enable IS startMove
+exposedField SFString name IS name
+exposedField SFString id IS id
+exposedField SFFloat rate 10
+field SFVec3f initialPosition IS translation
+field SFRotation initialRotation IS rotation
+field SFVec3f currentPosition 0 0 0
+field SFRotation currentRotation 0 0 0 0                                                               
+field SFVec3f XlastChange 0 0 0                                                                          
+field SFVec3f YlastChange 0 0 0
+field SFVec3f ZlastChange 0 0 0
+field SFFloat ROTlastChange 0
+eventOut SFVec3f position_changed
+eventOut SFRotation rotation_changed
+eventOut SFVec3f new_position IS newPosition
+eventOut SFRotation new_rotation IS newRotation
+eventOut SFInt32 choice_changed
+url "vrmlscript:
+function set_over(v,t){if(v){Browser.setDescription(name);} else{Browser.setDescription('');}}
+function set_enable(v,t){
+ if(!v){return;}
+ choice_changed = 0;
+}
+function set_X(v,t){
+  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(v[0],0,0)).subtract(XlastChange))).multiply(rate);
+  currentPosition = currentPosition.add(newPosition);
+  position_changed = currentPosition;
+  XlastChange = new SFVec3f(v[0],0,0);
+}
+function set_Y(v,t){
+  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,v[1],0)).subtract(YlastChange))).multiply(rate);
+  currentPosition = currentPosition.add(newPosition);
+  position_changed = currentPosition;
+  YlastChange = new SFVec3f(0,v[1],0);
+}
+function set_Z(v,t){
+  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,0,v[1])).subtract(ZlastChange))).multiply(rate);
+  currentPosition = currentPosition.add(newPosition);
+  position_changed = currentPosition;
+  ZlastChange = new SFVec3f(0,0,v[1]);
+}
+function set_rotation(v,t){
+ rotation_changed = v;
+ currentRotation = v;
+}
+function set_done(v,t){
+ if(!v){return;}
+ new_position = currentPosition;
+ new_rotation = currentRotation;
+ initialRotation = currentRotation;
+ initialPosition = currentPosition;
+ choice_changed = -1;
+}
+function set_cancel(v,t){
+ if(!v){return;}
+ choice_changed = -1;
+ position_changed = initialPosition;
+ rotation_changed = initialRotation;
+}
+function initialize() {
+ currentRotation = initialRotation;
+ currentPosition = initialPosition;
+}
+"}
+]}#END Collision
+]}#END HUD
+]}
+]}#END SOSwitch
+
+DEF display HUD{
+children DEF display_offset Transform{ translation -.2 0 0
+children[
+DEF name_switch Switch{ whichChoice -1 choice[
+Group{ children[
+Transform{ translation 0 .075 -.25 children Shape{appearance Appearance{material Material{diffuseColor 0 .8 0}}geometry DEF name_text Text {fontStyle FontStyle {size .025 family "SANS" style "BOLD" justify "LEFT"}string ""}}}
+]}
+]}#END Switch
+]}
+}
+ROUTE X.translation_changed TO SOScript.set_X
+ROUTE Y.translation_changed TO SOScript.set_Y
+ROUTE Z.translation_changed TO SOScript.set_Z
+ROUTE RotControlSensor.rotation_changed TO RotControlKnob.set_rotation
+ROUTE RotControlSensor.rotation_changed TO SOScript.set_rotation
+ROUTE SOScript.position_changed TO T1.set_translation
+ROUTE SOScript.rotation_changed TO T1.set_rotation
+ROUTE DoneButton.isActive TO SOScript.set_done
+ROUTE CancelButton.isActive TO SOScript.set_cancel
+ROUTE TS.isOver TO SOScript.set_over
+ROUTE SOScript.choice_changed TO SOSwitch.set_whichChoice
+#END MOVE HUD CODE#
+ROUTE TS.isOver TO ATT.set_name
+ROUTE ATT.nameChoice_changed TO name_switch.set_whichChoice
+ROUTE ATT.name_changed TO name_text.set_string
+ROUTE ATT.offset_changed TO display_offset.set_translation
+}#END SharedObject PROTO
+
+PROTO SharedEvent [
+field SFBool local FALSE
+exposedField SFString   name    "event"  
+exposedField SFString   type    "SFTime" 
+eventIn SFBool  boolFromServer    eventIn SFColor colorFromServer
+eventIn SFFloat floatFromServer   eventIn SFInt32 int32FromServer
+eventIn SFRotation rotationFromServer 
+eventIn SFString stringFromServer eventIn SFTime timeFromServer
+eventIn SFVec2f vec2fFromServer   eventIn SFVec3f vec3fFromServer  
+eventOut SFBool boolToServer      eventOut SFColor colorToServer  
+eventOut SFFloat floatToServer    eventOut SFInt32 int32ToServer  
+eventOut SFRotation rotationToServer  
+eventOut SFString stringToServer  eventOut SFTime timeToServer  
+eventOut SFVec2f vec2fToServer    eventOut SFVec3f vec3fToServer  
+eventIn SFBool  set_bool    eventIn SFColor set_color  
+eventIn SFFloat set_float   eventIn SFInt32 set_int32  
+eventIn SFRotation set_rotation  
+eventIn SFString set_string eventIn SFTime set_time  
+eventIn SFVec2f set_vec2f   eventIn SFVec3f set_vec3f  
+eventOut SFBool bool_changed     eventOut SFColor color_changed  
+eventOut SFFloat float_changed   eventOut SFInt32 int32_changed  
+eventOut SFRotation rotation_changed  
+eventOut SFString string_changed eventOut SFTime  time_changed  
+eventOut SFVec2f vec2f_changed   eventOut SFVec3f vec3f_changed  
+]{ 
+Script {
+field SFBool local IS local 
+#eventIn SFString set_name IS set_name  eventIn SFString set_type IS set_type eventOut SFString name_changed IS name_changed                                       eventOut SFString  type_changed IS type_changed
+eventIn SFBool    boolFromServer      IS boolFromServer 
+eventIn SFColor   colorFromServer     IS colorFromServer 
+eventIn SFFloat   floatFromServer     IS floatFromServer 
+eventIn SFInt32   int32FromServer     IS int32FromServer 
+eventIn SFRotation rotationFromServer IS rotationFromServer 
+eventIn SFString  stringFromServer    IS stringFromServer 
+eventIn SFTime    timeFromServer      IS timeFromServer 
+eventIn SFVec2f   vec2fFromServer     IS vec2fFromServer 
+eventIn SFVec3f   vec3fFromServer     IS vec3fFromServer 
+eventOut SFBool    boolToServer      IS boolToServer 
+eventOut SFColor   colorToServer     IS colorToServer 
+eventOut SFFloat   floatToServer     IS floatToServer 
+eventOut SFInt32   int32ToServer     IS int32ToServer 
+eventOut SFRotation rotationToServer IS rotationToServer 
+eventOut SFString  stringToServer    IS stringToServer 
+eventOut SFTime    timeToServer      IS timeToServer 
+eventOut SFVec2f   vec2fToServer     IS vec2fToServer 
+eventOut SFVec3f   vec3fToServer     IS vec3fToServer
+eventIn SFBool    set_bool    IS set_bool 
+eventIn SFColor   set_color   IS set_color 
+eventIn SFFloat   set_float   IS set_float 
+eventIn SFInt32   set_int32   IS set_int32 
+eventIn SFRotation set_rotation IS set_rotation 
+eventIn SFString  set_string  IS set_string 
+eventIn SFTime    set_time    IS set_time 
+eventIn SFVec2f   set_vec2f   IS set_vec2f 
+eventIn SFVec3f   set_vec3f   IS set_vec3f
+eventOut SFBool    bool_changed      IS bool_changed 
+eventOut SFColor   color_changed     IS color_changed 
+eventOut SFFloat   float_changed     IS float_changed 
+eventOut SFInt32   int32_changed     IS int32_changed 
+eventOut SFRotation rotation_changed IS rotation_changed 
+eventOut SFString  string_changed    IS string_changed 
+eventOut SFTime    time_changed      IS time_changed 
+eventOut SFVec2f   vec2f_changed     IS vec2f_changed 
+eventOut SFVec3f   vec3f_changed     IS vec3f_changed 
+url "vrmlscript: 
+function set_name(value, time) { name_changed = value; } 
+function set_type(value, time) { type_changed = value; } 
+function boolFromServer (value, time) { bool_changed = value; } 
+function colorFromServer (value, time) { color_changed = value; } 
+function floatFromServer (value, time) { float_changed = value; } 
+function int32FromServer (value, time) { int32_changed = value; } 
+function rotationFromServer (value, time) {rotation_changed = value; } 
+function stringFromServer (value, time) { string_changed = value; } 
+function timeFromServer (value, time) { time_changed = time; } 
+function vec2fFromServer (value, time) { vec2f_changed = value; } 
+function vec3fFromServer (value, time) { vec3f_changed = value; } 
+function set_bool (value, time) {boolToServer = value;if(local){boolFromServer(value,time);}} 
+function set_color (value, time) { colorToServer = value;if(local){colorFromServer(value,time);}} 
+function set_float (value, time) {floatToServer = value; if(local){floatFromServer(value,time);}} 
+function set_int32 (value, time) {int32ToServer = value; if(local){int32FromServer(value,time);}} 
+function set_rotation (value, time) {rotationToServer = value;if(local){rotationFromServer(value,time);}} 
+function set_string (value, time) {stringToServer = value;if(local){stringFromServer(value,time);}} 
+function set_time (value, time) {timeToServer = value;if(local){timeFromServer(value,time);}} 
+function set_vec2f (value, time) {vec2fToServer = value;if(local){vec2fFromServer(value,time);}} 
+function set_vec3f (value, time) {vec3fToServer = value;if(local){vec3fFromServer(value,time);}} 
+"}
+}
+   
+
+
+PROTO BlaxxunZone [ 
+eventIn         MFNode   addEvents 
+eventIn         MFNode   removeEvents 
+eventIn         MFNode   addAvatars 
+eventIn         MFNode   removeAvatars 
+exposedField    MFNode   events []
+exposedField    MFNode   avatars []
+eventOut        MFNode   events_added 
+eventOut        MFNode   events_removed 
+eventOut        MFNode   avatars_added 
+eventOut        MFNode   avatars_removed
+eventIn         SFString set_myAvatarURL 
+eventOut        SFString myAvatarURL_changed 
+eventIn         SFInt32  set_myAvatarGesture 
+eventIn         SFInt32  myAvatarGestureFromServer 
+exposedField    SFNode   beamToViewpoint NULL
+eventOut        SFInt32  myAvatarGesture_changed 
+eventOut        SFInt32  myAvatarGestureToServer 
+exposedField    MFNode   avatarLOD []
+exposedField    MFFloat  avatarRange []
+exposedField    MFString sendToChat ""
+exposedField    SFFloat  beamToDistance 3
+exposedField    MFString groupChatName ""
+exposedField    MFString groupChat ""
+exposedField    SFString myAvatarName ""
+eventIn         MFNode   addObjects 
+eventIn         MFNode   removeObjects 
+eventOut        MFNode   objects_added 
+eventOut        MFNode   objects_removed
+]
+{
+Group {
+}
+DEF S Script {
+ eventIn MFNode addEvents IS addEvents
+ eventIn MFNode removeEvents IS removeEvents
+ eventIn MFNode addAvatars IS addAvatars
+ eventIn MFNode removeAvatars IS removeAvatars 
+ eventIn MFNode addObjects IS addObjects
+ eventIn MFNode removeObjects IS removeObjects 
+ eventIn SFString set_myAvatarURL IS set_myAvatarURL
+ eventOut MFNode events_added IS events_added
+ eventOut MFNode events_removed IS events_removed
+ eventOut MFNode avatars_added IS avatars_added
+ eventOut MFNode avatars_removed IS avatars_removed
+ eventOut MFNode objects_added IS objects_added
+ eventOut MFNode objects_removed IS objects_removed
+ eventIn         SFInt32  set_myAvatarGesture IS set_myAvatarGesture
+ eventIn         SFInt32  myAvatarGestureFromServer IS myAvatarGestureFromServer
+ eventOut        SFInt32  myAvatarGesture_changed IS myAvatarGesture_changed
+ eventOut        SFInt32  myAvatarGestureToServer IS myAvatarGestureToServer
+ eventOut                SFString myAvatarURL_changed IS myAvatarURL_changed
+ exposedField    MFString sendToChat IS sendToChat
+ exposedField    SFFloat  beamToDistance  IS beamToDistance  
+ exposedField    MFString groupChatName  IS groupChatName  
+ exposedField    MFString groupChat  IS groupChat  
+url "vrmlscript:
+ function addEvents(value, time) { events_added = value; }
+ function addAvatars(value, time) { avatars_added = value; }
+ function addObjects(value, time) { objects_added = value; }
+ function removeEvents(value, time) { events_removed = value; }
+ function removeAvatars(value, time) { avatars_removed = value; }
+ function removeObjects(value, time) { objects_removed = value; }
+ function set_myAvatarGesture(value, time) { myAvatarGestureToServer = value; }
+ function myAvatarGestureFromServer(value, time) { myAvatarGesture_changed = value; }
+ function set_myAvatarURL(value, time) { myAvatarURL_changed = value; }
+"
+}
+}
+
+
+
+
+PROTO EmptyObject[exposedField SFString name "" exposedField MFString attributes [] exposedField MFNode children []]{}
+
+
+PROTO ObjectDirectory[
+eventIn MFNode addObjects
+eventIn MFNode removeObjects
+field SFVec3f position 0 0 0
+field SFRotation rotation 0 1 0 0
+field MFNode object []
+field MFString goSound    []
+field MFString enterSound []
+field MFString exitSound  []
+field MFString clickSound []
+eventOut SFBool isActive
+]{
+Transform{translation IS position rotation IS rotation bboxSize 4 6 4
+children[
+
+#Viewpoint{position 0 1.75 6 description"Object Catalog"}
+
+DEF sense ProximitySensor{size 14 14 14}
+
+DEF obj3D_clock TimeSensor{cycleInterval 8 loop TRUE enabled FALSE}
+DEF obj3D_interp OrientationInterpolator{key[0,.5,1]keyValue[0 1 0 0,0 1 0 3.142,0 1 0 6.284]}
+
+DEF dim_switch Switch{
+whichChoice -1
+choice[
+Transform {
+children  Shape {
+appearance      Appearance {material      Material 
+{diffuseColor 0 1 0 specularColor 0 0 0} texture DEF THB_texture ImageTexture{} }
+geometry IndexedFaceSet {
+coord Coordinate {point[
+
+-.95 3 0,
+-.95 1.4 0,
+.95 1.4 0,
+.95 3 0 
+]}
+coordIndex    [ 0, 1, 2, 3, -1 ]
+
+texCoord TextureCoordinate{point[0 1,0 0,1 0,1 1]}
+texCoordIndex[0,1,2,3,-1]
+}}}
+DEF obj3D Transform{translation 0 3 -2}
+]}#END Switch
+
+LOD {range 25
+level [
+Transform {
+children[
+
+#Transform{children Shape{appearance Appearance{material Material{diffuseColor 1 0 0}}geometry IndexedFaceSet{ccw FALSEcoords Coordinate{point[-20 20 -20,20 20 -20,20 -20 -20,-20 -20 -20]}coordIndex[0,1,2,3,-1]}}}
+
+Transform {translation 0 3.55 .1
+children Shape {
+appearance Appearance {material Material {diffuseColor .62 .55 .26}}
+geometry Text {
+fontStyle FontStyle {size .6 family "SANS" style "BOLD" justify "MIDDLE"}
+string "CATALOG"
+}}
+}
+
+Transform{ translation 0 .8 .2 rotation 1 0 0 -1
+children PopUp{
+height 450
+width 400
+status "no"
+url "cat_instruct.html"
+children[
+Transform{rotation 1 0 0 1.571 children Shape{appearance Appearance{material Material{diffuseColor 0 0 1}}geometry Cylinder{radius .1 height .1}}}
+Transform{translation 0 -.09 .05 children Shape{appearance Appearance{material Material{diffuseColor 0 1 0 emissiveColor 0 .7 .7 specularColor 0 0 0}}geometry Text{ string ["?"] fontStyle FontStyle{ size .25 family "SANS" justify "MIDDLE" style "BOLD"}}}}
+]} 
+}
+]}
+Group{}
+]}
+
+Transform{translation 0 -1.25 0 scale 2 2 2
+children[
+Transform {children[ 
+DEF up_button TouchSensor{} 
+Shape {
+appearance Appearance {material Material {diffuseColor .88 .15 .01}}
+geometry IndexedFaceSet { solid FALSE
+coord Coordinate {point [ .813 2 .05 .85 2.2 .05 .887 2 .05 .813 2 -.05 .85 2.2 -.05 .887 2 -.05]}
+coordIndex [ 2 0 1 -1 0 1 4 3 -1 2 0 3 5 -1 1 2 5 4 -1 4 5 3 -1 ]
+}}
+DEF up_switch Switch{
+whichChoice -1
+choice[
+Transform {translation 1.05 2 .1
+children Shape {
+appearance Appearance {material Material {diffuseColor .1 1 .1}}
+geometry Text {
+fontStyle FontStyle {size .25 family "SANS" style "ITALIC" justify "LEFT"}
+string "Scroll Up"
+}}}]}
+]}
+Transform {children[ 
+DEF down_button TouchSensor{}
+Shape {
+appearance Appearance {material Material {diffuseColor .88 .15 .01}}
+geometry IndexedFaceSet { solid FALSE
+coord Coordinate {point [ .887 1.5 .05 .85 1.3 .05 .813 1.5 .05 .887 1.5 -.05 .85 1.3 -.05 .813 1.5 -.05]}
+coordIndex [ 2 0 1 -1 0 1 4 3 -1 2 0 3 5 -1 1 2 5 4 -1 4 5 3 -1 ]
+}}
+DEF down_switch Switch{
+whichChoice -1
+choice[
+Transform {translation 1.05 1.3 .1
+children Shape {
+appearance Appearance {material Material {diffuseColor .1 1 .1}}
+geometry Text {
+fontStyle FontStyle {size .25 family "SANS" style "ITALIC" justify "LEFT"}
+string "Scroll Down"
+}}}]}
+]}
+Transform { translation .85 1.75 0 rotation 1 0 0 1.57 children[ 
+DEF go_button TouchSensor{} 
+Shape {
+appearance Appearance {material Material {diffuseColor .0251 .69 .0349 specularColor .36 .54 .522}}
+geometry Cylinder {radius .05 height .1}
+}
+DEF go_switch Switch{
+whichChoice -1
+choice[
+Transform {translation .2 .09 .1 rotation 1 0 0 -1.571
+children Shape {
+appearance Appearance {material Material {diffuseColor .1 1 .1}}
+geometry DEF go_text Text {
+fontStyle FontStyle {size .25 family "SANS" style "ITALIC" justify "LEFT"}
+string "View in 3D"
+}}}]}
+]}
+]}
+
+LOD {range [25]
+level [
+Transform {translation -.75 .7 0  scale 1.75 1.75 1 children [
+Transform {translation -.65 1.35 0
+children Shape {
+appearance Appearance {material Material {diffuseColor .1 1 .1}}
+geometry DEF objectName Text {
+fontStyle FontStyle {size .2 family "SANS" style "ITALIC" justify "LEFT"}
+string ""
+}}}
+Transform {translation -.6 .25 0
+children Shape {
+appearance DEF objectText Appearance {material Material {diffuseColor .79 .431 .0255}}
+geometry DEF objectPrice Text {
+fontStyle FontStyle {size .25 family "SANS" style "ITALIC" justify "LEFT"}
+string ""
+}}}
+Transform {translation .3 .25 0
+children Shape {
+appearance USE objectText
+geometry DEF objectAvailability Text {
+fontStyle FontStyle {size .2 family "SANS" style "ITALIC" justify "LEFT"}
+string ""
+}}}
+]}
+Transform {children []}
+]} #END object name text LOD
+DEF soundProx ProximitySensor{size 20 8 20 isActive IS isActive}
+Sound{intensity 1
+source DEF enterSound AudioClip{url IS enterSound loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+Sound{intensity 1
+source DEF exitSound AudioClip{url IS exitSound loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+Sound{intensity 1
+source DEF clickSound AudioClip{url IS clickSound loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+Sound{intensity 1
+source DEF goSound AudioClip{url IS goSound loop FALSE}
+maxBack 5000 maxFront 5000 minBack 10 minFront 10
+}
+
+DEF DS Script{
+eventIn SFTime set_up
+eventIn SFTime set_down
+eventIn SFTime set_go
+eventIn SFTime set_prox
+eventIn MFNode addObjects IS addObjects
+eventIn MFNode removeObjects IS removeObjects
+field SFInt32 index 0
+field SFInt32 max 0
+field SFFloat currentVersion 4.3
+field SFBool isShort TRUE
+field MFNode object IS object
+field SFNode emptyNode EmptyObject{name "empty"}
+field SFNode obj3D USE obj3D
+field MFString emptyTHB []
+field SFBool is2D TRUE
+eventOut MFString sName_changed
+eventOut MFString sPrice_changed
+eventOut MFString sAvail_changed
+eventOut SFInt32 dimensionChoice_changed
+eventOut MFString goOver_changed
+eventOut MFString THB_changed
+eventOut MFNode children_changed
+eventOut MFString texture_changed
+eventIn SFBool up_over
+eventIn SFBool down_over
+eventIn SFBool go_over
+eventOut SFInt32 up_choice
+eventOut SFInt32 down_choice
+eventOut SFInt32 go_choice
+url"vrmlscript:
+function parseInt(v){
+ n = new MFNode();
+ newString = new SFString('Switch{whichChoice '+v+'}');
+ n = Browser.createVrmlFromString(newString);
+ return n[0].whichChoice;
+}
+function parseFloat(v){
+ newString = 'Sphere{radius '+v+'}';
+ n = Browser.createVrmlFromString(newString);
+ return n[0].radius;
+}
+
+
+function addObjects(v,t){
+
+ isSame = new SFBool(); isSame = false; 
+ place = -1;
+ for(i = 0;i < object.length;i++){
+  if(object[i].name == v[0].name){isSame = true;}  
+ }
+ if(!isSame){object[object.length - 1] = v[0]; max += 1;object[object.length] = emptyNode;}
+
+}
+
+
+function removeObjects(v,t){
+ for(i = 0;i < object.length;i++){
+  if(object[i].name == v[0].name){object[i] = emptyNode;}
+ }
+ max -= 1;
+}
+
+
+function getPRC(v){
+  if(Browser.getVersion() < currentVersion){return;}
+  for(i = 1; i <= object[v].attributes.length; i += 2){
+    if(object[v].attributes[i - 1] == 'PRC'){PRC = parseInt(object[v].attributes[i]);} 
+  }
+  return PRC;
+}
+function getCNT(v){
+  if(Browser.getVersion() < currentVersion){return;}
+  for(i = 1; i <= object[v].attributes.length; i += 2){
+    if(object[v].attributes[i - 1] == 'CNT'){CNT = parseInt(object[v].attributes[i]);}   
+  }
+  return CNT;
+}
+function send(){
+  if(Browser.getVersion() < currentVersion){
+   is2D = false;
+   dimensionChoice_changed = 1;
+   obj3D.set_children = object[index].children;
+   sName_changed = new MFString(object[index].name);
+   sPrice_changed = new MFString('');
+   sAvail_changed = new MFString('');
+  }
+  else{
+   is2D = true;
+   dimensionChoice_changed = 0;
+   sName_changed = new MFString(object[index].name);
+   sPrice_changed = new MFString('$'+getPRC(index));
+   sAvail_changed = new MFString(getCNT(index));
+   for(i = 1; i <= object[index].attributes.length; i += 2){  
+     if(object[index].attributes[i - 1] == 'IMG'){texture_changed = new MFString(object[index].attributes[i]);}
+   }
+ }
+}
+function set_down(v,t){
+ index += 1;
+ if(index > max - 1){index = max - 1;}
+ send();
+}
+function set_up(v,t){
+ index -= 1;
+ if(index <0){index = 0;}
+ send();
+}
+function set_go(v,t){
+  if(Browser.getVersion() < currentVersion){return;}
+  if(is2D){
+   goOver_changed = new MFString('View in 2D');
+   dimensionChoice_changed = 1;
+   obj3D.set_children = object[index].children;
+   is2D = false;
+  }
+  else{
+   goOver_changed = new MFString('View in 3D');
+   dimensionChoice_changed = 0;
+   obj3D.set_children = new MFNode();
+   is2D = true;  
+  }
+}
+function set_prox(v,t){
+ index = 0;
+ send();
+}
+function up_over(v,t){
+ if(v){up_choice = 0;}
+ else{up_choice = -1;}
+}
+function down_over(v,t){
+ if(v){down_choice = 0;}
+ else{down_choice = -1;}
+}
+function go_over(v,t){
+ if(v){go_choice = 0;}
+ else{go_choice = -1;}
+}
+function initialize(){
+ object[0] = emptyNode;
+ if(Browser.getVersion() < currentVersion){
+  goOver_changed = new MFString('');
+  is2D = false;
+  dimensionChoice_changed = 1;
+ } 
+}
+"}
+]}
+ROUTE DS.sName_changed TO objectName.set_string
+ROUTE DS.sPrice_changed TO objectPrice.set_string
+ROUTE DS.sAvail_changed TO objectAvailability.set_string
+ROUTE DS.THB_changed TO THB_texture.set_url
+ROUTE DS.children_changed TO obj3D.set_children
+ROUTE DS.dimensionChoice_changed TO dim_switch.set_whichChoice
+ROUTE up_button.touchTime TO DS.set_up
+ROUTE down_button.touchTime TO DS.set_down
+ROUTE go_button.touchTime TO DS.set_go
+ROUTE up_button.touchTime TO clickSound.set_startTime
+ROUTE down_button.touchTime TO clickSound.set_startTime
+ROUTE go_button.touchTime TO goSound.set_startTime
+ROUTE soundProx.enterTime TO enterSound.set_startTime
+ROUTE soundProx.exitTime TO exitSound.set_startTime
+ROUTE up_button.isOver TO DS.up_over
+ROUTE DS.up_choice TO up_switch.set_whichChoice
+ROUTE down_button.isOver TO DS.down_over
+ROUTE DS.down_choice TO down_switch.set_whichChoice
+ROUTE go_button.isOver TO DS.go_over
+ROUTE DS.go_choice TO go_switch.set_whichChoice
+ROUTE DS.goOver_changed TO go_text.set_string
+ROUTE DS.texture_changed TO THB_texture.set_url
+ROUTE sense.isActive TO obj3D_clock.set_enabled
+ROUTE sense.enterTime TO DS.set_prox
+ROUTE obj3D_clock.fraction_changed TO obj3D_interp.set_fraction
+ROUTE obj3D_interp.value_changed TO obj3D.set_rotation
+}#END ObjectDirectory PROTO
+
+
+
+
+
+
+DEF SharedZone BlaxxunZone {}
+
+
+
+EXTERNPROTO malldirectory[
+field SFVec3f position 
+]"/externprotos/malldirectory/malldirectory.wrl#MallDirectory"
+
+Group{#directory
+children malldirectory{position 75 0 -5}
+}
+#-------------------put object directory here
+#Transform{translation 0 0 -11.2
+#children[
+#DEF Dir ObjectDirectory{}
+#]}
+#-------------------end object directory
+#ROUTE SharedZone.objects_added TO Dir.addObjects
+#ROUTE SharedZone.objects_removed TO Dir.removeObjects
+DirectionalLight {
+  direction	0 -1 -1
+}
+DirectionalLight {
+  direction	1 -1 1
+}
+DirectionalLight {
+  direction	-1 -1 1
+}
+NavigationInfo {
+  avatarSize	[ 0.55, 1.75, 0.75 ]
+  headlight	FALSE
+}
+Transform {
+  children	[
+    Shape {
+      appearance	Appearance {
+	texture	ImageTexture {
+	  url	"wall_9e.jpg"
+	}
+
+	textureTransform	TextureTransform {
+	  scale	6 2
+	  center	0.5 0.5
+	}
+
+      }
+
+      geometry	DEF _0 IndexedFaceSet {
+	coord	Coordinate {
+	  point	[ 79.52 0 49.64,
+		    -119.2 0 49.64,
+		    92.24 60.72 57.58,
+		    -131.9 60.72 57.58,
+		    79.52 0 -49.64,
+		    92.24 60.72 -57.58,
+		    -119.2 0 -49.64,
+		    -131.9 60.72 -57.58 ]
+	}
+
+	coordIndex	[ 4, 5, 7, 6, -1, 0, 2, 5,
+		  4, -1, 1, 3, 2, 0, -1, 6,
+		  7, 3, 1, -1 ]
+	texCoord	TextureCoordinate {
+	  point	[ 1.93 -0.27,
+		    0.213 -0.267,
+		    0.923 -0.235,
+		    0.992 0.288,
+		    -0.008 0.288,
+		    0.061 -0.235,
+		    1.938 -0.262,
+		    2.05 0.297,
+		    0.1 0.304,
+		    0.212 -0.255,
+		    0.05 -0.275,
+		    -0.021 0.3,
+		    1.004 0.3,
+		    0.933 -0.275,
+		    0.101 0.301,
+		    2.042 0.299 ]
+	}
+
+	creaseAngle	3
+	normalIndex	[  ]
+	texCoordIndex	[ 6, 7, 8, 9, -1, 10, 11, 12,
+		  13, -1, 1, 14, 15, 0, -1, 2,
+		  3, 4, 5, -1 ]
+      }
+
+    }
+    Transform {
+      children	[
+	Transform {
+	  children	Shape {
+	    appearance	Appearance {
+	      texture	ImageTexture {
+		url	"cityscape256b.jpg"
+	      }
+
+	      textureTransform	TextureTransform {
+		scale	2 1
+		center	0.5 0.5
+	      }
+
+	    }
+
+	    geometry	DEF _1 IndexedFaceSet {
+	      coord	Coordinate {
+		point	[ 92.24 60.72 57.58,
+			  -131.9 60.72 57.58,
+			  -131.9 72.119 57.58,
+			  92.24 72.119 57.58,
+			  92.24 60.72 -57.58,
+			  92.24 72.119 -57.58,
+			  -131.9 60.72 -57.58,
+			  -131.9 72.119 -57.58 ]
+	      }
+
+	      coordIndex	[ 4, 0, 3, 5, -1, 2, 3, 0,
+		        1, -1, 7, 2, 1, 6, -1, 5,
+		        7, 6, 4, -1 ]
+	      texCoord	TextureCoordinate {
+		point	[ 0.825 -0.005,
+			  0.826 0.995,
+			  0.001 1,
+			  0.823 0.982,
+			  -0.002 0.987,
+			  0 0,
+			  0.677 0.001,
+			  0.68 0.988,
+			  0.001 0.994,
+			  0.826 0.989 ]
+	      }
+
+	      creaseAngle	3
+	      normalIndex	[  ]
+	      texCoordIndex	[ 6, 5, 2, 7, -1, 8, 9, 0,
+		        5, -1, 1, 2, 5, 0, -1, 3,
+		        4, 5, 0, -1 ]
+	    }
+
+	  }
+
+	  translation	1.66558 -372.477 -4.81706e-010
+	  scale	1.08399 6.76018 1.08399
+	}
+	Transform {
+	  children	Shape {
+	    appearance	Appearance {
+	      texture	ImageTexture {
+		url	"starsky.jpg"
+	      }
+
+	      textureTransform	TextureTransform {
+		scale	10 10
+	      }
+
+	    }
+
+	    geometry	DEF _2 IndexedFaceSet {
+	      coord	Coordinate {
+		point	[ 92.24 72.119 57.58,
+			  -131.9 72.119 57.58,
+			  -76.583 83.128 29.159,
+			  36.923 83.128 29.159,
+			  92.24 72.119 -57.58,
+			  36.923 83.128 -29.159,
+			  -131.9 72.119 -57.58,
+			  -76.583 83.128 -29.159 ]
+	      }
+
+	      coordIndex	[ 0, 1, 2, 3, -1, 4, 0, 3,
+		        5, -1, 1, 6, 7, 2, -1, 6,
+		        4, 5, 7, -1, 7, 5, 3, 2,
+		        -1 ]
+	      texCoord	TextureCoordinate {
+		point	[ 0.314 0.989,
+			  0.101 0.562,
+			  -0.31 0.558,
+			  0.105 0.566,
+			  0.314 0.997,
+			  0.101 0.57,
+			  -0.59 0.997,
+			  -0.306 0.558,
+			  0.314 0.993,
+			  -0.577 0.993,
+			  -0.31 0.553,
+			  -0.582 0.993,
+			  -0.306 0.562,
+			  0.31 0.993,
+			  -0.586 0.993,
+			  -0.418 0.993,
+			  0.294 0.992,
+			  0.294 0.619,
+			  -0.418 0.621 ]
+	      }
+
+	      creaseAngle	3.14159
+	      normalIndex	[  ]
+	      texCoordIndex	[ 8, 9, 10, 1, -1, 11, 0, 3,
+		        12, -1, 1, 13, 14, 2, -1, 6,
+		        4, 5, 7, -1, 15, 16, 17, 18,
+		        -1 ]
+	    }
+
+	  }
+
+	  translation	5.14457 -457.407 1.12799e-009
+	  scale	1.25943 7.8543 1.25943
+	}
+      ]
+      translation	0 10 0
+      scale	2 2 2
+    }
+    Transform {
+      children	Shape {
+	appearance	Appearance {
+	  texture	ImageTexture {
+	    url	"floor2.jpg"
+	  }
+
+	  textureTransform	TextureTransform {
+	    scale	8 8
+	    center	0.5 0.5
+	  }
+
+	}
+
+	geometry	DEF _3 IndexedFaceSet {
+	  coord	DEF Box01-COORD Coordinate {
+	    point	[ -119.2 0 49.64,
+		      79.52 0 49.64,
+		      -119.2 0 -49.64,
+		      79.52 0 -49.64 ]
+	  }
+
+	  coordIndex	[ 2, 0, 3, -1, 1, 3, 0, -1 ]
+	  texCoord	DEF Box01-TEXCOORD TextureCoordinate {
+	    point	[ 1 1,
+		      0 1,
+		      1 0,
+		      0 0 ]
+	  }
+
+	  creaseAngle	3
+	  normalIndex	[  ]
+	  texCoordIndex	[ 1, 3, 0, -1, 2, 0, 3, -1 ]
+	}
+
+      }
+
+      translation	-0.085194 1.24754e-007 -0.324532
+    }
+    Transform {
+      children	Shape {
+	appearance	Appearance {
+	  texture	ImageTexture {
+	    url	"block.jpg"
+	  }
+
+	  textureTransform	TextureTransform {
+	    scale	5 5
+	    center	0.5 0.5
+	  }
+
+	}
+
+	geometry	DEF _5 IndexedFaceSet {
+	  coord	Coordinate {
+	    point	[ 92.24 80.72 57.58,
+		      -131.9 80.72 57.58,
+		      92.24 80.72 -57.58,
+		      -131.9 80.72 -57.58,
+		      -131.9 80.72 0,
+		      92.24 80.72 0 ]
+	  }
+
+	  coordIndex	[ 2, 5, 4, 3, -1, 5, 0, 1,
+		    4, -1 ]
+	  texCoord	TextureCoordinate {
+	    point	[ -0.029 -0.006,
+		      1.612 -0.008,
+		      -0.033 -0.012,
+		      1.616 -0.002,
+		      -0.029 0.414,
+		      1.616 0.418 ]
+	  }
+
+	  normalIndex	[  ]
+	  texCoordIndex	[ 1, 5, 4, 2, -1, 5, 3, 0,
+		    4, -1 ]
+	}
+
+      }
+
+    }
+    DEF chsl_6 Shape {
+      appearance	DEF chsl_7 Appearance {
+	material	Material {
+	  ambientIntensity	0.1
+	  diffuseColor	0.55 0.55 0.55
+	  specularColor	0.9 0.9 0.9
+	  shininess	0.2875
+	}
+
+      }
+
+      geometry	DEF _8 IndexedFaceSet {
+	coord	USE Box01-COORD
+
+	normalIndex	[  ]
+	texCoordIndex	[  ]
+      }
+
+    }
+    USE chsl_6
+    USE chsl_6
+    USE chsl_6
+    USE chsl_6
+  ]
+  translation	-0.07481 0.3988 -0.03547
+  scale	1 0.369 1
+}
+Transform {
+  children	Shape {
+    appearance	DEF chsl_9 Appearance {
+      texture	ImageTexture {
+	url	"bsuppot_2.jpg"
+      }
+
+      textureTransform	TextureTransform {
+	scale	1 1
+	center	0.5 0.5
+      }
+
+    }
+
+    geometry	DEF _10 IndexedFaceSet {
+      coord	Coordinate {
+	point	[ -24.59 0 1.826,
+		  -20.94 0 1.826,
+		  -24.59 0 -1.826,
+		  -20.94 0 -1.826,
+		  -37.44 22.96 -5.855,
+		  -33.79 22.96 -5.855,
+		  -37.44 22.96 -9.508,
+		  -33.79 22.96 -9.508 ]
+      }
+
+      coordIndex	[ 0, 2, 3, 1, -1, 4, 5, 7,
+	        6, -1, 0, 1, 5, 4, -1, 1,
+	        3, 7, 5, -1, 3, 2, 6, 7,
+	        -1, 2, 0, 4, 6, -1 ]
+      texCoord	DEF chsl_11 TextureCoordinate {
+	point	[ 0 0,
+		  1 0,
+		  0 1,
+		  1 1 ]
+      }
+
+      normalIndex	[  ]
+      texCoordIndex	[ 1, 3, 2, 0, -1, 0, 1, 3,
+	        2, -1, 0, 1, 3, 2, -1, 0,
+	        1, 3, 2, -1, 0, 1, 3, 2,
+	        -1, 0, 1, 3, 2, -1 ]
+    }
+
+  }
+
+  translation	-94.59 0 -47.91
+}
+Transform {
+  children	Shape {
+    appearance	USE chsl_9
+
+    geometry	DEF _12 IndexedFaceSet {
+      coord	Coordinate {
+	point	[ 1.826 0 -1.826,
+		  -1.826 0 -1.826,
+		  1.826 0 1.826,
+		  -1.826 0 1.826,
+		  14.67 -22.96 5.855,
+		  11.02 -22.96 5.855,
+		  14.67 -22.96 9.508,
+		  11.02 -22.96 9.508 ]
+      }
+
+      coordIndex	[ 0, 2, 3, 1, -1, 4, 5, 7,
+	        6, -1, 0, 1, 5, 4, -1, 1,
+	        3, 7, 5, -1, 3, 2, 6, 7,
+	        -1, 2, 0, 4, 6, -1 ]
+      texCoord	USE chsl_11
+
+      ccw	FALSE
+      normalIndex	[  ]
+      texCoordIndex	[ 1, 3, 2, 0, -1, 0, 1, 3,
+	        2, -1, 0, 1, 3, 2, -1, 0,
+	        1, 3, 2, -1, 0, 1, 3, 2,
+	        -1, 0, 1, 3, 2, -1 ]
+    }
+
+  }
+
+  translation	77.41 0 -47.91
+  rotation	-1 0 0  3.142
+}
+Transform {
+  children	Shape {
+    appearance	USE chsl_9
+
+    geometry	DEF _13 IndexedFaceSet {
+      coord	Coordinate {
+	point	[ -1.826 0 1.826,
+		  1.826 0 1.826,
+		  -1.826 0 -1.826,
+		  1.826 0 -1.826,
+		  -14.67 22.96 -5.855,
+		  -11.02 22.96 -5.855,
+		  -14.67 22.96 -9.508,
+		  -11.02 22.96 -9.508 ]
+      }
+
+      coordIndex	[ 0, 2, 3, 1, -1, 4, 5, 7,
+	        6, -1, 0, 1, 5, 4, -1, 1,
+	        3, 7, 5, -1, 3, 2, 6, 7,
+	        -1, 2, 0, 4, 6, -1 ]
+      texCoord	USE chsl_11
+
+      normalIndex	[  ]
+      texCoordIndex	[ 1, 3, 2, 0, -1, 0, 1, 3,
+	        2, -1, 0, 1, 3, 2, -1, 0,
+	        1, 3, 2, -1, 0, 1, 3, 2,
+	        -1, 0, 1, 3, 2, -1 ]
+    }
+
+  }
+
+  translation	77.41 0 48.08
+  rotation	0 -1 0  3.133
+}
+Transform {
+  children	Shape {
+    appearance	USE chsl_9
+
+    geometry	DEF _14 IndexedFaceSet {
+      coord	Coordinate {
+	point	[ 24.59 0 -1.628,
+		  20.94 0 -1.628,
+		  24.59 0 2.025,
+		  20.94 0 2.025,
+		  37.44 -22.96 6.053,
+		  33.79 -22.96 6.053,
+		  37.44 -22.96 9.706,
+		  33.79 -22.96 9.706 ]
+      }
+
+      coordIndex	[ 0, 2, 3, 1, -1, 4, 5, 7,
+	        6, -1, 0, 1, 5, 4, -1, 1,
+	        3, 7, 5, -1, 3, 2, 6, 7,
+	        -1, 2, 0, 4, 6, -1 ]
+      texCoord	USE chsl_11
+
+      ccw	FALSE
+      normalIndex	[  ]
+      texCoordIndex	[ 1, 3, 2, 0, -1, 0, 1, 3,
+	        2, -1, 0, 1, 3, 2, -1, 0,
+	        1, 3, 2, -1, 0, 1, 3, 2,
+	        -1, 0, 1, 3, 2, -1 ]
+    }
+
+  }
+
+  translation	-94.56 0 48.08
+  rotation	-0.004362 0 0.99999  3.142
+}
+Transform {
+  children	  DEF chsl_15 Shape {
+    appearance	USE chsl_9
+
+    geometry	DEF _16 IndexedFaceSet {
+      coord	Coordinate {
+	point	[ -1.131 0 1.131,
+		  1.131 0 1.131,
+		  -1.131 0 -1.131,
+		  1.131 0 -1.131,
+		  -1.131 30.03 1.131,
+		  1.131 30.03 1.131,
+		  -1.131 30.03 -1.131,
+		  1.131 30.03 -1.131 ]
+      }
+
+      coordIndex	[ 0, 2, 3, -1, 3, 1, 0, -1,
+	        4, 5, 7, -1, 7, 6, 4, -1,
+	        0, 1, 5, -1, 5, 4, 0, -1,
+	        1, 3, 7, -1, 7, 5, 1, -1,
+	        3, 2, 6, -1, 6, 7, 3, -1,
+	        2, 0, 4, -1, 4, 6, 2, -1 ]
+      texCoord	DEF chsl_17 TextureCoordinate {
+	point	[ 1 0.114,
+		  0 0.114,
+		  1 1.113,
+		  0 1.113,
+		  1 0,
+		  1 1,
+		  0 1,
+		  0 0 ]
+      }
+
+      creaseAngle	3
+      normalIndex	[  ]
+      texCoordIndex	[ 4, 5, 6, -1, 6, 7, 4, -1,
+	        7, 4, 5, -1, 5, 6, 7, -1,
+	        1, 0, 2, -1, 2, 3, 1, -1,
+	        1, 0, 2, -1, 2, 3, 1, -1,
+	        1, 0, 2, -1, 2, 3, 1, -1,
+	        1, 0, 2, -1, 2, 3, 1, -1 ]
+    }
+
+  }
+
+  translation	75.03 0 -19.18
+}
+Transform {
+  children	  USE chsl_15
+
+  translation	75.03 0 21.45
+}
+Transform {
+  children	  DEF chsl_18 Shape {
+    appearance	USE chsl_9
+
+    geometry	DEF _19 IndexedFaceSet {
+      coord	Coordinate {
+	point	[ -40.79 0 1.131,
+		  -38.53 0 1.131,
+		  -40.79 0 -1.131,
+		  -38.53 0 -1.131,
+		  -40.79 30.03 1.131,
+		  -38.53 30.03 1.131,
+		  -40.79 30.03 -1.131,
+		  -38.53 30.03 -1.131 ]
+      }
+
+      coordIndex	[ 0, 2, 3, -1, 3, 1, 0, -1,
+	        4, 5, 7, -1, 7, 6, 4, -1,
+	        0, 1, 5, -1, 5, 4, 0, -1,
+	        1, 3, 7, -1, 7, 5, 1, -1,
+	        3, 2, 6, -1, 6, 7, 3, -1,
+	        2, 0, 4, -1, 4, 6, 2, -1 ]
+      texCoord	USE chsl_17
+
+      creaseAngle	3
+      normalIndex	[  ]
+      texCoordIndex	[ 4, 5, 6, -1, 6, 7, 4, -1,
+	        7, 4, 5, -1, 5, 6, 7, -1,
+	        1, 0, 2, -1, 2, 3, 1, -1,
+	        1, 0, 2, -1, 2, 3, 1, -1,
+	        1, 0, 2, -1, 2, 3, 1, -1,
+	        1, 0, 2, -1, 2, 3, 1, -1 ]
+    }
+
+  }
+
+  translation	-77.95 0 -19.18
+}
+Transform {
+  children	  USE chsl_18
+
+  translation	-77.95 0 21.45
+}
+Transform {
+  children	[
+    Shape {
+      appearance	DEF chsl_20 Appearance {
+	material	Material {
+	  ambientIntensity	0.1
+	  diffuseColor	0.2627 0.1647 0.4667
+	  specularColor	0.045 0.045 0.045
+	  shininess	0.2875
+	}
+
+      }
+
+      geometry	DEF _21 IndexedFaceSet {
+	coord	DEF Box07-COORD Coordinate {
+	  point	[ -1.724 0 1.532,
+		    1.724 0 1.532,
+		    -1.724 0 -1.532,
+		    1.724 0 -1.532,
+		    -1.724 636.8 1.532,
+		    1.724 636.8 1.532,
+		    -1.724 636.8 -1.532,
+		    1.724 636.8 -1.532 ]
+	}
+
+	coordIndex	[ 4, 5, 7, -1, 7, 6, 4, -1,
+		  1, 3, 7, -1, 7, 5, 1, -1,
+		  2, 0, 4, -1, 4, 6, 2, -1 ]
+	texCoord	DEF Box07-TEXCOORD TextureCoordinate {
+	  point	[ 0.001 0.001,
+		    0.001 1,
+		    0 0.001,
+		    0 1,
+		    1 0.001,
+		    1 1,
+		    0.999 0,
+		    0.999 1 ]
+	}
+
+	normalIndex	[  ]
+	texCoordIndex	[  ]
+      }
+
+    }
+    Shape {
+      appearance	USE chsl_7
+
+      geometry	DEF _24 IndexedFaceSet {
+	coord	USE Box07-COORD
+
+	coordIndex	[ 0, 2, 3, -1, 3, 1, 0, -1 ]
+	normalIndex	[  ]
+	texCoordIndex	[  ]
+      }
+
+    }
+    DEF chsl_25 Shape {
+      appearance	USE chsl_7
+
+      geometry	DEF _26 IndexedFaceSet {
+	coord	USE Box07-COORD
+
+	normalIndex	[  ]
+	texCoordIndex	[  ]
+      }
+
+    }
+    USE chsl_25
+    Shape {
+      appearance	DEF chsl_27 Appearance {
+	texture	DEF chsl ImageTexture {
+	  url	"block.jpg"
+	}
+
+	textureTransform	TextureTransform {
+	  scale	20 1
+	}
+
+      }
+
+      geometry	DEF _28 IndexedFaceSet {
+	coord	USE Box07-COORD
+
+	coordIndex	[ 0, 1, 5, -1, 5, 4, 0, -1 ]
+	texCoord	USE Box07-TEXCOORD
+
+	normalIndex	[  ]
+	texCoordIndex	[ 0, 1, 5, -1, 5, 4, 0, -1 ]
+      }
+
+    }
+    Shape {
+      appearance	USE chsl_7
+
+      geometry	DEF _29 IndexedFaceSet {
+	coord	USE Box07-COORD
+
+	coordIndex	[ 3, 2, 6, -1, 6, 7, 3, -1 ]
+	normalIndex	[  ]
+	texCoordIndex	[  ]
+      }
+
+    }
+    USE chsl_25
+    USE chsl_25
+    USE chsl_25
+    USE chsl_25
+  ]
+  translation	74.29 15.1 -19.4
+  rotation	0.57735 -0.57735 0.57735  2.094
+  scale	0.3003 0.3003 0.3003
+}
+Transform {
+  children	[
+    Shape {
+      appearance	USE chsl_20
+
+      geometry	DEF _30 IndexedFaceSet {
+	coord	DEF Box34-COORD Coordinate {
+	  point	[ -1.724 0 1.532,
+		    1.724 0 1.532,
+		    -1.724 0 -1.532,
+		    1.724 0 -1.532,
+		    -1.724 636.8 1.532,
+		    1.724 636.8 1.532,
+		    -1.724 636.8 -1.532,
+		    1.724 636.8 -1.532 ]
+	}
+
+	coordIndex	[ 4, 5, 7, -1, 7, 6, 4, -1,
+		  1, 3, 7, -1, 7, 5, 1, -1,
+		  2, 0, 4, -1, 4, 6, 2, -1 ]
+	texCoord	DEF Box34-TEXCOORD TextureCoordinate {
+	  point	[ 0.001 0.001,
+		    0.001 1,
+		    0 0.001,
+		    0 1,
+		    1 0.001,
+		    1 1,
+		    0.999 0,
+		    0.999 1 ]
+	}
+
+	normalIndex	[  ]
+	texCoordIndex	[  ]
+      }
+
+    }
+    Shape {
+      appearance	USE chsl_7
+
+      geometry	DEF _33 IndexedFaceSet {
+	coord	USE Box34-COORD
+
+	coordIndex	[ 0, 2, 3, -1, 3, 1, 0, -1 ]
+	normalIndex	[  ]
+	texCoordIndex	[  ]
+      }
+
+    }
+    DEF chsl_34 Shape {
+      appearance	USE chsl_7
+
+      geometry	DEF _35 IndexedFaceSet {
+	coord	USE Box34-COORD
+
+	normalIndex	[  ]
+	texCoordIndex	[  ]
+      }
+
+    }
+    USE chsl_34
+    Shape {
+      appearance	USE chsl_27
+
+      geometry	DEF _36 IndexedFaceSet {
+	coord	USE Box34-COORD
+
+	coordIndex	[ 0, 1, 5, -1, 5, 4, 0, -1 ]
+	texCoord	USE Box34-TEXCOORD
+
+	normalIndex	[  ]
+	texCoordIndex	[ 0, 1, 5, -1, 5, 4, 0, -1 ]
+      }
+
+    }
+    Shape {
+      appearance	USE chsl_7
+
+      geometry	DEF _37 IndexedFaceSet {
+	coord	USE Box34-COORD
+
+	coordIndex	[ 3, 2, 6, -1, 6, 7, 3, -1 ]
+	normalIndex	[  ]
+	texCoordIndex	[  ]
+      }
+
+    }
+    USE chsl_34
+    USE chsl_34
+    USE chsl_34
+    USE chsl_34
+  ]
+  translation	74.29 15.1 21.46
+  rotation	0.57735 -0.57735 0.57735  2.094
+  scale	0.3003 0.3003 0.3003
+}
+Viewpoint {
+  position	75 2.25 0
+  orientation	0 1 0  1.571
+  description	"Enter"
+}
+
+
+Transform{
+children[
+
+DEF doors Transform { 
+  translation	0 0.0139704 0.0810933
+  scale	1 0.5 0.5
+children[
+    DEF rightdoor Transform {
+      children	Shape {
+	appearance	Appearance {
+	  material	DEF _38 Material {
+
+	  }
+
+	  texture	DEF _39 ImageTexture {
+	    repeatS	TRUE
+	    repeatT	TRUE
+	    url	"door.jpg"
+	  }
+
+	  textureTransform	DEF _40 TextureTransform {
+	    translation	0 0
+	    rotation	3.142
+	    scale	1 1
+	    center	0 .05
+	  }
+
+	}
+
+	geometry	DEF _41 IndexedFaceSet {
+	  coord	Coordinate {
+	    point	[ -1 1 -1.5,
+		      -1 -1 -1.5,
+		      -1 -1 0,
+		      -1 1 0 ]
+	  }
+
+	  coordIndex	[ 0, 1, 2, 3, -1 ]
+	  texCoord	TextureCoordinate {
+	    point	[ 0 1,
+		      0 0,
+		      0.5 0,
+		      0.5 1 ]
+	  }
+
+	  ccw	TRUE
+	  convex	FALSE
+	  creaseAngle	0.5
+	  normalIndex	[  ]
+	  texCoordIndex	[ 0, 1, 2, 3, -1 ]
+	}
+
+      }
+
+      translation	83.0015 4.05866 -0.0375218
+      rotation	1 0 0  3.14159
+      scale	4.06983 4.06983 4.06983
+    }
+    DEF rightdoorwayside Transform {
+      children	Shape {
+	appearance	Appearance {
+	  material	USE _38
+
+	  texture	ImageTexture {
+	    repeatS	TRUE
+	    repeatT	TRUE
+	    url	"bluefade.jpg"
+	  }
+
+	  textureTransform	USE _40
+
+	}
+
+	geometry	DEF _42 IndexedFaceSet {
+	  coord	Coordinate {
+	    point	[ -1 1 -1.5,
+		      -1 -1 -1.5,
+		      0 -1 -1.5 ]
+	  }
+
+	  coordIndex	[ 2, 1, 0, -1 ]
+	  texCoord	TextureCoordinate {
+	    point	[ 1 1,
+		      1 0,
+		      0.5 0 ]
+	  }
+
+	  creaseAngle	0.5
+	  normalIndex	[  ]
+	  texCoordIndex	[ 2, 1, 0, -1 ]
+	}
+
+      }
+
+      translation	83.0015 4.05866 -0.0375218
+      rotation	1 0 0  3.14159
+      scale	4.06983 4.06983 4.06983
+    }
+    DEF leftdoor Transform {
+      children	Shape {
+	appearance	Appearance {
+	  material	USE _38
+
+	  texture	USE _39
+
+	  textureTransform	USE _40
+
+	}
+
+	geometry	DEF _43 IndexedFaceSet {
+	  coord	Coordinate {
+	    point	[ -1 -1 0,
+		      -1 -1 1.5,
+		      -1 1 1.5,
+		      -1 1 0 ]
+	  }
+
+	  coordIndex	[ 0, 1, 2, 3, -1 ]
+	  texCoord	TextureCoordinate {
+	    point	[ 0.5 0,
+		      1 0,
+		      1 1,
+		      0.5 1 ]
+	  }
+
+	  ccw	TRUE
+	  convex	FALSE
+	  solid	TRUE
+	  creaseAngle	0.5
+	  normalIndex	[  ]
+	  texCoordIndex	[ 0, 1, 2, 3, -1 ]
+	}
+
+      }
+
+      translation	83.0015 4.05866 -0.0375218
+      rotation	1 0 0  3.14159
+      scale	4.06983 4.06983 4.06983
+    }
+    DEF leftdoorwayside Transform {
+      children	Shape {
+	appearance	Appearance {
+	  material	USE _38
+
+	  texture	ImageTexture {
+	    repeatS	TRUE
+	    repeatT	TRUE
+	    url	"bluefade.jpg"
+	  }
+
+	  textureTransform	USE _40
+
+	}
+
+	geometry	DEF _44 IndexedFaceSet {
+	  coord	Coordinate {
+	    point	[ -1 1 1.5,
+		      -1 -1 1.5,
+		      0.184792 -1 1.5,
+		      -0.91206 1 1.5 ]
+	  }
+
+	  coordIndex	[ 0, 1, 2, 3, -1 ]
+	  texCoord	TextureCoordinate {
+	    point	[ 0 1,
+		      0 0,
+		      0.592396 0,
+		      0.04397 1 ]
+	  }
+
+	  creaseAngle	0.5
+	  normalIndex	[  ]
+	  texCoordIndex	[ 0, 1, 2, 3, -1 ]
+	}
+
+      }
+
+      translation	83.0015 4.05866 -0.0375218
+      rotation	1 0 0  3.14159
+      scale	4.06983 4.06983 4.06983
+    }
+    DEF doorwaytop Transform {
+      children	Shape {
+	appearance	Appearance {
+	  material	USE _38
+
+	  texture	ImageTexture {
+	    repeatS	TRUE
+	    repeatT	TRUE
+	    url	"bluefade.jpg"
+	  }
+
+	  textureTransform	USE _40
+
+	}
+
+	geometry	DEF _45 IndexedFaceSet {
+	  coord	Coordinate {
+	    point	[ 0.184792 -1 1.5,
+		      -1 -1 1.5,
+		      -1 -1 0,
+		      -1 -1 -1.5,
+		      0 -1 -1.5 ]
+	  }
+
+	  coordIndex	[ 0, 1, 2, 3, 4, -1 ]
+	  texCoord	TextureCoordinate {
+	    point	[ 0.592396 1,
+		      0 1,
+		      0 0.5,
+		      0 0,
+		      0.5 0 ]
+	  }
+
+	  creaseAngle	0.5
+	  normalIndex	[  ]
+	  texCoordIndex	[ 0, 1, 2, 3, 4, -1 ]
+	}
+
+      }
+
+      translation	83.0015 4.05866 -0.0375218
+      rotation	1 0 0  3.14159
+      scale	4.06983 4.06983 4.06983
+    }
+DEF over_switch Switch {
+whichChoice -1
+choice[
+
+Transform {#text
+children Shape {
+appearance Appearance {material Material {
+
+diffuseColor .1 1 .1
+}}
+geometry Text {
+fontStyle FontStyle {size 1 family "SANS" style "ITALIC" justify "MIDDLE"}
+string "Back To Mall"
+}}#end shape
+translation 77 4.25 0 rotation 0 -1 0 1.572
+}
+
+]}#end switch
+
+
+DEF doors_button TouchSensor {}
+DEF linker Script {
+eventIn SFTime link
+eventIn SFBool set_over
+eventOut SFInt32 over_changed
+field MFString loadUrl "/cgi-bin/colonycity/place?plc=shopping&ac=index3d"
+field MFString loadParam "target=_top"
+url "vrmlscript:
+function link(v) {Browser.loadURL(loadUrl,loadParam);}
+function set_over(v,t){if(v){over_changed = 0;}else{over_changed = -1;}}
+"}
+
+
+]
+ROUTE doors_button.touchTime TO linker.link
+ROUTE doors_button.isOver TO linker.set_over
+ROUTE linker.over_changed TO over_switch.set_whichChoice
+}
+
+]}#end doors transform
+
+
+###############
+
+
+
+
+

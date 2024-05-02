@@ -153,9 +153,16 @@ export default Vue.extend({
         this.loaded = true;
         this.startX3DListeners(browser);
       } else {
-        this.mainComponent = () => import(
-          `@/components/place/${this.$store.data.place.slug}/main2d.vue`
-        );
+
+        if(this.$store.data.place.type === 'shop'){
+            this.mainComponent = () => import(
+              `@/components/place/mall/main2d.vue`
+            );
+          } else {
+            this.mainComponent = () => import(
+              `@/components/place/${this.$store.data.place.slug}/main2d.vue`
+            );
+          }
         this.loaded = true;
       }
       this.joinPlace();

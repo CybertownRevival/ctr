@@ -10,9 +10,13 @@
       <button class="btn-ui"
               v-on:click="opener('#/messageboard/' + $store.data.place.id)">Job Offers</button>
     </span>
+    <span v-else-if="$store.data.place.type === 'shop'">
+      <button class="btn-ui" v-on:click="opener(`#/inbox/${mallId.data.place.id}`)">Mall Inbox</button>
+      <button class="btn-ui" v-on:click="opener(`#/messageboard/${mallId.data.place.id}`)">Mall Messages</button>
+    </span>
     <span v-else>
     <button class="btn-ui"
-            v-on:click="opener('#/inbox/'+$store.data.place.id)">Inbox</button>
+            v-on:click="opener('#/inbox/' + $store.data.place.id)">Inbox</button>
     <button class="btn-ui"
             v-on:click="opener('#/messageboard/' + $store.data.place.id)">Messages</button>
     </span>
@@ -50,9 +54,13 @@ export default Vue.extend({
       loaded: false,
       canAdmin: false,
       data: null,
+      mallId: null,
     };
   },
   methods: {
+    async getMallId(){
+      this.mallId = await this.$http.get('/place/mall')
+    },
     async checkAdmin() {
       try {
         this.adminCheck = await this.$http.get(
@@ -68,6 +76,7 @@ export default Vue.extend({
   },
   mounted() {
     this.checkAdmin();
+    this.getMallId();
   },
   watch: {
     async $route(to, from) {
