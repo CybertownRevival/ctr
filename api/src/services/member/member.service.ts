@@ -340,11 +340,10 @@ export class MemberService {
    * error
    */
   public async updateAvatar(memberId: number, avatarId: number): Promise<void> {
-    const avatar = await this.avatarRepository.find({
-      id: avatarId,
-      status: 1,
-      private: 0,
-    });
+    const avatar = await this.avatarRepository.getByIdAndMemberId(
+      avatarId,
+      memberId
+    );
     if (_.isUndefined(avatar)) throw new Error(`No avatar exists with id ${avatarId}`);
     await this.memberRepository.update(memberId, { avatar_id: avatarId });
   }

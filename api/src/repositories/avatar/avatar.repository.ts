@@ -43,6 +43,23 @@ export class AvatarRepository {
       });
   }
 
+  /**
+   * gets avatar by id a memberId can access
+   * @param avatarId
+   * @param memberId
+   * @returns
+   */
+  public async getByIdAndMemberId(avatarId, memberId): Promise<Avatar[]> {
+    return this.db.avatar
+      .where({
+        id: avatarId,
+        status: 1,
+      })
+      .andWhere(builder => {
+        builder.where({ private: 0 }).orWhere({ private: 1, member_id: memberId });
+      });
+  }
+
   public async updateStatus(id, status): Promise<any> {
     return this.db.avatar
       .update({

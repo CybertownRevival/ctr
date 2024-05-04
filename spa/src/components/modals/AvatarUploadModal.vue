@@ -20,7 +20,7 @@
           Avatar uploaded, pending approval!
         </p>
         <div align="center" v-if="showForm">
-          <p>Upload your own avatar file to be used in Cybertown. You can also choose to allow other members to use it
+          <p>Upload your own avatar file to be used in Cybertown Revival. You can also choose to allow other members to use it
             too. All avatars uploaded will require approval by the Admins before being made available.</p>
           <table>
             <tr>

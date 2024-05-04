@@ -40,7 +40,7 @@
         <td class="p-4">{{ avatar.id }}</td>
         <td class="p-4">{{ avatar.name }}</td>
         <td class="p-4">{{ avatar.username ? avatar.username : '' }}</td>
-        <td class="p-4">{{ accessLabel[avatar.private] }}</td>
+        <td class="p-4">{{ accessLabel[parseInt(avatar.private)] }}</td>
         <td class="p-4">{{ statusLabel[avatar.status] }}</td>
         <td class="p-4">
           <button class="btn" @click="downloadWrl(avatar.id)">WRL</button>
@@ -91,8 +91,8 @@ export default Vue.extend({
         'Pending Approval',
       ],
       accessLabel: [
-        'Private',
-        'Public'
+        'Public',
+        'Private'
       ]
     };
   },

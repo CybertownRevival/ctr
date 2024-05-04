@@ -73,7 +73,12 @@ class AvatarController {
       return;
     }
     fileExtension = request.files.wrlFile.name.split('.').pop();
-    if (fileExtension !== 'wrl' || request.files.wrlFile.mimetype !== 'application/octet-stream') {
+    if (
+      fileExtension !== 'wrl' ||
+      !['application/octet-stream', 'model/vrml', 'x-world/x-vrml', 'application/x-world'].includes(
+        request.files.wrlFile.mimetype,
+      )
+    ) {
       response.status(400).json({
         error: 'VRML file must be a .wrl file',
       });
