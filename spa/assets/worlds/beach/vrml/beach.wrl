@@ -123,8 +123,11 @@ DirectionalLight
 {
 direction 0 -1 0
 }
-NavigationInfo
-{
+NavigationInfo {
+avatarSize [
+.25 1.6 .75
+]
+speed 3.5
 headlight FALSE
 }
 Transform
