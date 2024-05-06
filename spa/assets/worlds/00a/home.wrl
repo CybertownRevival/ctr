@@ -16,6 +16,15 @@ eventOut SFVec3f newPosition
 eventOut SFRotation newRotation
 ] "/externprotos/shared_xite.wrl#SharedObject"
 
+EXTERNPROTO SharedEvent [ 
+exposedField   SFString	name
+exposedField   SFString	type
+eventIn	       SFTime   set_time 
+eventOut       SFTime   timeToServer 
+eventIn	       SFTime   timeFromServer 
+eventOut       SFTime   time_changed 
+] [ "/externprotos/shared_xite.wrl#SharedEvent" ]
+
 #############################################################################
 #Random Trigger
 #############################################################################
@@ -261,36 +270,19 @@ function set_vec3f          (value, time){if(debug){print(name + ' sent vec3f ev
 #############################################################################
 
 PROTO BlaxxunZone [#PROTO supplied by BLAXXUN  
-
-eventIn         MFNode   addEvents 
-eventIn         MFNode   removeEvents 
-eventIn         MFNode   addAvatars 
-eventIn         MFNode   removeAvatars 
+eventIn         MFNode   addEvents  
+eventIn         MFNode   removeEvents  
+eventIn         MFNode   addAvatars  
+eventIn         MFNode   removeAvatars  
 exposedField    MFNode   events []
-exposedField    MFNode   avatars []
-eventOut        MFNode   events_added 
-eventOut        MFNode   events_removed 
+exposedField    MFNode   avatars [] 
+exposedField    SFString myAvatarURL "" 
+exposedField    SFString myAvatarName ""
+exposedField    SFFloat  number_avatars 0
 eventOut        MFNode   avatars_added 
 eventOut        MFNode   avatars_removed
-eventIn         SFString set_myAvatarURL 
-eventOut        SFString myAvatarURL_changed 
-eventIn         SFInt32  set_myAvatarGesture 
-eventIn         SFInt32  myAvatarGestureFromServer 
-exposedField    SFNode   beamToViewpoint NULL
-eventOut        SFInt32  myAvatarGesture_changed 
-eventOut        SFInt32  myAvatarGestureToServer 
 exposedField    MFNode   avatarLOD []
-exposedField    MFFloat  avatarRange []
-exposedField    MFString sendToChat ""
-exposedField    SFFloat  beamToDistance 3
-exposedField    MFString groupChatName ""
-exposedField    MFString groupChat ""
-exposedField    SFString myAvatarName ""
-eventIn         MFNode   addObjects 
-eventIn         MFNode   removeObjects 
-eventOut        MFNode   objects_added 
-eventOut        MFNode   objects_removed
-
+exposedField    MFFloat   avatarRange []
 ]{ 
 Transform { 
 addChildren IS addEvents 
@@ -303,6 +295,13 @@ Transform {
         children IS avatars 
 }
 }# END BlaxxunZone
+
+DEF SharedZone BlaxxunZone { 
+  events [ 
+    
+   ] 
+}
+
 
 
 #########################################################################
@@ -1147,12 +1146,7 @@ Background {
 	rightUrl "panorama2.jpg"
 }
 
-DEF direct_back_blue DirectionalLight {
-intensity 1
-color 0.125 0.149 0.604
-direction 0 0 1
-on TRUE
-}
+
 
 DEF direct_front_sunlight DirectionalLight {
 intensity 1
@@ -1160,24 +1154,14 @@ color 1 0.827 0.361
 direction 0 0 -1
 on TRUE
 }
-DEF direct_left_grey DirectionalLight {
-intensity 1
-color 0.31 0.31 0.31
-direction 1 0 0
-on TRUE
-}
+
 DEF direct_overhead_coolgrey DirectionalLight {
 intensity 1
 color 0.6 0.69 0.722
 direction 0 -1 0
 on TRUE
 }
-DEF direct_right_grey DirectionalLight {
-intensity 1
-color 0.31 0.31 0.31
-direction -1 0 0
-on TRUE
-}
+
 DEF direct_under_warmgrey DirectionalLight {
 intensity 1
 color 0.341 0.302 0.255
@@ -1187,90 +1171,91 @@ on TRUE
 DEF viewpoint__pool_terrace Viewpoint {
 position 74.3 4.28 78.7
 orientation 0 -1 0 -0.838
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Pool"
 }
 DEF viewpoint_terrace Viewpoint {
 position 2.78 10 2.43
 orientation 0 1 0 -0.113
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Terrace"
 }
 
 DEF viewpoint_front_door Viewpoint {
 position -8.29 4.62 60.3
 orientation 0 -1 0 -0.576
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Frount Door"
 }
 DEF viewpoint_backyard Viewpoint {
 position -103 4.82 -39.3
 orientation 0 -1 0 -4.4
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Backyard"
 }
 DEF viewpoint_bathroom Viewpoint {
 position -6.34 19.4 17.4
 orientation 0 -1 0 -1.54
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Bathroom"
 }
 DEF viewpoint_bedroom Viewpoint {
 position 3.21 19.4 -23.9
 orientation 0 -1 0 -2.09
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Bedroom"
 }
 DEF viewpoint_den Viewpoint {
 position 24.2 10.7 -41
 orientation 0 -1 0 -2.84
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Den"
 }
 DEF viewpoint_dining_room Viewpoint {
 position -24.5 4.82 -27
 orientation 0 -1 0 -4.65
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Dining_room"
 }
 DEF viewpoint_foyer Viewpoint {
 position -32.4 4.82 -23.3
 orientation 0 -1 0 -3.37
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Foyer"
 }
 
 DEF viewpoint_garage Viewpoint {
 position 13.8 4.82 -73.6
 orientation 0 1 0 -1.17
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Garage"
 }
 DEF viewpoint_kitchen Viewpoint {
 position 16 4.82 -51.9
 orientation 0 -1 0 -4.09
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Kitchen"
 }
 DEF viewpoint_living_room Viewpoint {
 position -45.3 4.82 49.7
 orientation 0 1 0 -0.332
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Living_room"
 }
 DEF viewpoint_recroom Viewpoint {
 position -45.2 10.7 34
 orientation 0 1 0 -0.157
-fieldOfView 0.602
+fieldOfView 0.7854
 description "Recroom"
 }
 
-NavigationInfo { headlight FALSE visibilityLimit 200 type ["WALK" "ANY"] speed 10 }
-
-
-
-
-
+NavigationInfo {
+avatarSize [
+.25 1.6 .75
+]
+speed 3
+headlight FALSE
+}
 
 
 Group{#sounds
@@ -8311,7 +8296,7 @@ DEF elevator_view_outside Viewpoint {
 jump TRUE
 position -19.102 4.11 -61.31
 orientation 0 1 0 3.13 #0 1 0 .8126
-fieldOfView 0.602
+fieldOfView 0.7854
 description ""
 }
 
@@ -8326,7 +8311,7 @@ DEF elevator_view_inside Viewpoint {
 jump TRUE
 position -19.102 4.11 -61.31
 orientation 0 1 0 3.13 #0 1 0 .8126
-fieldOfView 0.602
+fieldOfView 0.7854
 description ""
 }
 DEF activate_elevator Script{
