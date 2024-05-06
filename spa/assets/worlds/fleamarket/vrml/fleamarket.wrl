@@ -9,227 +9,186 @@ EXTERNPROTO HUD[
 ]
 ["urn:inet:blaxxun.com:node:HUD","http://www.blaxxun.com/vrml/protos/nodes.wrl#HUD"]
 
-#Inline{url"http://www.cybertown.com/places/no_cache/fleamarket/temp.wrl"}
-
-
-PROTO SharedObject [
-exposedField SFVec3f translation 0 0 0
-exposedField SFRotation rotation 0 1 0 0
-exposedField SFString name ""
-exposedField SFString id ""
-exposedField MFNode children []
+EXTERNPROTO SharedObject [
+exposedField SFVec3f translation
+exposedField SFRotation rotation
+exposedField MFNode children
+exposedField SFString name
+exposedField SFString id
 eventIn SFBool startMove
-eventOut SFTime touchTime
 eventOut SFBool isOver
+eventOut SFTime touchTime
 eventOut SFVec3f newPosition
 eventOut SFRotation newRotation
-exposedField MFFloat range [30]
-] {
+] "/externprotos/shared_xite.wrl#SharedObject"
 
-Group {
-	children [
+EXTERNPROTO SharedEvent [ 
+exposedField   SFString	name
+exposedField   SFString	type
+eventIn	       SFTime   set_time 
+eventOut       SFTime   timeToServer 
+eventIn	       SFTime   timeFromServer 
+eventOut       SFTime   time_changed 
+] [ "/externprotos/shared_xite.wrl#SharedEvent" ]
 
-DEF T1 Transform {
-translation IS translation
-rotation IS rotation
-children[
-DEF TS TouchSensor
-{
-  isOver IS isOver
-  touchTime IS touchTime
-}
-
-LOD{range IS range level[ Group{children IS children} Group{} ]}
-
-]}
-
-#BEGIN MOVE HUD CODE#
-DEF SOSwitch Switch{
-whichChoice -1
-choice[
-Collision{
-collide FALSE
-children[
-
-DEF HUD HUD { 
-children[Transform{translation 0.15 0.08 -0.3 scale 0.8 0.8 0.8 children[
-DirectionalLight{direction 0 0 -1 }
-Transform{ #Done Button
-translation -0.033 -.063 0
-scale .08 .08 .08
-children[
-DEF DoneButton TouchSensor{}
-Shape{
-appearance Appearance{material Material{diffuseColor 0 1 0 specularColor 0 1 0}}
-geometry IndexedFaceSet{
-coord Coordinate{point[0 0 0,-.15 .1 0,-.05 .15 0,0 .05 0,.085 .3 0,.15 .4 0,.2 .25 0,.05 0 0 ]}
-coordIndex[0,3,2,1,-1,6,4,3,0,-1]
-}}
-Transform{ translation 0 .1 0
-children Shape{appearance Appearance{material Material{transparency 1}}geometry Sphere{radius .3}}
-}
-]}#END DoneButton
-Transform{ #CancelButton
-translation 0.033 -.054 0
-scale .07 .07 .07
-children[
-DEF CancelButton TouchSensor{}
-Shape{
-appearance Appearance{material Material{diffuseColor 1 0 0 specularColor 1 0 0}}
-geometry IndexedFaceSet{coord Coordinate{point[0 0 0,.15 -.1 0,.1 -.15 0,.15 .1 0,.1 .15 0,-.15 -.1 0,-.1 -.15 0,-.15 .1 0,-.1 .15 0]}coordIndex[0,2,1,-1,0,3,4,-1,0,5,6,-1,0,8,7,-1]}
-}
-Shape{appearance Appearance{material Material{transparency 1}}geometry Sphere{radius .2}}
-]}#END CancelButton
-
-Transform{ #Rotation Control
-translation 0 -.054 0
-scale .16 .16 .16
-children[
-DEF RotControlKnob Transform{ scale 1 .5 1 children[ 
-Shape{appearance Appearance{material Material{diffuseColor 0 0 .5 specularColor 1 1 1 }}geometry Sphere{radius .1}}
-]}
-DEF RotControlSensor CylinderSensor{minAngle -3.142 maxAngle 3.142}
-]}#END RotationControl
-
-Transform{#Panel
-translation 0 0 0 scale 0.1 0.1 0.1 children[
-
-Transform{
-translation .14 -.05 -.3
-children [ 
-Shape { appearance Appearance { material Material{ diffuseColor 0 0 0 transparency .5}  } geometry Box { size 1 1.2 .01 } } ] }
-
-Transform{# Y-axis
-children[
-Transform{translation 0 .05 0 rotation 0 0 1 0 children[ 
-Shape{appearance Appearance{material Material{transparency .1 diffuseColor 0 1 0 specularColor 0 1 0}}geometry DEF arrow IndexedFaceSet{solid FALSE coord Coordinate{point[-.05 0 0,-.05 .2 0,-.15 .2 0,0 .35 0,.15 .2 0,.05 .2 0,.05 0 0]}coordIndex[0,1,5,6,-1,2,3,4,-1]}}
-]}
-Transform{translation 0 -.05 0 rotation 0 0 1 3.142 children[
-Shape{appearance Appearance{material Material{diffuseColor 0 1 0  specularColor 0 1 0}}geometry USE arrow}
-]}
-DEF Y PlaneSensor{}
-]}#END Y-axis
-
-Transform{# X-axis
-children[
-Transform{translation -.05 0 0 rotation 0 0 1 1.571 children[
-Shape{appearance Appearance{material Material{diffuseColor 1 0 0 specularColor 1 0 0}}geometry USE arrow}
-]}
-Transform{translation .05 0 0 rotation 0 0 1 -1.571 children[
-Shape{appearance Appearance{material Material{diffuseColor 1 0 0 specularColor 1 0 0}}geometry USE arrow}
-]}
-DEF X PlaneSensor{}
-]}#END X-axis
-
-Transform{translation 0 0 0 rotation 1 -.2 0 .8 children[          
-Transform{#Z-axis
-rotation 1 0 0 1.571
-children[
-Transform{translation 0 .05 0 rotation 0 0 1 -.1 children[
-Shape{appearance Appearance{material Material{transparency .1 diffuseColor .2 .2 1 specularColor 0 0 1}}geometry USE arrow}
-]}
-Transform{translation 0 -.05 0 rotation 0 0 1 3.042 children[
-Shape{appearance Appearance{material Material{diffuseColor .2 .2 1 specularColor 0 0 1}}geometry USE arrow}
-]}
-DEF Z PlaneSensor{}
-]}#END Z-axis
-]}
-]}#END panel
-
-DEF SOScript Script{
-eventIn SFVec3f set_X
-eventIn SFVec3f set_Y
-eventIn SFVec3f set_Z
-eventIn SFRotation set_rotation
-eventIn SFBool set_done
-eventIn SFBool set_cancel
-eventIn SFBool set_enable IS startMove
-exposedField SFString name IS name
-exposedField SFString id IS id
-exposedField SFFloat rate 10
-field SFVec3f initialPosition IS translation
-field SFRotation initialRotation IS rotation
-field SFVec3f currentPosition 0 0 0
-field SFRotation currentRotation 0 0 0 0
-field SFVec3f XlastChange 0 0 0
-field SFVec3f YlastChange 0 0 0
-field SFVec3f ZlastChange 0 0 0
-field SFFloat ROTlastChange 0
-eventOut SFVec3f position_changed
-eventOut SFRotation rotation_changed
-eventOut SFVec3f new_position IS newPosition
-eventOut SFRotation new_rotation IS newRotation
-eventOut SFInt32 choice_changed
-url "vrmlscript:
-function set_enable(v,t){
- if(!v){return;}
- choice_changed = 0;
-}
-function set_X(v,t){
-  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(v[0],0,0)).subtract(XlastChange))).multiply(rate);
-  currentPosition = currentPosition.add(newPosition);
-  position_changed = currentPosition;
-  XlastChange = new SFVec3f(v[0],0,0);
-}
-function set_Y(v,t){
-  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,v[1],0)).subtract(YlastChange))).multiply(rate);
-  currentPosition = currentPosition.add(newPosition);
-  position_changed = currentPosition;
-  YlastChange = new SFVec3f(0,v[1],0);
-}
-function set_Z(v,t){
-  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,0,v[1])).subtract(ZlastChange))).multiply(rate);
-  currentPosition = currentPosition.add(newPosition);
-  position_changed = currentPosition;
-  ZlastChange = new SFVec3f(0,0,v[1]);
-}
-function set_rotation(v,t){
- rotation_changed = v;
- currentRotation = v;
-}
-function set_done(v,t){
- if(!v){return;}
- new_position = currentPosition;
- new_rotation = currentRotation;
- initialRotation = currentRotation;
- initialPosition = currentPosition;
- choice_changed = -1;
-}
-function set_cancel(v,t){
- if(!v){return;}
- choice_changed = -1;
- position_changed = initialPosition;
- rotation_changed = initialRotation;
-}
-function initialize() {
- currentRotation = initialRotation;
- currentPosition = initialPosition;
-}
+PROTO SharedEvent [
+field SFBool local FALSE
+field SFBool debug FALSE
+exposedField SFString   name    "event"  
+exposedField SFString   type    "SFTime" 
+eventIn SFBool  boolFromServer    eventIn SFColor colorFromServer
+eventIn SFFloat floatFromServer   eventIn SFInt32 int32FromServer
+eventIn SFRotation rotationFromServer 
+eventIn SFString stringFromServer eventIn SFTime timeFromServer
+eventIn SFVec2f vec2fFromServer   eventIn SFVec3f vec3fFromServer  
+eventOut SFBool boolToServer      eventOut SFColor colorToServer  
+eventOut SFFloat floatToServer    eventOut SFInt32 int32ToServer  
+eventOut SFRotation rotationToServer  
+eventOut SFString stringToServer  eventOut SFTime timeToServer  
+eventOut SFVec2f vec2fToServer    eventOut SFVec3f vec3fToServer  
+eventIn SFBool  set_bool    eventIn SFColor set_color  
+eventIn SFFloat set_float   eventIn SFInt32 set_int32  
+eventIn SFRotation set_rotation  
+eventIn SFString set_string eventIn SFTime set_time  
+eventIn SFVec2f set_vec2f   eventIn SFVec3f set_vec3f  
+eventOut SFBool bool_changed     eventOut SFColor color_changed  
+eventOut SFFloat float_changed   eventOut SFInt32 int32_changed  
+eventOut SFRotation rotation_changed  
+eventOut SFString string_changed eventOut SFTime  time_changed  
+eventOut SFVec2f vec2f_changed   eventOut SFVec3f vec3f_changed  
+]{ 
+Script {
+exposedField SFBool   local IS local
+exposedField SFBool   debug IS debug
+exposedField SFString name  IS name 
+#eventIn SFString set_name IS set_name  eventIn SFString set_type IS set_type eventOut SFString name_changed IS name_changed                                       eventOut SFString  type_changed IS type_changed
+eventIn  SFBool     boolFromServer     IS boolFromServer 
+eventIn  SFColor    colorFromServer    IS colorFromServer 
+eventIn  SFFloat    floatFromServer    IS floatFromServer 
+eventIn  SFInt32    int32FromServer    IS int32FromServer 
+eventIn  SFRotation rotationFromServer IS rotationFromServer 
+eventIn  SFString   stringFromServer   IS stringFromServer 
+eventIn  SFTime     timeFromServer     IS timeFromServer 
+eventIn  SFVec2f    vec2fFromServer    IS vec2fFromServer 
+eventIn  SFVec3f    vec3fFromServer    IS vec3fFromServer 
+eventOut SFBool     boolToServer       IS boolToServer 
+eventOut SFColor    colorToServer      IS colorToServer 
+eventOut SFFloat    floatToServer      IS floatToServer 
+eventOut SFInt32    int32ToServer      IS int32ToServer 
+eventOut SFRotation rotationToServer   IS rotationToServer 
+eventOut SFString   stringToServer     IS stringToServer 
+eventOut SFTime     timeToServer       IS timeToServer 
+eventOut SFVec2f    vec2fToServer      IS vec2fToServer 
+eventOut SFVec3f    vec3fToServer      IS vec3fToServer
+eventIn  SFBool     set_bool           IS set_bool 
+eventIn  SFColor    set_color          IS set_color 
+eventIn  SFFloat    set_float          IS set_float 
+eventIn  SFInt32    set_int32          IS set_int32 
+eventIn  SFRotation set_rotation       IS set_rotation 
+eventIn  SFString   set_string         IS set_string 
+eventIn  SFTime     set_time           IS set_time 
+eventIn  SFVec2f    set_vec2f          IS set_vec2f 
+eventIn  SFVec3f    set_vec3f          IS set_vec3f
+eventOut SFBool     bool_changed       IS bool_changed 
+eventOut SFColor    color_changed      IS color_changed 
+eventOut SFFloat    float_changed      IS float_changed 
+eventOut SFInt32    int32_changed      IS int32_changed 
+eventOut SFRotation rotation_changed   IS rotation_changed 
+eventOut SFString   string_changed     IS string_changed 
+eventOut SFTime     time_changed       IS time_changed 
+eventOut SFVec2f    vec2f_changed      IS vec2f_changed 
+eventOut SFVec3f    vec3f_changed      IS vec3f_changed 
+url "vrmlscript:                                                                                               
+function set_name           (value, time){if(debug){print(name + ' received name event: '     + value);} name_changed = value;} 
+function set_type           (value, time){if(debug){print(name + ' received type event: '     + value);} type_changed = value;} 
+function boolFromServer     (value, time){if(debug){print(name + ' received bool event: '     + value);} bool_changed = value;} 
+function colorFromServer    (value, time){if(debug){print(name + ' received color event: '    + value);} color_changed = value;} 
+function floatFromServer    (value, time){if(debug){print(name + ' received float event: '    + value);} float_changed = value;} 
+function int32FromServer    (value, time){if(debug){print(name + ' received int32 event: '    + value);} int32_changed = value;} 
+function rotationFromServer (value, time){if(debug){print(name + ' received rotation event: ' + value);} rotation_changed = value;} 
+function stringFromServer   (value, time){if(debug){print(name + ' received string event: '   + value);} string_changed = value;} 
+function timeFromServer     (value, time){if(debug){print(name + ' received time event: '     + value);} time_changed = time;} 
+function vec2fFromServer    (value, time){if(debug){print(name + ' received vec2f event: '    + value);} vec2f_changed = value;} 
+function vec3fFromServer    (value, time){if(debug){print(name + ' received vec3f event: '    + value);} vec3f_changed = value;} 
+function set_bool           (value, time){if(debug){print(name + ' sent bool event: '      + value);} boolToServer = value;     if(local){boolFromServer(value,time);}} 
+function set_color          (value, time){if(debug){print(name + ' sent color event: '     + value);} colorToServer = value;    if(local){colorFromServer(value,time);}} 
+function set_float          (value, time){if(debug){print(name + ' sent float event: '     + value);} floatToServer = value;    if(local){floatFromServer(value,time);}} 
+function set_int32          (value, time){if(debug){print(name + ' sent int32 event: '     + value);} int32ToServer = value;    if(local){int32FromServer(value,time);}}
+function set_rotation       (value, time){if(debug){print(name + ' sent rotation event: '  + value);} rotationToServer = value; if(local){rotationFromServer(value,time);}} 
+function set_string         (value, time){if(debug){print(name + ' sent string event: '    + value);} stringToServer = value;   if(local){stringFromServer(value,time);}} 
+function set_time           (value, time){if(debug){print(name + ' sent time event: '      + value);} timeToServer = value;     if(local){timeFromServer(value,time);}} 
+function set_vec2f          (value, time){if(debug){print(name + ' sent vec2f event: '     + value);} vec2fToServer = value;    if(local){vec2fFromServer(value,time);}} 
+function set_vec3f          (value, time){if(debug){print(name + ' sent vec3f event: '     + value);} vec3fToServer = value;    if(local){vec3fFromServer(value,time);}} 
 "}
-]}#END Collision
-]}#END HUD
-]}
-]}#END SOSwitch
-
-]
 }
 
-ROUTE X.translation_changed TO SOScript.set_X
-ROUTE Y.translation_changed TO SOScript.set_Y
-ROUTE Z.translation_changed TO SOScript.set_Z
-ROUTE RotControlSensor.rotation_changed TO RotControlKnob.set_rotation
-ROUTE RotControlSensor.rotation_changed TO SOScript.set_rotation
-ROUTE SOScript.position_changed TO T1.set_translation
-ROUTE SOScript.rotation_changed TO T1.set_rotation
-ROUTE DoneButton.isActive TO SOScript.set_done
-ROUTE CancelButton.isActive TO SOScript.set_cancel
-ROUTE SOScript.choice_changed TO SOSwitch.set_whichChoice
-#END MOVE HUD CODE#
+PROTO BlaxxunZone [#PROTO supplied by BLAXXUN  
+eventIn         MFNode   addEvents  
+eventIn         MFNode   removeEvents  
+eventIn         MFNode   addAvatars  
+eventIn         MFNode   removeAvatars  
+exposedField    MFNode   events []
+exposedField    MFNode   avatars [] 
+exposedField    SFString myAvatarURL "" 
+exposedField    SFString myAvatarName ""
+exposedField    SFFloat  number_avatars 0
+eventOut        MFNode   avatars_added 
+eventOut        MFNode   avatars_removed
+exposedField    MFNode   avatarLOD []
+exposedField    MFFloat   avatarRange []
+]{ 
+Transform { 
+addChildren IS addEvents 
+removeChildren IS removeEvents 
+children IS events 
+} 
+Transform { 
+        addChildren IS addAvatars
+        removeChildren IS removeAvatars 
+        children IS avatars 
+}
+}# END BlaxxunZone
 
-}#END SharedObject PROTO
-
-
-
+DEF SharedZone BlaxxunZone { 
+  events [ 
+    
+   ] 
+}
+DEF S Script {
+ eventIn MFNode addEvents IS addEvents
+ eventIn MFNode removeEvents IS removeEvents
+ eventIn MFNode addAvatars IS addAvatars
+ eventIn MFNode removeAvatars IS removeAvatars 
+ eventIn MFNode addObjects IS addObjects
+ eventIn MFNode removeObjects IS removeObjects 
+ eventIn SFString set_myAvatarURL IS set_myAvatarURL
+ eventOut MFNode events_added IS events_added
+ eventOut MFNode events_removed IS events_removed
+ eventOut MFNode avatars_added IS avatars_added
+ eventOut MFNode avatars_removed IS avatars_removed
+ eventOut MFNode objects_added IS objects_added
+ eventOut MFNode objects_removed IS objects_removed
+ eventIn         SFInt32  set_myAvatarGesture IS set_myAvatarGesture
+ eventIn         SFInt32  myAvatarGestureFromServer IS myAvatarGestureFromServer
+ eventOut        SFInt32  myAvatarGesture_changed IS myAvatarGesture_changed
+ eventOut        SFInt32  myAvatarGestureToServer IS myAvatarGestureToServer
+ eventOut                SFString myAvatarURL_changed IS myAvatarURL_changed
+ exposedField    MFString sendToChat IS sendToChat
+ exposedField    SFFloat  beamToDistance  IS beamToDistance  
+ exposedField    MFString groupChatName  IS groupChatName  
+ exposedField    MFString groupChat  IS groupChat  
+url "vrmlscript:
+ function addEvents(value, time) { events_added = value; }
+ function addAvatars(value, time) { avatars_added = value; }
+ function addObjects(value, time) { objects_added = value; }
+ function removeEvents(value, time) { events_removed = value; }
+ function removeAvatars(value, time) { avatars_removed = value; }
+ function removeObjects(value, time) { objects_removed = value; }
+ function set_myAvatarGesture(value, time) { myAvatarGestureToServer = value; }
+ function myAvatarGestureFromServer(value, time) { myAvatarGesture_changed = value; }
+ function set_myAvatarURL(value, time) { myAvatarURL_changed = value; }
+"
+}
 
 PROTO Booth[
 field MFString number "15"
@@ -527,33 +486,49 @@ Group {}
 ]}
 }#END Booth PROTO
 
-
-
-
-
-
-
-
-
-DirectionalLight {
-direction 0 -1 -1
+DEF dad_Global_1 Transform {
+ translation 125 20 125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_1 PointLight {
+   ambientIntensity 0.900
+   intensity 0.400
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
-DirectionalLight {
-direction 1 -1 1
+DEF dad_Global_2 Transform {
+ translation 125 20 -125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_2 PointLight {
+   ambientIntensity 0.900
+   intensity 0.400
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
-DirectionalLight {
-direction -1 -1 1
+DEF dad_Global_3 Transform {
+ translation -125 20 125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_3 PointLight {
+   ambientIntensity 0.900
+   intensity 0.400
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
 NavigationInfo {
 avatarSize [
-.25 1.75 .75
+.25 1.6 .75
 ]
-speed 10
+speed 3.5
 headlight FALSE
 }
-
-
-
 
 DEF V Viewpoint{
 	description "Enter"
