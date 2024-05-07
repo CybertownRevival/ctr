@@ -6,6 +6,8 @@ export interface Avatar extends Model {
   gestures: string;
   member_id: number;
   name: string;
-  private: boolean;
+  private: number;
   status: number;
+  directory: string;
+  image: string;
 }
