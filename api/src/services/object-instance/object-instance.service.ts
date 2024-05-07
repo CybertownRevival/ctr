@@ -86,7 +86,7 @@ export class ObjectInstanceService {
       if(buyerWallet.balance < object[0].object_price){
         throw new Error('Insufficient funds.');
       }
-      if(object[0].object_buyer && buyer.username !== object[0].object_buyer.toLowerCase()){
+      if(object[0].object_buyer && buyer.username.toLowerCase() !== object[0].object_buyer.toLowerCase()){
         throw new Error('You are not the buyer that is listed on the object!');
       }
       await this.transactionRepository
