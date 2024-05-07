@@ -74,9 +74,10 @@ export class ObjectInstanceService {
 
   public async buyObjectInstance(objectId: number, buyerId: number): Promise<any> {
     const object = await this.objectInstanceRepository.getObjectInstanceWithObject(objectId);
-    const sellerWallet= await this.walletRepository.findById(object[0].member_id);
-    const buyerWallet = await this.walletRepository.findById(buyerId);
     const buyer = await this.memberRepository.findById(buyerId);
+    const seller = await this.memberRepository.findById(object[0].member_id);
+    const sellerWallet= await this.walletRepository.findById(seller.wallet_id);
+    const buyerWallet = await this.walletRepository.findById(buyer.wallet_id);
 
     try{
       if(!object[0].object_price){
