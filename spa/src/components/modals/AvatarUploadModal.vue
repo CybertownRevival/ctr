@@ -39,7 +39,7 @@
                        class="mb-2"
                        @change="setFile"
                        data-id="textureFile"
-                       accept=".jpeg"></td>
+                       accept=".jpeg,.jpg"></td>
             </tr>
             <tr>
               <td>Avatar Thumbnail File:</td>
@@ -48,7 +48,7 @@
                        class="mb-2"
                        @change="setFile"
                        data-id="imageFile"
-                       accept=".jpeg"></td>
+                       accept=".jpeg,.jpg"></td>
             </tr>
             <tr>
               <td>Avatar Name:</td>

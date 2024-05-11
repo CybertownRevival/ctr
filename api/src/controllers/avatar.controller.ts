@@ -97,9 +97,12 @@ class AvatarController {
       !validator.isEmpty(request.files.textureFile.name)
     ) {
       fileExtension = request.files.textureFile.name.split('.').pop();
-      if (fileExtension !== 'jpeg' || request.files.textureFile.mimetype !== 'image/jpeg') {
+      if (
+        !['jpeg', 'jpg'].includes(fileExtension) ||
+        !['image/jpeg', 'image/pjpeg'].includes(request.files.textureFile.mimetype)
+      ) {
         response.status(400).json({
-          error: 'Texture file must be a .jpeg file',
+          error: 'Texture file must be a .jpeg or .jpg file'
         });
         return;
       }
@@ -122,9 +125,12 @@ class AvatarController {
     }
 
     fileExtension = request.files.imageFile.name.split('.').pop();
-    if (fileExtension !== 'jpeg' || request.files.imageFile.mimetype !== 'image/jpeg') {
+    if (
+      !['jpeg', 'jpg'].includes(fileExtension) ||
+      !['image/jpeg', 'image/pjpeg'].includes(request.files.imageFile.mimetype)
+    ) {
       response.status(400).json({
-        error: 'Thumbnail file must be a .jpeg file',
+        error: 'Thumbnail file must be a .jpeg or .jpg file',
       });
       return;
     }
