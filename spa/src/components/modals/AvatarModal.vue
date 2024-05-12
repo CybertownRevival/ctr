@@ -78,6 +78,7 @@ export default Vue.extend({
           avatarId: id,
         });
         this.$store.data.user.avatar.id = id;
+        this.$store.methods.setToken(response.data.token);
         this.avatarId = id;
         this.showSuccess = true;
       } catch (errorResponse: any) {
