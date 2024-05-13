@@ -86,7 +86,8 @@ const appStore = Vue.observable<AppStore>({
         setUser(userData: User): void {
             if (
                 typeof userData.avatar !== "undefined" &&
-                typeof userData.avatar.gestures === "string"
+                typeof userData.avatar.gestures === "string" &&
+                userData.avatar.gestures !== ""
             ) {
                 userData.avatar.gestures = JSON.parse(userData.avatar.gestures);
             }

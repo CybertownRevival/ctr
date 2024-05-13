@@ -337,8 +337,8 @@ export default Vue.extend({
         !this.users[event.id].loading &&
         !this.users[event.id].loaded
       ) {
-        const { id, filename } = event.avatar;
-        const avURL = `/assets/avatars/${id}/${filename}`;
+        const { directory, filename } = event.avatar;
+        const avURL = `/assets/avatars/${directory}/${filename}`;
 
         this.users[event.id].loading = true;
         loadInlineAsync(browser, avURL).then((avInline) => {
