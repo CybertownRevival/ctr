@@ -134,10 +134,13 @@
             class="flex cursor-default"
             @click="handler($event)" @contextmenu="handler($event)"
           >
-          <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id)">
+            <div v-if="object.object_name && object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id,  object.member_id, object.object_price)">
               {{ object.object_name }}
             </div>
-            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id)">
+            <div v-else-if="$store.data.place.type === 'shop'" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id, $store.data.place.type)">
+              {{ object.name }}
+            </div>
+            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id,  object.member_id, object.object_price)">
               {{ object.name }}
             </div>
           </li>
@@ -149,10 +152,10 @@
             class="flex cursor-default"
             @click="handler($event)" @contextmenu="handler($event)"
           >
-            <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id)">
+            <div v-if="object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id, object.object_price)">
               {{ object.object_name }}
             </div>
-            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id)">
+            <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id, object.object_price)">
               {{ object.name }}
             </div>
           </li>
@@ -187,11 +190,7 @@
           Cancel Menu
         </li>
         <li style="border: inset #EEE 3px;"></li>
-        <li v-if="
-          this.$store.data.view3d === true &&  
-          activePanel === 'users' ||
-          this.$store.data.view3d === true &&
-          activePanel === 'sharedObjects'" 
+        <li v-show="menuBeamTo" 
           class="
             p-1
             pl-3.5
@@ -202,7 +201,7 @@
           @click="beamTo()">
           Beam to
         </li>
-        <li v-if="activePanel === 'users'" 
+        <li v-show="menuWhisper" 
           class="
             p-1
             pl-3.5
@@ -214,7 +213,7 @@
         >
           Start Whisper
         </li>
-        <li v-if="activePanel === 'users'" 
+        <li v-show="menuInviteChat" 
           class="
             p-1
             pl-3.5
@@ -226,7 +225,7 @@
         >
           Invite Chat
         </li>
-        <li v-if="activePanel === 'users'" 
+        <li v-show="menuIgnore" 
           class="
             p-1
             pl-3.5
@@ -238,9 +237,19 @@
         >
           Ignore
         </li>
-        <li v-if="activePanel === 'sharedObjects' 
-          && $store.data.view3d
-          && canInteractWithObject" 
+        <li v-show="menuBuy" 
+          class="
+            p-1
+            pl-3.5
+            hover:text-white 
+            hover:bg-gray-500
+            active:bg-gray-400
+          "
+          @click="objectOpener()"
+        >
+          Buy
+        </li>
+        <li v-show="menuMove" 
           class="
             p-1
             pl-3.5
@@ -252,8 +261,7 @@
         >
           Move
         </li>
-        <li v-if="activePanel === 'sharedObjects' &&
-          canModify" 
+        <li v-show="menuTake" 
           class="
             p-1
             pl-3.5
@@ -265,8 +273,7 @@
         >
           Take
         </li>
-        <li v-if="activePanel === 'backpack' 
-          && canInteractWithObject" 
+        <li v-show="menuDrop" 
           class="
             p-1
             pl-3.5
@@ -278,9 +285,7 @@
         >
           Drop
         </li>
-        <li v-if="activePanel === 'sharedObjects' 
-          && canInteractWithObject 
-          || activePanel === 'backpack'" 
+        <li v-show="menuDestroy" 
           class="
             p-1
             pl-3.5
@@ -292,8 +297,7 @@
         >
           Destroy
         </li>
-        <li v-if="activePanel === 'sharedObjects' 
-          || activePanel === 'backpack' || activePanel === 'userBackpack'" 
+        <li v-show="menuProperties" 
           class="
             p-1
             pl-3.5
@@ -306,7 +310,7 @@
           Properties
         </li>
         <li v-if="activePanel === 'users'" style="border:inset #EEE 3px;"></li>
-        <li v-if="activePanel === 'users'" 
+        <li v-show="menuRequestBackpack" 
           class="
             p-1
             pl-3.5
@@ -357,6 +361,18 @@ export default Vue.extend({
       menuTop: null,
       menuLeft: null,
       menuBottom: null,
+      menuBeamTo: true,
+      menuWhisper: true,
+      menuInviteChat: true,
+      menuIgnore: true,
+      menuDrop: false,
+      menuMove: false,
+      menuTake: false,
+      menuBuy: false,
+      menuDestroy: false,
+      menuProperties: false,
+      menuRequestBackpack: true,
+      mallObject: false,
     };
   },
   methods: {
@@ -438,16 +454,113 @@ export default Vue.extend({
         time: new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}),
       });
     },
-    menu(...target){
+    async menu(...target){
+      this.menuBeamTo = false;
+      this.menuWhisper = false;
+      this.menuInviteChat = false;
+      this.menuIgnore = false;
+      this.menuDrop = false;
+      this.menuMove = false;
+      this.menuTake = false;
+      this.menuBuy = false;
+      this.menuDestroy = false;
+      this.menuProperties = false;
+      this.menuRequestBackpack = false;
+      this.mallObject = false;
+
       this.objectId = target[0];
-      this.username = target[1];
+      if(this.activePanel === 'users'){
+        this.memberId = null;
+        this.username = target[1];
+      }
+
+      if(this.activePanel === 'sharedObjects'){
+        this.username = null;
+        this.memberId = target[1];
+      }
+      
+      if(target[1] === 'shop'){
+        this.mallObject = true;
+      }
+
+      //User Panel
+      if(this.activePanel === 'users'){
+        this.menuIgnore = true;
+        this.menuInviteChat = true;
+        this.menuRequestBackpack = true;
+        this.menuWhisper = true;
+        if(this.$store.data.view3d){
+          this.menuBeamTo = true;
+        }
+      }
+
+      //Public Objects Panel
+      if(this.activePanel === 'sharedObjects'){
+        this.menuProperties = true;
+        if(target[2] !== null && this.memberId !== this.$store.data.user.id){
+          this.menuBuy = true;
+        }
+        if(this.memberId === this.$store.data.user.id){
+          this.menuTake = true;
+          this.menuDestroy = true;
+        }
+        if(this.$store.data.view3d){
+          this.menuBeamTo = true;
+          if(this.$store.data.user.id === this.memberId){
+            this.menuMove = true;
+          }
+          if(this.canModify){
+            this.menuMove = true;
+            this.menuTake = true;
+          }
+        }
+      }
+
+      //My Backpack Panel
+      if(this.activePanel === 'backpack'){
+        this.menuProperties = true;
+        this.menuDestroy = true;
+        if(
+          this.$store.data.view3d &&
+          (
+            this.$store.data.place.slug === 'fleamarket' || 
+            this.$store.data.place.member_id === this.$store.data.user.id
+          )){
+            this.menuDrop = true;
+            this.menuProperties = true;
+          }
+        }
+
+        //User Backpack Panel
+        if(this.activePanel === 'userBackpack'){
+          this.menuProperties = true;
+          if(target[1] !== null && this.memberId !== this.$store.data.user.id){
+          this.menuBuy = true;
+        }
+        }
+    },
+    async canAdmin(){
+      const admin = await this.$http.get("/mall/can_admin", {
+        'id': this.$store.data.user.id
+      });
+      if(admin.data.status === 'success'){
+        this.canModify = true;
+        if(this.$store.data.view3d){
+          this.canInteractWithObject = true;
+        }
+      } 
     },
     closeMenu(){
       this.userMenu = false;
     },
     objectOpener() {
       this.closeMenu();
-      window.open("/#/object/"+this.objectId, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
+      if(this.mallObject){
+        window.open("/#/mall/object/"+this.objectId, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
+      } else {
+        window.open("/#/object/"+this.objectId, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
+      }
+      
     },
     startNewChat(): void {
       this.messages = [];
@@ -477,7 +590,7 @@ export default Vue.extend({
           this.activePanel = "gestures";
           break;
         case "gestures":
-          this.activePanel = "places";
+          this.activePanel = 'places';
           break;
         case "places":
           this.activePanel = "sharedObjects";
@@ -561,6 +674,17 @@ export default Vue.extend({
       await this.loadUserBackpack();
     },
     async loadUserBackpack(){
+      this.menuBeamTo = false;
+      this.menuWhisper = false;
+      this.menuInviteChat = false;
+      this.menuIgnore = false;
+      this.menuDrop = false;
+      this.menuMove = false;
+      this.menuTake = false;
+      this.menuBuy = false;
+      this.menuDestroy = false;
+      this.menuProperties = true;
+      this.menuRequestBackpack = false;
       this.usernameBackPack = this.username;
       this.backpackObjects = [];
       const response = await this.$http.get(`/member/backpack/${this.username}`);
@@ -580,7 +704,7 @@ export default Vue.extend({
             chat.scrollTop = chat.scrollHeight;
             setTimeout(() => {
               chat.scrollTop = chat.scrollHeight;
-            }, 50);
+            }, 500);
           });
         }
       },
@@ -600,6 +724,7 @@ export default Vue.extend({
     this.startSocketListeners();
     if (this.$store.data.place) {
       this.startNewChat();
+      this.canAdmin();
       this.getRole();
       setInterval(this.systemMessage, 5 * 60 * 1000);
     }
