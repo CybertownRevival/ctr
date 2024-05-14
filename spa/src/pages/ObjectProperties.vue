@@ -128,8 +128,7 @@ methods: {
     return await this.$http.post(`/object_instance/${ this.objectId }/properties/`)
       .then((response) => {
         let object = response.data.objectInstance[0];
-        let filename = object.filename.split(".", 1);
-        this.imgFile = `/assets/object/${object.directory}/${filename}.jpeg`;
+        this.imgFile = `/assets/object/${object.directory}/${object.image}`;
         this.objectFile = `/assets/object/${object.directory}/${object.filename}`;
         this.ownerId = object.member_id;
         this.sessionId = this.$store.data.user.id;
