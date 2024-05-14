@@ -16,5 +16,11 @@ adminRoutes.get('/usersearch', (request, response) =>
   adminController.searchUsers(request, response));
 adminRoutes.get('/userchat', (request, response) =>
   adminController.searchUserChat(request, response));
+adminRoutes.get('/avatars', (request, response) =>
+  adminController.avatars(request, response));
+adminRoutes.post('/avatars/approve', (request, response) =>
+  adminController.avatarApprove(request, response));
+adminRoutes.post('/avatars/reject', (request, response) =>
+  adminController.avatarReject(request, response));
 
 export {adminRoutes};

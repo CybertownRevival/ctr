@@ -37,7 +37,9 @@
                   <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Storage Units</b>
                 </td>
                 <td width=200 align=center>
-                  <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Avatar Library</b>
+                  <a href="#" @click="openAvatarModal">
+                    <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Avatar Library</b>
+                  </a>
                 </td>
               </tr>
             </table>

@@ -42,13 +42,14 @@ import UserChat from "@/pages/admin/user/ChatMessages.vue";
 import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
 import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
+import AvatarSearch from "@/pages/admin/avatar/search.vue";
 
 import MallRulesPage from "@/pages/mall/MallRulesPage.vue";
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
 import MallApprovalPage from "@/pages/mall/MallApprovalPage.vue";
 import MallShopPage from "@/pages/mall/MallShopPage.vue";
 
-import ObjectProperties from './pages/ObjectProperties.vue';
+import ObjectProperties from "./pages/ObjectProperties.vue";
 
 export default [
     {
@@ -359,6 +360,14 @@ export default [
                     },
                 ],
             },
+            {
+                path: "/admin/avatar/",
+                component: AvatarSearch,
+                name: "AvatarSearch",
+                meta: {
+                    title: "Avatar Search - Admin Panel",
+                },
+            },
         ],
     },
     {
@@ -403,6 +412,6 @@ export default [
             default: ObjectProperties,
         },
         name: "object-properties",
-        meta: {wrapper: false},
+        meta: { wrapper: false },
     },
 ];

@@ -80,7 +80,7 @@
             <input type="file"
                    @change="setFile"
                    data-id="textureFile"
-                   accept=".jpeg" />
+                   accept=".jpeg,.jpg" />
           </td>
         </tr>
         <tr>
@@ -89,7 +89,7 @@
             <input type="file"
                    @change="setFile"
                    data-id="imageFile"
-                   accept=".jpeg" />
+                   accept=".jpeg,.jpg" />
           </td>
         </tr>
       </table>
@@ -196,7 +196,7 @@ If you sell all 10 chairs, you earn 250 CCs and double your investment.
       </tr>
       <tr>
         <td>Thumbnail:</td>
-        <td>Name of a 450 x 450 pixel .jpeg file showing an image of the VR Object you are uploading.
+        <td>Name of a 450 x 450 pixel .jpeg or .jpg file showing an image of the VR Object you are uploading.
           This image will be displayed to 2D users.
         </td>
       </tr>
@@ -211,7 +211,7 @@ If you sell all 10 chairs, you earn 250 CCs and double your investment.
       <li>Internet Explorer 3.x doesn't support file uploads.</li>
       <li>The maximum VRML file size is 80KB. The "wrl" VRML format is required.</li>
       <li>For textures and thumbnails, the maximum file size is 80KB. The files
-          must be in jpeg format.</li>
+          must be in jpeg or jpg format.</li>
       <li>Uploaded objects will be positioned at "eye height" at the world's origin (0, 1.75, 0).</li>
       <li>Try to create objects of "realistic" size, i.e. a table would be perhaps 1 x 2 x 0.8 meters.</li>
     </ul>

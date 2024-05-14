@@ -196,4 +196,28 @@ export class TransactionRepository {
       return this.find({ id: transactionId });
     });
   }
+
+  public async createObjectSellTransaction(
+    buyerId: number,
+    sellerId: number,
+    amount: number,
+  ): Promise<Transaction> {
+    return await this.db.knex.transaction(async trx => {
+      const sellerWallet = await trx<Wallet>('wallet').where({ id: sellerId }).first();
+      const buyerWallet = await trx<Wallet>('wallet').where({ id: buyerId }).first();
+      await trx<Wallet>('wallet')
+        .where({ id: sellerId })
+        .update({ balance: sellerWallet.balance + amount });
+      await trx<Wallet>('wallet')
+        .where({ id: buyerId })
+        .update({ balance: buyerWallet.balance - amount });
+      const [transactionId] = await trx<Transaction>('transaction').insert({
+        amount,
+        reason: TransactionReason.ObjectSell,
+        recipient_wallet_id: sellerId,
+        sender_wallet_id: buyerId,
+      });
+      return this.find({ id: transactionId });
+    });
+  }
 }

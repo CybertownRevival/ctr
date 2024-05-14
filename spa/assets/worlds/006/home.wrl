@@ -256,11 +256,11 @@ DEF lights_on SharedEvent{name "P_lightson"}
 }
 
 NavigationInfo {
-avatarSize [ .25 1.6 .75 ]
+avatarSize [
+.25 1.6 .75
+]
+speed 2.5
 headlight FALSE
-speed 10
-type "WALK"
-#visibilityLimit 100
 }
 
 Viewpoint {
@@ -287,6 +287,43 @@ position -20 4.65 13.6
 orientation 0 1 0 3.5
 fieldOfView .785
 description "Patio"
+}
+
+DEF dad_Global_1 Transform {
+ translation 125 20 125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_1 PointLight {
+   ambientIntensity 0.900
+   intensity 0.400
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
+}
+DEF dad_Global_2 Transform {
+ translation 125 20 -125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_2 PointLight {
+   ambientIntensity 0.900
+   intensity 0.400
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
+}
+DEF dad_Global_3 Transform {
+ translation -125 20 125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_3 PointLight {
+   ambientIntensity 0.900
+   intensity 0.400
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
 
 

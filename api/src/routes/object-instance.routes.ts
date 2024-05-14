@@ -18,5 +18,8 @@ objectInstanceRoutes.post('/:id/properties', (request, response) =>
 objectInstanceRoutes.post('/update/', (request, response) =>
   objectInstanceController.updateObjectInstance(request, response),
 );
+objectInstanceRoutes.post('/buy/', (request, response) =>
+  objectInstanceController.buyObjectInstance(request, response),
+);
 
 export { objectInstanceRoutes };

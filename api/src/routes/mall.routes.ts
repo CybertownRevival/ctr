@@ -12,6 +12,7 @@ mallRoutes.get('/can_admin', (request, response) => mallController.canAdmin(requ
 mallRoutes.get('/pending_approval', (request, response) =>
   mallController.objectsPendingApproval(request, response),
 );
+mallRoutes.get('/stores', (request, response)  => mallController.findStores(request,response));
 mallRoutes.post('/approve', (request, response) => mallController.approveObject(request, response));
 mallRoutes.post('/reject', (request, response) => mallController.rejectObject(request, response));
 mallRoutes.get('/for_sale', (request, response) =>

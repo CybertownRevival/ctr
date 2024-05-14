@@ -78,10 +78,11 @@ DEF SharedZone BlaxxunZone {
 
 DEF Scene Group {}
 NavigationInfo {
+avatarSize [
+.25 1.6 .75
+]
+speed 2.25
 headlight FALSE
-type "WALK"
-visibilityLimit 70
-speed 3.0
 }
 
 
@@ -103,30 +104,42 @@ skyColor	[
 ]
 }
 
-DirectionalLight {
-on	TRUE
-#intensity	1
-color	1 1 1
-direction	-7 -6 -9
-},
-DirectionalLight {
-on	TRUE
-#intensity	1
-color	1 1 1
-direction	9 2 7
+DEF dad_Global_1 Transform {
+ translation 125 20 125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_1 PointLight {
+   ambientIntensity 0.900
+   intensity 0.400
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
-DirectionalLight {
-on	TRUE
-#intensity	0.5
-color	1 1 1
-direction	0 1 0
+DEF dad_Global_2 Transform {
+ translation 125 20 -125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_2 PointLight {
+   ambientIntensity 0.900
+   intensity 0.400
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
-DirectionalLight {
-#intensity 0
-ambientIntensity 1
+DEF dad_Global_3 Transform {
+ translation -125 20 125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_3 PointLight {
+   ambientIntensity 0.900
+   intensity 0.400
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
-
-
 
 DEF Camera01 Viewpoint {
   position -2.06 2.088 -0.1127
