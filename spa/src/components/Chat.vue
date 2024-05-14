@@ -704,7 +704,7 @@ export default Vue.extend({
             chat.scrollTop = chat.scrollHeight;
             setTimeout(() => {
               chat.scrollTop = chat.scrollHeight;
-            }, 500);
+            }, 50);
           });
         }
       },
