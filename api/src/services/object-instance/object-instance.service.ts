@@ -76,7 +76,7 @@ export class ObjectInstanceService {
     const object = await this.objectInstanceRepository.getObjectInstanceWithObject(objectId);
     const buyer = await this.memberRepository.findById(buyerId);
     const seller = await this.memberRepository.findById(object[0].member_id);
-    const sellerWallet= await this.walletRepository.findById(seller.wallet_id);
+    const sellerWallet = await this.walletRepository.findById(seller.wallet_id);
     const buyerWallet = await this.walletRepository.findById(buyer.wallet_id);
 
     try{
@@ -86,7 +86,8 @@ export class ObjectInstanceService {
       if(buyerWallet.balance < object[0].object_price){
         throw new Error('Insufficient funds.');
       }
-      if(object[0].object_buyer && buyer.username.toLowerCase() !== object[0].object_buyer.toLowerCase()){
+      if(object[0].object_buyer && 
+        buyer.username.toLowerCase() !== object[0].object_buyer.toLowerCase()){
         throw new Error('You are not the buyer that is listed on the object!');
       }
       await this.transactionRepository
