@@ -19,6 +19,7 @@
           <th>Price</th>
           <th>Qty</th>
           <th>Uploader</th>
+          <th>Store</th>
           <th style="min-width: 130px;">Action</th>
         </tr>
       </thead>
@@ -31,6 +32,13 @@
           <td class="text-center">{{ object.price }}</td>
           <td class="text-center">{{ object.quantity }}</td>
           <td>{{ object.username }}</td>
+          <td>
+            <select v-model="store">
+              <option v-for="option in mallStoreData" :value="option.id">
+                {{ option.title }}
+              </option>
+            </select>
+          </td>
           <td>
             <button type="button" class="btn" @click="approve(object.id)">Approve</button>
             <button type="button" class="btn" @click="reject(object.id)">Reject</button>
@@ -57,9 +65,20 @@ export default Vue.extend({
       loaded: false,
       window: "list",
       previewImg: null,
+      store: null,
+      mallStoreData: [],
     };
   },
   methods: {
+    async getStores(){
+      const stores = await this.$http.get(`/mall/stores`);
+      stores.data.stores.forEach(store => {
+        this.mallStoreData.push({
+          title: store.name,
+          id: store.id
+        })
+      })
+    },
     async getResults(): Promise<void> {
       try {
         const response = await this.$http.get("/mall/pending_approval");
@@ -85,6 +104,9 @@ export default Vue.extend({
     preview(...target){
       this.previewImg = `/assets/object/${target[1]}/${target[0]}`;
     },
+    updateStore(){
+      console.log(this.store);
+    },
     getWrlFile(...target){
       window.location.assign(`/assets/object/${target[1]}/${target[0]}`);
     },
@@ -92,12 +114,20 @@ export default Vue.extend({
       this.showSuccess = false;
       this.showError = false;
       try {
-        await this.$http.post("/mall/approve", {
-          'id': objectId
-        });
-        this.success = 'Object Approved';
-        this.showSuccess = true;
-        this.getResults();
+        if(!this.store){
+          this.error = 'You must select a store!';
+          this.showError = true;
+        } else {
+          this.error = '';
+          this.showError = false;
+          await this.$http.post("/mall/approve", {
+          'objectId': objectId,
+          'shopId': this.store
+          });
+          this.success = 'Object Approved';
+          this.showSuccess = true;
+          this.getResults();
+        }
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
           this.error = errorResponse.response.data.error;
@@ -143,6 +173,7 @@ export default Vue.extend({
 	async mounted(): Promise<void> {
     this.loaded = true;
     this.getResults();
+    this.getStores();
   },
   watch: {
   },
