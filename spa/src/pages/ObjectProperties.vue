@@ -44,7 +44,7 @@
       text-3xl
       font-bold
       ">
-      <span>Object Properties</span>
+      <span class="flex w-full justify-center">Object Properties</span>
       </div>
       <div class="grid" style="
         grid-template-columns: 450px auto;
@@ -68,11 +68,14 @@
           <span class="h-1.5"></span>
           <span>You have {{ this.walletBalance }} CC's.</span>
           <span class="h-5"></span>
-          <span v-show="this.price !== null && this.price !== ''">Price: {{ this.price }} CC's</span>
+          <span v-show="this.mallObject">Qty: {{ this.quantity - this.instances }}</span>
+          <span v-show="this.mallObject || this.price !== null && this.price !== ''">Price: {{ this.price }} CC's</span>
           <span v-show="this.price !== null && this.price !== '' && this.buyer !=='' && this.buyer !==null">Reserved for {{ this.buyer }}</span>
           <span class="h-5"></span>
+          <span v-show="this.mallObject">Created by {{ this.memberUsername }}</span>
           <div class="objectOwner grid gap-2" v-show="canModify">
             <div class="flex"><div style="min-width: 70px;">Name: </div><input style="color:black;" type="text" id="objectName" :value="name" /></div>
+            <div class="flex" v-show="this.mallObject"><div style="min-width: 70px;">Quantity: </div><input style="color:black;" type="text" id="objectQty" maxlength="7" :value="quantity" /></div>
             <div class="flex"><div style="min-width: 70px;">Price: </div><input style="color:black;" type="text" id="objectPrice" maxlength="7" :value="price" /></div>
             <div class="flex"><div style="min-width: 70px;">Buyer: </div><input style="color:black;" type="text" id="objectBuyer" :value="buyer" /></div>
           </div>
@@ -84,6 +87,7 @@
       <button  type="button" class="btn mx-1 mt-10" @click="changeDetails()" v-show="this.canModify">Update</button>
         <button  type="button" class="btn mx-1 mt-10" 
           v-if="
+          this.mallObject && this.instances !== this.quantity ||
           this.sessionId !== this.ownerId && this.price !== '' && (this.buyer === '' || this.buyer === this.$store.data.user.username) && this.walletBalance >= this.price" @click="buy()">
           Buy
         </button>
@@ -114,18 +118,36 @@ export default Vue.extend({
       success: "",
       walletBalance: null,
       canModify: false,
+      quantity: null,
       price: null,
       buyer: null,
+      instances: 0,
       active: "properties",
+      mallObject: false,
     };
   },
 methods: {
   async objectProperties(): Promise<void>{
     const url = window.location.href.split("/");
+    if(url[4] === 'mall'){
+      this.mallObject = true;
+    }
     this.objectId = url[url.length - 1];
     const info = await this.$http.get(`/member/info/${this.$store.data.user.id}`);
     this.walletBalance = info.data.memberInfo.walletBalance;
-    
+    if(this.mallObject){      
+      await this.$http.get(`/mall/object/${ this.objectId }`)
+        .then((response) => {
+          let object = response.data.object[0];
+          this.imgFile = `/assets/object/${object.directory}/${object.image}`;
+          this.objectFile = `/assets/object/${object.directory}/${object.filename}`;
+          this.name = object.name;
+          this.quantity = object.quantity;
+          this.price = object.price;
+          this.memberUsername = object.username;
+          this.instances = object.instances;
+        })
+    } else {
     return await this.$http.post(`/object_instance/${ this.objectId }/properties/`)
       .then((response) => {
         let object = response.data.objectInstance[0];
@@ -149,6 +171,7 @@ methods: {
           this.buyer = '';
         }
       });
+     }
   },
   reload(){
     window.location.reload();
@@ -210,28 +233,42 @@ methods: {
     }
   },
   async buy(){
-    if(this.walletBalance >= this.price){
-      try{
-        const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
-          id: this.objectId});
-          await this.objectProperties();
-          this.success = 'Object purchased!';
-          this.error = '';
-        } catch(error) {
-          console.log(error)
-          await this.objectProperties();
-          if(!this.price){
-            this.error = 'This object is not for sale!'
+    if(!this.mallObject){
+      if(this.walletBalance >= this.price){
+        try{
+          const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
+            id: this.objectId});
+            await this.objectProperties();
+            if(!this.price){
+              this.error = 'This object is not for sale!'
+            }
+            if(this.buyer && this.$store.data.user.username !== this.buyer) {
+              this.error = 'This object is reserved for someone else!';
+            }
+            if(this.price > this.walletBalance){
+              this.error = "You don't have enough cc's.";
+            }
+            if(objectPurchase.data.status === 'success'){
+              this.success = 'Object purchased!';
+              this.error = '';
+            }
+          } catch(errorResponse: any) {
+            console.log(errorResponse.response.data.error);
           }
-          if(this.buyer && this.$store.data.user.username !== this.buyer) {
-            this.error = 'This object is reserved for someone else!';
-          }
-          if(this.price > this.walletBalance){
-            this.error = "You don't have enough cc's.";
-          }
-        }
+      } else {
+        this.error = "You don't have enough cc's.";
+      }
     } else {
-      this.error = "You don't have enough cc's.";
+      if(this.walletBalance >= this.price) {
+        try{
+          const objectPurchase = await this.$http.post(`/mall/buy/`, {
+            id: this.objectId});
+          this.success = 'Object purchased!';
+          await this.objectProperties();
+        } catch(error) {
+          console.log(error);
+        }
+      }
     }
   }
 },
