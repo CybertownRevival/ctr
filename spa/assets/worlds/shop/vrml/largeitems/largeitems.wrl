@@ -9,6 +9,15 @@ EXTERNPROTO HUD[
 ]
 ["urn:inet:blaxxun.com:node:HUD","http://www.blaxxun.com/vrml/protos/nodes.wrl#HUD"]
 
+EXTERNPROTO SharedEvent [ 
+exposedField   SFString	name
+exposedField   SFString	type
+eventIn	       SFTime   set_time 
+eventOut       SFTime   timeToServer 
+eventIn	       SFTime   timeFromServer 
+eventOut       SFTime   time_changed 
+] [ "/externprotos/shared_xite.wrl#SharedEvent" ]
+   
 
 PROTO PopUp[
 eventIn SFTime set_pop
@@ -49,263 +58,19 @@ function set_pop(v,t){
 ROUTE button.touchTime TO pop.set_pop
 }#END PopUp PROTO
 
-PROTO SharedObject [
-exposedField SFVec3f translation 0 0 0
-exposedField SFRotation rotation 0 1 0 0
-exposedField SFString name ""
-exposedField SFString id ""
-exposedField MFNode children []
+EXTERNPROTO SharedObject [
+exposedField SFVec3f translation
+exposedField SFRotation rotation
+exposedField MFNode children 
+exposedField SFString name
+exposedField SFString id
 eventIn SFBool startMove
-eventOut SFTime touchTime
 eventOut SFBool isOver
+eventOut SFTime touchTime
 eventOut SFVec3f newPosition
 eventOut SFRotation newRotation
-exposedField MFString attributes ["PRC","1","CNT","1","IMG","","CLA","A"]
-exposedField MFFloat range [50]
-]{
+] "/externprotos/shared_xite.wrl#SharedObject"
 
-DEF T1 Transform {
-translation IS translation
-rotation IS rotation
-children[
-DEF TS TouchSensor{ isOver IS isOver touchTime IS touchTime}
-
-DEF SOLOD LOD{range IS range level[
-DEF SO Group{children IS children} 
-Group{}
-]}#END LOD
-]}#END T1
-
-DEF ATT Script{
-eventIn SFBool set_name
-field SFString name IS name
-field SFNode self USE ATT
-eventOut SFInt32 nameChoice_changed
-eventOut MFString name_changed
-
-eventIn  SFFloat      set_windowAspect
-field    SFVec3f      offset -0.2 0 0
-eventOut SFVec3f      offset_changed
-
-directOutput TRUE
-
-url"vrmlscript:
-function set_windowAspect(v,t){
- offset[0] = -0.1*(1+((v-1.01)));
- offset_changed = offset;
-}
-function parseInt(v){
-  n = new MFNode();
-  newString = new SFString('Switch{whichChoice '+v+'}');
-  n = Browser.createVrmlFromString(newString);
-  return n[0].whichChoice;
-}
-function parseFloat(v){
- newString = 'Sphere{radius '+v+'}';
- n = Browser.createVrmlFromString(newString);
- return n[0].radius;
-}
-function set_name(v){
- if(v){nameChoice_changed = 0;}
- else{nameChoice_changed = -1;}
-}
-function initialize(){
-  set_windowAspect( Browser.getWindowAspect() );
-  Browser.addRoute( Browser, 'windowAspect', self, 'set_windowAspect' );
-  name_changed = new MFString(name);
-}
-"}
-
-#BEGIN MOVE HUD CODE#
-DEF SOSwitch Switch{
-whichChoice -1
-choice[
-Collision{
-collide FALSE
-children[
-DEF HUD HUD { 
-children[Transform{translation 0.15 0.08 -0.3 scale 0.8 0.8 0.8 children[
-DirectionalLight{direction 0 0 -1 }
-Transform{ #Done Button
-translation -0.033 -.063 0
-scale .08 .08 .08
-children[
-DEF DoneButton TouchSensor{}
-Shape{
-appearance Appearance{material Material{diffuseColor 0 1 0 specularColor 0 1 0}}
-geometry IndexedFaceSet{
-coord Coordinate{point[0 0 0,-.15 .1 0,-.05 .15 0,0 .05 0,.085 .3 0,.15 .4 0,.2 .25 0,.05 0 0 ]}
-coordIndex[0,3,2,1,-1,6,4,3,0,-1]
-}}
-Transform{ translation 0 .1 0
-children Shape{appearance Appearance{material Material{transparency 1}}geometry Sphere{radius .3}}
-}
-]}#END DoneButton
-Transform{ #CancelButton
-translation 0.033 -.054 0
-scale .07 .07 .07
-children[
-DEF CancelButton TouchSensor{}
-Shape{
-appearance Appearance{material Material{diffuseColor 1 0 0 specularColor 1 0 0}}
-geometry IndexedFaceSet{coord Coordinate{point[0 0 0,.15 -.1 0,.1 -.15 0,.15 .1 0,.1 .15 0,-.15 -.1 0,-.1 -.15 0,-.15 .1 0,-.1 .15 0]}coordIndex[0,2,1,-1,0,3,4,-1,0,5,6,-1,0,8,7,-1]}
-}
-Shape{appearance Appearance{material Material{transparency 1}}geometry Sphere{radius .2}}
-]}#END CancelButton
-
-Transform{ #Rotation Control
-translation 0 -.054 0
-scale .16 .16 .16
-children[
-DEF RotControlKnob Transform{ scale 1 .5 1 children[ 
-Shape{appearance Appearance{material Material{diffuseColor 0 0 .5 specularColor 1 1 1 }}geometry Sphere{radius .1}}
-]}
-DEF RotControlSensor CylinderSensor{minAngle -3.142 maxAngle 3.142}
-]}#END RotationControl
-Transform{#Panel
-translation 0 0 0 scale 0.1 0.1 0.1 children[
-Transform{
-translation .14 -.05 -.3
-children [ 
-Shape { appearance Appearance { material Material{ diffuseColor 0 0 0 transparency .5}  } geometry Box { size 1 1.2 .01 } } ] }
-Transform{# Y-axis
-children[
-Transform{translation 0 .05 0 rotation 0 0 1 0 children[ 
-Shape{appearance Appearance{material Material{transparency .1 diffuseColor 0 1 0 specularColor 0 1 0}}geometry DEF arrow IndexedFaceSet{solid FALSE coord Coordinate{point[-.05 0 0,-.05 .2 0,-.15 .2 0,0 .35 0,.15 .2 0,.05 .2 0,.05 0 0]}coordIndex[0,1,5,6,-1,2,3,4,-1]}}
-]}
-Transform{translation 0 -.05 0 rotation 0 0 1 3.142 children[
-Shape{appearance Appearance{material Material{diffuseColor 0 1 0  specularColor 0 1 0}}geometry USE arrow}
-]}
-DEF Y PlaneSensor{}
-]}#END Y-axis
-Transform{# X-axis
-children[
-Transform{translation -.05 0 0 rotation 0 0 1 1.571 children[
-Shape{appearance Appearance{material Material{diffuseColor 1 0 0 specularColor 1 0 0}}geometry USE arrow}
-]}
-Transform{translation .05 0 0 rotation 0 0 1 -1.571 children[
-Shape{appearance Appearance{material Material{diffuseColor 1 0 0 specularColor 1 0 0}}geometry USE arrow}
-]}
-DEF X PlaneSensor{}
-]}#END X-axis
-Transform{translation 0 0 0 rotation 1 -.2 0 .8 children[          
-Transform{#Z-axis
-rotation 1 0 0 1.571
-children[
-Transform{translation 0 .05 0 rotation 0 0 1 -.1 children[
-Shape{appearance Appearance{material Material{transparency .1 diffuseColor .2 .2 1 specularColor 0 0 1}}geometry USE arrow}
-]}
-Transform{translation 0 -.05 0 rotation 0 0 1 3.042 children[
-Shape{appearance Appearance{material Material{diffuseColor .2 .2 1 specularColor 0 0 1}}geometry USE arrow}
-]}
-DEF Z PlaneSensor{}
-]}#END Z-axis
-]}
-]}#END panel
-DEF SOScript Script{
-eventIn SFVec3f set_X
-eventIn SFVec3f set_Y
-eventIn SFVec3f set_Z
-eventIn SFRotation set_rotation
-eventIn SFBool set_done
-eventIn SFBool set_cancel
-eventIn SFBool set_over
-eventIn SFBool set_enable IS startMove
-exposedField SFString name IS name
-exposedField SFString id IS id
-exposedField SFFloat rate 10
-field SFVec3f initialPosition IS translation
-field SFRotation initialRotation IS rotation
-field SFVec3f currentPosition 0 0 0
-field SFRotation currentRotation 0 0 0 0                                                               
-field SFVec3f XlastChange 0 0 0                                                                          
-field SFVec3f YlastChange 0 0 0
-field SFVec3f ZlastChange 0 0 0
-field SFFloat ROTlastChange 0
-eventOut SFVec3f position_changed
-eventOut SFRotation rotation_changed
-eventOut SFVec3f new_position IS newPosition
-eventOut SFRotation new_rotation IS newRotation
-eventOut SFInt32 choice_changed
-url "vrmlscript:
-function set_over(v,t){if(v){Browser.setDescription(name);} else{Browser.setDescription('');}}
-function set_enable(v,t){
- if(!v){return;}
- choice_changed = 0;
-}
-function set_X(v,t){
-  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(v[0],0,0)).subtract(XlastChange))).multiply(rate);
-  currentPosition = currentPosition.add(newPosition);
-  position_changed = currentPosition;
-  XlastChange = new SFVec3f(v[0],0,0);
-}
-function set_Y(v,t){
-  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,v[1],0)).subtract(YlastChange))).multiply(rate);
-  currentPosition = currentPosition.add(newPosition);
-  position_changed = currentPosition;
-  YlastChange = new SFVec3f(0,v[1],0);
-}
-function set_Z(v,t){
-  newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,0,v[1])).subtract(ZlastChange))).multiply(rate);
-  currentPosition = currentPosition.add(newPosition);
-  position_changed = currentPosition;
-  ZlastChange = new SFVec3f(0,0,v[1]);
-}
-function set_rotation(v,t){
- rotation_changed = v;
- currentRotation = v;
-}
-function set_done(v,t){
- if(!v){return;}
- new_position = currentPosition;
- new_rotation = currentRotation;
- initialRotation = currentRotation;
- initialPosition = currentPosition;
- choice_changed = -1;
-}
-function set_cancel(v,t){
- if(!v){return;}
- choice_changed = -1;
- position_changed = initialPosition;
- rotation_changed = initialRotation;
-}
-function initialize() {
- currentRotation = initialRotation;
- currentPosition = initialPosition;
-}
-"}
-]}#END Collision
-]}#END HUD
-]}
-]}#END SOSwitch
-
-DEF display HUD{
-children DEF display_offset Transform{ translation -.2 0 0
-children[
-DEF name_switch Switch{ whichChoice -1 choice[
-Group{ children[
-Transform{ translation 0 .075 -.25 children Shape{appearance Appearance{material Material{diffuseColor 0 .8 0}}geometry DEF name_text Text {fontStyle FontStyle {size .025 family "SANS" style "BOLD" justify "LEFT"}string ""}}}
-]}
-]}#END Switch
-]}
-}
-ROUTE X.translation_changed TO SOScript.set_X
-ROUTE Y.translation_changed TO SOScript.set_Y
-ROUTE Z.translation_changed TO SOScript.set_Z
-ROUTE RotControlSensor.rotation_changed TO RotControlKnob.set_rotation
-ROUTE RotControlSensor.rotation_changed TO SOScript.set_rotation
-ROUTE SOScript.position_changed TO T1.set_translation
-ROUTE SOScript.rotation_changed TO T1.set_rotation
-ROUTE DoneButton.isActive TO SOScript.set_done
-ROUTE CancelButton.isActive TO SOScript.set_cancel
-ROUTE TS.isOver TO SOScript.set_over
-ROUTE SOScript.choice_changed TO SOSwitch.set_whichChoice
-#END MOVE HUD CODE#
-ROUTE TS.isOver TO ATT.set_name
-ROUTE ATT.nameChoice_changed TO name_switch.set_whichChoice
-ROUTE ATT.name_changed TO name_text.set_string
-ROUTE ATT.offset_changed TO display_offset.set_translation
-}#END SharedObject PROTO
 
 PROTO SharedEvent [
 field SFBool local FALSE
@@ -426,9 +191,23 @@ eventIn         MFNode   addObjects
 eventIn         MFNode   removeObjects 
 eventOut        MFNode   objects_added 
 eventOut        MFNode   objects_removed
-]
-{
-Group {
+]{ 
+Transform { 
+addChildren IS addEvents 
+removeChildren IS removeEvents 
+children IS events 
+} 
+Transform { 
+        addChildren IS addAvatars
+        removeChildren IS removeAvatars 
+        children IS avatars 
+}
+}# END BlaxxunZone
+
+DEF SharedZone BlaxxunZone { 
+  events [ 
+    
+   ] 
 }
 DEF S Script {
  eventIn MFNode addEvents IS addEvents
@@ -465,7 +244,7 @@ url "vrmlscript:
  function set_myAvatarURL(value, time) { myAvatarURL_changed = value; }
 "
 }
-}
+
 
 
 
@@ -839,13 +618,7 @@ DEF SharedZone BlaxxunZone {}
 
 
 
-EXTERNPROTO malldirectory[
-field SFVec3f position 
-]"/externprotos/malldirectory/malldirectory.wrl#MallDirectory"
 
-Group{#directory
-children malldirectory{position 75 0 -5}
-}
 #-------------------put object directory here
 #Transform{translation 0 0 -11.2
 #children[
