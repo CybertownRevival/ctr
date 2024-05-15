@@ -23,9 +23,6 @@
     <br />
     <div v-if="$store.data.place.slug === 'mall'">
     <router-link 
-      :to="{ name: 'mall-shop' }"
-      class="btn-ui">For Sale</router-link>
-    <router-link 
       :to="{ name: 'mall-upload' }"
       class="btn-ui">Upload</router-link>
     </div>
