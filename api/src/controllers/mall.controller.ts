@@ -88,7 +88,8 @@ class MallController {
         return;
       }
 
-      this.objectService.updateStatusApproved(parseInt(request.body.id));
+      this.objectService.updateStatusApproved(
+        parseInt(request.body.objectId),request.body.shopId);
       response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
@@ -132,20 +133,65 @@ class MallController {
   }
   public async objectsForSale(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
-
     try {
-      const objects = await this.objectService.getMallForSaleObjects();
-      const returnObjects = [];
+      const placeId = parseInt(request.params.id);
+      console.log('This place: ', placeId);
+      const objects = await this.objectService.getMallForSaleObjects(placeId);
 
-      for (const obj of objects) {
-        const member = await this.memberService.find({ id: obj.member_id });
-        obj.username = member.username;
-        returnObjects.push(obj);
-      }
-      response.status(200).json({ status: 'success', objects: returnObjects });
+      response.status(200).json({ status: 'success', objects: objects });
     } catch (error) {
       console.error(error);
       response.status(400).json({ error });
+    }
+  }
+
+  public async findByObjectId(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+      const object = await this.objectService.findByObjectId(parseInt(request.params.id));
+      response.status(200).json({ status: 'success', object: object });
+    } catch(error){
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async updateObjectPosition(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+
+    try {
+      if (
+        typeof request.body?.position.x === 'undefined' ||
+        typeof request.body?.position.y === 'undefined' ||
+        typeof request.body?.position.z === 'undefined' ||
+        typeof request.body?.rotation.x === 'undefined' ||
+        typeof request.body?.rotation.y === 'undefined' ||
+        typeof request.body?.rotation.z === 'undefined' ||
+        typeof request.body?.rotation.angle === 'undefined'
+      ) {
+        throw new Error('Invalid position or rotation.');
+      }
+
+      const id = Number.parseInt(request.params.id);
+
+      await this.mallService.updateObjectPlacement(
+        id,
+        request.body.position,
+        request.body.rotation,
+      );
+
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error.message });
     }
   }
 
