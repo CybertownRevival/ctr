@@ -407,6 +407,14 @@ export default [
         },
     },
     {
+        path: "/mall/object/:object_id",
+        components: {
+            default: ObjectProperties,
+        },
+        name: "object-properties",
+        meta: {wrapper: false},
+    },
+    {
         path: "/object/:object_id",
         components: {
             default: ObjectProperties,
