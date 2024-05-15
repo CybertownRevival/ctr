@@ -540,9 +540,17 @@ export default Vue.extend({
         }
     },
     async canAdmin(){
-      const admin = await this.$http.get("/mall/can_admin", {
-        'id': this.$store.data.user.id
-      });
+      let admin = null;
+      if(this.$store.data.place.slug === 'mall' || this.$store.data.place.type === 'shop'){
+        admin = await this.$http.get("/mall/can_admin", {
+          'id': this.$store.data.user.id
+        });
+      }
+      if(this.$store.data.place.slug === 'fleamarket'){
+        admin = await this.$http.get("/fleamarket/can_admin", {
+          'id': this.$store.data.user.id
+        });
+      }
       if(admin.data.status === 'success'){
         this.canModify = true;
         if(this.$store.data.view3d){
