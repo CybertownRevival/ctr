@@ -19,6 +19,7 @@ import {
   messageboardRoutes,
   inboxRoutes,
   mallRoutes,
+  fleamarketRoutes,
 } from './routes';
 
 require('./cron/cron')();
@@ -60,6 +61,7 @@ app.use('/api/messageboard', messageboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/inbox', inboxRoutes);
 app.use('/api/mall', mallRoutes);
+app.use('/api/fleamarket', fleamarketRoutes);
 
 app.use((request, response, next) => {
   const error = new Error('Not found');
