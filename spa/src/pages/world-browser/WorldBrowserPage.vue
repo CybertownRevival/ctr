@@ -122,11 +122,17 @@ export default Vue.extend({
     async getPlace(): Promise<void> {
       this.debugMsg("get place");
       document.title = `${this.$store.data.place.name  } - Cybertown`;
+      let objectResponse = null;
+      let objects = [];
       try {
-        const objectInstanceResponse = await this.$http.get(`/place/${  this.$store.data.place.id 
+        if(this.$store.data.place.type === 'shop'){
+          const objectResponse = await this.$http.get(`/mall/objects/${this.$store.data.place.id}`);
+          this.sharedObjects = objectResponse.data.objects;
+        } else {
+          objectResponse = await this.$http.get(`/place/${  this.$store.data.place.id 
         }/object_instance`);
-
-        this.sharedObjects = objectInstanceResponse.data.object_instance;
+        this.sharedObjects = objectResponse.data.object_instance;
+        }
       } catch(e) {
         console.error(e);
       }
@@ -479,12 +485,24 @@ export default Vue.extend({
         },
 
       }
-      await this.$http.post(`/object_instance/${  objectId  }/position`, location);
-      this.$socket.emit('SO', {
-        event: 'move',
-        objectId: objectId,
-        detail: location
-      });
+      if(this.$store.data.place.type === 'shop'){
+        await this.$http.post(`/mall/${  objectId  }/position`, location);
+        /*
+        /* This crashes the server.
+        /*
+        this.$socket.emit('SO', {
+          event: 'move',
+          objectId: objectId,
+          detail: location
+        });*/
+      } else {
+        await this.$http.post(`/object_instance/${  objectId  }/position`, location);
+        this.$socket.emit('SO', {
+          event: 'move',
+          objectId: objectId,
+          detail: location
+        });
+      }
     },
     sendSharedEvent(event): void {
       this.$socket.emit("SE", event.detail);
