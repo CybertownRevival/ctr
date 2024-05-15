@@ -67,4 +67,13 @@ export class ObjectRepository {
       .where('mall_expiration', '>', mallExpiration);
     return objects;
   }
+
+  public async getMallObject(objectId: number): Promise<any> {
+    const object = await this.db.object
+      .select('object.*', 'member.username')
+      .where('object.id', objectId)
+      .where('object.status', 1)
+      .join('member', 'member.id', 'object.member_id');
+    return object;
+  }
 }
