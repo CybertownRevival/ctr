@@ -64,6 +64,7 @@
           <span class="h-1.5"></span>
           <span v-if="this.placeId === 0 && this.ownerId === this.sessionId">This object is located in your backpack.</span>
           <span v-else-if="this.ownerId !== this.sessionId && this.placeId === 0">This object is located in {{ this.memberUsername }}'s backpack.</span>
+          <span v-else-if="!this.mallObject && this.ownerId !== this.sessionId">This object is owned by {{ this.memberUsername }}.</span>
           <span class="h-1.5"></span>
           <span>You have {{ this.walletBalance }} CC's.</span>
           <span class="h-5"></span>
@@ -128,8 +129,7 @@ methods: {
     return await this.$http.post(`/object_instance/${ this.objectId }/properties/`)
       .then((response) => {
         let object = response.data.objectInstance[0];
-        let filename = object.filename.split(".", 1);
-        this.imgFile = `/assets/object/${object.directory}/${filename}.jpeg`;
+        this.imgFile = `/assets/object/${object.directory}/${object.image}`;
         this.objectFile = `/assets/object/${object.directory}/${object.filename}`;
         this.ownerId = object.member_id;
         this.sessionId = this.$store.data.user.id;

@@ -37,7 +37,8 @@ export class ObjectInstanceRepository {
     return this.db.objectInstance
       .select(
         'object_instance.*', 
-        'object.filename', 
+        'object.filename',
+        'object.image',
         'object.directory', 
         'object.name', 
         'member.username')
