@@ -8,6 +8,7 @@ import {
   MemberRepository,
   TransactionRepository,
   ObjectInstanceRepository,
+  MallRepository,
 } from '../../repositories';
 
 /** Service for dealing with blocks */
@@ -18,6 +19,7 @@ export class ObjectService {
     private memberRepository: MemberRepository,
     private transactionRepository: TransactionRepository,
     private objectInstanceRepository: ObjectInstanceRepository,
+    private mallRepository: MallRepository,
   ) {}
 
   public static readonly WRL_FILESIZE_LIMIT = 80000;
@@ -37,23 +39,30 @@ export class ObjectService {
     return this.objectRepository.findById(objectId);
   }
 
+  public async findByObjectId(objectId: number): Promise<any> {
+    const returnObjects = [];
+    const object = await this.objectRepository.getMallObject(objectId);
+    for (const obj of object) {
+      const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
+      obj.instances = instances;
+      returnObjects.push(obj);
+    }
+    return returnObjects;
+  }
+
   public async getPendingObjects() {
     return await this.objectRepository.findByStatus(ObjectService.STATUS_PENDING);
   }
 
-  public async getMallForSaleObjects() {
-    const objects = await this.objectRepository.getMallForSale(
-      ObjectService.STATUS_ACTIVE,
-      new Date().toJSON().slice(0, 19).replace('T', ' '),
+  public async getMallForSaleObjects(placeId: number) {
+    const objects = await this.mallRepository.getMallForSale(
+      placeId,
     );
-    for (const obj of objects) {
-      const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
-      obj.instances = instances;
-    }
     return objects;
   }
 
-  public async updateStatusApproved(objectId: number) {
+  public async updateStatusApproved(objectId: number, shopId: number) {
+    this.mallRepository.addToMallObjects(objectId, shopId);
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + ObjectService.MALL_EXPIRATION_DAYS);
 
