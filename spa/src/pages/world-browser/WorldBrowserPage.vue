@@ -432,23 +432,28 @@ export default Vue.extend({
         );
       }
     },
-    async onSharedObjectEvent(event): Promise<void> {
-      const browser = X3D.getBrowser();
-      this.sharedObjects.forEach(sharedObject => {
-        const object = this.sharedObjectsMap.get(sharedObject.id);
-        browser.currentScene.removeRootNode(object);
-        this.sharedObjectsMap.delete(sharedObject.id);
-      });
+     async onSharedObjectEvent(event): Promise<void> {
+      if(this.$store.data.view3d){
+        const browser = X3D.getBrowser();
+        this.sharedObjects.forEach(sharedObject => {
+          const object = this.sharedObjectsMap.get(sharedObject.id);
+          browser.currentScene.removeRootNode(object);
+          this.sharedObjectsMap.delete(sharedObject.id);
+        });
       this.sharedObjects = [];
-
       const objectInstanceResponse = await this.$http.get(`/place/${  this.$store.data.place.id 
       }/object_instance`);
-
       this.sharedObjects = objectInstanceResponse.data.object_instance;
-      this.sharedObjectsMap = new Map();
-      this.sharedObjects.forEach((object) => {
-        this.addSharedObject(object, browser);
-      });
+        this.sharedObjectsMap = new Map();
+        this.sharedObjects.forEach((object) => {
+          this.addSharedObject(object, browser);
+        });
+      } else {
+        this.sharedObjects = [];
+        const objectInstanceResponse = await this.$http.get(`/place/${  this.$store.data.place.id 
+        }/object_instance`);
+        this.sharedObjects = objectInstanceResponse.data.object_instance;
+      }
     },
     onVersion(event: { version: string }): void {
       if (event.version !== environment.packageVersion) {
@@ -576,15 +581,16 @@ export default Vue.extend({
         this.eventNodeMap.get(eventNode.name).push(eventNode);
       }
     },
-    startSocketListeners(): void {
+     startSocketListeners(): void {
       this.$socket.on("VERSION", event => this.onVersion(event));
+      this.$socket.on("update-object", () => setTimeout(this.onSharedObjectEvent, 50));
+      this.$socket.on("SO", event => this.onSharedObjectEvent(event));
     },
     start3DSocketListeners(): void {
       this.$socket.on("AV", event => this.onAvatarMoved(event));
       this.$socket.on("AV:del", event => this.onAvatarRemoved(event));
       this.$socket.on("AV:new", event => this.onAvatarAdded(event));
       this.$socket.on("SE", event => this.onSharedEvent(event));
-      this.$socket.on("SO", event => this.onSharedObjectEvent(event));
     },
     async startX3D(): Promise<any> {
       if (!this.browser) {
