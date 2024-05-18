@@ -120,6 +120,10 @@ io.on("connection", async function(socket) {
         }
     });
 
+    socket.on('update-object', function() {
+        socket.broadcast.emit('update-object');
+    });
+
     //handle shared events
     socket.on("SE", function(msg) {
         console.log(msg);
