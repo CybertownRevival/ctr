@@ -213,8 +213,20 @@ DEF TS TouchSensor
   isOver IS isOver
   touchTime IS touchTime
 }
-Group{children IS children}
-]}
+DEF LOD1 LOD {
+ range [
+  40
+ ]
+ level [
+  Group{children IS children}
+  Group {
+   children [
+   ]
+  }
+ ]
+}
+]
+}
 
 #BEGIN MOVE HUD CODE#
 DEF SOSwitch Switch{
