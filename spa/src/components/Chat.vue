@@ -651,6 +651,14 @@ export default Vue.extend({
       this.$socket.on("disconnect", () => {
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
       });
+      this.$socket.on("update-object", () => {
+        if(this.activePanel === 'userBackpack'){
+          setTimeout(this.loadUserBackpack, 50);
+        }
+        if(this.activePanel === 'backpack'){
+          setTimeout(this.loadBackpack, 50);
+        }
+      });
     },
     dropObject() {
       this.$emit("drop-object", this.objectId);
