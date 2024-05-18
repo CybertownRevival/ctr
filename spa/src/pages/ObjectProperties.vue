@@ -176,6 +176,7 @@ methods: {
       this.buyer = null;
     }
     this.update();
+    this.$socket.emit('update-object');
   },
   loadObjectPreview() {
     const browser = X3D.createBrowser();
@@ -209,6 +210,11 @@ methods: {
         break;
     }
   },
+  startSocketListeners(){
+    this.$socket.on("update-object", () => {
+        this.reload();
+      });
+  },
   async buy(){
     if(this.walletBalance >= this.price){
       try{
@@ -217,6 +223,7 @@ methods: {
           await this.objectProperties();
           this.success = 'Object purchased!';
           this.error = '';
+          this.$socket.emit('update-object');
         } catch(error) {
           console.log(error)
           await this.objectProperties();
@@ -236,6 +243,7 @@ methods: {
   }
 },
 mounted() {
+  this.startSocketListeners();
   this.objectProperties();
 }
 });
