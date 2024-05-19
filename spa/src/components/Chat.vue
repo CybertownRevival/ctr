@@ -380,7 +380,7 @@ export default Vue.extend({
       this.userMenu = true;
       this.cursorX = e.x;
       this.cursorY = e.y;
-      if(this.cursorY >= window.innerHeight - 90){
+      if(this.cursorY >= window.innerHeight - 150){
         this.menuTop = null;
         this.menuBottom = "5px";
       }
