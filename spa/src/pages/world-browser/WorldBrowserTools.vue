@@ -22,10 +22,10 @@
     </span>
     <br />
     <div v-if="$store.data.place.slug === 'mall'">
-    <router-link 
-      :to="{ name: 'mall-upload' }"
-      class="btn-ui">Upload</router-link>
+      <button class="btn-ui" v-on:click="opener('#/mall/upload')">Upload</button>
+      <button class="btn-ui" v-on:click="opener('#/mall/creator')">My Uploads</button>
     </div>
+    <br />
     <div v-if="canAdmin">
       <span href=""
             class="btn-ui">Message to All</span>
