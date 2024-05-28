@@ -56,7 +56,7 @@
                   </div>
                   <div v-show="page === 'restock'">
                     <br />
-                    <button class="btn-ui" @click="addQuantity(object.id)">Add More</button>
+                    <button class="btn-ui" @click="addQuantity(object.id)" v-show="object.limit === 'Unlimited' || object.quantity < object.limit">Add More</button>
                   </div>
               </div>
             </div>
