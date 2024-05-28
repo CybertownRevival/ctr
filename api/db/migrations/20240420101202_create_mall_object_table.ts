@@ -20,10 +20,7 @@ export async function up(knex: Knex): Promise<void> {
         .references('object.id');
 
       table.integer('place_id')
-        .unsigned()
-        .notNullable();
-      table.foreign('place_id')
-        .references('place.id');
+        .unsigned();
 
       table.text('position');
 
