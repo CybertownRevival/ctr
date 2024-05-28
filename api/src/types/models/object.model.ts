@@ -9,6 +9,7 @@ export interface Object extends Model {
   member_id: number;
   name: string;
   quantity: number;
+  limit: number;
   price: number;
   status: number;
   directory: string;
