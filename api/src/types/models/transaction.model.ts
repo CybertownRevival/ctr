@@ -21,6 +21,7 @@ export enum TransactionReason {
   ObjectPurchase = 'object-purchase',
   ObjectProfit = 'object-profit',
   ObjectSell = 'object-sell',
+  ObjectRestock = 'object-restock',
 }
 
 /** Defines a Transaction object as stored in the db */
