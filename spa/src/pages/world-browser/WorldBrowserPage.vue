@@ -607,11 +607,6 @@ export default Vue.extend({
       this.$socket.on("VERSION", event => this.onVersion(event));
       this.$socket.on("update-object", () => setTimeout(this.onSharedObjectEvent, 50));
       this.$socket.on("SO", event => this.onSharedObjectEvent(event));
-      this.$socket.on("disconnect", () => {
-        if(this.loaded){
-          this.joinPlace();
-        }
-      });
     },
     start3DSocketListeners(): void {
       this.$socket.on("AV", event => this.onAvatarMoved(event));
