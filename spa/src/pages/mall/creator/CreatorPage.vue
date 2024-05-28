@@ -2,8 +2,6 @@
 	<main v-if="loaded" class="w-full flex h-full">
     <div class="flex-col w-56 h-full border-r-2 border-white text-center">
       <br />
-      <router-link :to="{ name: 'mall-upload' }" class="btn-ui">Upload</router-link>
-      <br />
       <div class="mb-2"><button class="btn-ui" @click="changePage('pending')">Pending</button></div>
       
       <div class="mb-2"><button class="btn-ui" @click="changePage('stocked')">Stocked</button></div>
