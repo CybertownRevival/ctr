@@ -198,6 +198,7 @@ methods: {
     if(this.buyer === ""){
       this.buyer = null;
     }
+    this.$socket.emit('update-object');
     this.update();
   },
   loadObjectPreview() {
@@ -232,6 +233,11 @@ methods: {
         break;
     }
   },
+  startSocketListeners(){
+    this.$socket.on("update-object", () => {
+        this.reload();
+      });
+  },
   async buy(){
     if(!this.mallObject){
       if(this.walletBalance >= this.price){
@@ -252,6 +258,7 @@ methods: {
               this.success = 'Object purchased!';
               this.error = '';
             }
+            this.$socket.emit('update-object');
           } catch(errorResponse: any) {
             console.log(errorResponse.response.data.error);
           }
@@ -273,6 +280,7 @@ methods: {
   }
 },
 mounted() {
+  this.startSocketListeners();
   this.objectProperties();
 }
 });
