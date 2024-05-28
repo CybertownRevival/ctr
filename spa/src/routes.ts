@@ -43,11 +43,14 @@ import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
 import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
 import AvatarSearch from "@/pages/admin/avatar/search.vue";
+import PlaceSearch from "@/pages/admin/place/search.vue";
 
 import MallRulesPage from "@/pages/mall/MallRulesPage.vue";
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
 import MallApprovalPage from "@/pages/mall/MallApprovalPage.vue";
 import MallShopPage from "@/pages/mall/MallShopPage.vue";
+import CreatorPage from "@/pages/mall/creator/CreatorPage.vue";
+import MallStaffPage from "@/pages/mall/staff/StaffPage.vue";
 
 import ObjectProperties from "./pages/ObjectProperties.vue";
 
@@ -368,6 +371,14 @@ export default [
                     title: "Avatar Search - Admin Panel",
                 },
             },
+            {
+                path: "/admin/place/",
+                component: PlaceSearch,
+                name: "PlaceSearch",
+                meta: {
+                    title: "Places Search - Admin Panel",
+                },
+            },
         ],
     },
     {
@@ -385,7 +396,7 @@ export default [
         name: "mall-upload",
         meta: {
             title: "Mall Upload",
-            wrapper: true,
+            wrapper: false,
         },
     },
     {
@@ -404,6 +415,24 @@ export default [
         meta: {
             title: "Objects for Sale",
             wrapper: true,
+        },
+    },
+    {
+        path: "/mall/staff",
+        component: MallStaffPage,
+        name: "mall-staff",
+        meta: {
+            title: "Mall Staff Panel",
+            wrapper: false,
+        },
+    },
+    {
+        path: "/mall/creator",
+        component: CreatorPage,
+        name: "mall-creator",
+        meta: {
+            title: "Creator Panel",
+            wrapper: false,
         },
     },
     {
