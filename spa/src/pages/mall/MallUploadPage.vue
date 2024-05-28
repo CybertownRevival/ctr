@@ -123,7 +123,7 @@
       @click="upload"
       class="btn" v-if="!showSuccess"/>
       <button class="btn" @click="reload()" v-else>Upload More</button>
-      <router-link to="/place/mall"><button class="btn">Back</button></router-link>
+      <router-link to="/place/mall"><button class="btn" @click="close()">Close</button></router-link>
     </div>
 
     <hr class="my-3" />
@@ -271,7 +271,10 @@ export default Vue.extend({
     },
     reload(){
       window.location.reload();
-    }
+    },
+    close(){
+      window.close();
+    },
   },
   mounted() {
     this.loaded = true;
