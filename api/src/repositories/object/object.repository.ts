@@ -61,11 +61,48 @@ export class ObjectRepository {
     await this.db.object.where({ id: objectId }).update(props);
   }
 
+  public async updateObjectLimit(objectId: number, limit: number): Promise<any> {
+    await this.db.object.where({ id: objectId }).update('limit', limit);
+  }
+
+  public async increaseObjectQuantity(objectId: number, quantity: number): Promise<any> {
+    await this.db.object.where({ id: objectId }).update('quantity', quantity);
+  }
+
+  public async updateObjectName(objectId: number, name: string): Promise<any> {
+    await this.db.object.where({ id: objectId }).update('name', name);
+  }
+
   public async getMallForSale(status: number, mallExpiration: string): Promise<any> {
     const objects = await this.db.object
       .where('status', status)
       .where('mall_expiration', '>', mallExpiration);
     return objects;
+  }
+
+  public async findAllObjects(
+    column: string, 
+    compare: string, 
+    content: string, 
+    limit: number, 
+    offset: number,
+  ): Promise<any> {
+    console.log(compare);
+    const objects = await this.db.object
+      .select('object.*')
+      .where(column, compare, content)
+      .limit(limit)
+      .offset(offset);
+    return objects;
+  }
+
+  public async getUserUploadedObjects(userId: number): Promise<any> {
+    const object = await this.db.object
+      .select('object.*', 'member.username')
+      .where('object.member_id', userId)
+      .where('object.status', '>=', 1)
+      .join('member', 'member.id', 'object.member_id');
+    return object;
   }
 
   public async getMallObject(objectId: number): Promise<any> {
@@ -75,5 +112,9 @@ export class ObjectRepository {
       .where('object.status', 1)
       .join('member', 'member.id', 'object.member_id');
     return object;
+  }
+
+  public async total(column: string, compare: string, content: string): Promise<any> {
+    return this.db.object.count('id as count').where(column, compare, content);
   }
 }
