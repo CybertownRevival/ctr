@@ -396,7 +396,7 @@ export default [
         name: "mall-upload",
         meta: {
             title: "Mall Upload",
-            wrapper: false,
+            wrapper: true,
         },
     },
     {
