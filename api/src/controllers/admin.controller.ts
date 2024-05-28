@@ -4,7 +4,11 @@ import { Container } from 'typedi';
 import { AdminService, MemberService, AvatarService } from '../services';
 
 class AdminController {
-  constructor(private adminService: AdminService, private memberService: MemberService, private avatarService: AvatarService,) {}
+  constructor(
+    private adminService: AdminService, 
+    private memberService: MemberService, 
+    private avatarService: AvatarService,
+  ) {}
   
   public async addBan(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
@@ -200,6 +204,49 @@ class AdminController {
     } catch (error) {
       console.log(error);
       response.status(400).json({error});
+    }
+  }
+
+  public async places(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (admin) {
+      try {
+        const results = await this.adminService.searchPlaces(
+          request.query.type.toString(),
+          parseInt(request.query.limit.toString()),
+          parseInt(request.query.offset.toString()),
+        );
+        
+        response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async placesUpdate(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (admin) {
+      try {
+        this.adminService.updatePlaces(
+          parseInt(request.body.id.toString()),
+          request.body.column.toString(),
+          request.body.content.toString(),
+        );
+        response.status(200).json({status: 'success'});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
     }
   }
 }

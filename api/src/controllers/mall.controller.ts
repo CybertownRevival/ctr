@@ -50,6 +50,34 @@ class MallController {
 
   }
 
+  public async findAllObjects(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.mallService.canAdmin(session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+      const returnObjects = [];
+      const objects = await this.mallService
+        .getAllObjects(
+          request.query.column.toString(),
+          request.query.compare.toString(),
+          request.query.content.toString(),
+          Number(request.query.limit), 
+          Number(request.query.offset), 
+        );
+      response.status(200).json({ status: 'success', objects: objects });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+
+  }
+
   public async objectsPendingApproval(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
 
@@ -89,7 +117,91 @@ class MallController {
       }
 
       this.objectService.updateStatusApproved(
+        parseInt(request.body.objectId));
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async dropMallObject(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.mallService.canAdmin(session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+
+      this.objectService.updateObjectPlace(
         parseInt(request.body.objectId),request.body.shopId);
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async removeMallObject(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.mallService.canAdmin(session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+
+      this.objectService.removeMallObject(
+        parseInt(request.body.objectId));
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async updateObjectLimit(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.mallService.canAdmin(session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+
+      this.objectService.updateObjectLimit(
+        parseInt(request.body.objectId),request.body.limit);
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async updateObjectName(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.mallService.canAdmin(session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+
+      this.objectService.updateObjectName(
+        parseInt(request.body.objectId),request.body.name);
       response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
@@ -135,9 +247,7 @@ class MallController {
     const { apitoken } = request.headers;
     try {
       const placeId = parseInt(request.params.id);
-      console.log('This place: ', placeId);
       const objects = await this.objectService.getMallForSaleObjects(placeId);
-
       response.status(200).json({ status: 'success', objects: objects });
     } catch (error) {
       console.error(error);
@@ -156,6 +266,43 @@ class MallController {
         return;
       }
       const object = await this.objectService.findByObjectId(parseInt(request.params.id));
+      response.status(200).json({ status: 'success', object: object });
+    } catch(error){
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async findStore(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+      const place = await this.mallService.getStore(parseInt(request.params.id));
+      console.log(request.params.id);
+      response.status(200).json({ status: 'success', place: place });
+    } catch(error){
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async findByUsername(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+      const object = await this.objectService.findByUsername(request.params.username);
       response.status(200).json({ status: 'success', object: object });
     } catch(error){
       console.error(error);

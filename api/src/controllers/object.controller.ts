@@ -175,6 +175,41 @@ class ObjectController {
       status: 'success',
     });
   }
+
+  public async increaseQuantity(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    try{
+      const object = await this.objectService.findById(request.body.objectId);
+      const increase = request.body.qty;
+      const member = await this.memberService.find({ id: session.id });
+      const wallet = await this.walletService.findById(member.wallet_id);
+      const sellerFee = this.objectService.getSellerFee(increase, object.price);
+      if (object.member_id !== session.id) {
+        throw new Error('You do not own this object!');
+      }
+      if (sellerFee > wallet.balance) {
+        throw new Error('You do not have enough CCs.');
+      }
+      if (object.limit && object.quantity + increase > object.limit){
+        throw new Error('You can not upload more than what the object is limited to.');
+      }
+      await this.objectService.performObjectRestockTransaction(session.id, sellerFee);
+      await this.objectService.increaseQuantity(object.id, object.quantity + increase);
+      response.status(200).json({
+        status: 'success',
+      });
+    } catch(error) {
+      console.error(error);
+      response.status(400).json({'error': error.message});
+    }
+  }
 }
 const memberService = Container.get(MemberService);
 const objectService = Container.get(ObjectService);
