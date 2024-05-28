@@ -167,7 +167,7 @@ export default Vue.extend({
         this.showError = false;
         await this.$http.post("/object/increase_quantity", {
         'objectId': objectId,
-        'qty': parseInt(qty),
+        'qty': parseInt(qty.replace(/[^0-9]/g, '')),
         });
         this.objects = [];
         this.getResults();
