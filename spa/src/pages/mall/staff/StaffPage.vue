@@ -211,7 +211,7 @@ export default Vue.extend({
             this.showError = false;
             await this.$http.post("/mall/limit", {
             'objectId': objectId,
-            'limit': limit,
+            'limit': limit.replace(/[^0-9]/g, ''),
             });
             this.success = 'Object limit updated!';
             this.showSuccess = true;
