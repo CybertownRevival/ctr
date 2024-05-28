@@ -7,6 +7,7 @@ import {
   ObjectRepository,
   PlaceRepository,
   MallRepository,
+  MemberRepository
 } from '../../repositories';
 import { MallObjectPosition, MallObjectRotation } from 'models';
 
@@ -16,10 +17,11 @@ export class MallService {
   constructor(
     private roleAssignmentRepository: RoleAssignmentRepository,
     private roleRepository: RoleRepository,
-    private objectRespository: ObjectRepository,
+    private objectRepository: ObjectRepository,
     private objectInstanceRepository: ObjectInstanceRepository,
     private placeRepository: PlaceRepository,
     private mallRepository: MallRepository,
+    private memberRepository: MemberRepository,
   ) {}
 
   public async canAdmin(memberId: number): Promise<boolean> {
@@ -39,7 +41,7 @@ export class MallService {
   }
 
   public async isObjectAvailable(objectId: number): Promise<boolean> {
-    const object = await this.objectRespository.find({ id: objectId });
+    const object = await this.objectRepository.find({ id: objectId });
     if (!object) {
       return false;
     }
@@ -61,6 +63,41 @@ export class MallService {
 
   public async getMallStores(){
     const stores = await this.placeRepository.findAllStores();
+    return stores;
+  }
+
+  public async getAllObjects(
+    column: string, compare: string, content: string, limit: number, offset: number){
+    const returnObjects= [];
+    const objects = await this.objectRepository
+      .findAllObjects(column, compare, content, limit, offset);
+    objects.forEach(obj => {
+      const user = this.memberRepository.findById(obj.member_id);
+      const store = this.mallRepository.getStore(obj.id);
+      if(store){
+        store.then((value) => {
+          obj.store = value[0];
+        });
+      }
+      user.then((value) => {
+        obj.username = value.username;
+      });
+      const instances = this.objectInstanceRepository.countByObjectId(obj.id);
+      instances.then((value) => {
+        obj.instances = value;
+      });
+      returnObjects.push(obj);
+    });
+    
+    const total = await this.objectRepository.total(column, compare, content);
+    return {
+      objects: returnObjects,
+      total: total,
+    };
+  }
+
+  public async getStore(id: number){
+    const stores = await this.mallRepository.getStore(id);
     return stores;
   }
 
