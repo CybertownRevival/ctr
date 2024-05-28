@@ -56,4 +56,35 @@ export class PlaceRepository {
       : undefined;
   }
 
+  public async updatePlaces(id: number, column: string, content: string): Promise<any> {
+    await this.db.place
+      .where({id: id})
+      .update(column, content);
+  }
+
+  /**
+ * This is to assist with the pagination of the place search
+ * @param type
+ * @return string
+ */
+  public async totalByType(type: string): Promise<any> {
+    return this.db.place.count('id as count').where('type', type);
+  }
+
+  /**
+   * returns results of places by type (pagination)
+   * @param type
+   * @param limit
+   * @param offset
+   * @returns
+   */
+  public async findByType(type: string, limit: number, offset: number): Promise<any> {
+    return this.db.place
+      .select(['place.*'])
+      .where('place.type', type)
+      .orderBy('place.id')
+      .limit(limit)
+      .offset(offset);
+  }
+
 }
