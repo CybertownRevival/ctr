@@ -9,8 +9,8 @@ export class MallRepository {
 
   constructor(private db: Db) {}
 
-  public async addToMallObjects(objectId: number, placeId: number): Promise<void> {
-    await this.db.mall.insert({object_id: objectId, place_id: placeId});
+  public async addToMallObjects(objectId: number): Promise<void> {
+    await this.db.mall.insert({object_id: objectId});
   }
 
   public async getMallForSale(
@@ -18,11 +18,30 @@ export class MallRepository {
     const objects = await this.db.mall
       .select('object.*', 'mall_object.place_id', 'mall_object.position', 'mall_object.rotation')
       .where('place_id', placeId)
+      .where('object.status', 1)
       .join('object', 'object.id', 'mall_object.object_id')
       .join('place', 'place.id', 'mall_object.place_id');
     return objects;
   }
 
+  public async getStore(objectId: number): Promise<any> {
+    const place = await this.db.mall
+      .select('place.*')
+      .where('mall_object.object_id',  objectId)
+      .join('place', 'place.id', 'mall_object.place_id');
+    return place;
+  }
+
+  public async updateObjectPlace(
+    mallObjectId: number,
+    shopId: number,
+  ): Promise<void> {
+    await this.db.mall.where({ object_id: mallObjectId }).update({
+      place_id: shopId,
+      position: '{"x":0.0,"y":1.75,"z":0.0}',
+      rotation: '{"x":0,"y":0,"z":0,"angle":0}',
+    });
+  }
 
   public async updateObjectPlacement(
     mallObjectId: number,
