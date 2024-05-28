@@ -17,6 +17,16 @@ class PlaceController {
     }
   }
 
+  public async getPlaceById(request: Request, response: Response): Promise<void> {
+    try {
+      const place = await this.placeService.findById(parseInt(request.params.id));
+      response.status(200).json({ place });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
   /** Provides data about objects present in the place with the given slug */
   public async getPlaceObjects(request: Request, response: Response): Promise<void> {
     const { placeId } = request.params;

@@ -7,6 +7,8 @@ import {
   ColonyService,
   HoodService,
   BlockService,
+  PlaceService,
+  MallService,
 } from '../services';
 import sanitizeHtml from 'sanitize-html';
 
@@ -18,6 +20,8 @@ class InboxController {
    private colonyService: ColonyService,
    private hoodService: HoodService,
    private blockService: BlockService,
+   private placeService: PlaceService,
+   private mallService: MallService,
   ) {
   }
   
@@ -37,6 +41,17 @@ class InboxController {
     } else if (type === 'block') {
       try {
         return await this.blockService.canAdmin(placeId, id);
+      } catch (e) {
+        console.log(e);
+      }
+    } else if (type === 'public') {
+      try {
+        const place = await this.placeService.findById(placeId);
+        if(place.slug === 'mall'){
+          return await this.mallService.canAdmin(id);
+        } else {
+          return await this.inboxService.getAdminInfo(placeId, id);
+        }
       } catch (e) {
         console.log(e);
       }
@@ -116,14 +131,14 @@ class InboxController {
   
   public async getMessage(request: Request, response: Response): Promise<any> {
     const messageId = Number.parseInt(request.body.message_id);
-	const placeId = Number.parseInt(request.body.place_id);
+    const placeId = Number.parseInt(request.body.place_id);
     if (placeId <= 0) {
       response.status(400).json({
         error: 'placeId is required.',
       });
       return;
     }
-	const { apitoken } = request.headers;
+    const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);
     if(!session) {
       response.status(400).json({
@@ -132,17 +147,17 @@ class InboxController {
       return;
     }
     const { id } = session;
-	if (this.inboxService.getAdminInfo(placeId, id)) {
-    try {
-      const [getmessage] = await this.inboxService.getMessage(messageId);
-      console.log(getmessage);
-      response.status(200).json(getmessage);
-    } catch (error) {
-      console.log(error);
-      response.status(400).json({
-        err: 'A problems occurred when getting the message',
-      });
-	  }
+    if (this.inboxService.getAdminInfo(placeId, id)) {
+      try {
+        const [getmessage] = await this.inboxService.getMessage(messageId);
+        console.log(getmessage);
+        response.status(200).json(getmessage);
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({
+          err: 'A problems occurred when getting the message',
+        });
+      }
     }
   }
   
@@ -274,9 +289,13 @@ const inboxService = Container.get(InboxService);
 const colonyServices = Container.get(ColonyService);
 const hoodService = Container.get(HoodService);
 const blockService = Container.get(BlockService);
+const placeService = Container.get(PlaceService);
+const mallService = Container.get(MallService);
 export const inboxController = new InboxController(
   memberService,
   inboxService,
   colonyServices,
   hoodService,
-  blockService);
+  blockService,
+  placeService,
+  mallService);

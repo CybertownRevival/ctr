@@ -7,6 +7,8 @@ import {
   ColonyService,
   HoodService,
   BlockService,
+  PlaceService,
+  MallService,
 } from '../services';
 import sanitizeHtml from 'sanitize-html';
 
@@ -18,6 +20,8 @@ class MessageboardController {
    private colonyService: ColonyService,
    private hoodService: HoodService,
    private blockService: BlockService,
+   private placeService: PlaceService,
+   private mallService: MallService,
   ) {
   }
   
@@ -37,6 +41,17 @@ class MessageboardController {
     } else if (type === 'block') {
       try {
         return await this.blockService.canAdmin(placeId, id);
+      } catch (e) {
+        console.log(e);
+      }
+    } else if (type === 'public') {
+      try {
+        const place = await this.placeService.findById(placeId);
+        if(place.slug === 'mall'){
+          return await this.mallService.canAdmin(id);
+        } else {
+          return await this.messageboardService.getAdminInfo(placeId, id);
+        }
       } catch (e) {
         console.log(e);
       }
@@ -243,9 +258,13 @@ const messageboardService = Container.get(MessageboardService);
 const colonyServices = Container.get(ColonyService);
 const hoodService = Container.get(HoodService);
 const blockService = Container.get(BlockService);
+const placeService = Container.get(PlaceService);
+const mallService = Container.get(MallService);
 export const messageboardController = new MessageboardController(
   memberService,
   messageboardService,
   colonyServices,
   hoodService,
-  blockService);
+  blockService,
+  placeService,
+  mallService);
