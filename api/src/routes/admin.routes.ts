@@ -22,5 +22,9 @@ adminRoutes.post('/avatars/approve', (request, response) =>
   adminController.avatarApprove(request, response));
 adminRoutes.post('/avatars/reject', (request, response) =>
   adminController.avatarReject(request, response));
+adminRoutes.get('/places', (request, response) =>
+  adminController.places(request, response));
+adminRoutes.post('/places/update', (request, response) =>
+  adminController.placesUpdate(request, response));
 
 export {adminRoutes};

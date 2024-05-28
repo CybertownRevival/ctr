@@ -7,5 +7,7 @@ placeRoutes.get('/:placeId/object_instance',
   (request, response) => placeController.getPlaceObjects(request, response));
 placeRoutes.get('/:slug',
   (request, response) => placeController.getPlace(request, response));
+placeRoutes.get('/:id',
+  (request, response) => placeController.getPlaceById(request, response));
 
 export { placeRoutes };
