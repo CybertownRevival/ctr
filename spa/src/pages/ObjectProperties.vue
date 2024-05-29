@@ -198,8 +198,8 @@ methods: {
     if(this.buyer === ""){
       this.buyer = null;
     }
-    this.$socket.emit('update-object');
     this.update();
+    this.$socket.emit('update-object');
   },
   loadObjectPreview() {
     const browser = X3D.createBrowser();
@@ -268,7 +268,7 @@ methods: {
     } else {
       if(this.walletBalance >= this.price) {
         try{
-          const objectPurchase = await this.$http.post(`/mall/buy/`, {
+          await this.$http.post(`/mall/buy/`, {
             id: this.objectId});
           this.success = 'Object purchased!';
           await this.objectProperties();
