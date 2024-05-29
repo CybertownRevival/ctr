@@ -380,7 +380,7 @@ export default Vue.extend({
       this.userMenu = true;
       this.cursorX = e.x;
       this.cursorY = e.y;
-      if(this.cursorY >= window.innerHeight - 90){
+      if(this.cursorY >= window.innerHeight - 150){
         this.menuTop = null;
         this.menuBottom = "5px";
       }
@@ -660,6 +660,14 @@ export default Vue.extend({
       ;
       this.$socket.on("disconnect", () => {
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
+      });
+      this.$socket.on("update-object", () => {
+        if(this.activePanel === 'userBackpack'){
+          setTimeout(this.loadUserBackpack, 50);
+        }
+        if(this.activePanel === 'backpack'){
+          setTimeout(this.loadBackpack, 50);
+        }
       });
     },
     dropObject() {
