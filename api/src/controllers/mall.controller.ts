@@ -61,16 +61,29 @@ class MallController {
         });
         return;
       }
-      const returnObjects = [];
-      const objects = await this.mallService
-        .getAllObjects(
-          request.query.column.toString(),
-          request.query.compare.toString(),
-          request.query.content.toString(),
-          Number(request.query.limit), 
-          Number(request.query.offset), 
-        );
-      response.status(200).json({ status: 'success', objects: objects });
+      const columnValues = ['id', 'member_id', 'name', 'status'];
+      const compareValues = ['=', '!=', '>', '<', '>=', '<='];
+      
+      const column = request.query.column.toString();
+      const compare = request.query.compare.toString();
+      const content = request.query.content.toString();
+
+      console.log(compare);
+      console.log(compareValues.includes(compare));
+
+      if(columnValues.includes(column) && compareValues.includes(compare)){
+        const objects = await this.mallService
+          .getAllObjects(
+            column,
+            compare,
+            content,
+            Number(request.query.limit), 
+            Number(request.query.offset), 
+          );
+        response.status(200).json({ status: 'success', objects: objects });
+      } else {
+        response.status(400).json({ status: 'Failed: Invalid search params'});
+      } 
     } catch (error) {
       console.error(error);
       response.status(400).json({ error });
@@ -138,7 +151,7 @@ class MallController {
       }
 
       this.objectService.updateObjectPlace(
-        parseInt(request.body.objectId),request.body.shopId);
+        parseInt(request.body.objectId),parseInt(request.body.shopId));
       response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
@@ -284,7 +297,6 @@ class MallController {
         return;
       }
       const place = await this.mallService.getStore(parseInt(request.params.id));
-      console.log(request.params.id);
       response.status(200).json({ status: 'success', place: place });
     } catch(error){
       console.error(error);
@@ -312,8 +324,12 @@ class MallController {
 
   public async updateObjectPosition(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
-    if (!session) return;
-
+    if (!session || !(await this.mallService.canAdmin(session.id))) {
+      response.status(400).json({
+        error: 'Invalid or missing token or access denied.',
+      });
+      return;
+    }
     try {
       if (
         typeof request.body?.position.x === 'undefined' ||
