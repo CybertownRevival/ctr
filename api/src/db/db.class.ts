@@ -19,7 +19,7 @@ export class Db {
   get home() {
     return this.knex<Models.Home, Models.Home[]>('home');
   }
-  get mall() {
+  get mallObject() {
     return this.knex<Models.MallObject, Models.MallObject[]>('mall_object');
   }
   get mapLocation() {
