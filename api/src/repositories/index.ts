@@ -5,7 +5,7 @@ export * from './colony/colony.repository';
 export * from './home/home.repository';
 export * from './home-design/home-design.repository';
 export * from './hood/hood.repository';
-export * from './mall/mall.repository';
+export * from './mall-object/mall-object.repository';
 export * from './map-location/map-location.repository';
 export * from './member/member.repository';
 export * from './message/message.repository';
