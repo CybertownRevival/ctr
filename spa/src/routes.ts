@@ -420,7 +420,7 @@ export default [
         components: {
             default: ObjectProperties,
         },
-        name: "object-properties",
+        name: "mall-object-properties",
         meta: {wrapper: false},
     },
     {
