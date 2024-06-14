@@ -1,6 +1,6 @@
 <template>
   <div v-if="!canAdmin" class="w-full flex h-full justify-center"><div class="text-red-500">{{ error }}</div></div>
-	<div v-else class="w-full flex">
+  <div v-else class="w-full flex">
     <div class="flex-col w-56 border-r-2 border-white text-center">
       <br />
       <div class="mb-2"><button class="btn-ui" @click="changePage('warehouse')">Warehouse</button></div>
@@ -174,7 +174,14 @@ export default Vue.extend({
         if(!obj.limit && this.page !== 'check'){
           obj.limit = 'Unlimited';
         }
-        if(this.page === 'warehouse' && obj.limit === 'Unlimited' && obj.status === 3 && obj.quantity > obj.instances || this.page === 'warehouse' && obj.limit > obj.instances && obj.status === 3){
+        if(
+          this.page === 'warehouse' && 
+          obj.limit === 'Unlimited' && 
+          obj.status === 3 && 
+          obj.quantity > obj.instances || 
+          this.page === 'warehouse' && 
+          obj.limit > obj.instances && 
+          obj.status === 3){
           this.objects.push(obj);
         } 
         if(this.page !== 'warehouse'){
@@ -218,14 +225,14 @@ export default Vue.extend({
             this.objects = [];
             this.getResults();
           } catch (errorResponse: any) {
-          if (errorResponse.response.data.error) {
-            this.error = errorResponse.response.data.error;
-            this.showError = true;
-          } else {
-            this.error = "An unknown error occurred";
-            this.showError = true;
+            if (errorResponse.response.data.error) {
+              this.error = errorResponse.response.data.error;
+              this.showError = true;
+            } else {
+              this.error = "An unknown error occurred";
+              this.showError = true;
+            }
           }
-        }
       }
     },
     async updateName(objectId, name): Promise<void>{
@@ -245,14 +252,14 @@ export default Vue.extend({
             this.objects = [];
             this.getResults();
           } catch (errorResponse: any) {
-          if (errorResponse.response.data.error) {
-            this.error = errorResponse.response.data.error;
-            this.showError = true;
-          } else {
-            this.error = "An unknown error occurred";
-            this.showError = true;
+            if (errorResponse.response.data.error) {
+              this.error = errorResponse.response.data.error;
+              this.showError = true;
+            } else {
+              this.error = "An unknown error occurred";
+              this.showError = true;
+            }
           }
-        }
       }
     },
     async approve(objectId): Promise<void> {
@@ -269,13 +276,13 @@ export default Vue.extend({
           this.objects = [];
           this.getResults();
         } catch (errorResponse: any) {
-        if (errorResponse.response.data.error) {
-          this.error = errorResponse.response.data.error;
-          this.showError = true;
-        } else {
-          this.error = "An unknown error occurred";
-          this.showError = true;
-        }
+          if (errorResponse.response.data.error) {
+            this.error = errorResponse.response.data.error;
+            this.showError = true;
+          } else {
+            this.error = "An unknown error occurred";
+            this.showError = true;
+          }
       }
     },
     async reject(objectId): Promise<void> {
