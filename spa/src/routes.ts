@@ -47,8 +47,6 @@ import PlaceSearch from "@/pages/admin/place/search.vue";
 
 import MallRulesPage from "@/pages/mall/MallRulesPage.vue";
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
-import MallApprovalPage from "@/pages/mall/MallApprovalPage.vue";
-import MallShopPage from "@/pages/mall/MallShopPage.vue";
 import CreatorPage from "@/pages/mall/creator/CreatorPage.vue";
 import MallStaffPage from "@/pages/mall/staff/StaffPage.vue";
 
@@ -396,24 +394,6 @@ export default [
         name: "mall-upload",
         meta: {
             title: "Mall Upload",
-            wrapper: true,
-        },
-    },
-    {
-        path: "/mall/approval",
-        component: MallApprovalPage,
-        name: "mall-approval",
-        meta: {
-            title: "Mall Upload Approval",
-            wrapper: true,
-        },
-    },
-    {
-        path: "/mall/shop",
-        component: MallShopPage,
-        name: "mall-shop",
-        meta: {
-            title: "Objects for Sale",
             wrapper: true,
         },
     },
