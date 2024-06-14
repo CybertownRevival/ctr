@@ -128,11 +128,10 @@ export default Vue.extend({
   },
 methods: {
   async objectProperties(): Promise<void>{
-    const url = window.location.href.split("/");
-    if(url[4] === 'mall'){
+    if(this.$router.app._route.name === 'mall-object-properties'){
       this.mallObject = true;
     }
-    this.objectId = url[url.length - 1];
+    this.objectId = this.$router.app._route.params.object_id;
     const info = await this.$http.get(`/member/info/${this.$store.data.user.id}`);
     this.walletBalance = info.data.memberInfo.walletBalance;
     if(this.mallObject){      
