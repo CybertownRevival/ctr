@@ -605,7 +605,12 @@ export default Vue.extend({
     },
     startSocketListeners(): void {
       this.$socket.on("VERSION", event => this.onVersion(event));
-      this.$socket.on("update-object", () => setTimeout(this.onSharedObjectEvent, 50));
+      this.$socket.on("update-object", (object) => {
+        if(object.place_id === this.$store.data.place.id){
+          setTimeout(this.onSharedObjectEvent, 50)
+          }
+        }
+      );
       this.$socket.on("SO", event => this.onSharedObjectEvent(event));
     },
     start3DSocketListeners(): void {
