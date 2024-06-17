@@ -128,6 +128,7 @@ export default Vue.extend({
   },
 methods: {
   async objectProperties(): Promise<void>{
+    console.log(this.$route)
     if(this.$route.name === 'mall-object-properties'){
       this.mallObject = true;
     }
@@ -198,7 +199,10 @@ methods: {
       this.buyer = null;
     }
     this.update();
-    this.$socket.emit('update-object');
+    this.$socket.emit('update-object', {
+              obj_id: this.objectId,
+              place_id: this.placeId,
+            });
   },
   loadObjectPreview() {
     const browser = X3D.createBrowser();
@@ -233,14 +237,17 @@ methods: {
     }
   },
   startSocketListeners(){
-    this.$socket.on("update-object", () => {
+    this.$socket.on("update-object", (obj_id) => {
+      if(obj_id === this.objectId){
         this.reload();
-      });
+      }
+    });
   },
   async buy(){
     if(!this.mallObject){
       if(this.walletBalance >= this.price){
         try{
+          console.log("Wrong item")
           const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
             id: this.objectId});
             await this.objectProperties();
@@ -257,7 +264,10 @@ methods: {
               this.success = 'Object purchased!';
               this.error = '';
             }
-            this.$socket.emit('update-object');
+            this.$socket.emit('update-object', {
+              obj_id: this.objectId,
+              place_id: this.placeId,
+            });
           } catch(errorResponse: any) {
             console.log(errorResponse.response.data.error);
           }
