@@ -51,10 +51,6 @@ export class MallService {
       return false;
     }
 
-    if (new Date() > object.mall_expiration) {
-      return false;
-    }
-
     if (instances >= object.quantity) {
       return false;
     }
