@@ -32,6 +32,11 @@ export class MallRepository {
     return place;
   }
 
+  public async findByObjectId(objectId: number): Promise<any> {
+    const object = await this.db.mallObject.where({object_id: objectId});
+    return object;
+  }
+
   public async updateObjectPlace(
     mallObjectId: number,
     shopId: number,
