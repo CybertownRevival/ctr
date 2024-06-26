@@ -86,8 +86,14 @@ export class ObjectService {
   }
 
   public async updateObjectPlace(objectId: number, shopId: number) {
+    await this.mallRepository.findByObjectId(objectId)
+      .then(data => {
+        if(!data[0]){
+          this.mallRepository.addToMallObjects(objectId);
+        }
+      });
     this.mallRepository.updateObjectPlace(objectId, shopId);
-
+    
     return await this.objectRepository.update(objectId, {
       status: ObjectService.STATUS_ACTIVE,
     });
