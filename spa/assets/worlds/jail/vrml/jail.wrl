@@ -9,9 +9,9 @@ EXTERNPROTO HUD[
 ["/externprotos/nodes_xite.wrl#HUD"]
 NavigationInfo
 {
-  avatarSize [0.25 1.75 0.75000]
+  avatarSize [0.25 1.75 0.75]
   visibilityLimit 0.0
-  speed 4.0
+  speed 3.0
   headlight FALSE
   type["WALK"]
 }
