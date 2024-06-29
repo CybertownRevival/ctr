@@ -3,7 +3,7 @@
 #checker board is now shared 
 NavigationInfo {
 avatarSize [
-.25 1.6 .75
+.25 1.75 .75
 ]
 speed 3.5
 headlight TRUE
