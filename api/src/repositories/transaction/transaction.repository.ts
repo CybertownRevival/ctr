@@ -179,6 +179,24 @@ export class TransactionRepository {
     });
   }
 
+  public async createUnsoldObjectRefundTransaction(
+    walletId: number,
+    amount: number,
+  ): Promise<Transaction> {
+    return await this.db.knex.transaction(async trx => {
+      const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
+      await trx<Wallet>('wallet')
+        .where({ id: walletId })
+        .update({ balance: wallet.balance + amount });
+      const [transactionId] = await trx<Transaction>('transaction').insert({
+        amount,
+        reason: TransactionReason.ObjectUnsoldInstancesRefund,
+        recipient_wallet_id: walletId,
+      });
+      return this.find({ id: transactionId });
+    });
+  }
+
   public async createObjectPurchaseTransaction(
     walletId: number,
     amount: number,
