@@ -180,7 +180,7 @@ DEF dad_Global_3 Transform {
 }
 NavigationInfo {
 avatarSize [
-.25 1.6 .75
+.25 1.75 .75
 ]
 speed 3.5
 headlight FALSE
