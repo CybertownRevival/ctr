@@ -9,9 +9,11 @@
       <div class="mb-2"><button class="btn-ui" @click="changePage('search')">Search</button></div>
     </div>
     <div class="flex flex-col w-full place-items-center">
+    <div class="text-red-500" v-show="error">{{ error }}</div>
     <div class="text-center w-full text-5xl mb-1">{{ title }}</div>
-    <div class="grid grid-cols-2 w-4/6 justify-items-center" v-show="page !== 'warehouse'">
-      <div></div>
+    <div class="grid grid-cols-2 w-4/6 justify-items-center">
+      <div>
+      </div>
       <div>
         View Amount:
         <select v-model="limit" @change="getResults">
@@ -26,13 +28,13 @@
     <div class="grid-cols-1 w-4/6 justify-items-center text-center " v-show="page !== 'warehouse'">
       Total Count: {{ totalCount }} <br /><br />
     </div>
-    <div class="border flex" v-for="object in objects"
+    <div class="flex" style="margin-bottom: 2rem;" v-for="object in objects"
           :key="object.id">
-      <div class="w-full flex">
+      <div class="w-full flex border">
         <div>
           <div class="flex justify-center">
             <img :src="'/assets/object/'+object.directory + '/' + object.image" 
-                  style="max-width:450px;max-height:450px;height:auto;width:auto;"
+                  style="max-width:250px;max-height:250px;height:auto;width:auto;"
                 />
           </div>
         </div>
@@ -52,7 +54,10 @@
             <button class="btn-ui" v-show="page === 'check'" @click="opener(object.directory, object.image)">Image</button> 
             <button class="btn-ui" v-show="page === 'check' && object.texture" @click="opener(object.directory, object.texture)">Texture</button> 
             <button class="btn-ui" v-show="page === 'check'" @click="opener(object.directory, object.filename)">WRL</button>
-            <button class="btn-ui" @click="updateLimit(object.id, object.quantity)">Update Limit</button> 
+            <button class="btn-ui" @click="updateLimit(object.id, object.quantity)">Update Limit</button>
+            <button class="btn-ui" v-show="page === 'warehouse'" @click="refundUnsoldQuantity(object.id)">Destock</button>
+            <br v-show="page === 'warehouse'" />
+            <button class="btn-ui" @click="deleteObject(object.id)">Delete</button> 
           </div>
         </div>
         <div>
@@ -76,14 +81,14 @@
       <div class="p-1 text-right w-full">
         <button class="btn"
                 @click="back"
-                v-show="offset != 0 && page !== 'warehouse'">
+                v-show="offset != 0">
           BACK
         </button>
       </div>
       <div class="p-1 text-left w-full">
         <button class="btn"
                 @click="next"
-                v-show="offset + limit <= totalCount && page !== 'warehouse'">
+                v-show="offset + limit <= totalCount">
           NEXT
         </button>
       </div>
@@ -122,7 +127,7 @@ export default Vue.extend({
   methods: {
     async isMallStaff() {
       try {
-        const admin = await this.$http.get(
+        await this.$http.get(
           `/mall/can_admin`,
         );
         this.canAdmin = true;
@@ -131,6 +136,7 @@ export default Vue.extend({
       }
     },
     async getResults(): Promise<void> {
+      this.objects = [];
       try {
         if(this.page === 'warehouse'){
           this.column = 'status';
@@ -167,27 +173,20 @@ export default Vue.extend({
         }
         );
         this.totalCount = response.data.objects.total[0].count;
-        response.data.objects.objects.forEach(obj => {
+          response.data.objects.objects.forEach(obj => {
           if(!obj.store){
-          obj.store = {name: 'none'};
-        }
-        if(!obj.limit && this.page !== 'check'){
-          obj.limit = 'Unlimited';
-        }
-        if(
-          this.page === 'warehouse' && 
-          obj.limit === 'Unlimited' && 
-          obj.status === 3 && 
-          obj.quantity > obj.instances || 
-          this.page === 'warehouse' && 
-          obj.limit > obj.instances && 
-          obj.status === 3){
-          this.objects.push(obj);
-        } 
-        if(this.page !== 'warehouse'){
-          this.objects.push(obj);
-        }
-        })
+            obj.store = {name: 'none'};
+          }
+          if((!obj.limit || obj.limit === 0) && this.page !== 'check'){
+            obj.limit = 'Unlimited';
+          }
+          if(this.page === 'warehouse' && obj.status === 3){
+            this.objects.push(obj);
+          }
+          if(this.page !== 'warehouse'){
+            this.objects.push(obj);
+          }
+          })
         this.showSuccess = true;
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
@@ -212,7 +211,13 @@ export default Vue.extend({
       this.showSuccess = false;
       this.showError = false;
       let limit = prompt("Update limit to this object\n");
-      if(limit !== null && limit !=='' && limit >= quantity){
+      if(limit !== limit.replace(/[^0-9]/g, '')){
+        this.error = "Use whole numbers only!";
+        return
+      }
+      if(limit !== null && limit !=='' && limit >= quantity ||
+        limit !== null && limit !=='' && limit === '0'
+      ){
         try {
             this.error = '';
             this.showError = false;
@@ -222,7 +227,6 @@ export default Vue.extend({
             });
             this.success = 'Object limit updated!';
             this.showSuccess = true;
-            this.objects = [];
             this.getResults();
           } catch (errorResponse: any) {
             if (errorResponse.response.data.error) {
@@ -249,7 +253,6 @@ export default Vue.extend({
             });
             this.success = 'Object name updated!';
             this.showSuccess = true;
-            this.objects = [];
             this.getResults();
           } catch (errorResponse: any) {
             if (errorResponse.response.data.error) {
@@ -262,6 +265,47 @@ export default Vue.extend({
           }
       }
     },
+    async deleteObject(objectId): Promise<void> {
+      try {
+        this.error = '';
+        this.showError = false;
+        await this.$http.post("/mall/delete", {
+        'objectId': objectId,
+        });
+        this.success = 'Object updated to deleted status.';
+        this.showSuccess = true;
+        this.getResults();
+      } catch (errorResponse: any) {
+        if (errorResponse.response.data.error) {
+          this.error = errorResponse.response.data.error;
+          this.showError = true;
+        } else {
+          this.error = "An unknown error occurred";
+          this.showError = true;
+        }
+      }
+    },
+    async refundUnsoldQuantity(objectId): Promise<void> {
+      try {
+        this.error = '';
+        this.showError = false;
+        await this.$http.post("/mall/refund", {
+        'id': objectId,
+        });
+        this.success = 'Object updated to deleted status.';
+        this.showSuccess = true;
+        this.getResults();
+      } catch (errorResponse: any) {
+        if (errorResponse.response.data.error) {
+          this.error = errorResponse.response.data.error;
+          this.showError = true;
+        } else {
+          this.error = "An unknown error occurred";
+          this.showError = true;
+        }
+      }
+
+    },
     async approve(objectId): Promise<void> {
       this.showSuccess = false;
       this.showError = false;
@@ -273,16 +317,15 @@ export default Vue.extend({
           });
           this.success = 'Object Approved';
           this.showSuccess = true;
-          this.objects = [];
           this.getResults();
         } catch (errorResponse: any) {
-          if (errorResponse.response.data.error) {
-            this.error = errorResponse.response.data.error;
-            this.showError = true;
-          } else {
-            this.error = "An unknown error occurred";
-            this.showError = true;
-          }
+        if (errorResponse.response.data.error) {
+          this.error = errorResponse.response.data.error;
+          this.showError = true;
+        } else {
+          this.error = "An unknown error occurred";
+          this.showError = true;
+        }
       }
     },
     async reject(objectId): Promise<void> {
@@ -321,7 +364,7 @@ export default Vue.extend({
           });
           this.success = 'Object dropped';
           this.showSuccess = true;
-          this.objects = [];
+          this.store = null;
           this.getResults();
         }
       } catch (errorResponse: any) {
@@ -345,7 +388,6 @@ export default Vue.extend({
         });
         this.success = 'Object removed from store.';
         this.showSuccess = true;
-        this.objects = [];
         this.getResults();
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
@@ -362,7 +404,7 @@ export default Vue.extend({
     },
     changePage(page){
       if(this.page !== page){
-        this.objects = [];
+        this.offset = 0;
         this.page = page;
         this.getResults();
       }
