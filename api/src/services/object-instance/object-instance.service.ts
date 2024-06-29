@@ -45,6 +45,10 @@ export class ObjectInstanceService {
     );
   }
 
+  public async countById(objectId: number): Promise<any> {
+    return await this.objectInstanceRepository.countByObjectId(objectId);
+  }
+
   public async updateObjectPlaceId(objectInstanceId: number, placeId: number): Promise<void> {
     return await this.objectInstanceRepository.updateObjectPlaceId(objectInstanceId, placeId);
   }
