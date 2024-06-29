@@ -125,7 +125,7 @@ direction 0 -1 0
 }
 NavigationInfo {
 avatarSize [
-.25 1.6 .75
+.25 1.75 .75
 ]
 speed 3.5
 headlight FALSE
