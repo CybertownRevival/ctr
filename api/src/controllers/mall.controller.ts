@@ -68,9 +68,6 @@ class MallController {
       const compare = request.query.compare.toString();
       const content = request.query.content.toString();
 
-      console.log(compare);
-      console.log(compareValues.includes(compare));
-
       if(columnValues.includes(column) && compareValues.includes(compare)){
         const objects = await this.mallService
           .getAllObjects(
@@ -180,6 +177,27 @@ class MallController {
     }
   }
 
+  public async deleteMallObject(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.mallService.canAdmin(session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+
+      this.objectService.deleteMallObject(
+        parseInt(request.body.objectId));
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
   public async updateObjectLimit(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
 
@@ -256,6 +274,46 @@ class MallController {
       response.status(400).json({ error });
     }
   }
+
+  public async refundUnsoldInstances(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.mallService.canAdmin(session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+
+      const objectRecord = await this.objectService.findById(parseInt(request.body.id));
+      if (!objectRecord) {
+        response.status(400).json({
+          error: 'Invalid or missing object id.',
+        });
+        return;
+      }
+
+      const instances = await this.objectInstanceService.countById(objectRecord.id);
+      const unsoldInstances = objectRecord.quantity - instances;
+      const newQuantity = objectRecord.quantity - unsoldInstances;
+
+      const sellersFee = await this.objectService.getSellerFee(
+        unsoldInstances,
+        objectRecord.price,
+      );
+
+      this.objectService.updateObjectQuantity(objectRecord.id, newQuantity);
+
+      this.objectService.performUnsoldObjectRefundTransaction(objectRecord.member_id, sellersFee);
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
   public async objectsForSale(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
     try {
@@ -364,7 +422,6 @@ class MallController {
 
     try {
       const isForSale = await this.mallService.isObjectAvailable(request.body.id);
-      console.log('is for sale', isForSale);
       if (!isForSale) {
         response.status(400).json({
           error: 'Object is no longer available.',
