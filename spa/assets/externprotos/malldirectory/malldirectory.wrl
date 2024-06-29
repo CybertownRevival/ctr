@@ -9,59 +9,62 @@ PROTO MallDirectory[
 field SFVec3f position 0 0 0
 field SFRotation rotation 0 1 0 0
 field MFString storeNames [
- "Homebuilder",
- "Furniture Shop",
- "Bedroom Showcase"
- "Appliance Shop",
- "Electronics Store",
- "Kitchen Store",
- "Grocery Store"
- "Office Store",
- "Large Item Shop",	
  "Antique Shop"
- "Collectibles"
- "Bargain Outlet",
- "Holiday Shop",
- "Garden Store",
- "Carpet Shop",
- "Fine Art Shop",
- "Poster Store"
- "Gift Store",
- "Novelty Store",
- "Toy Store",
- "Athletic Shop"
+ "Appliance Shop"
  "Aquatics Shop"
- "Pet Shop",
- "Car Dealer",
-"Weapon Displays"
+ "Bargain Outlet"
+ "Bedroom Showcase"
+ "Car Dealer"
+ "Carpet Shop"
+ "Collectibles"
+ "Electronics Store"
+ "Fine Art Shop"
+ "Furniture Store"
+ "Garden Store"
+ "General Store"
+ "Gift Shop"
+ "HOLDS DEPOT"
+ "Holiday Shop"
+ "Homebuilder"
+ "Jewelry Store"
+ "Kitchen Store"
+ "Large Item Shop"
+ "Magical Corner"
+ "Novelty Store"
+ "Pet Store"
+ "Space Port"
+ "Toy Store"
+ "Weapons Displays"
+ "Wedding Shop"
 ]
 field MFString storeUrls [
- "/cgi-bin/cybertown/place?plc=iwosmall&force=p",#home builder
-	 "/cgi-bin/cybertown/place?ID=0000000000000904&plc=shop&ac=index3d",#Furniture Store
-		"/cgi-bin/cybertown/place?ID=0000000000000915&plc=shop&ac=index3d"#Bedroom Showcase	
-		 "/cgi-bin/cybertown/place?ID=0000000000000903&plc=shop&ac=index3d", #Appliance Shop
-		 "/cgi-bin/cybertown/place?ID=0000000000000907&plc=shop&ac=index3d",#Electtronics Store	
-	 "/cgi-bin/cybertown/place?ID=000000000000090c&plc=shop&ac=index3d",#Kitchen Store
-		"/cgi-bin/cybertown/place?ID=0000000000000916&plc=shop&ac=index3d"#grocery store	
- "/cgi-bin/cybertown/place?ID=000000000000090d&plc=shop&ac=index3d",#Office Store		
-	"/cgi-bin/cybertown/place?ID=000000000000090e&plc=shop&ac=index3d",#large item shop
-		"/cgi-bin/cybertown/place?ID=0000000000000911&plc=shop&ac=index3d"#Antiques
-	"/cgi-bin/cybertown/place?ID=000000000000090f&plc=shop&ac=index3d"#CT Collectibles
-	"/cgi-bin/cybertown/place?ID=0000000000000913&plc=shop&ac=index3d"#bargain Outlet
-		"/cgi-bin/cybertown/place?ID=0000000000000914&plc=shop&ac=index3d"#Holiday Shop
-	 "/cgi-bin/cybertown/place?ID=0000000000000906&plc=shop&ac=index3d",#Garden Store
-"/cgi-bin/cybertown/place?ID=0000000000000905&plc=shop&ac=index3d",#Carpet Shop
- "/cgi-bin/cybertown/place?ID=0000000000000901&plc=shop&ac=index3d",# Fine Art Shop
-	"/cgi-bin/cybertown/place?ID=0000000000000917&plc=shop&ac=index3d"# Poster Store
- "/cgi-bin/cybertown/place?ID=0000000000000902&plc=shop&ac=index3d",#Gift Store
- "/cgi-bin/cybertown/place?ID=0000000000000908&plc=shop&ac=index3d",#Novelty Store
-	"/cgi-bin/cybertown/place?ID=0000000000000909&plc=shop&ac=index3d",#Toy Store
-	"/cgi-bin/cybertown/place?ID=0000000000000910&plc=shop&ac=index3d"#Athletics Store
-	"/cgi-bin/cybertown/place?ID=0000000000000912&plc=shop&ac=index3d"#Aquatics Store
- "/cgi-bin/cybertown/place?ID=000000000000090a&plc=shop&ac=index3d",#Pet Shop
- "/cgi-bin/cybertown/place?ID=000000000000090b&plc=shop&ac=index3d",#Car Dealer Store
-"/cgi-bin/cybertown/place?ID=0000000000000918&plc=shop&ac=index3d"#armaments Displays
-
+ "/#/place/antiqueshop"
+ "/#/place/applianceshop"
+ "/#/place/aquaticsshop"
+ "/#/place/bargainoutlet"
+ "/#/place/bedroomshowcase"
+ "/#/place/cardealer"
+ "/#/place/carpetshop"
+ "/#/place/collectibles"
+ "/#/place/electronicsstore"
+ "/#/place/fineartshop"
+ "/#/place/furniturestore"
+ "/#/place/gardenstore"
+ "/#/place/generalstore"
+ "/#/place/giftshop"
+ "/#/place/holdsdepot"
+ "/#/place/holidayshop"
+ "/#/place/homebuilder"
+ "/#/place/jewelrystore"
+ "/#/place/kitchenstore"
+ "/#/place/largeitemshop"
+ "/#/place/magicalcorner"
+ "/#/place/noveltystore"
+ "/#/place/petshop"
+ "/#/place/spaceport"
+ "/#/place/toystore"
+ "/#/place/weapondisplays"
+ "/#/place/weddingshop"
 ]
 field MFString storeParams [
 
