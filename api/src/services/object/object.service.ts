@@ -30,6 +30,7 @@ export class ObjectService {
   public static readonly STATUS_ACTIVE = 1;
   public static readonly STATUS_PENDING = 2;
   public static readonly STATUS_APPROVED = 3;
+  public static readonly STATUS_INACTIVE = 4;
   public static readonly MALL_EXPIRATION_DAYS = 7;
 
   public async find(objectSearchParams: Partial<Object>): Promise<Object> {
@@ -93,7 +94,7 @@ export class ObjectService {
         }
       });
     this.mallRepository.updateObjectPlace(objectId, shopId);
-    
+
     return await this.objectRepository.update(objectId, {
       status: ObjectService.STATUS_ACTIVE,
     });
@@ -105,8 +106,17 @@ export class ObjectService {
     });
   }
 
+  public async deleteMallObject(objectId: number) {
+    return await this.objectRepository.update(objectId, {
+      status: ObjectService.STATUS_DELETED,
+    });
+  }
+
   public async increaseQuantity(objectId: number, quantity: number) {
-    this.objectRepository.increaseObjectQuantity(objectId, quantity);
+    this.objectRepository.increaseObjectQuantity(objectId, {
+      quantity: quantity,
+      status: ObjectService.STATUS_APPROVED,
+    });
   }
 
   public async updateObjectLimit(objectId: number, limit: number) {
@@ -120,6 +130,13 @@ export class ObjectService {
   public async updateStatusRejected(objectId: number) {
     return await this.objectRepository.update(objectId, {
       status: ObjectService.STATUS_DELETED,
+    });
+  }
+
+  public async updateObjectQuantity(objectId: number, quantity: number) {
+    return await this.objectRepository.update(objectId, {
+      quantity: quantity,
+      status: ObjectService.STATUS_INACTIVE,
     });
   }
 
@@ -223,6 +240,14 @@ export class ObjectService {
   ): Promise<void> {
     const member = await this.memberRepository.findById(memberId);
     await this.transactionRepository.createObjectUploadRefundTransaction(member.wallet_id, amount);
+  }
+
+  public async performUnsoldObjectRefundTransaction(
+    memberId: number,
+    amount: number,
+  ): Promise<void> {
+    const member = await this.memberRepository.findById(memberId);
+    await this.transactionRepository.createUnsoldObjectRefundTransaction(member.wallet_id, amount);
   }
 
   public async performObjectPurchaseTransaction(memberId: number, amount: number): Promise<void> {
