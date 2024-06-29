@@ -210,7 +210,7 @@ export default Vue.extend({
     async updateLimit(objectId, quantity): Promise<void>{
       this.showSuccess = false;
       this.showError = false;
-      let limit = prompt("Update limit to this object\n");
+      let limit = prompt("Update limit to this object\n NOTE: Setting the limit to 0 makes it Unlimited\n");
       if(limit !== limit.replace(/[^0-9]/g, '')){
         this.error = "Use whole numbers only!";
         return
