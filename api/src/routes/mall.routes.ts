@@ -17,6 +17,8 @@ mallRoutes.get('/all_objects', (request, response)  =>
   mallController.findAllObjects(request,response));
 mallRoutes.post('/approve', (request, response) => mallController.approveObject(request, response));
 mallRoutes.post('/reject', (request, response) => mallController.rejectObject(request, response));
+mallRoutes.post('/refund', (request, response) => 
+  mallController.refundUnsoldInstances(request, response));
 mallRoutes.post('/limit', (request, response) => 
   mallController.updateObjectLimit(request, response));
 mallRoutes.post('/updateObjectName', (request, response) => 
@@ -24,6 +26,8 @@ mallRoutes.post('/updateObjectName', (request, response) =>
 mallRoutes.post('/drop', (request, response) => mallController.dropMallObject(request, response));
 mallRoutes.post('/remove', (request, response) => 
   mallController.removeMallObject(request, response));
+mallRoutes.post('/delete', (request, response) => 
+  mallController.deleteMallObject(request, response));
 mallRoutes.get('/objects/:id', (request, response) =>
   mallController.objectsForSale(request, response),
 );
