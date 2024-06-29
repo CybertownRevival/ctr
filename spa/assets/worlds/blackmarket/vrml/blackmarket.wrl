@@ -420,7 +420,7 @@ ROUTE SOScript.choice_changed TO SOSwitch.set_whichChoice
 }
 #END SharedObject PROTO
 NavigationInfo {
-  avatarSize [0.25 1.75 0.75000]
+  avatarSize [0.25 1.75 0.75]
   visibilityLimit 0.0
   speed 6.0
   headlight FALSE
@@ -437,17 +437,55 @@ position 0 1.75 0
 orientation 0 1 0 0
 description "Back to the Hood"
 }
-DirectionalLight {
-direction 1 -.3 0
+DEF dad_Global_1 Transform {
+ translation 125 -100 125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_1 PointLight {
+   ambientIntensity 0.2550
+   color .1 .1 .2 
+   intensity 0.600
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
-DirectionalLight {
-direction -1 .3 0
+DEF dad_Global_2 Transform {
+ translation 125 100 -125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_2 PointLight {
+   ambientIntensity 0.900
+   intensity 0.600
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
-DirectionalLight {
-direction 0 .3 -1
+DEF dad_Global_3 Transform {
+ translation -125 100 125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_3 PointLight {
+   ambientIntensity 0.900
+   intensity 0.600
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
-DirectionalLight {
-direction 0 -.3 1
+DEF dad_Global_4 Transform {
+ translation -125 -100 -125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_4 PointLight {
+   ambientIntensity 0.2550
+   color .1 .1 .2 
+   intensity 0.600
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
 }
 Transform {
 children Shape {
