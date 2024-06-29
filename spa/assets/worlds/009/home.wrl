@@ -1776,45 +1776,60 @@ DEF sink_underwater-POS-INTERP PositionInterpolator {
 #Lights
 #########################################################################
 
-DEF dad_Day Transform {
- translation 125 10 125
+DEF dad_Global_1 Transform {
+ translation 125 -100 125
  rotation 1 0 0 3.142
  children [
-  DEF Day PointLight {
-   ambientIntensity 0.900
-   intensity 0.400
+  DEF Global_1 PointLight {
+   ambientIntensity 0.2550
+   color .1 .1 .2 
+   intensity 0.600
    radius 600.000
    attenuation 1 0 0
   }
  ]
 }
-DEF dad_Day_2 Transform {
- translation 125 10 -125
+DEF dad_Global_2 Transform {
+ translation 125 100 -125
  rotation 1 0 0 3.142
  children [
-  DEF Day_2 PointLight {
+  DEF Global_2 PointLight {
    ambientIntensity 0.900
-   intensity 0.400
+   intensity 0.600
    radius 600.000
    attenuation 1 0 0
   }
  ]
 }
-DEF dad_Day_3 Transform {
- translation -125 10 125
+DEF dad_Global_3 Transform {
+ translation -125 100 125
  rotation 1 0 0 3.142
  children [
-  DEF Day_3 PointLight {
+  DEF Global_3 PointLight {
    ambientIntensity 0.900
-   intensity 0.400
+   intensity 0.600
    radius 600.000
    attenuation 1 0 0
   }
  ]
 }
+DEF dad_Global_4 Transform {
+ translation -125 -100 -125
+ rotation 1 0 0 3.142
+ children [
+  DEF Global_4 PointLight {
+   ambientIntensity 0.2550
+   color .1 .1 .2 
+   intensity 0.600
+   radius 600.000
+   attenuation 1 0 0
+  }
+ ]
+}
+
 NavigationInfo {
 avatarSize [
-.25 1.6 .75
+.25 1.75 .75
 ]
 speed 2.5
 headlight FALSE
