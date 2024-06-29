@@ -65,8 +65,9 @@ export class ObjectRepository {
     await this.db.object.where({ id: objectId }).update('limit', limit);
   }
 
-  public async increaseObjectQuantity(objectId: number, quantity: number): Promise<any> {
-    await this.db.object.where({ id: objectId }).update('quantity', quantity);
+  public async increaseObjectQuantity(
+    objectId: number, props: object): Promise<any> {
+    await this.db.object.where({ id: objectId }).update(props);
   }
 
   public async updateObjectName(objectId: number, name: string): Promise<any> {
@@ -87,7 +88,6 @@ export class ObjectRepository {
     limit: number, 
     offset: number,
   ): Promise<any> {
-    console.log(compare);
     const objects = await this.db.object
       .select('object.*')
       .where(column, compare, content)
