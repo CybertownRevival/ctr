@@ -553,7 +553,7 @@ export default Vue.extend({
           'id': this.$store.data.user.id
         });
       }
-      if(admin.data.status === 'success'){
+      if(admin && admin.data.status === 'success'){
         this.canModify = true;
         if(this.$store.data.view3d){
           this.canInteractWithObject = true;
