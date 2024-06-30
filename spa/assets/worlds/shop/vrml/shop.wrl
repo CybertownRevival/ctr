@@ -922,7 +922,7 @@ DEF linker Script {
 eventIn SFTime link
 eventIn SFBool set_over
 eventOut SFInt32 over_changed
-field MFString loadUrl "/cgi-bin/colonycity/place?plc=shopping&ac=index3d"
+field MFString loadUrl "/#/place/mall"
 field MFString loadParam "target=_top"
 url "vrmlscript:
 function link(v) {Browser.loadURL(loadUrl,loadParam);}
