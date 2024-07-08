@@ -47,10 +47,11 @@ class InboxController {
     } else if (type === 'public') {
       try {
         const place = await this.placeService.findById(placeId);
-        if(place.slug === 'mall'){
+         const access = await this.memberService.getAccessLevel(id);
+        if(place.slug === 'mall' && access === 'none'){
           return await this.mallService.canAdmin(id);
         } else {
-          return await this.inboxService.getAdminInfo(placeId, id);
+          return await this.memberService.canAdmin(id);
         }
       } catch (e) {
         console.log(e);
