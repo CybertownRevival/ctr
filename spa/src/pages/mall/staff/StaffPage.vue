@@ -25,7 +25,7 @@
       </div>
     </div>
     <br v-show="page === 'warehouse'" />
-    <div class="grid-cols-1 w-4/6 justify-items-center text-center " v-show="page !== 'warehouse'">
+    <div class="grid-cols-1 w-4/6 justify-items-center text-center ">
       Total Count: {{ totalCount }} <br /><br />
     </div>
     <div class="flex" style="margin-bottom: 2rem;" v-for="object in objects"
@@ -56,8 +56,10 @@
             <button class="btn-ui" v-show="page === 'check'" @click="opener(object.directory, object.filename)">WRL</button>
             <button class="btn-ui" @click="updateLimit(object.id, object.quantity)">Update Limit</button>
             <button class="btn-ui" v-show="page === 'warehouse'" @click="refundUnsoldQuantity(object.id)">Destock</button>
-            <br v-show="page === 'warehouse'" />
-            <button class="btn-ui" @click="deleteObject(object.id)">Delete</button> 
+            <br v-show="page === 'search'" />
+            <br v-show="page === 'search'" />
+            <br v-show="page === 'search'" />
+            <button class="btn-ui" @click="deleteObject(object.id)" v-show="page === 'search'">Delete</button> 
           </div>
         </div>
         <div>
@@ -88,7 +90,7 @@
       <div class="p-1 text-left w-full">
         <button class="btn"
                 @click="next"
-                v-show="offset + limit <= totalCount">
+                v-show="totalCount - offset >= limit">
           NEXT
         </button>
       </div>
@@ -266,22 +268,24 @@ export default Vue.extend({
       }
     },
     async deleteObject(objectId): Promise<void> {
-      try {
-        this.error = '';
-        this.showError = false;
-        await this.$http.post("/mall/delete", {
-        'objectId': objectId,
-        });
-        this.success = 'Object updated to deleted status.';
-        this.showSuccess = true;
-        this.getResults();
-      } catch (errorResponse: any) {
-        if (errorResponse.response.data.error) {
-          this.error = errorResponse.response.data.error;
-          this.showError = true;
-        } else {
-          this.error = "An unknown error occurred";
-          this.showError = true;
+      if(confirm("!!! WARNING !!!\n\nThis will set the object to deleted status and cannot be undone\nThis does NOT refund the uploader.\n\n Do you wish to continue?")){
+        try {
+          this.error = '';
+          this.showError = false;
+          await this.$http.post("/mall/delete", {
+          'objectId': objectId,
+          });
+          this.success = 'Object updated to deleted status.';
+          this.showSuccess = true;
+          this.getResults();
+        } catch (errorResponse: any) {
+          if (errorResponse.response.data.error) {
+            this.error = errorResponse.response.data.error;
+            this.showError = true;
+          } else {
+            this.error = "An unknown error occurred";
+            this.showError = true;
+          }
         }
       }
     },
