@@ -128,7 +128,6 @@ export default Vue.extend({
   },
 methods: {
   async objectProperties(): Promise<void>{
-    console.log(this.$route)
     if(this.$route.name === 'mall-object-properties'){
       this.mallObject = true;
     }
@@ -247,7 +246,6 @@ methods: {
     if(!this.mallObject){
       if(this.walletBalance >= this.price){
         try{
-          console.log("Wrong item")
           const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
             id: this.objectId});
             await this.objectProperties();
