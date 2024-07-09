@@ -100,8 +100,9 @@ export default Vue.extend({
               .then(response => {
                 obj.store = response.data.place[0].name;
               })
-              this.objects.push(obj)
-            
+              if(obj.status !== 2){
+                this.objects.push(obj)
+              }  
           }
           if(this.page === 'pending'){
             this.title = 'My Pending Uploads';
