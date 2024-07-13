@@ -9,5 +9,7 @@ placeRoutes.get('/:slug',
   (request, response) => placeController.getPlace(request, response));
 placeRoutes.get('/:id',
   (request, response) => placeController.getPlaceById(request, response));
+placeRoutes.post('/add_storage', (request, response) => 
+  placeController.addStorage(request, response));
 
 export { placeRoutes };
