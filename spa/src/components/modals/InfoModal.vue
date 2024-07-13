@@ -34,7 +34,9 @@
                   </a>
                 </td>
                 <td width=200 align=center>
-                  <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Storage Units</b>
+                  <a href="#" @click="openStorageModal">
+                    <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Storage Units</b>
+                  </a>
                 </td>
                 <td width=200 align=center>
                   <a href="#" @click="openAvatarModal">
@@ -59,7 +61,7 @@ import Vue from "vue";
 
 import Modal from './Modal.vue';
 import ModalMixin from './mixins/ModalMixin';
-
+import StorageModal from "./StorageModal.vue";
 import AvatarModal from "./AvatarModal.vue";
 import AccountModal from "./AccountModal.vue";
 import ModalService from "./services/ModalService.vue";
@@ -77,6 +79,9 @@ export default Vue.extend({
     },
     openPersonalInfoModal(): void {
       ModalService.open(PersonalInfoModalVue);
+    },
+    openStorageModal(): void {
+      ModalService.open(StorageModal);
     }
   },
   mixins: [ModalMixin],
