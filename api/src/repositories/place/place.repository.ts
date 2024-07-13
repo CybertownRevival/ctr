@@ -36,6 +36,13 @@ export class PlaceRepository {
     return place;
   }
 
+  public async findStorageByUserID(memberId: number): Promise<any> {
+    return await this.db.place
+      .select('place.name', 'place.id')
+      .where({type: 'storage', member_id: memberId})
+      .orderBy('place.name', 'asc');
+  }
+
   /**
    * Creates a new place with the given parameters.
    * @param placeParams parameters to be used for the new place
