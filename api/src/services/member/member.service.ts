@@ -489,4 +489,14 @@ export class MemberService {
       return await this.objectInstanceRepository.getMemberBackpack(userId);
     }
   }
+
+  public async getStorage(memberId: number): Promise<any> {
+    const units = await this.placeRepository.findStorageByUserID(memberId);
+    return units;
+  }
+
+  public async getStorageById(placeId: number): Promise<any> {
+    const unit = await this.placeRepository.findById(placeId);
+    return unit;
+  }
 }
