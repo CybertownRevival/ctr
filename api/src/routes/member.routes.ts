@@ -42,6 +42,9 @@ memberRoutes.post('/reset_password', (request, response) =>
   memberController.resetPassword(request, response),
 );
 memberRoutes.get('/info', (request, response) => memberController.getInfo(request, response));
+memberRoutes.get('/storage', (request, response) => memberController.getStorage(request, response));
+memberRoutes.post('/storage/update', (request, response) => 
+  memberController.updateStorage(request, response));
 memberRoutes.get('/info/:id', (request, response) => memberController.getInfo(request, response));
 memberRoutes.get('/roles', (request, response) => memberController.getRoles(request, response));
 memberRoutes.get('/backpack/:username', (request, response) =>
