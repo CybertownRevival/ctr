@@ -177,6 +177,52 @@ class ObjectInstanceController {
     }
   }
 
+  public async moveToBackpack(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const objects = request.body.id;
+      for (const obj of objects) {
+        await this.objectInstanceService.find(obj)
+          .then((response) => {
+            if(response.member_id !== session.id){
+              throw new Error('You do not own this object!');
+            }
+            this.objectInstanceService.updateObjectPlaceId(obj, 0);
+          });
+      }
+      response.status(200).json({ message: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error });
+    }
+  }
+
+  public async moveToStorage(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const objects = request.body.id;
+      const place = await this.placeService.findById(request.body.place_id);
+      if(place.member_id !== session.id){
+        throw new Error('You do not own this storage area!');
+      }
+      for (const obj of objects) {
+        await this.objectInstanceService.find(obj)
+          .then((response) => {
+            if(response.member_id !== session.id){
+              throw new Error('You do not own this object!');
+            }
+            this.objectInstanceService.updateObjectPlaceId(obj, place.id);
+          });
+      }
+      response.status(200).json({ message: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error });
+    }
+  }
+
   public async pickUpObjectInstance(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
