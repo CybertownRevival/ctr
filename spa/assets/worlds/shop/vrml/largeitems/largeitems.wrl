@@ -160,37 +160,20 @@ function set_vec3f (value, time) {vec3fToServer = value;if(local){vec3fFromServe
 "}
 }
    
-
-
-PROTO BlaxxunZone [ 
-eventIn         MFNode   addEvents 
-eventIn         MFNode   removeEvents 
-eventIn         MFNode   addAvatars 
-eventIn         MFNode   removeAvatars 
+PROTO BlaxxunZone [#PROTO supplied by BLAXXUN  
+eventIn         MFNode   addEvents  
+eventIn         MFNode   removeEvents  
+eventIn         MFNode   addAvatars  
+eventIn         MFNode   removeAvatars  
 exposedField    MFNode   events []
-exposedField    MFNode   avatars []
-eventOut        MFNode   events_added 
-eventOut        MFNode   events_removed 
+exposedField    MFNode   avatars [] 
+exposedField    SFString myAvatarURL "" 
+exposedField    SFString myAvatarName ""
+exposedField    SFFloat  number_avatars 0
 eventOut        MFNode   avatars_added 
 eventOut        MFNode   avatars_removed
-eventIn         SFString set_myAvatarURL 
-eventOut        SFString myAvatarURL_changed 
-eventIn         SFInt32  set_myAvatarGesture 
-eventIn         SFInt32  myAvatarGestureFromServer 
-exposedField    SFNode   beamToViewpoint NULL
-eventOut        SFInt32  myAvatarGesture_changed 
-eventOut        SFInt32  myAvatarGestureToServer 
 exposedField    MFNode   avatarLOD []
-exposedField    MFFloat  avatarRange []
-exposedField    MFString sendToChat ""
-exposedField    SFFloat  beamToDistance 3
-exposedField    MFString groupChatName ""
-exposedField    MFString groupChat ""
-exposedField    SFString myAvatarName ""
-eventIn         MFNode   addObjects 
-eventIn         MFNode   removeObjects 
-eventOut        MFNode   objects_added 
-eventOut        MFNode   objects_removed
+exposedField    MFFloat   avatarRange []
 ]{ 
 Transform { 
 addChildren IS addEvents 
@@ -209,6 +192,7 @@ DEF SharedZone BlaxxunZone {
     
    ] 
 }
+
 DEF S Script {
  eventIn MFNode addEvents IS addEvents
  eventIn MFNode removeEvents IS removeEvents
