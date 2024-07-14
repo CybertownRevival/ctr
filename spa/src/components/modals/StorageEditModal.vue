@@ -78,7 +78,6 @@ export default Vue.extend({
           }
           await this.$http.post("/member/storage/update/", {
           id: id,
-          column: 'name',
           content: newName
         }).then(response => {
           if(response.data.status === 'success'){
