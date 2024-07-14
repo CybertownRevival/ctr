@@ -392,6 +392,9 @@ class MemberController {
     if(!session) return;
     try {
       const storage = await this.memberService.getStorageById(parseInt(request.body.id));
+      if(!storage){
+        throw new Error('Storage area not found!');
+      }
       if(storage && storage.member_id !== session.id){
         throw new Error('You do not own this storage area');
       }
@@ -401,12 +404,14 @@ class MemberController {
       if(storageName.match(bannedwords)){
         throw new Error('You can not use this language on CTR!');  
       }
-      this.placeService.updatePlaces(
-        parseInt(request.body.id.toString()),
-        request.body.column.toString(),
-        storageName,
-      );
-      response.status(200).json({status: 'success'});
+      if(storage && storage.member_id === session.id){
+        this.placeService.updatePlaces(
+          parseInt(request.body.id.toString()),
+          'name',
+          storageName,
+        );
+        response.status(200).json({status: 'success'});
+      }
     } catch (error) {
       console.log(error);
       response.status(400).json({ error });
