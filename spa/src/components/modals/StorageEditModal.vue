@@ -81,7 +81,6 @@ export default Vue.extend({
           content: newName
         }).then(response => {
           if(response.data.status === 'success'){
-            this.units = [];
             this.getUnits();
           }
         })
@@ -105,7 +104,6 @@ export default Vue.extend({
             name: newStorage
           }).then((response) => {
             if(response.data.status === 'success'){
-              this.units = [];
               this.getUnits();
             }
           })
@@ -115,19 +113,13 @@ export default Vue.extend({
       }
     },
     async getUnits(){
+      this.units = [];
       this.username = this.$store.data.user.username;
       try{
-       await this.$http.get(`/member/storage/`)
-        .then((response) => {
-          response.data.storage.forEach(unit => {
-            const count = this.$http.get(`/place/${unit.id}/object_instance`);
-            count.then((number) => {
-              unit.count = number.data.object_instance.length;
-              this.objects.push(number.data.object_instance)
-              this.units.push(unit);
-            })
-          })
-        });      
+        const storageUnits = await this.$http.get(`/member/storage`);
+        storageUnits.data.storage.forEach(unit => {
+          this.units.push(unit);
+        });
       } catch (errorResponse: any) {
         console.error(errorResponse);
       }
