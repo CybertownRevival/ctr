@@ -192,7 +192,7 @@ export default Vue.extend({
       this.backpack = [];
       const response = await this.$http.get(`/member/backpack/${this.username}`);
       this.backpack = response.data.objects;
-       return this.$http.get(`/member/storage/`)
+       await this.$http.get(`/member/storage/`)
         .then((response) => {
           response.data.storage.forEach(unit => {
             const count = this.$http.get(`/place/${unit.id}/object_instance`);
