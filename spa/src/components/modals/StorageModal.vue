@@ -38,7 +38,10 @@
                 <div class="px-2">
                   <h3>
                     <input type="checkbox" v-model="moveToBackpack" :value="obj.id" />
-                    <a href="#" @click="objectOpener(obj.id)" class="px-2">{{ obj.object_name }}</a> 
+                    <a href="#" @click="objectOpener(obj.id)" class="px-2">
+                      <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
+                      <span v-else>{{ obj.name }}</span>
+                    </a> 
                   </h3>
                 </div>
               </div>
@@ -64,7 +67,10 @@
                 <div class="px-2">
                   <h3>
                     <input type="checkbox" v-model="moveToStorage" :value="obj.id" />
-                    <a href="#" @click="objectOpener(obj.id)" class="px-2">{{ obj.object_name }}</a> 
+                    <a href="#" @click="objectOpener(obj.id)" class="px-2">
+                      <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
+                      <span v-else>{{ obj.name }}</span>
+                    </a> 
                   </h3>
                 </div>
               </div>
