@@ -156,11 +156,7 @@ export default Vue.extend({
         if(this.moveToBackpack.length >= 1){
           await this.$http.post('/object_instance/backpack', {
             id: this.moveToBackpack
-          }).then(response => {
-            if(response.data.status === 'success'){
-              this.moveToBackpack = [];
-            }
-          })
+          });
           this.getUnits();
           this.getStorageObjects();
           this.getBackpackObjects();
@@ -175,12 +171,7 @@ export default Vue.extend({
           await this.$http.post('/object_instance/storage', {
             id: this.moveToStorage,
             place_id: this.unitId
-          }).then(response => {
-            if(response.data.status === 'success'){
-              this.moveToStorage = [];
-              this.units = [];
-            }
-          })
+          });
           this.getUnits();
           this.getStorageObjects();
           this.getBackpackObjects();
