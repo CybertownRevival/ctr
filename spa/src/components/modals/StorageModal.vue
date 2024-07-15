@@ -12,7 +12,7 @@
             <div v-for="(unit, key) in units" :key="key">
               <div class="flex"><div class="px-2">
                 <h3>
-                  <a href="#" @click="openStorageUnit(unit.id, unit.name, unit.array)">{{ unit.name }}</a> 
+                  <a href="#" @click="openStorageUnit(unit.id, unit.name)">{{ unit.name }}</a> 
                   ( {{ unit.count }} 
                   <span v-if="unit.count === 1">Object</span>
                   <span v-else>Objects</span>
