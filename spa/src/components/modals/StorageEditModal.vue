@@ -117,7 +117,7 @@ export default Vue.extend({
     async getUnits(){
       this.username = this.$store.data.user.username;
       try{
-       return this.$http.get(`/member/storage/`)
+       await this.$http.get(`/member/storage/`)
         .then((response) => {
           response.data.storage.forEach(unit => {
             const count = this.$http.get(`/place/${unit.id}/object_instance`);
