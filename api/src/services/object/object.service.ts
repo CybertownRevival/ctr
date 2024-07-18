@@ -93,7 +93,7 @@ export class ObjectService {
           this.mallRepository.addToMallObjects(objectId);
         }
       });
-    this.mallRepository.updateObjectPlace(objectId, shopId);
+    await this.mallRepository.updateObjectPlace(objectId, shopId);
 
     return await this.objectRepository.update(objectId, {
       status: ObjectService.STATUS_ACTIVE,
