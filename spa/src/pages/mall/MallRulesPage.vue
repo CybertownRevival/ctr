@@ -149,7 +149,7 @@
         <li>The price must match the thumbnail and world info.</li>
         <li>The quantity must match the thumbnail and world info.</li>
         <li>You must only uploaded up to the limit that is listed on the thumbnail and in the world info.</li>
-        <li>Indentical objects can only be uploaded 3 times with different colors/textures unless specified on the thumbnail that the object is part of a series of a certain number.</li>
+        <li>Indentical objects can only be uploaded 5 times with different colors/textures unless specified on the thumbnail that the object is part of a series of a certain number.</li>
         <li>Limited objects may only be uploaded once.</li>
         <li>Posters, wall hangings, rugs, and tapestries are limited to 1 per user per week.</li>
         <li>A maximum of 500 instances can be uploaded at one time.</li>
