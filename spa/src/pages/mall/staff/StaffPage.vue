@@ -365,11 +365,14 @@ export default Vue.extend({
           await this.$http.post("/mall/drop", {
           'objectId': objectId,
           'shopId': this.store
+          }).then((response) => {
+            if(response.data.status === 'success'){
+              this.success = 'Object dropped';
+              this.showSuccess = true;
+              this.store = null;
+              setTimeout(this.getResults, 100);
+            }
           });
-          this.success = 'Object dropped';
-          this.showSuccess = true;
-          this.store = null;
-          this.getResults();
         }
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
