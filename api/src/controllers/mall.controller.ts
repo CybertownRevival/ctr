@@ -147,7 +147,7 @@ class MallController {
         return;
       }
 
-      this.objectService.updateObjectPlace(
+      await this.objectService.updateObjectPlace(
         parseInt(request.body.objectId),parseInt(request.body.shopId));
       response.status(200).json({ status: 'success' });
     } catch (error) {
