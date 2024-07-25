@@ -64,7 +64,7 @@ export default Vue.extend({
     openStorageModal(): void {
       ModalService.open(StorageModal);
     },
-    async editName(id, name) {
+   async editName(id, name) {
       let newName = prompt("Current Name:\n " + name + "\n\nNew name may only contain:\n0-9\na-z\nA-Z\nspaces\n- / [ ] ( )\n\nNew Name:", name);
       if(newName !== null && newName !==''){
         try {
@@ -77,16 +77,13 @@ export default Vue.extend({
             return
           }
           await this.$http.post("/member/storage/update/", {
-          id: id,
-          content: newName
-        }).then(response => {
-          if(response.data.status === 'success'){
-            this.units = [];
-            this.getUnits();
-          }
-        })
+            id: id,
+            content: newName
+          });
         } catch(error) {
-
+          console.error(error);
+        } finally {
+          await this.getUnits();
         }
       }
     },
@@ -101,33 +98,22 @@ export default Vue.extend({
             alert('You can not use this type of language on CTR!');
             return
           }
-          await this.$http.post("/place/add_storage", {
-            name: newStorage
-          }).then((response) => {
-            if(response.data.status === 'success'){
-              this.units = [];
-              this.getUnits();
-            }
-          })
+          await this.$http.post("/place/add_storage", {name: newStorage})
         } catch (error) {
-
+          console.error(error);
+        } finally {
+          await this.getUnits();
         }
       }
     },
     async getUnits(){
+      this.units = [];
       this.username = this.$store.data.user.username;
       try{
-       return this.$http.get(`/member/storage/`)
-        .then((response) => {
-          response.data.storage.forEach(unit => {
-            const count = this.$http.get(`/place/${unit.id}/object_instance`);
-            count.then((number) => {
-              unit.count = number.data.object_instance.length;
-              this.objects.push(number.data.object_instance)
-              this.units.push(unit);
-            })
-          })
-        });      
+        const storageUnits = await this.$http.get(`/member/storage`);
+        storageUnits.data.storage.forEach(unit => {
+          this.units.push(unit);
+        });
       } catch (errorResponse: any) {
         console.error(errorResponse);
       }

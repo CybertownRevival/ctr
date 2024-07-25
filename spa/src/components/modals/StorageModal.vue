@@ -12,7 +12,7 @@
             <div v-for="(unit, key) in units" :key="key">
               <div class="flex"><div class="px-2">
                 <h3>
-                  <a href="#" @click="openStorageUnit(unit.id, unit.name, unit.array)">{{ unit.name }}</a> 
+                  <a href="#" @click="openStorageUnit(unit.id, unit.name)">{{ unit.name }}</a> 
                   ( {{ unit.count }} 
                   <span v-if="unit.count === 1">Object</span>
                   <span v-else>Objects</span>
@@ -38,7 +38,10 @@
                 <div class="px-2">
                   <h3>
                     <input type="checkbox" v-model="moveToBackpack" :value="obj.id" />
-                    <a href="#" @click="objectOpener(obj.id)" class="px-2">{{ obj.object_name }}</a> 
+                    <a href="#" @click="objectOpener(obj.id)" class="px-2">
+                      <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
+                      <span v-else>{{ obj.name }}</span>
+                    </a> 
                   </h3>
                 </div>
               </div>
@@ -64,7 +67,10 @@
                 <div class="px-2">
                   <h3>
                     <input type="checkbox" v-model="moveToStorage" :value="obj.id" />
-                    <a href="#" @click="objectOpener(obj.id)" class="px-2">{{ obj.object_name }}</a> 
+                    <a href="#" @click="objectOpener(obj.id)" class="px-2">
+                      <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
+                      <span v-else>{{ obj.name }}</span>
+                    </a> 
                   </h3>
                 </div>
               </div>
@@ -107,7 +113,6 @@ export default Vue.extend({
       backpack: [],
       moveToBackpack: [],
       moveToStorage: [],
-      arrayLocator: 0,
       page: 'storage',
       showError: false,
       error: "",
@@ -120,12 +125,28 @@ export default Vue.extend({
     openEditModal(): void {
       ModalService.open(StorageEditModal);
     },
-    async openStorageUnit(id, name, position) {
-      this.storageObjects = []
+    async openStorageUnit(id, name) {
       this.unitName = name;
       this.unitId = id;
       this.page = 'unit';
-      this.storageObjects = this.objects[position];
+      this.getStorageObjects();
+      this.getBackpackObjects();
+    },
+    async getStorageObjects(){
+      this.moveToBackpack = [];
+      this.moveToStorage = [];
+      this.storageObjects = []
+      const storage = await this.$http.get(`/place/${this.unitId}/object_instance`);
+      storage.data.object_instance.forEach(obj => {
+        this.storageObjects.push(obj);
+      })
+    },
+    async getBackpackObjects(){
+      this.moveToBackpack = [];
+      this.moveToStorage = [];
+      this.backpack = [];
+      const response = await this.$http.get(`/member/backpack/${this.username}`);
+      this.backpack = response.data.objects;
     },
     backToStorage(){
       this.page = 'storage';
@@ -135,12 +156,10 @@ export default Vue.extend({
         if(this.moveToBackpack.length >= 1){
           await this.$http.post('/object_instance/backpack', {
             id: this.moveToBackpack
-          }).then(response => {
-            if(response.data.status === 'success'){
-              this.moveToBackpack = [];
-            }
-          })
-          this.openInfoModal();
+          });
+          this.getUnits();
+          this.getStorageObjects();
+          this.getBackpackObjects();
         }
       } catch (error) {
         console.log(error);
@@ -152,12 +171,10 @@ export default Vue.extend({
           await this.$http.post('/object_instance/storage', {
             id: this.moveToStorage,
             place_id: this.unitId
-          }).then(response => {
-            if(response.data.status === 'success'){
-              this.moveToStorage = [];
-            }
-          })
-          this.openInfoModal();
+          });
+          this.getUnits();
+          this.getStorageObjects();
+          this.getBackpackObjects();
         }
       } catch (error) {
         console.log(error);
@@ -180,25 +197,13 @@ export default Vue.extend({
       }
     },
     async getUnits(){
-      this.arrayLocator = 0;
       this.username = this.$store.data.user.username;
+      this.units = [];
       try{
-      this.backpack = [];
-      const response = await this.$http.get(`/member/backpack/${this.username}`);
-      this.backpack = response.data.objects;
-       return this.$http.get(`/member/storage/`)
-        .then((response) => {
-          response.data.storage.forEach(unit => {
-            const count = this.$http.get(`/place/${unit.id}/object_instance`);
-            count.then((number) => {
-              unit.count = number.data.object_instance.length;
-              unit.array = this.arrayLocator;
-              this.objects.push(number.data.object_instance)
-              this.units.push(unit);
-              this.arrayLocator++
-            })
-          })
-        });      
+        const storageUnits = await this.$http.get(`/member/storage`);
+        storageUnits.data.storage.forEach(unit => {
+          this.units.push(unit);
+        });
       } catch (errorResponse: any) {
         console.error(errorResponse);
       }
@@ -206,8 +211,16 @@ export default Vue.extend({
     objectOpener(id) {  
       window.open("/#/object/"+id, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
+    startSocketListeners(){
+    this.$socket.on("update-object", (event) => {
+      if(event.place_id === this.unitId){
+        setTimeout(this.getStorageObjects, 100);
+      }
+    });
+  },
   },
   mounted() {
+    this.startSocketListeners();
     this.getUnits();
   },
   mixins: [ModalMixin],

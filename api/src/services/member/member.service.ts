@@ -491,7 +491,13 @@ export class MemberService {
   }
 
   public async getStorage(memberId: number): Promise<any> {
-    const units = await this.placeRepository.findStorageByUserID(memberId);
+    const units = [];
+    const unit = await this.placeRepository.findStorageByUserID(memberId);
+    for (const storage of unit) {
+      const objects = await this.objectInstanceRepository.findByPlaceId(storage.id);
+      storage.count = objects.length;
+      units.push(storage);
+    }
     return units;
   }
 
