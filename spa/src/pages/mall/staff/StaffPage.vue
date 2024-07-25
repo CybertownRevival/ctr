@@ -370,7 +370,6 @@ export default Vue.extend({
               this.success = 'Object dropped';
               this.showSuccess = true;
               this.store = null;
-              setTimeout(this.getResults, 100);
             }
           });
         }
@@ -382,6 +381,8 @@ export default Vue.extend({
           this.error = "An unknown error occurred";
           this.showError = true;
         }
+      } finally {
+        await this.getResults();
       }
     },
     async remove(objectId): Promise<void> {
