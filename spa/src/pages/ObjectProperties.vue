@@ -49,7 +49,7 @@
       <div class="grid" style="
         grid-template-columns: 450px auto;
       ">
-        <div id="thumbnail" class="justify-self-center"><img :src="imgFile" /></div>
+        <div id="thumbnail" class="justify-self-center"><img style="max-height: 450px; max-width: 450px;" :src="imgFile" /></div>
         <div class="
         flex
         flex-col
