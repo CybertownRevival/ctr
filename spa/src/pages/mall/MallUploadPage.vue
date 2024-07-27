@@ -80,7 +80,7 @@
             <input type="file"
                    @change="setFile"
                    data-id="textureFile"
-                   accept=".jpeg,.jpg" />
+                   accept=".jpeg,.jpg,.gif,.png" />
           </td>
         </tr>
         <tr>
