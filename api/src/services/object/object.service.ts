@@ -22,9 +22,9 @@ export class ObjectService {
     private mallRepository: MallRepository,
   ) {}
 
-  public static readonly WRL_FILESIZE_LIMIT = 80000;
-  public static readonly TEXTURE_FILESIZE_LIMIT = 80000;
-  public static readonly IMAGE_FILESIZE_LIMIT = 80000;
+  public static readonly WRL_FILESIZE_LIMIT = 81920;
+  public static readonly TEXTURE_FILESIZE_LIMIT = 81920;
+  public static readonly IMAGE_FILESIZE_LIMIT = 81920;
   public static readonly SELLER_FEE_PERCENT = 0.2;
   public static readonly STATUS_DELETED = 0;
   public static readonly STATUS_ACTIVE = 1;
