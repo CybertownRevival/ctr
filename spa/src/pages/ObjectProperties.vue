@@ -199,9 +199,10 @@ methods: {
     }
     this.update();
     this.$socket.emit('update-object', {
-              obj_id: this.objectId,
-              place_id: this.placeId,
-            });
+      obj_id: this.objectId,
+      place_id: this.placeId,
+      member_username: this.memberUsername,
+    });
   },
   loadObjectPreview() {
     const browser = X3D.createBrowser();
@@ -248,6 +249,12 @@ methods: {
         try{
           const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
             id: this.objectId});
+            this.$socket.emit('update-object', {
+                obj_id: this.objectId,
+                place_id: this.placeId,
+                member_username: this.memberUsername,
+                buyer_username: this.$store.data.user.username,
+              });
             await this.objectProperties();
             if(!this.price){
               this.error = 'This object is not for sale!'
@@ -262,10 +269,6 @@ methods: {
               this.success = 'Object purchased!';
               this.error = '';
             }
-            this.$socket.emit('update-object', {
-              obj_id: this.objectId,
-              place_id: this.placeId,
-            });
           } catch(errorResponse: any) {
             console.log(errorResponse.response.data.error);
           }
