@@ -130,6 +130,8 @@ io.on("connection", async function(socket) {
         socket.broadcast.emit('update-object', {
             obj_id: object.obj_id,
             place_id: object.place_id,
+            member_username: object.member_username,
+            buyer_username: object.buyer_username,
         });
     });
 
