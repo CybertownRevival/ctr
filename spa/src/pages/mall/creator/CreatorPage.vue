@@ -102,7 +102,7 @@ export default Vue.extend({
               })
               if(obj.status !== 2){
                 this.objects.push(obj)
-              }            
+              }
           }
           if(this.page === 'pending'){
             this.title = 'My Pending Uploads';
