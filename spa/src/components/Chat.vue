@@ -642,21 +642,6 @@ export default Vue.extend({
       }
       this.closeMenu();
     },
-    async updateObjectLists(object){
-      if(this.activePanel === 'userBackpack' && 
-          (object.member_username === this.username ||
-            object.buyer_username === this.username
-          )
-        ){
-          await this.loadUserBackpack();
-        }
-        if(this.activePanel === 'backpack' && 
-          (object.member_username === this.$store.data.user.username ||
-          object.buyer_username === this.$store.data.user.username)
-        ){
-         await this.loadBackpack();
-        }
-    },
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {
         this.debugMsg("chat message received...", data);
@@ -677,7 +662,19 @@ export default Vue.extend({
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
       });
       this.$socket.on("update-object", (object) => {
-        this.updateObjectLists(object);
+        if(this.activePanel === 'userBackpack' && 
+          (object.member_username === this.username ||
+            object.buyer_username === this.username
+          )
+        ){
+          setTimeout(this.loadUserBackpack, 50);
+        }
+        if(this.activePanel === 'backpack' && 
+          (object.member_username === this.$store.data.user.username ||
+          object.buyer_username === this.$store.data.user.username)
+        ){
+          setTimeout(this.loadBackpack, 50);
+        }
       });
     },
     dropObject() {
