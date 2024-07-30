@@ -1,5 +1,5 @@
 <template>
-	<main v-if="loaded" class="w-full flex h-full">
+  <main v-if="loaded" class="w-full flex h-full">
     <div class="flex-col w-56 h-full border-r-2 border-white text-center">
       <br />
       <div class="mb-2"><button class="btn-ui" @click="changePage('pending')">Pending</button></div>
@@ -102,7 +102,7 @@ export default Vue.extend({
               })
               if(obj.status !== 2){
                 this.objects.push(obj)
-              }            
+              }  
           }
           if(this.page === 'pending'){
             this.title = 'My Pending Uploads';
@@ -123,8 +123,11 @@ export default Vue.extend({
           if(this.page === 'restock'){
             this.title = 'My Restockable Objects';
             if(
-              obj.limit === 'Unlimited' && obj.status !== 2 ||
-              obj.instances < parseInt(obj.limit) && obj.status !== 2){
+              obj.limit === 'Unlimited' &&
+              (obj.status === 3 || obj.status === 4) ||
+              obj.instances < parseInt(obj.limit) &&
+              (obj.status === 3 || obj.status === 4)
+              ){
                 this.$http.get(`/mall/store/${obj.id}`)
               .then(response => {
                 obj.store = response.data.place[0].name;
