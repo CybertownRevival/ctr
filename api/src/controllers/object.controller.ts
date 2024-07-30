@@ -202,7 +202,7 @@ class ObjectController {
         throw new Error('You can not upload more than what the object is limited to.');
       }
       await this.objectService.performObjectRestockTransaction(session.id, sellerFee);
-      await this.objectService.increaseQuantity(object.id, object.quantity + increase);
+      await this.objectService.increaseQuantity(object.id, object.quantity + increase, object.status);
       response.status(200).json({
         status: 'success',
       });
