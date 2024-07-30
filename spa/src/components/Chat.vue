@@ -661,18 +661,11 @@ export default Vue.extend({
       this.$socket.on("disconnect", () => {
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
       });
-      this.$socket.on("update-object", (object) => {
-        if(this.activePanel === 'userBackpack' && 
-          (object.member_username === this.username ||
-            object.buyer_username === this.username
-          )
-        ){
+      this.$socket.on("update-object", () => {
+        if(this.activePanel === 'userBackpack'){
           setTimeout(this.loadUserBackpack, 50);
         }
-        if(this.activePanel === 'backpack' && 
-          (object.member_username === this.$store.data.user.username ||
-          object.buyer_username === this.$store.data.user.username)
-        ){
+        if(this.activePanel === 'backpack'){
           setTimeout(this.loadBackpack, 50);
         }
       });
