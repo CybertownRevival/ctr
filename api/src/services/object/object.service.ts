@@ -112,26 +112,19 @@ export class ObjectService {
     });
   }
 
- public async increaseQuantity(objectId: number, quantity: number, status: number) {
-    if(status === 1){
-      return await this.objectRepository.increaseObjectQuantity(objectId, {
-        quantity: quantity,
-      });
-    } else {
-      return await this.objectRepository.increaseObjectQuantity(objectId, {
-        quantity: quantity,
-        status: ObjectService.STATUS_APPROVED,
-      });
-    }
-    
+  public async increaseQuantity(objectId: number, quantity: number) {
+    this.objectRepository.increaseObjectQuantity(objectId, {
+      quantity: quantity,
+      status: ObjectService.STATUS_APPROVED,
+    });
   }
 
   public async updateObjectLimit(objectId: number, limit: number) {
-    return await this.objectRepository.updateObjectLimit(objectId, limit);
+    this.objectRepository.updateObjectLimit(objectId, limit);
   }
   
   public async updateObjectName(objectId: number, name: string) {
-    return await this.objectRepository.updateObjectName(objectId, name);
+    this.objectRepository.updateObjectName(objectId, name);
   }
 
   public async updateStatusRejected(objectId: number) {
