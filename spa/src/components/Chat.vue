@@ -72,7 +72,7 @@
         "
       >
         <span v-if="activePanel === 'users'" class="flex-grow">
-          ({{ this.users.length + 1 }}) {{ $store.data.place.name }}
+          ({{ this.users.length + 1 }}) {{ this.$store.data.place.name }}
         </span>
         <span v-if="activePanel === 'places'" class="flex-grow">
           Places ({{ this.activePlaces.length }})
@@ -108,7 +108,7 @@
         <ul v-if="activePanel === 'users'">
           <li class="text-white">
             <img src="/assets/img/av_me.gif" class="inline" />
-            {{ $store.data.user.username }}
+            {{ this.$store.data.user.username }}
           </li>
           <li class="cursor-default" v-for="(user, key) in users" :key="key" @click="handler($event)" @contextmenu="handler($event)" @mouseup="menu(user.id, user.username)">
             <img src="/assets/img/av_mute.gif" class="inline" v-if="blockedMembers.includes(user.username) === true" />
@@ -119,7 +119,7 @@
         </ul>
         <ul v-if="activePanel === 'gestures'">
           <li
-            v-for="(gesture, key) in $store.data.user.avatar.gestures"
+            v-for="(gesture, key) in this.$store.data.user.avatar.gestures"
             :key="key"
             @click="sendGesture(key)"
             class="cursor-pointer hover:bg-gray-200 active:bg-gray-400"
@@ -656,7 +656,6 @@ export default Vue.extend({
       
     },
     joinedChat(): void {
-      console.log(this.$store.data.place.id)
       let userIs3D = 0;
       if(this.$store.data.view3d){
         userIs3D = 1;
