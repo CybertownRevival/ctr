@@ -427,8 +427,8 @@ class MallController {
       const object = await this.objectService
         .findByUsername(
           username, 
-          compareValues[compare].toString(), 
-          status.toString(),
+          compareValues[compare], 
+          status,
           limit,
           offset);
       response.status(200).json({ status: 'success', object: object });
