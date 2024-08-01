@@ -15,6 +15,10 @@ mallRoutes.get('/pending_approval', (request, response) =>
 mallRoutes.get('/stores', (request, response)  => mallController.findStores(request,response));
 mallRoutes.get('/all_objects', (request, response)  => 
   mallController.findAllObjects(request,response));
+mallRoutes.get('/soldout', (request, response)  => 
+  mallController.findSoldOutObjects(request,response));
+mallRoutes.get('/objectsearch', (request, response)  => 
+  mallController.searchMallObjects(request,response));
 mallRoutes.post('/approve', (request, response) => mallController.approveObject(request, response));
 mallRoutes.post('/reject', (request, response) => mallController.rejectObject(request, response));
 mallRoutes.post('/refund', (request, response) => 
@@ -35,7 +39,7 @@ mallRoutes.get('/object/:id', (request, response) =>
   mallController.findByObjectId(request, response));
 mallRoutes.get('/store/:id', (request, response) => 
   mallController.findStore(request, response));
-mallRoutes.get('/user/:username', (request, response) => 
+mallRoutes.post('/user', (request, response) => 
   mallController.findByUsername(request, response));
 mallRoutes.post('/:id/position', (request, response) => 
   mallController.updateObjectPosition(request, response));
