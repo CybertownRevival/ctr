@@ -404,22 +404,29 @@ class MallController {
 
   public async findByUsername(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string>apitoken);
+    if (!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token or access denied.',
+      });
+      return;
+    }
+    const username = request.body.username;
+    const compare = request.body.compare.toString().replace(/[^0-9]/g, '');
+    const status = request.body.status.toString().replace(/[^0-9]/g, '');
+    const limit = request.body.limit.toString().replace(/[^0-9]/g, '');
+    const offset = request.body.offset.toString().replace(/[^0-9]/g, '');
+    const compareValues = ['=', '!=', '>', '<', '>=', '<='];
+    if(!username || !compare || !status || !limit){
+      throw new Error('Missing required search parameters');
+    }
+    if(compare > '5' || status > '4' || limit < '10'){
+      throw new Error('Invalid search parameters');
+    }
     try {
-      const session = this.memberService.decodeMemberToken(<string>apitoken);
-      if (!session) {
-        response.status(400).json({
-          error: 'Invalid or missing token or access denied.',
-        });
-        return;
-      }
-      const compare = request.body.compare;
-      const status = request.body.status;
-      const limit = request.body.limit;
-      const offset = request.body.offset;
-      const compareValues = ['=', '!=', '>', '<', '>=', '<='];
       const object = await this.objectService
         .findByUsername(
-          request.body.username, 
+          username, 
           compareValues[compare].toString(), 
           status.toString(),
           limit,
