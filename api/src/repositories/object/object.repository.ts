@@ -96,12 +96,40 @@ export class ObjectRepository {
     return objects;
   }
 
-  public async getUserUploadedObjects(userId: number): Promise<any> {
+  public async searchMallObjects(search: string, limit: number, offset: number): Promise<any> {
+    return await this.db.object
+      .where(this.like('name', search))
+      .limit(limit)
+      .offset(offset);
+  }
+
+  public async getTotal(search: string): Promise<any> {
+    return await this.db.object
+      .count('id as count')
+      .where(this.like('object.name', search));
+  }
+
+  public async findMallSoldOut(): Promise<any> {
+    const objects = await this.db.object
+      .select('object.*')
+      .where('status', '=', '1');
+    return objects;
+  }
+
+  public async getUserUploadedObjects(
+    userId: number, 
+    compare: string, 
+    content: string,
+    limit: number,
+    offset: number): Promise<any> {
     const object = await this.db.object
       .select('object.*', 'member.username')
       .where('object.member_id', userId)
-      .where('object.status', '>=', 1)
-      .join('member', 'member.id', 'object.member_id');
+      .where('object.status', compare, content)
+      .join('member', 'member.id', 'object.member_id')
+      .limit(limit)
+      .offset(offset)
+      .orderBy('object.name');
     return object;
   }
 
@@ -116,5 +144,11 @@ export class ObjectRepository {
 
   public async total(column: string, compare: string, content: string): Promise<any> {
     return this.db.object.count('id as count').where(column, compare, content);
+  }
+
+  private like(field: string, value: string) {
+    return function() {
+      this.whereRaw('?? LIKE ?', [field, `%${value}%`]);
+    };
   }
 }
