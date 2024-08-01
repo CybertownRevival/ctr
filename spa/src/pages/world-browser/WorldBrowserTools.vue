@@ -70,7 +70,7 @@ export default Vue.extend({
       }
     },
     async opener(link) {
-      window.open(link, "targetWindow", "height=650,width=1000,menubar=no,status=no");
+      window.open(link, "targetWindow", "height=650,width=800,menubar=no,status=no");
     },
   },
   mounted() {
