@@ -35,7 +35,11 @@
           <div class="flex"><div class="w-24">Price: </div><div>{{ object.price }}</div></div>
           <div class="flex" v-if="object.instances >= 1"><div class="w-24">Sold: </div><div>{{ object.instances }}</div></div>
           <div class="flex"><div class="w-24">Quantity: </div><div>{{ object.quantity }}</div></div>
-          <div class="flex" v-if="object.limit"><div class="w-24">Limit: </div><div>{{ object.limit }}</div></div>
+          <div class="flex">
+            <div class="w-24">Limit: </div>
+            <div v-if="object.limit">{{ object.limit }}</div>
+            <div v-else>Unlimited</div>
+          </div>
           <div class="flex"><div class="w-24">Created By: </div><div>{{ object.username }}</div></div>
         </div>
         <div>
