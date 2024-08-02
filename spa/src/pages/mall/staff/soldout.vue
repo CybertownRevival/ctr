@@ -25,12 +25,6 @@
           <div class="flex"><div class="w-24">Located In: </div>{{ object.store.name }}</div>
         </div>
         <div>
-          <div class="w-40">
-            <button class="btn-ui" @click="updateName(object.id, object.name)">Edit Name</button>
-            <button class="btn-ui" @click="updateLimit(object.id, object.quantity)">Update Limit</button>
-          </div>
-        </div>
-        <div>
           <button class="btn-ui" @click="remove(object.id)">Remove</button>
         </div>
       </div>
@@ -107,64 +101,6 @@ export default Vue.extend({
           this.error = "An unknown error occurred";
           this.showError = true;
         }
-      }
-    },
-    async updateLimit(objectId, quantity): Promise<void>{
-      this.showSuccess = false;
-      this.showError = false;
-      let limit = prompt("Update limit to this object\n NOTE: Setting the limit to 0 makes it Unlimited\n");
-      if(limit !== limit.replace(/[^0-9]/g, '')){
-        this.error = "Use whole numbers only!";
-        return
-      }
-      if(limit !== null && limit !=='' && limit >= quantity ||
-        limit !== null && limit !=='' && limit === '0'
-      ){
-        try {
-            this.error = '';
-            this.showError = false;
-            await this.$http.post("/mall/limit", {
-            'objectId': objectId,
-            'limit': limit.replace(/[^0-9]/g, ''),
-            });
-            this.success = 'Object limit updated!';
-            this.showSuccess = true;
-            this.getResults();
-          } catch (errorResponse: any) {
-            if (errorResponse.response.data.error) {
-              this.error = errorResponse.response.data.error;
-              this.showError = true;
-            } else {
-              this.error = "An unknown error occurred";
-              this.showError = true;
-            }
-          }
-      }
-    },
-    async updateName(objectId, name): Promise<void>{
-      this.showSuccess = false;
-      this.showError = false;
-      let newName = prompt("Current Name:\n " + name + "\n\nNew Name:", name);
-      if(newName !== null && newName !==''){
-        try {
-            this.error = '';
-            this.showError = false;
-            await this.$http.post("/mall/updateObjectName", {
-            'objectId': objectId,
-            'name': newName,
-            });
-            this.success = 'Object name updated!';
-            this.showSuccess = true;
-            this.getResults();
-          } catch (errorResponse: any) {
-            if (errorResponse.response.data.error) {
-              this.error = errorResponse.response.data.error;
-              this.showError = true;
-            } else {
-              this.error = "An unknown error occurred";
-              this.showError = true;
-            }
-          }
       }
     },
     async remove(objectId): Promise<void> {
