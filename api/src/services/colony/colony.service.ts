@@ -43,7 +43,11 @@ export class ColonyService {
   public async getAccessInfoByUsername(colonyId: number): Promise<object> {
     const deputyCode = await this.roleRepository.roleMap.ColonyDeputy;
     const ownerCode = await this.roleRepository.roleMap.ColonyLeader;
-    return await this.colonyRepository.getAccessInfoByUsername(colonyId, ownerCode, deputyCode);
+    return await this.roleAssignmentRepository.getAccessInfoByUsername(
+      colonyId,
+      ownerCode,
+      deputyCode,
+    );
   }
   
   public async postAccessInfo(
@@ -60,7 +64,9 @@ export class ColonyService {
     let newOwner = null;
     const oldDeputies = [0,0,0,0,0,0,0,0];
     const newDeputies = [0,0,0,0,0,0,0,0];
-    const data = await this.colonyRepository.getAccessInfoByID(colonyId, ownerCode, deputyCode);
+    const data = await this
+      .roleAssignmentRepository
+      .getAccessInfoByID(colonyId, ownerCode, deputyCode);
     if (data.owner.length > 0) {
       oldOwner = data.owner[0].member_id;
     } else {
@@ -74,7 +80,7 @@ export class ColonyService {
     }
     if (newOwner !== 0) {
       if (oldOwner !== 0) {
-        await this.colonyRepository.removeIdFromAssignment(colonyId, oldOwner, ownerCode);
+        await this.roleAssignmentRepository.removeIdFromAssignment(colonyId, oldOwner, ownerCode);
         const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
         if (response.length !== 0) {
           const primaryRoleId = response[0].primary_role_id;
@@ -83,7 +89,7 @@ export class ColonyService {
           }
         }
       }
-      await this.colonyRepository.addIdToAssignment(colonyId, newOwner, ownerCode);
+      await this.roleAssignmentRepository.addIdToAssignment(colonyId, newOwner, ownerCode);
     }
     data.deputies.forEach((deputies, index) => {
       oldDeputies[index] = deputies.member_id;
@@ -95,7 +101,7 @@ export class ColonyService {
       if (oldDeputies !== newDeputies[index]) {
         if (newDeputies[index] === 0) {
           try {
-            this.colonyRepository.removeIdFromAssignment(colonyId, oldDeputies, deputyCode);
+            this.roleAssignmentRepository.removeIdFromAssignment(colonyId, oldDeputies, deputyCode);
           } catch (e) {
             console.log(e);
           }
@@ -112,7 +118,7 @@ export class ColonyService {
           }
         } else {
           try {
-            this.colonyRepository.removeIdFromAssignment(colonyId, oldDeputies, deputyCode);
+            this.roleAssignmentRepository.removeIdFromAssignment(colonyId, oldDeputies, deputyCode);
             this.memberRepository.getPrimaryRoleName(oldDeputies)
               .then((response: any) => {
                 if (response.length !== 0) {
@@ -122,7 +128,9 @@ export class ColonyService {
                   }
                 }
               });
-            this.colonyRepository.addIdToAssignment(colonyId, newDeputies[index], deputyCode);
+            this
+              .roleAssignmentRepository
+              .addIdToAssignment(colonyId, newDeputies[index], deputyCode);
           } catch (e) {
             console.log(e);
           }
