@@ -63,6 +63,32 @@ export class PlaceService {
     }
     return false;
   }
+  
+  public async canManageAccess(slug: string, placeId: number, memberId: number): Promise<boolean> {
+    const placeRoleId = await this.findRoleIdsBySlug(slug);
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    
+    //if no roles assignable, access rights is closed to all
+    if(!placeRoleId) return false;
+    
+    if (
+      roleAssignments.find(assignment => {
+        return (
+          [
+            this.roleRepository.roleMap.Admin,
+            this.roleRepository.roleMap.CityMayor,
+            this.roleRepository.roleMap.DeputyMayor,
+          ].includes(assignment.role_id) ||
+        ([placeRoleId.owner].includes(assignment.role_id) &&
+         assignment.place_id === placeId)
+        );
+      })
+    ) {
+      return true;
+    }
+    return false;
+  }
+  
   public async findById(placeId: number): Promise<Place> {
     return await this.placeRepository.findById(placeId);
   }

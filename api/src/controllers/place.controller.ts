@@ -44,6 +44,31 @@ class PlaceController {
     }
   }
   
+  /** Get if user can manage access rights */
+  public async canManageAccess(request: Request, response: Response): Promise<void> {
+    const { id } = request.params;
+    const { apitoken } = request.headers;
+    const { slug } = request.params;
+    
+    if (!slug || typeof slug !== 'string') {
+      response.status(400).json({ error: 'invalid or missing place slug' });
+    }
+    
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.placeService.canManageAccess(slug, parseInt(id), session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token.',
+        });
+        return;
+      }
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+  
   /** Provides data about the place with the given slug */
   public async getPlace(request: Request, response: Response): Promise<void> {
     const { slug } = request.params;
