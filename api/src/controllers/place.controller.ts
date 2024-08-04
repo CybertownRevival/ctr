@@ -6,7 +6,44 @@ import * as badwords from 'badwords-list';
 
 class PlaceController {
   constructor(private placeService: PlaceService, private memberService: MemberService) {}
-
+  
+  /** Get Admin status for the specific place's slug */
+  public async canAdmin(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    const { slug} = request.params;
+    const { id } = request.params;
+    
+    if (!slug || typeof slug !== 'string') {
+      response.status(400).json({ error: 'invalid or missing place slug' });
+    }
+    
+    // the following is needed to make sure shops find the mall's place id
+    let place_id = 0;
+    if (id === undefined) {
+      const place = await this.placeService.findBySlug(slug);
+      place_id = place.id;
+    } else {
+      place_id = Number.parseInt(id);
+    }
+    
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session) {
+        response.status(400).json({
+          error: 'Invalid or missing token.',
+        });
+        return;
+      }
+      const result = await this.placeService.canAdmin(slug, place_id, session.id);
+      console.log(result);
+      response.status(200).json({ result });
+      return;
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+  
   /** Provides data about the place with the given slug */
   public async getPlace(request: Request, response: Response): Promise<void> {
     const { slug } = request.params;
