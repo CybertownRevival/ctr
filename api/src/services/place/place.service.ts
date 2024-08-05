@@ -100,6 +100,13 @@ export class PlaceService {
   public async getPlaceObjects(placeId: number): Promise<ObjectInstance[]> {
     return await this.objectInstanceRepository.findByPlaceId(placeId);
   }
+  
+  public async getAccessInfoByUsername(slug: string, placeId: number): Promise<object> {
+    const placeRoleId = await this.findRoleIdsBySlug(slug);
+    return await this
+      .roleAssignmentRepository
+      .getAccessInfoByUsername(placeId, placeRoleId.owner, placeRoleId.deputy);
+  }
 
   public async addStorage(name: string, memberId: number): Promise<any> {
     await this.placeRepository.create({name: name, type: 'storage', member_id: memberId});
