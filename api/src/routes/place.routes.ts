@@ -7,6 +7,8 @@ placeRoutes.get('/can_admin/:slug/:id?',
   (request, response) => placeController.canAdmin(request, response));
 placeRoutes.get('/can_manage_access/:slug/:id?',
   (request, response) => placeController.canManageAccess(request, response));
+placeRoutes.get('/getAccessInfo/:slug/:id?',
+  (request, response) => placeController.getAccessInfoByUsername(request, response));
 placeRoutes.get('/:placeId/object_instance',
   (request, response) => placeController.getPlaceObjects(request, response));
 placeRoutes.get('/:slug',

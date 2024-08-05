@@ -69,6 +69,32 @@ class PlaceController {
     }
   }
   
+  /** get users that are assigned access to the place */
+  public async getAccessInfoByUsername(request: Request, response: Response): Promise<any> {
+    const { id } = request.params;
+    const { apitoken } = request.headers;
+    const { slug } = request.params;
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.placeService.canManageAccess(slug, parseInt(id), session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token.',
+        });
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+    try {
+      const data = await this.placeService.getAccessInfoByUsername(slug, parseInt(id));
+      response.status(200).json({ data });
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({ error });
+    }
+  }
+  
   /** Provides data about the place with the given slug */
   public async getPlace(request: Request, response: Response): Promise<void> {
     const { slug } = request.params;
