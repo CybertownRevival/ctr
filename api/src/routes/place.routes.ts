@@ -17,5 +17,7 @@ placeRoutes.get('/:id',
   (request, response) => placeController.getPlaceById(request, response));
 placeRoutes.post('/add_storage', (request, response) => 
   placeController.addStorage(request, response));
+placeRoutes.post('/postAccessInfo/:slug/:id?',
+  (request, response) => placeController.postAccessInfo(request, response));
 
 export { placeRoutes };
