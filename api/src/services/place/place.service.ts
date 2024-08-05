@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
 
 import {
+  MemberRepository,
   PlaceRepository,
   ObjectInstanceRepository,
   RoleRepository,
@@ -12,6 +13,7 @@ import { Place, ObjectInstance } from '../../types/models';
 @Service()
 export class PlaceService {
   constructor(
+    private memberRepository: MemberRepository,
     private placeRepository: PlaceRepository,
     private objectInstanceRepository: ObjectInstanceRepository,
     private roleRepository: RoleRepository,
@@ -111,6 +113,96 @@ export class PlaceService {
   public async addStorage(name: string, memberId: number): Promise<any> {
     await this.placeRepository.create({name: name, type: 'storage', member_id: memberId});
   }
+  
+  public async postAccessInfo(
+    slug: string,
+    placeId: number,
+    givenDeputies: any,
+    givenOwner: string): Promise<void> {
+    const placeRoleId = await this.findRoleIdsBySlug(slug);
+    /**
+     * old is coming from database
+     * new is coming from access rights page
+     */
+    const deputyCode = placeRoleId.deputy;
+    const ownerCode = placeRoleId.owner;
+    let oldOwner = null;
+    let newOwner = null;
+    const oldDeputies = [0,0,0,0,0,0,0,0];
+    const newDeputies = [0,0,0,0,0,0,0,0];
+    const data = await this
+      .roleAssignmentRepository
+      .getAccessInfoByID(placeId, ownerCode, deputyCode);
+    if (data.owner.length > 0) {
+      oldOwner = data.owner[0].member_id;
+    } else {
+      oldOwner = 0;
+    }
+    try {
+      newOwner = await this.memberRepository.findIdByUsername(givenOwner);
+      newOwner = newOwner[0].id;
+    } catch (error) {
+      newOwner = 0;
+    }
+    if (newOwner !== 0) {
+      if (oldOwner !== 0) {
+        await this.roleAssignmentRepository.removeIdFromAssignment(placeId, oldOwner, ownerCode);
+        const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
+        if (response.length !== 0) {
+          const primaryRoleId = response[0].primary_role_id;
+          if (ownerCode === primaryRoleId){
+            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          }
+        }
+      }
+      await this.roleAssignmentRepository.addIdToAssignment(placeId, newOwner, ownerCode);
+    }
+    data.deputies.forEach((deputies, index) => {
+      oldDeputies[index] = deputies.member_id;
+    });
+    for (let i = 0; i < givenDeputies.length; i++) {
+      newDeputies[i] = await this.updateDeputyId(givenDeputies[i]);
+    }
+    oldDeputies.forEach((oldDeputies, index) => {
+      if (oldDeputies !== newDeputies[index]) {
+        if (newDeputies[index] === 0) {
+          try {
+            this.roleAssignmentRepository.removeIdFromAssignment(placeId, oldDeputies, deputyCode);
+          } catch (e) {
+            console.log(e);
+          }
+          if (oldDeputies !== 0) {
+            this.memberRepository.getPrimaryRoleName(oldDeputies)
+              .then((response: any) => {
+                if (response.length !== 0) {
+                  const primaryRoleId = response[0].primary_role_id;
+                  if (primaryRoleId && deputyCode === primaryRoleId) {
+                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                  }
+                }
+              });
+          }
+        } else {
+          try {
+            this.roleAssignmentRepository.removeIdFromAssignment(placeId, oldDeputies, deputyCode);
+            this.memberRepository.getPrimaryRoleName(oldDeputies)
+              .then((response: any) => {
+                if (response.length !== 0) {
+                  const primaryRoleId = response[0].primary_role_id;
+                  if (deputyCode === primaryRoleId) {
+                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                  }
+                }
+              });
+            this.roleAssignmentRepository
+              .addIdToAssignment(placeId, newDeputies[index], deputyCode);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+    });
+  }
 
   public async updatePlaces(id: number, column: string, content: string): Promise<any> {
     await this.placeRepository.updatePlaces(id, column, content);
@@ -152,5 +244,14 @@ export class PlaceService {
       },
     };
     return roleId[slug];
+  }
+  
+  private async updateDeputyId(deputy: any): Promise<number> {
+    let newDeputies = 0;
+    if (deputy.username !== null) {
+      const result = await this.memberRepository.findIdByUsername(deputy.username);
+      newDeputies = result[0].id;
+    }
+    return newDeputies;
   }
 }

@@ -146,7 +146,38 @@ class PlaceController {
       response.status(400).json({ error: error.message });
     }
   }
+  
+  public async postAccessInfo(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    const { slug } = request.params;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    const { id } = request.params;
+    try {
+      const access = await this.placeService.canManageAccess(slug, parseInt(id), session.id);
+      if (!access) {
+        response.status(403).json({error: 'Access Denied'});
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    const deputies = request.body.deputies;
+    const owner = request.body.owner;
+    try {
+      await this.placeService.postAccessInfo(slug, parseInt(id), deputies, owner);
+      response.status(200).json({success: true});
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
+
 const placeService = Container.get(PlaceService);
 const memberService = Container.get(MemberService);
 export const placeController = new PlaceController(placeService, memberService);
