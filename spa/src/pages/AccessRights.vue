@@ -162,6 +162,15 @@ export default Vue.extend({
               this.$store.data.place.id
             }/can_manage_access`;
         break;
+      case "public":
+        endpoint =
+          `/place/can_manage_access/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
+        break;
+      case "shop": {
+        const mallId = await this.$http.get("api/place/mall");
+        endpoint = `/place/can_manage_access/mall/${mallId.data.id}`;
+        break;
+      }
       default:
         break;
       }
@@ -192,6 +201,14 @@ export default Vue.extend({
           this.$store.data.place.id
         }/getAccessInfo/`;
         break;
+      case "public":
+        infopoint =
+            `/place/getAccessInfo/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
+        break;
+      case "shop": {
+        infopoint = "/place/getAccessInfo/mall";
+        break;
+      }
       default:
         break;
       }
@@ -225,6 +242,14 @@ export default Vue.extend({
           this.$store.data.place.id
         }/postAccessInfo/`;
         break;
+      case "public":
+        updatepoint =
+          `/place/postAccessInfo/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
+        break;
+      case "shop": {
+        updatepoint = "/place/postAccessInfo/mall";
+        break;
+      }
       default:
         break;
       }
