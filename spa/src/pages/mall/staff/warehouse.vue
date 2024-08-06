@@ -53,7 +53,7 @@
           <div>
             Select a Store:<br />
             <select v-model="store">
-              <option v-for="option in mallStoreData" :key="option.id">
+              <option v-for="option in mallStoreData" :value="option.id">
                 {{ option.title }}
               </option>
             </select>
