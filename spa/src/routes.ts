@@ -283,7 +283,7 @@ export default [
         meta: { wrapper: false },
     },
     {
-        path: "/information/:type/:id",
+        path: "/information/:type/:id/:slug?",
         component: InformationPage,
         name: "information",
         meta: {

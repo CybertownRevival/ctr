@@ -5,7 +5,9 @@
             v-on:click="opener('#/information/'
               + $store.data.place.type
               + '/'
-              + $store.data.place.id)">Information</button>
+              + $store.data.place.id
+              + '/'
+              + $store.data.place.slug)">Information</button>
     <span v-if="$store.data.place.slug === 'employment'">
       <button class="btn-ui"
               v-on:click="opener('#/messageboard/' + $store.data.place.id)">Job Offers</button>
@@ -80,8 +82,8 @@ export default Vue.extend({
         break;
       }
       try {
-        this.adminCheck = await this.$http.get(endpoint);
-        this.canAdmin = this.adminCheck.data.result;
+        const adminCheck = await this.$http.get(endpoint);
+        this.canAdmin = adminCheck.data.result;
       } catch (error) {
         this.canAdmin = false;
       }

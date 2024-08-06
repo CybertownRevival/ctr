@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {response} from "express";
 
 export default Vue.extend({
   name: "InformationPage",
@@ -34,7 +33,6 @@ export default Vue.extend({
   methods: {
     async getData(): Promise<void> {
       let infopoint = null;
-      console.log(this.$route.params.type);
       switch (this.$route.params.type) {
       case "block":
         infopoint = `/block/${
@@ -51,6 +49,15 @@ export default Vue.extend({
           this.$route.params.id
         }/getAccessInfo/`;
         break;
+      case "public": {
+        console.log(this.$store.data.place.slug);
+        infopoint = `/place/getAccessInfo/${this.$route.params.slug}/${this.$route.params.id}`;
+        break;
+      }
+      case "shop": {
+        infopoint = "/place/getAccessInfo/mall";
+        break;
+      }
       default:
         break;
       }
