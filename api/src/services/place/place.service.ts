@@ -248,7 +248,8 @@ export class PlaceService {
   
   private async updateDeputyId(deputy: any): Promise<number> {
     let newDeputies = 0;
-    if (deputy.username !== null) {
+    if (deputy.username !== null && deputy.username !== '') {
+      console.log('deputy', deputy.username);
       const result = await this.memberRepository.findIdByUsername(deputy.username);
       newDeputies = result[0].id;
     }
