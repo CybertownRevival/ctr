@@ -95,6 +95,41 @@ class MemberController {
     }
   }
 
+  public async check3d(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    try {
+      const user3d = await this.memberService.check3d(request.body.username);
+      response.status(200).json({ user3d });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async getActivePlaces(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    try {
+      const places = await this.memberService.getActivePlaces();
+      response.status(200).json( places );
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async updateLatestActivity(request: Request, response: Response): Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      await this.memberService.updateLatestActivity(session.id);
+      response.status(200).json('status: success');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   public async getPrimaryRoleName(request: Request, response: Response): Promise<string> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
@@ -162,6 +197,21 @@ class MemberController {
         username,
         hasHome: !!homeInfo,
       });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error.message });
+    }
+  }
+
+  public async joinedPlace(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const placeId = request.body.place_id;
+      const is3d = request.body.is_3d;
+      const id = session.id;
+      await this.memberService.joinedPlace(id, placeId, is3d);
+      response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
       response.status(400).json({ error: error.message });
@@ -359,7 +409,7 @@ class MemberController {
     }
   }
 
- public async getBackpack(request: Request, response: Response): Promise<void> {
+  public async getBackpack(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     

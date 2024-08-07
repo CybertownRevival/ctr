@@ -12,6 +12,8 @@ memberRoutes.post('/signup', (request, response) => memberController.signup(requ
 memberRoutes.post('/is_banned', (request, response) =>
   memberController.isBanned(request, response),
 );
+memberRoutes.post('/joined', (request, response) => 
+  memberController.joinedPlace(request, response));
 memberRoutes.get('/getrolename', (request, response) =>
   memberController.getPrimaryRoleName(request, response),
 );
@@ -45,8 +47,13 @@ memberRoutes.get('/info', (request, response) => memberController.getInfo(reques
 memberRoutes.get('/storage', (request, response) => memberController.getStorage(request, response));
 memberRoutes.post('/storage/update', (request, response) => 
   memberController.updateStorage(request, response));
+memberRoutes.post('/ping', (request, response) => 
+  memberController.updateLatestActivity(request, response));
 memberRoutes.get('/info/:id', (request, response) => memberController.getInfo(request, response));
 memberRoutes.get('/roles', (request, response) => memberController.getRoles(request, response));
+memberRoutes.post('/check3d', (request, response) => memberController.check3d(request, response));
+memberRoutes.get('/places', (request, response) => 
+  memberController.getActivePlaces(request, response));
 memberRoutes.get('/backpack/:username', (request, response) =>
   memberController.getBackpack(request, response),
 );

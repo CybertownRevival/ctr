@@ -38,4 +38,10 @@ export interface Member extends Model {
   end_date?: string;
   /** this is the ban status for the user */
   banned: boolean;
+  /** this is the last place the user loaded chat */
+  place_id: number;
+  /** This determines if the user is 2D or 3D */
+  is_3d: number;
+  /** This is when the user was last active */
+  last_activity?: Date;
 }
