@@ -7,7 +7,7 @@ import {
   ObjectRepository,
   PlaceRepository,
   MallRepository,
-  MemberRepository
+  MemberRepository,
 } from '../../repositories';
 import { MallObjectPosition, MallObjectRotation } from 'models';
 
@@ -62,28 +62,52 @@ export class MallService {
     return stores;
   }
 
+  public async findSoldOut(){
+    const returnObjects= [];
+    const objects = await this.objectRepository.findMallSoldOut();
+    for (const obj of objects) {
+      const user = await this.memberRepository.findById(obj.member_id);
+      const store = await this.mallRepository.getStore(obj.id);
+      const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
+      obj.username = user.username;
+      obj.store = store[0];
+      obj.instances = instances;
+      returnObjects.push(obj);
+    }
+    return {objects: returnObjects};
+  }
+
+  public async searchMallObjects(search: string, limit: number, offset: number): Promise<any> {
+    const returnObjects = [];
+    const objects = await this.objectRepository.searchMallObjects(search, limit, offset);
+    for (const obj of objects) {
+      const user = await this.memberRepository.findById(obj.member_id);
+      const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
+      obj.username = user.username;
+      obj.instances = instances;
+      returnObjects.push(obj);
+    }
+    const total = await this.objectRepository.getTotal(search);
+    return {
+      objects: returnObjects,
+      total: total,
+    };
+  }
+
   public async getAllObjects(
     column: string, compare: string, content: string, limit: number, offset: number){
     const returnObjects= [];
     const objects = await this.objectRepository
       .findAllObjects(column, compare, content, limit, offset);
-    objects.forEach(obj => {
-      const user = this.memberRepository.findById(obj.member_id);
-      const store = this.mallRepository.getStore(obj.id);
-      if(store){
-        store.then((value) => {
-          obj.store = value[0];
-        });
-      }
-      user.then((value) => {
-        obj.username = value.username;
-      });
-      const instances = this.objectInstanceRepository.countByObjectId(obj.id);
-      instances.then((value) => {
-        obj.instances = value;
-      });
+    for (const obj of objects) {
+      const user = await this.memberRepository.findById(obj.member_id);
+      const store = await this.mallRepository.getStore(obj.id);
+      const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
+      obj.username = user.username;
+      obj.store = store[0];
+      obj.instances = instances;
       returnObjects.push(obj);
-    });
+    }
     
     const total = await this.objectRepository.total(column, compare, content);
     return {
