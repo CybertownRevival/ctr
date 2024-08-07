@@ -729,7 +729,7 @@ eventIn   SFTime set_pi
 eventIn   SFString reset_info      IS reset_info
 eventIn   SFBool get_info
 
-field        MFString  loadURL   ["/cgi-bin/cybertown/edit?tpl=common/avatarwardrobe/avatarinfo&mime=.wrl"]
+field        MFString  loadURL   [""]
 field        SFNode    self      USE LoadScript		
 field        SFInt32   count 0
 field        SFNode    PI        IS PI
@@ -744,12 +744,6 @@ eventOut     SFBool    enabled_changed
 eventOut     SFTime    getTime_changed
 
 url "vrmlscript:
-
-function set_config(){
- u = new MFString('javascript:loadInfo(\"/cgi-bin/cybertown/edit?tpl=common/avatarwardrobe/avatarupdate&T_awname=' + name + '\")');
- p = new MFString('target=action');
- Browser.loadURL(u,p);
-}
 
 function receive(v,t){
  avatar = v[0].avatarUrls;
@@ -769,27 +763,8 @@ function set_backward(v,t){
  currentAvatar = new MFString(avatar[count]);
 }
 
-function set_avatar(v,t){
- u = new MFString('/cgi-bin/cybertown/edit?tpl=common/avatarwardrobe/defaultavatar&AVU='+ currentAvatar +'&fool=b.html'); 
- p = new MFString('target=audio');
- Browser.loadURL(u,p);
-
- u2 = new MFString('http://www1.cybertown.com/cgi-bin/cybertown/property?ID=' + PI.ID +'&ac=3D&T_OWNER=' + PI.isOwner + '&T_setAvatar=' + currentAvatar[0] +'&T_refresh=false&IE=x.bxx'); 
- p2 = new MFString();
- Browser.loadURL(u2,p2);
-}
-
 function reset_info(v,t){
  getTime_changed = t;
-}
-
-function get_info(){
- if(v){return;}
-
- u = new MFString('/cgi-bin/cybertown/edit?tpl=common/avatarwardrobe/avatarinfo&T_placeID='+PI.ID+'&mime=.wrl');
- //Browser.createVrmlFromURL(loadURL,self,'receive');
- //print(u);
- Browser.createVrmlFromURL(u,self,'receive');
 }
 
 function set_pi(v,t){
