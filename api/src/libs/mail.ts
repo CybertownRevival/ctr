@@ -13,7 +13,7 @@ export const sendEmail = async (data): Promise<void> => {
   });
 
   await transporter.sendMail({
-    from: 'Cybertown Revival <donotreply@s1.cybertown.customerdns.com>',
+    from: 'Cybertown Revival <donotreply@cybertownrevival.com>',
     to: data.to,
     subject: data.subject,
     html: data.body,
@@ -32,7 +32,7 @@ export const sendPasswordResetEmail = async (email: string, resetToken: string):
         please ignore this email
       </p>
       <p>
-        <a href='https://s1.cybertown.customerdns.com/#/password_reset?token=${resetToken}'>
+        <a href='https://www.cybertownrevival.com/#/password_reset?token=${resetToken}'>
           Reset my password
         </a>
       </p>
