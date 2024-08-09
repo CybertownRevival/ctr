@@ -6,10 +6,7 @@
           <span style="color: red">Insufficient Access Rights.</span>
 				</div>
 				<div v-else align="center">
-          <div v-if="success">
-            <span style="color: #00df00">Access Rights Update</span>
-          </div>
-					<p style="font-weight:bold">
+          <p style="font-weight:bold">
 						Update <font color="#FFFF00">Owner Access</font> for
 						<font color="#FFFF00">{{
 							this.$store.data.place.name
@@ -64,38 +61,14 @@
 						>
 					</p>
 
-					<table border="0">
-						<tr>
-							<td>
-								<input SIZE="16" class="input-text" v-model="deputies[0].username" />
-							</td>
-							<td>
-								<input SIZE="16" class="input-text" v-model="deputies[1].username" />
-							</td>
-							<td>
-								<input SIZE="16" class="input-text" v-model="deputies[2].username" />
-							</td>
-							<td>
-								<input SIZE="16" class="input-text" v-model="deputies[3].username" />
-							</td>
-						</tr>
-
-						<tr>
-							<td>
-								<input SIZE="16" class="input-text" v-model="deputies[4].username" />
-							</td>
-							<td>
-								<input SIZE="16" class="input-text" v-model="deputies[5].username" />
-							</td>
-							<td>
-								<input SIZE="16" class="input-text" v-model="deputies[6].username" />
-							</td>
-							<td>
-								<input SIZE="16" class="input-text" v-model="deputies[7].username" />
-							</td>
-						</tr>
-					</table>
-
+					<div class="grid grid-cols-4 gap-0.5">
+            <div v-for="(username, index) in verifiedDeputies" :key="index">
+              <input
+                class="input-text"
+                size="16"
+                v-model="username.username" />
+            </div>
+          </div>
 					<small
 						><i
 							><u>Note:</u> If a nickname does not exist, it is
@@ -103,7 +76,11 @@
 						></small
 					>
 					<br />
-					<br />
+          <div>
+            <span v-show="!error || !success">&nbsp;</span>
+            <span v-show="success" style="color: #00df00">Access Rights Update</span>
+            <span v-show="error" class="text-red-600">{{ error }}</span>
+          </div>
 					<button type="button" value="Update" class="btn" @click="updateAccess()">
 						Update
 					</button>
@@ -129,15 +106,17 @@ export default Vue.extend({
       access: false,
       owner: null,
       deputies: [
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null}],
+        {username: ""},
+        {username: ""},
+        {username: ""},
+        {username: ""},
+        {username: ""},
+        {username: ""},
+        {username: ""},
+        {username: ""}],
+      deputiesVersion: 0,
       success: false,
+      error: null,
     };
   },
   methods: {
@@ -212,17 +191,17 @@ export default Vue.extend({
       default:
         break;
       }
-      this.loaded = true;
-      return this.$http.get(infopoint).then((response) => {
+      this.$http.get(infopoint).then((response) => {
         if (response.data.data.owner.length !== 0) {
           this.owner = response.data.data.owner[0].username;
         } else {
           this.owner = "";
         }
-        response.data.data.deputies.forEach((username, index) => {
-          this.deputies[index] = username;
-        });
+        if (response.data.data.deputies.length !== 0) {
+          this.deputies = response.data.data.deputies.map(deputy => ({username: deputy.username}));
+        }
       });
+      this.loaded = true;
     },
     async updateAccess(): Promise<void> {
       let updatepoint = null;
@@ -255,10 +234,14 @@ export default Vue.extend({
       }
       try {
         await this.$http.post(updatepoint, {deputies: this.deputies, owner: this.owner});
+        this.error = null;
         this.success = true;
-        this.getData();
+        this.deputiesVersion++;
       } catch (error) {
-        this.access = false;
+        this.access = true;
+        this.success = false;
+        this.error = error.response.data.error;
+      } finally {
         this.getData();
       }
     },
@@ -281,6 +264,15 @@ export default Vue.extend({
       console.error(e);
     }
     this.getData();
+  },
+  computed: {
+    verifiedDeputies() {
+      const deputies = [...this.deputies];
+      while (deputies.length < 8) {
+        deputies.push({username: ""});
+      }
+      return deputies;
+    },
   },
 });
 </script>
