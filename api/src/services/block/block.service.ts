@@ -23,15 +23,6 @@ export class BlockService {
     private memberRepository: MemberRepository,
   ) {}
   
-  private async updateDeputyId(deputy: any): Promise<number> {
-    let newDeputies = 0;
-    if (deputy.username !== null) {
-      const result = await this.memberRepository.findIdByUsername(deputy.username);
-      newDeputies = result[0].id;
-    }
-    return newDeputies;
-  }
-  
   public async find(blockId: number): Promise<Place> {
     return await this.blockRepository.find(blockId);
   }
@@ -62,7 +53,7 @@ export class BlockService {
     const deputyCode = await this.roleRepository.roleMap.BlockDeputy;
     const ownerCode = await this.roleRepository.roleMap.BlockLeader;
     let oldOwner = null;
-    let newOwner = null;
+    let newOwner = 0;
     const oldDeputies = [0,0,0,0,0,0,0,0];
     const newDeputies = [0,0,0,0,0,0,0,0];
     const data = await this
@@ -73,11 +64,11 @@ export class BlockService {
     } else {
       oldOwner = 0;
     }
-    try {
-      newOwner = await this.memberRepository.findIdByUsername(givenOwner);
-      newOwner = newOwner[0].id;
-    } catch (error) {
-      newOwner = 0;
+    if (givenOwner !== null && givenOwner !== '') {
+      const result = await this.memberRepository.findIdByUsername(givenOwner);
+      if (Array.isArray(result) && result.length > 0 && result[0].id) {
+        newOwner = result[0].id;
+      }
     }
     if (newOwner !== 0) {
       if (oldOwner !== 0) {
@@ -91,6 +82,17 @@ export class BlockService {
         }
       }
       await this.roleAssignmentRepository.addIdToAssignment(blockId, newOwner, ownerCode);
+    } else {
+      if (oldOwner !== 0) {
+        await this.roleAssignmentRepository.removeIdFromAssignment(blockId, oldOwner, ownerCode);
+        const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
+        if (response.length !== 0) {
+          const primaryRoleId = response[0].primary_role_id;
+          if (ownerCode === primaryRoleId){
+            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          }
+        }
+      }
     }
     data.deputies.forEach((deputies, index) => {
       oldDeputies[index] = deputies.member_id;
@@ -221,5 +223,16 @@ export class BlockService {
       return true;
     }
     return false;
+  }
+  
+  private async updateDeputyId(deputy: any): Promise<number> {
+    let newDeputies = 0;
+    if (deputy.username !== null && deputy.username !== '') {
+      const result = await this.memberRepository.findIdByUsername(deputy.username);
+      if (Array.isArray(result) && result.length > 0 && result[0].id) {
+        newDeputies = result[0].id;
+      }
+    }
+    return newDeputies;
   }
 }

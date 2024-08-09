@@ -1,16 +1,17 @@
 <template>
-  <div class="h-full w-full bg-black flex flex-col" style="padding: 10px">
+  <div class="h-full w-full bg-black flex flex-col" style="padding: 10px" v-if="loaded">
     <div>
       Leader<br/>
       <span style="color: #00df00; text-decoration: underline; cursor: pointer;"
-        v-on:click="opener('#/home/'+owner)">{{ this.owner }}</span>
+            v-on:click="opener('#/home/'+owner)">{{ owner }}
+      </span>
     </div>
     <div style="padding-top: 10px">
       <p>Deputies</p>
       <ul>
         <li v-for="deputy in deputies">
           <span style="color: #00df00; text-decoration: underline; cursor: pointer"
-            v-on:click="opener('#/home/'+deputy.username)">
+                v-on:click="opener('#/home/'+deputy.username)">
           {{ deputy.username }}
           </span>
         </li>
@@ -28,6 +29,7 @@ export default Vue.extend({
     return {
       owner: null,
       deputies: [],
+      loaded: false,
     };
   },
   methods: {
@@ -61,12 +63,18 @@ export default Vue.extend({
       default:
         break;
       }
-      return this.$http.get(infopoint).then((response) => {
-        this.owner = response.data.data.owner[0].username;
+      this.$http.get(infopoint).then((response) => {
+        if (response.data.data.owner.length !== 0) {
+          this.owner = response.data.data.owner[0].username;
+        } else {
+          this.owner = "";
+        }
         response.data.data.deputies.forEach((username, index) => {
           this.deputies[index] = username;
         });
       });
+      this.loaded = true;
+      return;
     },
     async opener(link): Promise<void> {
       window.opener.location.href = link;

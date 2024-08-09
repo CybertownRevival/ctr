@@ -127,7 +127,7 @@ export class PlaceService {
     const deputyCode = placeRoleId.deputy;
     const ownerCode = placeRoleId.owner;
     let oldOwner = null;
-    let newOwner = null;
+    let newOwner = 0;
     const oldDeputies = [0,0,0,0,0,0,0,0];
     const newDeputies = [0,0,0,0,0,0,0,0];
     const data = await this
@@ -138,11 +138,11 @@ export class PlaceService {
     } else {
       oldOwner = 0;
     }
-    try {
-      newOwner = await this.memberRepository.findIdByUsername(givenOwner);
-      newOwner = newOwner[0].id;
-    } catch (error) {
-      newOwner = 0;
+    if (givenOwner !== null && givenOwner !== '') {
+      const result = await this.memberRepository.findIdByUsername(givenOwner);
+      if (Array.isArray(result) && result.length > 0 && result[0].id) {
+        newOwner = result[0].id;
+      }
     }
     if (newOwner !== 0) {
       if (oldOwner !== 0) {
@@ -156,6 +156,17 @@ export class PlaceService {
         }
       }
       await this.roleAssignmentRepository.addIdToAssignment(placeId, newOwner, ownerCode);
+    } else {
+      if (oldOwner !== 0) {
+        await this.roleAssignmentRepository.removeIdFromAssignment(placeId, oldOwner, ownerCode);
+        const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
+        if (response.length !== 0) {
+          const primaryRoleId = response[0].primary_role_id;
+          if (ownerCode === primaryRoleId){
+            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          }
+        }
+      }
     }
     data.deputies.forEach((deputies, index) => {
       oldDeputies[index] = deputies.member_id;
@@ -249,9 +260,10 @@ export class PlaceService {
   private async updateDeputyId(deputy: any): Promise<number> {
     let newDeputies = 0;
     if (deputy.username !== null && deputy.username !== '') {
-      console.log('deputy', deputy.username);
       const result = await this.memberRepository.findIdByUsername(deputy.username);
-      newDeputies = result[0].id;
+      if (Array.isArray(result) && result.length > 0 && result[0].id) {
+        newDeputies = result[0].id;
+      }
     }
     return newDeputies;
   }

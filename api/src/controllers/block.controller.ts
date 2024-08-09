@@ -106,16 +106,20 @@ class BlockController {
 
     try {
       const session = this.memberService.decodeMemberToken(<string>apitoken);
-      if (!session || !(await this.blockService.canAdmin(parseInt(id), session.id))) {
+      if (!session) {
         response.status(400).json({
           error: 'Invalid or missing token or access denied.',
         });
         return;
+      } else if (!(await this.blockService.canAdmin(Number.parseInt(id), session.id))) {
+        response.status(403).json({ result: false });
+        return;
+      } else {
+        response.status(200).json({result: true});
       }
-      response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
-      response.status(400).json({ error });
+      response.status(400).json({ result: false });
     }
   }
 

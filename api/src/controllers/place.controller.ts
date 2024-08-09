@@ -173,7 +173,8 @@ class PlaceController {
       await this.placeService.postAccessInfo(slug, parseInt(id), deputies, owner);
       response.status(200).json({success: true});
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
+      response.status(400).json({ error: error.message });
     }
   }
 }

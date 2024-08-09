@@ -26,15 +26,15 @@
     <button class="btn-ui"
             v-on:click="opener('#/messageboard/' + $store.data.place.id)">Messages</button>
     </span>
+    <br />
     <div v-if="$store.data.place.slug === 'mall'">
-      <br />
       <router-link 
       :to="{ name: 'mall-upload' }"
       class="btn-ui">Upload</router-link>
       <button class="btn-ui" v-on:click="opener('#/mall/creator')">My Uploads</button>
+      <br />
     </div>
     <div v-if="canAdmin">
-      <br />
       <span v-if="this.$store.data.place.type === 'colony'">
         <span href=""
               class="btn-ui">Message to All</span>
