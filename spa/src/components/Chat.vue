@@ -44,6 +44,7 @@
           class="flex-grow p-0.5 text-black"
           @keyup.exact.enter="sendMessage"
           maxlength="255"
+          v-focus
         />
         <button
           type="button"
@@ -374,6 +375,13 @@ export default Vue.extend({
       menuRequestBackpack: true,
       mallObject: false,
     };
+  },
+  directives: {
+    focus: {
+      inserted: function (el) {
+        el.focus()
+      }
+    }
   },
   methods: {
     handler: function(e) {
