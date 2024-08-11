@@ -49,32 +49,34 @@
             having
             <strong><font color="#FFFF00">owner access</font></strong>
           </p>
-          <div class="grid grid-cols-4 gap-0.5 w-5/12 w-min-5/12">
-            <div>
-              <input class="input-text" size="16" v-model="deputy1" />
-            </div>
-            <div>
-              <input class="input-text" size="16" v-model="deputy2" />
-            </div>
-            <div>
-              <input class="input-text" size="16" v-model="deputy3" />
-            </div>
-            <div>
-              <input class="input-text" size="16" v-model="deputy4" />
-            </div>
-            <div>
-              <input class="input-text" size="16" v-model="deputy5" />
-            </div>
-            <div>
-              <input class="input-text" size="16" v-model="deputy6" />
-            </div>
-            <div>
-              <input class="input-text" size="16" v-model="deputy7" />
-            </div>
-            <div>
-              <input class="input-text" size="16" v-model="deputy8" />
-            </div>
-          </div>
+              <div class="flex gap-1 pb-1 justify-center">
+                <div class="flex-none">
+                  <input class="input-text" size="16" v-model="deputy1" />
+                </div>
+                <div class="flex-none">
+                  <input class="input-text" size="16" v-model="deputy2" />
+                </div>
+                <div class="flex-none">
+                  <input class="input-text" size="16" v-model="deputy3" />
+                </div>
+                <div class="flex-none">
+                  <input class="input-text" size="16" v-model="deputy4" />
+                </div>
+              </div>
+              <div class="flex gap-1 justify-center">
+                <div>
+                  <input class="input-text" size="16" v-model="deputy5" />
+                </div>
+                <div>
+                  <input class="input-text" size="16" v-model="deputy6" />
+                </div>
+                <div>
+                  <input class="input-text" size="16" v-model="deputy7" />
+                </div>
+                <div>
+                  <input class="input-text" size="16" v-model="deputy8" />
+                </div>
+              </div>
           <small>
             <i>
               <u>Note:</u> If a nickname does not exist, it is
