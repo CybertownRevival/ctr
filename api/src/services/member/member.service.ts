@@ -67,6 +67,15 @@ export class MemberService {
     return !!roleAssignments.find(assignment => ADMIN_ROLES.includes(assignment.role_id));
   }
 
+  public async joinedPlace(id: number, placeId: number, is3d: number): Promise<void> {
+    const now = new Date();
+    await this.memberRepository.joinedPlace(id, {
+      place_id: placeId,
+      is_3d: is3d,
+      last_activity: now,
+    });
+  }
+
   public async getAccessLevel(memberId: number): Promise<string> {
     const access = await this.canAdmin(memberId);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
@@ -242,9 +251,7 @@ export class MemberService {
   }
 
   public async getRoles(memberId: number): Promise<any> {
-    console.log(memberId);
     const roles = await this.roleAssignmentRepository.getRoleNameAndIdByMemberId(memberId);
-    console.log(roles);
     return roles;
   }
 
@@ -437,6 +444,42 @@ export class MemberService {
   public async getMemberId(username: string): Promise<void> {
     const userId = await this.memberRepository.findIdByUsername(username);
     return userId;
+  }
+  
+  public async check3d(username: string): Promise<void> {
+    const user = await this.memberRepository.check3d(username);
+    return user;
+  }
+
+  public async updateLatestActivity(memberId: number): Promise<void> {
+    const now = new Date();
+    await this.memberRepository.updateLatestActivity(memberId, {
+      last_activity: now,
+    });
+  }
+
+  public async getActivePlaces(): Promise<any> {
+    const returnPlaces = [];
+    const placeIds = [];
+    const activeTime = new Date(Date.now() - 5 * 60000);
+    const places = await this.memberRepository.getActivePlaces(activeTime);
+    for (const place of places) {
+      if(placeIds.indexOf(place.place_id) === -1){
+        placeIds.push(place.place_id);
+        const userPlace = await this.placeRepository.findById(place.place_id);
+        const userCount = await this.memberRepository.countByPlaceId(place.place_id, activeTime);
+        place.name = userPlace.name;
+        place.slug = userPlace.slug;
+        place.type = userPlace.type;
+        if(userPlace.member_id){
+          const userOwner = await this.memberRepository.findById(userPlace.member_id);
+          place.username = userOwner.username;
+        }
+        place.count = userCount[0].count;
+        returnPlaces.push(place);
+      }
+    }
+    return returnPlaces;
   }
 
   /**

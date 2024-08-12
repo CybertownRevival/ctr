@@ -50,6 +50,20 @@ export class MemberRepository {
       .where('username', username);
   }
 
+  public async check3d(username: string): Promise<any> {
+    return this.db.knex
+      .select('is_3d')
+      .from('member')
+      .where('username', username);
+  }
+
+  public async getActivePlaces(current: Date): Promise<any> {
+    return this.db.knex
+      .select('place_id')
+      .from('member')
+      .where('last_activity','>=', current);
+  }
+
   /**
    * Finds a member with the given password reset token if one exists.
    * @param resetToken reset token to search on
@@ -82,6 +96,14 @@ export class MemberRepository {
       .from('member')
       .where(this.like('username', search));
   }
+
+  public async countByPlaceId(placeId: number, active: Date): Promise<any> {
+    return knex
+      .count('id as count')
+      .from('member')
+      .where('place_id', placeId)
+      .where('last_activity', '>=', active);
+  }
   
   public async searchUsers(search: string, limit: number, offset: number): Promise<any> {
     return knex
@@ -97,6 +119,14 @@ export class MemberRepository {
       .orderBy('id')
       .limit(limit)
       .offset(offset);
+  }
+
+  public async joinedPlace(memberId: number, props: Partial<Member>): Promise<void> {
+    await this.db.member.where({id: memberId}).update(props);
+  }
+
+  public async updateLatestActivity(memberId: number, props: Partial<Member>): Promise<void> {
+    await this.db.member.where({id: memberId}).update(props);
   }
 
   /**
