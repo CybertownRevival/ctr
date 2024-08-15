@@ -189,6 +189,7 @@ export class MemberService {
       lastName: member.lastname,
       chatdefault: member.chatdefault,
       primary_role_id: member.primary_role_id,
+      lastAccess: member.last_activity,
     };
   }
   
@@ -211,6 +212,7 @@ export class MemberService {
       username: member.username,
       xp: member.xp,
       chatdefault: member.chatdefault,
+      lastAccess: member.last_activity,
     };
   }
 
@@ -233,6 +235,7 @@ export class MemberService {
       chatdefault: member.chatdefault,
       last_daily_login_credit: member.last_daily_login_credit,
       last_weekly_role_credit: member.last_weekly_role_credit,
+      lastAccess: member.last_activity,
     };
   }
 
