@@ -42,6 +42,7 @@
               {{ memberInfo.immigrationDate | dateFormatFilter }}
             </td>
           </tr>
+          
           <tr v-if="canAdmin && this.$store.data.place.block">
             <td class="font-bold text-left">
               Last Access
@@ -51,19 +52,7 @@
               {{ memberInfo.lastAccess | dateFormatFilter }}
             </td>
           </tr>
-          <!-- #ifdef variable="LAD_DAYNAME" -->
-          <!-- todo: add last login date -->
-          <!--
-          <tr>
-            <td class="font-bold text-left">
-              Last Access
-            </td>
-            <td class="text-left">
-              <$LAD_DAYNAME>, <$LAD_MONNAME> <$LAD_MDAy> <$LAD_YEAR>
-            </td>
-          </tr>
-          -->
-          <!-- #endif variable="LAD_DAYNAME" -->
+
           <tr>
             <td class="font-bold text-left">
               Experience
