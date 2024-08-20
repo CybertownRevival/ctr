@@ -625,7 +625,7 @@ export default Vue.extend({
         document.querySelector("#world").appendChild(this.browser);
       }
       const browser = X3D.getBrowser(this.browser);
-      browser.loadURL(new X3D.MFString(this.worldUrl), "");
+      browser.loadURL(new X3D.MFString(this.worldUrl), new X3D.MFString(""));
       return new Promise((resolve, reject) => {
         browser.addBrowserCallback({}, eventType => {
           switch (eventType) {
