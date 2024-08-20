@@ -21,9 +21,6 @@ export interface MemberInfoView {
   primary_role_id?: number;
   /**add chatdefault */
   chatdefault?: number;
-  /**Last access */
-  lastAccess: Date;
-
 }
 
 export interface MemberAdminView {

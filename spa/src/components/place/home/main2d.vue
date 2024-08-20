@@ -122,6 +122,7 @@ export default Vue.extend({
     return {
       memberInfo: {},
       canAdmin: false,
+      loaded: false,
 
     };
   },
@@ -154,7 +155,7 @@ export default Vue.extend({
   watch: {
     "$store.data.place.block": {
       handler() {
-        if (this.$store.data.place.block) {
+        if (this.$route.params.username) {
           this.loaded = true;
           this.checkAdmin();
         }
