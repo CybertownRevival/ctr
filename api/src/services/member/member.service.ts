@@ -67,6 +67,20 @@ export class MemberService {
     return !!roleAssignments.find(assignment => ADMIN_ROLES.includes(assignment.role_id));
   }
 
+  public async canStaff(memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    // Extracted staff roles into a constant for easy management
+    const STAFF_ROLES = [
+      this.roleRepository.roleMap.ColonyLeader,
+      this.roleRepository.roleMap.ColonyDeputy,
+      this.roleRepository.roleMap.NeighborhoodLeader,
+      this.roleRepository.roleMap.NeighborhoodDeputy,
+      this.roleRepository.roleMap.BlockLeader,
+      this.roleRepository.roleMap.BlockDeputy,
+    ];
+    return !!roleAssignments.find(assignment => STAFF_ROLES.includes(assignment.role_id));
+  }
+
   public async joinedPlace(id: number, placeId: number, is3d: number): Promise<void> {
     const now = new Date();
     await this.memberRepository.joinedPlace(id, {
@@ -189,7 +203,6 @@ export class MemberService {
       lastName: member.lastname,
       chatdefault: member.chatdefault,
       primary_role_id: member.primary_role_id,
-      lastAccess: member.last_activity,
     };
   }
   
@@ -212,7 +225,6 @@ export class MemberService {
       username: member.username,
       xp: member.xp,
       chatdefault: member.chatdefault,
-      lastAccess: member.last_activity,
     };
   }
 
