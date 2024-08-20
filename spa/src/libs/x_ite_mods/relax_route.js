@@ -1,4 +1,5 @@
-X3D.require(["x_ite/Parser/Parser"], function (Parser) {
+(function() {
+    const Parser = X3D.require("x_ite/Parser/Parser");
     Parser.prototype.nodeStatements = function (field) {
         let nodeStatementWithRoute = () => {
             while (this.routeStatement()) { }
@@ -12,4 +13,4 @@ X3D.require(["x_ite/Parser/Parser"], function (Parser) {
             node = nodeStatementWithRoute();
         }
     };
-});
+})();
