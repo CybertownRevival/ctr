@@ -62,7 +62,7 @@ export class ObjectService {
     const user = await this.memberRepository.findIdByUsername(username);
     const object = await this.objectRepository
       .getUserUploadedObjects(user[0].id, compare, content, limit, offset);
-    const total = await this.objectRepository.total('status', compare, content);
+    const total = await this.objectRepository.totalCreator('status', compare, content, user[0].id);
     for (const obj of object) {
       const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
       const store = await this.mallRepository.getStore(obj.id);
