@@ -146,6 +146,13 @@ export class ObjectRepository {
     return this.db.object.count('id as count').where(column, compare, content);
   }
 
+  public async totalCreator(
+    column: string, compare: string, content: string, userId: number): Promise<any> {
+    return this.db.object.count('id as count')
+      .where('member_id', userId)
+      .where(column, compare, content);
+  }
+
   private like(field: string, value: string) {
     return function() {
       this.whereRaw('?? LIKE ?', [field, `%${value}%`]);
