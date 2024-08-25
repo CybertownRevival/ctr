@@ -48,7 +48,7 @@
           </div>
           <div>
             <br />
-            <button class="btn-ui" @click="addQuantity(object.id)" v-show="object.limit === 'Unlimited' || object.quantity < object.limit">Add More</button>
+            <button class="btn-ui" @click="addQuantity(object.id)" v-show="['Unlimited', '0', null].includes(object.limit) || object.quantity < object.limit">Add More</button>
           </div>
         </div>
       </div>
