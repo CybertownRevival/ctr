@@ -88,7 +88,7 @@ export default Vue.extend({
       try {
         const response = await this.$http.get('/mall/soldout');
         response.data.objects.objects.forEach((obj) => {
-          if(obj.instances === obj.quantity && obj.limit >= 1){
+          if(obj.instances === obj.quantity && (obj.limit === obj.quantity || ['0', 'Unlimited', null].includes(obj.limit))){
             this.objects.push(obj);
           }
         });
