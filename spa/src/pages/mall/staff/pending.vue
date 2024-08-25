@@ -139,6 +139,10 @@ export default Vue.extend({
         this.error = "Use whole numbers only!";
         return
       }
+      if(limit < quantity){
+        this.error = "Limit cannot be less than the uploaded quantity."
+        return
+      }
       if(limit !== null && limit !=='' && limit >= quantity ||
         limit !== null && limit !=='' && limit === '0'
       ){
