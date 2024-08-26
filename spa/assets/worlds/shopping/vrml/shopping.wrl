@@ -1575,7 +1575,7 @@ exposedField SFVec3f position 0 0 0
 exposedField SFRotation rotation 0 1 0 0
 exposedField SFBool bind FALSE
 ]{
-Transform{translation IS position rotation IS rotation children Viewpoint{bind IS bind}}
+Transform{translation IS position rotation IS rotation children Viewpoint{set_bind IS bind}}
 }
 
 PROTO Elevator[
