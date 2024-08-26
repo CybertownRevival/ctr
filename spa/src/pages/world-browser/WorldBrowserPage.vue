@@ -9,7 +9,7 @@
         </a>
       </strong>
     </div>
-    <div id="world" class="world w-full flex-1" style="" v-show="this.$store.data.view3d && !force2d"></div>
+    <div id="world" class="world w-full h-2/3 flex-1" style="" v-show="this.$store.data.view3d && !force2d"></div>
     <div v-show="!this.$store.data.view3d || force2d" class="w-full flex-1">
       <component :is="mainComponent"></component>
     </div>
