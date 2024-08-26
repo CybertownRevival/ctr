@@ -35,7 +35,7 @@
     b.setViewpointAnimation = function (flag) { throw Error('UnimplementedBXXMethod') }
     b.getViewpointAnimation = function () { throw Error('UnimplementedBXXMethod') }
     b.setAvatarHeight = function (height) { this.activeNavigationInfo_.avatarSize[1] = height }
-    //b.getAvatarHeight = function () { return this.activeNavigationInfo_.avatarSize[1] } // Implemented in X_ITE 10.3.0
+    b.getAvatarHeight = function () { return this.activeNavigationInfo_.avatarSize[1] } // Implemented in X_ITE 10.3.0
     b.setStepOverSize = function (size) { this.activeNavigationInfo_.avatarSize[2] = size }
     b.getStepOverSize = function () { return this.activeNavigationInfo_.avatarSize[2] }
     b.setCollisionDistance = function (distance) { this.activeNavigationInfo_.avatarSize[0] = distance }
