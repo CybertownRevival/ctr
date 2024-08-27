@@ -98,6 +98,8 @@ export class ObjectRepository {
 
   public async searchMallObjects(search: string, limit: number, offset: number): Promise<any> {
     return await this.db.object
+      .where('status','!=', '0')
+      .where('status','!=', '2')
       .where(this.like('name', search))
       .limit(limit)
       .offset(offset);
@@ -106,6 +108,8 @@ export class ObjectRepository {
   public async getTotal(search: string): Promise<any> {
     return await this.db.object
       .count('id as count')
+      .where('status','!=', '0')
+      .where('status','!=', '2')
       .where(this.like('object.name', search));
   }
 
