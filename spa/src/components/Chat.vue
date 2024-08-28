@@ -44,6 +44,7 @@
           class="flex-grow p-0.5 text-black"
           @keyup.exact.enter="sendMessage"
           maxlength="255"
+          v-focus
         />
         <button
           type="button"
@@ -405,6 +406,13 @@ export default Vue.extend({
       pingIntervalId: null,
     };
   },
+  directives: {
+    focus: {
+      inserted: function (el) {
+        el.focus()
+      }
+    }
+  },
   methods: {
     handler: function(e) {
       this.userMenu = true;
@@ -655,12 +663,12 @@ export default Vue.extend({
       }
       
     },
-    joinedChat(): void {
+    async joinedChat() {
       let userIs3D = 0;
       if(this.$store.data.view3d){
         userIs3D = 1;
       }
-      this.$http.post('/member/joined', {
+      await this.$http.post('/member/joined', {
         place_id: this.$store.data.place.id,
         is_3d: userIs3D
       })

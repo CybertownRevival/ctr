@@ -52,16 +52,25 @@ export class ObjectService {
     return returnObjects;
   }
 
-  public async findByUsername(username: string): Promise<any> {
+  public async findByUsername(
+    username: string, 
+    compare: string, 
+    content: string,
+    limit: number,
+    offset: number): Promise<any> {
     const returnObjects = [];
     const user = await this.memberRepository.findIdByUsername(username);
-    const object = await this.objectRepository.getUserUploadedObjects(user[0].id);
+    const object = await this.objectRepository
+      .getUserUploadedObjects(user[0].id, compare, content, limit, offset);
+    const total = await this.objectRepository.totalCreator('status', compare, content, user[0].id);
     for (const obj of object) {
       const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
+      const store = await this.mallRepository.getStore(obj.id);
       obj.instances = instances;
+      obj.store = store[0];
       returnObjects.push(obj);
     }
-    return returnObjects;
+    return {objects: returnObjects, total: total};
   }
 
   public async getPendingObjects() {
@@ -112,7 +121,7 @@ export class ObjectService {
     });
   }
 
- public async increaseQuantity(objectId: number, quantity: number, status: number) {
+  public async increaseQuantity(objectId: number, quantity: number, status: number) {
     if(status === 1){
       return await this.objectRepository.increaseObjectQuantity(objectId, {
         quantity: quantity,
