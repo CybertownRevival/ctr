@@ -1,0 +1,14 @@
+Sci-fi: Slow, neighborhood map missing, temp.wrl missing, no other erros
+Entertainment: Weirdly different from sci-fi despite similar models.
+Games: Weird lighting issues, same as prod.
+Virtual Worlds: Billboard weirdly blue, unlike prod. spec_color.js broken? Fixed spec_color.js
+Cyberhood: No obvious issues
+Inner Realms: No obvious issues.
+The Campus: X_ITE 10 seems brighter. More working lights? Headlights?
+Adventure: Color changes on edge of vision. This appears to be prod behavior.
+Hi-Tek: Prod needs fixes. Currently getting weirdly... network-blocked in 10. Prod has errors with files but doesn't completely die.
+9th Dimension: Visual differences, mostly look lighting related.
+The Plaza: Seems fine.
+Employment office: Seems fine
+Flea market: Fails due to incorrect IS statements outside PROTOs. Needed fixes to script S (which is probably unused anyway)
+The Mall: Lighting issues same in both. Orange ceilings weirdly bright in 10. Prod matches Win98 Blaxxun. Elevators not working in 10. Shared events failing in both. Some fixes to bxx_auth.js help, but more fixes are needed for elevator to work.
