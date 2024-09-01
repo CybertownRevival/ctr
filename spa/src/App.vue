@@ -316,7 +316,7 @@ export default Vue.extend({
       },
     );
     require("./libs/x_ite_mods/spec_color.js");
-    require("./libs/x_ite_mods/relax_route.js");
+    // require("./libs/x_ite_mods/relax_route.js"); // May no longer be necessary? TEST
     require("./libs/x_ite_mods/relax_is.js");
     require("./libs/x_ite_mods/arrow_keys.js");
     require("./libs/x_ite_mods/viewpoint_bind.js");
