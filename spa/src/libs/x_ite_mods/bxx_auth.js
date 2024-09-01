@@ -25,26 +25,26 @@
             this.viewer_ = mode
         }
     }
-    b.getNavigationMode = function () { return this.activeNavigationInfo_.type }
+    b.getNavigationMode = function () { return this.getActiveNavigationInfo().type }
     b.setCollisionDetection = function (flag) { throw Error('UnimplementedBXXMethod'); }
     b.getCollisionDetection = function () { throw Error('UnimplementedBXXMethod'); }
-    b.setGravity = function (flag) { (flag) ? this.browserOptions.Gravity_ = 15 : this.browserOptions.Gravity_ = 0 }
-    b.getGravity = function () { return (this.browserOptions.Gravity_ == 0) ? false : true }
-    //b.setHeadlight = function(flag) { this.activeNavigationInfo_.headlight = flag }
-    //b.getHeadlight = function() { return this.activeNavigationInfo_.headlight }
+    b.setGravity = function (flag) { (flag) ? this.getBrowserOptions()._Gravity = 15 : this.getBrowserOptions()._Gravity = 0 }
+    b.getGravity = function () { return (this.getBrowserOptions()._Gravity == 0) ? false : true }
+    //b.setHeadlight = function(flag) { this.getActiveNavigationInfo().headlight = flag }
+    //b.getHeadlight = function() { return this.getActiveNavigationInfo().headlight }
     b.setViewpointAnimation = function (flag) { throw Error('UnimplementedBXXMethod') }
     b.getViewpointAnimation = function () { throw Error('UnimplementedBXXMethod') }
-    b.setAvatarHeight = function (height) { this.activeNavigationInfo_.avatarSize[1] = height }
-    b.getAvatarHeight = function () { return this.activeNavigationInfo_.avatarSize[1] } // Implemented in X_ITE 10.3.0
-    b.setStepOverSize = function (size) { this.activeNavigationInfo_.avatarSize[2] = size }
-    b.getStepOverSize = function () { return this.activeNavigationInfo_.avatarSize[2] }
-    b.setCollisionDistance = function (distance) { this.activeNavigationInfo_.avatarSize[0] = distance }
-    b.getCollisionDistance = function () { return this.activeNavigationInfo_.avatarSize[0] }
-    b.setVisibilityLimit = function (limit) { this.activeNavigationInfo_.visibilityLimit = limit }
-    b.getVisibilityLimit = function () { return this.activeNavigationInfo_.visibilityLimit }
+    b.setAvatarHeight = function (height) { this.getActiveNavigationInfo()._avatarSize[1] = height }
+    b.getAvatarHeight = function () { return this.getActiveNavigationInfo()._avatarSize[1] } // Implemented in X_ITE 10.3.0
+    b.setStepOverSize = function (size) { this.getActiveNavigationInfo()._avatarSize[2] = size }
+    b.getStepOverSize = function () { return this.getActiveNavigationInfo()._avatarSize[2] }
+    b.setCollisionDistance = function (distance) { this.getActiveNavigationInfo()._avatarSize[0] = distance }
+    b.getCollisionDistance = function () { return this.getActiveNavigationInfo()._avatarSize[0] }
+    b.setVisibilityLimit = function (limit) { this.getActiveNavigationInfo()._visibilityLimit = limit }
+    b.getVisibilityLimit = function () { return this.getActiveNavigationInfo()._visibilityLimit }
     // TODO: Should we multiply the walkspeed to match Blaxxun?
-    b.setWalkSpeed = function (speed) { navWalk.speed = this.activeNavigationInfo_.speed }
-    b.getWalkSpeed = function () { return this.activeNavigationInfo_.speed }
+    b.setWalkSpeed = function (speed) { navWalk.speed = this.getActiveNavigationInfo().speed }
+    b.getWalkSpeed = function () { return this.getActiveNavigationInfo().speed }
     b.setViewpointByValue = function (position, orientation, mode) { throw Error('UnimplementedBXXMethod') }
     b.getViewpointByValue = function (position, orientation, mode) { throw Error('UnimplementedBXXMethod') }
 
@@ -59,7 +59,7 @@
     // Rendering
     b.setRenderMode = function (mode) { throw Error('UnimplementedBXXMethod') }
     b.getZNear = function () { throw Error('UnimplementedBXXMethod') } // BS Contact 8.0 = 0.25
-    b.getZFar = function () { return this.activeNavigationInfo_.visibilityLimit }
+    b.getZFar = function () { return this.getActiveNavigationInfo().visibilityLimit }
 
     // VRML Browser window
     b.getWindowSizeX = function () { return this.getElement().width() }
