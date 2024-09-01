@@ -155,28 +155,28 @@ DEF SharedZone BlaxxunZone {
    ] 
 }
 DEF S Script {
- eventIn MFNode addEvents IS addEvents
- eventIn MFNode removeEvents IS removeEvents
- eventIn MFNode addAvatars IS addAvatars
- eventIn MFNode removeAvatars IS removeAvatars 
- eventIn MFNode addObjects IS addObjects
- eventIn MFNode removeObjects IS removeObjects 
- eventIn SFString set_myAvatarURL IS set_myAvatarURL
- eventOut MFNode events_added IS events_added
- eventOut MFNode events_removed IS events_removed
- eventOut MFNode avatars_added IS avatars_added
- eventOut MFNode avatars_removed IS avatars_removed
- eventOut MFNode objects_added IS objects_added
- eventOut MFNode objects_removed IS objects_removed
- eventIn         SFInt32  set_myAvatarGesture IS set_myAvatarGesture
- eventIn         SFInt32  myAvatarGestureFromServer IS myAvatarGestureFromServer
- eventOut        SFInt32  myAvatarGesture_changed IS myAvatarGesture_changed
- eventOut        SFInt32  myAvatarGestureToServer IS myAvatarGestureToServer
- eventOut                SFString myAvatarURL_changed IS myAvatarURL_changed
- exposedField    MFString sendToChat IS sendToChat
- exposedField    SFFloat  beamToDistance  IS beamToDistance  
- exposedField    MFString groupChatName  IS groupChatName  
- exposedField    MFString groupChat  IS groupChat  
+ eventIn MFNode addEvents
+ eventIn MFNode removeEvents
+ eventIn MFNode addAvatars
+ eventIn MFNode removeAvatars
+ eventIn MFNode addObjects
+ eventIn MFNode removeObjects
+ eventIn SFString set_myAvatarURL
+ eventOut MFNode events_added
+ eventOut MFNode events_removed
+ eventOut MFNode avatars_added
+ eventOut MFNode avatars_removed
+ eventOut MFNode objects_added
+ eventOut MFNode objects_removed
+ eventIn         SFInt32  set_myAvatarGesture
+ eventIn         SFInt32  myAvatarGestureFromServer
+ eventOut        SFInt32  myAvatarGesture_changed
+ eventOut        SFInt32  myAvatarGestureToServer
+ eventOut                SFString myAvatarURL_changed
+ exposedField    MFString sendToChat ""
+ exposedField    SFFloat  beamToDistance 3  
+ exposedField    MFString groupChatName   ""
+ exposedField    MFString groupChat  ""  
 url "vrmlscript:
  function addEvents(value, time) { events_added = value; }
  function addAvatars(value, time) { avatars_added = value; }
