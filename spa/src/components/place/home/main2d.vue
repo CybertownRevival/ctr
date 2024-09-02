@@ -135,8 +135,8 @@ export default Vue.extend({
       memberInfo: {},
       canAdmin: false,
       loaded: false,
-      date: null,
-      
+      date: false,
+
     };
   },
 
@@ -149,9 +149,7 @@ export default Vue.extend({
         const splitDate = this.memberInfo.lastAccess.split("T");
         if(splitDate[0] === '2024-08-12'){
           this.date = true;
-        } else {
-          this.date = false;
-        }
+        } 
       } catch (error) {
         console.log(error);
       }
