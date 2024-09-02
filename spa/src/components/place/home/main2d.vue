@@ -47,8 +47,20 @@
             <td class="font-bold text-left">
               Last Access
             </td>
-            <td class="text-left">
-              <!-- format Saturday, October 9 1999 -->
+              <!--              
+              Checks if date is Monday, August 12 2024.
+              If true, pull date last daily xp was paid out instead.
+              Fixes people having the same date that have not logged
+              in since the "Places" update was added.
+              Will still blanket a date for anyone
+              that have not logged on since the xp payout was added.
+              -->
+            <td class="text-left" v-if="date">
+              <!-- format Saturday, October 9 1999. -->
+              {{ memberInfo.last_daily_login_credit | dateFormatFilter }}
+            </td>
+            <td class="text-left" v-else>
+              <!-- format Saturday, October 9 1999. -->
               {{ memberInfo.lastAccess | dateFormatFilter }}
             </td>
           </tr>
@@ -123,7 +135,8 @@ export default Vue.extend({
       memberInfo: {},
       canAdmin: false,
       loaded: false,
-
+      date: null,
+      
     };
   },
 
@@ -133,6 +146,12 @@ export default Vue.extend({
       try {
         const response = await this.$http.get("/member/info/"+this.$store.data.place.member_id);
         this.memberInfo = response.data.memberInfo;
+        const splitDate = this.memberInfo.lastAccess.split("T");
+        if(splitDate[0] === '2024-08-12'){
+          this.date = true;
+        } else {
+          this.date = false;
+        }
       } catch (error) {
         console.log(error);
       }
