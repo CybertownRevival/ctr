@@ -147,7 +147,7 @@ methods: {
           this.instances = object.instances;
         })
     } else {
-    return await this.$http.post(`/object_instance/${ this.objectId }/properties/`)
+    return await this.$http.get(`/object_instance/${ this.objectId }/properties/`)
       .then((response) => {
         let object = response.data.objectInstance[0];
         this.imgFile = `/assets/object/${object.directory}/${object.image}`;
@@ -270,12 +270,10 @@ methods: {
     } else {
       if(this.walletBalance >= this.price) {
         try{
-          if(confirm('Are you sure you want to buy this item?')){
-            await this.$http.post(`/mall/buy/`, {
-              id: this.objectId});
-            this.success = 'Object purchased!';
-            await this.objectProperties();
-          }
+          await this.$http.post(`/mall/buy/`, {
+            id: this.objectId});
+          this.success = 'Object purchased!';
+          await this.objectProperties();
         } catch(error) {
           console.log(error);
         }

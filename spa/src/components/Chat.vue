@@ -754,7 +754,7 @@ export default Vue.extend({
         this.backpackObjects = this.backpackObjects.filter(obj => {
           return obj.id !== parseInt(object.obj_id);
         });
-        const updatedObject = await this.$http.post(`/object_instance/${ object.obj_id }/properties/`);
+        const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
         if(this.activePanel === 'backpack' && [object.member_username, object.buyer_username].includes(this.$store.data.user.username)){
             this.backpackObjects.push(updatedObject.data.objectInstance[0]);
           }
