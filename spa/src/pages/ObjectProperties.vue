@@ -257,7 +257,7 @@ methods: {
               this.error = "You don't have enough cc's.";
             }
             if(objectPurchase.data.status === 'success'){
-              setTimeout(this.emitUpdate, 100);
+              setTimeout(this.emitUpdate, 300);
               this.success = 'Object purchased!';
               this.error = '';
             }
