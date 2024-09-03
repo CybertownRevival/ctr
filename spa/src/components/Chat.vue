@@ -23,13 +23,13 @@
               <sup class="inline" v-show="msg.role">{{ msg.role }}</sup>
               {{ msg.username }}
               <sub class="inline">{{ msg.exp }}</sub> : 
-              <span class="font-normal" v-html="msg.msg"></span>
+              <span class="font-normal">{{ msg.msg }}</span>
               </span>
             <span class="font-bold"  v-else-if="msg.new === true">
               <sup class="inline" v-show="msg.role">{{ msg.role }}</sup>
               {{ msg.username }}
               <sub class="inline">{{ msg.exp }}</sub> : 
-              <span class="font-normal" v-html="msg.msg"></span>
+              <span class="font-normal">{{ msg.msg }}</span>
             </span>
           </li>
         </ul>
