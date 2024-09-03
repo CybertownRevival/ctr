@@ -750,19 +750,18 @@ export default Vue.extend({
       return check3d.data.user3d[0].is_3d
     },
     async updateObjectLists(object){
-      if(this.activePanel === 'userBackpack' && 
-          (object.member_username === this.username ||
-            object.buyer_username === this.username
-          )
-        ){
-          await this.loadUserBackpack();
+      if(['backpack', 'userBackpack'].includes(this.activePanel)){
+        this.backpackObjects = this.backpackObjects.filter(obj => {
+          return obj.id !== parseInt(object.obj_id);
+        });
+        const updatedObject = await this.$http.post(`/object_instance/${ object.obj_id }/properties/`);
+        if(this.activePanel === 'backpack' && [object.member_username, object.buyer_username].includes(this.$store.data.user.username)){
+            this.backpackObjects.push(updatedObject.data.objectInstance[0]);
+          }
+        if(this.activePanel === 'userBackpack' && [object.member_username, object.buyer_username].includes(this.username)){
+              this.backpackObjects.push(updatedObject.data.objectInstance[0]);
         }
-        if(this.activePanel === 'backpack' && 
-          (object.member_username === this.$store.data.user.username ||
-          object.buyer_username === this.$store.data.user.username)
-        ){
-         await this.loadBackpack();
-        }
+      }
     },
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {
@@ -788,7 +787,9 @@ export default Vue.extend({
         this.setTimers(false);
       });
       this.$socket.on("update-object", (object) => {
-        this.updateObjectLists(object);
+        if([object.member_username, object.buyer_username].includes(this.$store.data.user.username) || [object.member_username, object.buyer_username].includes(this.username)){
+          this.updateObjectLists(object);
+        }
       });
     },
     dropObject() {

@@ -603,14 +603,18 @@ export default Vue.extend({
         this.eventNodeMap.get(eventNode.name).push(eventNode);
       }
     },
+    async updateObject(object){
+      this.sharedObjects = this.sharedObjects.filter(obj => obj.id != parseInt(object.obj_id));
+      const updatedObject = await this.$http.post(`/object_instance/${ object.obj_id }/properties/`);
+      if(object.place_id === this.$store.data.place.id){
+        this.sharedObjects.push(updatedObject.data.objectInstance[0]);
+      }
+    },
     startSocketListeners(): void {
       this.$socket.on("VERSION", event => this.onVersion(event));
       this.$socket.on("update-object", (object) => {
-        if(object.place_id === this.$store.data.place.id){
-          setTimeout(this.onSharedObjectEvent, 50)
-          }
-        }
-      );
+        this.updateObject(object);
+      });
       this.$socket.on("SO", event => this.onSharedObjectEvent(event));
     },
     start3DSocketListeners(): void {

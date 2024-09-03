@@ -84,7 +84,7 @@
     <span class="flex w-full justify-center text-red-600 mt-10" v-show="error">{{ this.error }}</span>
     <span class="flex w-full justify-center" style="color: lime;" v-show="success">{{ success }}</span>
     <div class="flex justify-center">
-      <button  type="button" class="btn mx-1 mt-10" @click="changeDetails()" v-show="this.canModify">Update</button>
+      <button  type="button" class="btn mx-1 mt-10" @click="changeDetails()" v-if="this.canModify">Update</button>
         <button  type="button" class="btn mx-1 mt-10" 
           v-if="
           this.mallObject && this.instances !== this.quantity ||
@@ -160,6 +160,7 @@ methods: {
         this.price = object.object_price;
         this.buyer = object.object_buyer;
         this.memberUsername = object.username;
+        this.canModify = false;
         if(this.sessionId === this.ownerId){
           this.canModify = true;
         }
@@ -178,7 +179,7 @@ methods: {
   close(){
     window.close();
   },
-  changeDetails() {
+  async changeDetails() {
     this.name = (<HTMLInputElement>document.getElementById('objectName')).value.replace(/[^0-9a-zA-Z \-\[\]\/()]/g, '');
     this.price = (<HTMLInputElement>document.getElementById('objectPrice')).value.replace(/[^0-9]/g, '');
     const badwords = require("badwords-list");
@@ -197,12 +198,8 @@ methods: {
     if(this.buyer === ""){
       this.buyer = null;
     }
-    this.update();
-    this.$socket.emit('update-object', {
-      obj_id: this.objectId,
-      place_id: this.placeId,
-      member_username: this.memberUsername,
-    });
+    setTimeout(this.emitUpdate, 300);
+    await this.update();
   },
   loadObjectPreview() {
     const browser = X3D.createBrowser();
@@ -237,9 +234,9 @@ methods: {
     }
   },
   startSocketListeners(){
-    this.$socket.on("update-object", (obj_id) => {
-      if(obj_id === this.objectId){
-        this.reload();
+    this.$socket.on("update-object", object => {
+      if(object.obj_id === this.objectId){
+        this.objectProperties();
       }
     });
   },
@@ -249,12 +246,6 @@ methods: {
         try{
           const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
             id: this.objectId});
-            this.$socket.emit('update-object', {
-                obj_id: this.objectId,
-                place_id: this.placeId,
-                member_username: this.memberUsername,
-                buyer_username: this.$store.data.user.username,
-              });
             await this.objectProperties();
             if(!this.price){
               this.error = 'This object is not for sale!'
@@ -266,6 +257,7 @@ methods: {
               this.error = "You don't have enough cc's.";
             }
             if(objectPurchase.data.status === 'success'){
+              setTimeout(this.emitUpdate, 100);
               this.success = 'Object purchased!';
               this.error = '';
             }
@@ -278,21 +270,33 @@ methods: {
     } else {
       if(this.walletBalance >= this.price) {
         try{
-          await this.$http.post(`/mall/buy/`, {
-            id: this.objectId});
-          this.success = 'Object purchased!';
-          await this.objectProperties();
+          if(confirm('Are you sure you want to buy this item?')){
+            await this.$http.post(`/mall/buy/`, {
+              id: this.objectId});
+            this.success = 'Object purchased!';
+            await this.objectProperties();
+          }
         } catch(error) {
           console.log(error);
         }
       }
     }
-  }
+  },
+  emitUpdate(){
+    this.$socket.emit('update-object', {
+      obj_id: this.objectId,
+      place_id: this.placeId,
+      member_username: this.memberUsername,
+      buyer_username: this.$store.data.user.username,
+    });
+  },
+},
+created(){
+  this.objectProperties();
 },
 mounted() {
   this.startSocketListeners();
-  this.objectProperties();
-}
+},
 });
 
 </script>
