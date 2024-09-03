@@ -174,6 +174,7 @@ io.on("connection", async function(socket) {
                     msg: chatData.msg,
                     role: chatData.role,
                     new: true,
+                    exp: chatData.exp,
                 });
             }
         }
