@@ -769,10 +769,14 @@ export default Vue.extend({
           return obj.id !== parseInt(object.obj_id);
         });
         const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
-        if(this.activePanel === 'backpack' && [object.member_username, object.buyer_username].includes(this.$store.data.user.username)){
+        if(this.activePanel === 'backpack' && 
+          object.place_id === 0 && 
+          [object.member_username, object.buyer_username].includes(this.$store.data.user.username)){
             this.backpackObjects.push(updatedObject.data.objectInstance[0]);
           }
-        if(this.activePanel === 'userBackpack' && [object.member_username, object.buyer_username].includes(this.username)){
+        if(this.activePanel === 'userBackpack' && 
+          object.place_id === 0 && 
+          [object.member_username, object.buyer_username].includes(this.username)){
               this.backpackObjects.push(updatedObject.data.objectInstance[0]);
         }
       }
