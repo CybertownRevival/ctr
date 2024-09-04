@@ -605,7 +605,7 @@ export default Vue.extend({
     },
     async updateObject(object){
       this.sharedObjects = this.sharedObjects.filter(obj => obj.id != parseInt(object.obj_id));
-      const updatedObject = await this.$http.post(`/object_instance/${ object.obj_id }/properties/`);
+      const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
       this.sharedObjects.push(updatedObject.data.objectInstance[0]);
     },
     startSocketListeners(): void {
