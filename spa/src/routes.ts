@@ -41,6 +41,7 @@ import UserSearch from "@/pages/admin/user/search.vue";
 import UserChat from "@/pages/admin/user/ChatMessages.vue";
 import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
 import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
+import UserRoles from "@/pages/admin/user/roles.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
 import AvatarSearch from "@/pages/admin/avatar/search.vue";
 import PlaceSearch from "@/pages/admin/place/search.vue";
@@ -331,6 +332,14 @@ export default [
                                 name: "UserChat",
                                 meta: {
                                     title: "Member Chat - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/roles",
+                                component: UserRoles,
+                                name: "UserRoles",
+                                meta: {
+                                    title: "Member Roles - Admin Panel",
                                 },
                             },
                             {
