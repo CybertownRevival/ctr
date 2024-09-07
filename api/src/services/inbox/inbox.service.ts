@@ -143,7 +143,7 @@ export class InboxService {
       disallowedTagsMode: 'discard',
       allowedAttributes: {
         a: ['href', 'name', 'target'],
-        img: ['src', 'srcset', 'alt', 'title', 'width', 'height'],
+        img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'usemap'],
         font: ['color', 'size'],
         map: [ 'name' ],
         area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target', 'class' ],
