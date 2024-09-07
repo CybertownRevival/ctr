@@ -246,7 +246,6 @@ methods: {
         try{
           const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
             id: this.objectId});
-            await this.objectProperties();
             if(!this.price){
               this.error = 'This object is not for sale!'
             }
@@ -280,13 +279,14 @@ methods: {
       }
     }
   },
-  emitUpdate(){
+  async emitUpdate(){
     this.$socket.emit('update-object', {
       obj_id: this.objectId,
       place_id: this.placeId,
       member_username: this.memberUsername,
       buyer_username: this.$store.data.user.username,
     });
+    await this.objectProperties();
   },
 },
 created(){
