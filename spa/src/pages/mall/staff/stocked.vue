@@ -13,7 +13,7 @@
       </div>
       <div v-if="totalCount !== 0">
         View Amount:
-        <select v-model.number="limit" @change="getResults">
+        <select v-model.number="limit" @change="setLimit">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -23,7 +23,7 @@
     </div>
     <br />
     <div class="grid-cols-1 w-4/6 justify-items-center text-center ">
-      Total Count: {{ totalCount }} <br /><br />
+      Total Count: {{ totalCount }}
     </div>
     <span v-if="pages.length > 1">Pages</span>
     <div v-if="pages.length > 1" class="flex w-full justify-center font-bold">

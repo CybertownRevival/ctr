@@ -20,7 +20,7 @@
     </div>
     <br />
     <div class="grid-cols-1 w-4/6 justify-items-center text-center ">
-      Total Count: {{ totalCount }} <br /><br />
+      Total Count: {{ totalCount }}
     </div>
     <div class="flex" style="margin-bottom: 2rem;" v-for="object in objects"
           :key="object.id">
