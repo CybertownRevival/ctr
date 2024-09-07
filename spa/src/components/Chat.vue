@@ -838,10 +838,8 @@ export default Vue.extend({
         this.setTimers(false);
       });
       this.$socket.on("update-object", (object) => {
-        if(
-          [object.member_username, object.buyer_username].includes(this.$store.data.user.username) || 
-          [object.member_username, object.buyer_username].includes(this.username))
-        {
+        if([object.member_username, object.buyer_username].includes(this.$store.data.user.username) || 
+          [object.member_username, object.buyer_username].includes(this.username)){
           this.updateObjectLists(object);
         }
       });
