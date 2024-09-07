@@ -766,21 +766,17 @@ export default Vue.extend({
     async updateObjectLists(object){
       let alteredBackpack = [];
       if(['backpack', 'userBackpack'].includes(this.activePanel)){
-        
+
         // Gets updated information for the object
         const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
-        if(
-          this.activePanel === 'backpack' && 
+        if(this.activePanel === 'backpack' && 
           object.place_id === 0 && 
-          [object.member_username, object.buyer_username].includes(this.$store.data.user.username)
-        ){
+          [object.member_username, object.buyer_username].includes(this.$store.data.user.username)){
          
-          // Checks if user was the buyer of the object 
-          // so their backpack updates with the new object
-          if(
-            object.buyer_username === this.$store.data.user.username &&
-            object.member_username !== object.buyer_username
-          ){
+          // Checks if the object was purchased by current user
+          // and adds it to the backpack array
+          if(object.buyer_username === this.$store.data.user.username &&
+            object.member_username !== object.buyer_username){
             this.backpackObjects.push(updatedObject.data.objectInstance[0]);
           }
           
@@ -794,18 +790,14 @@ export default Vue.extend({
             }
           })
         }
-        if(
-          this.activePanel === 'userBackpack' && 
+        if(this.activePanel === 'userBackpack' && 
           object.place_id === 0 && 
-          [object.member_username, object.buyer_username].includes(this.username)
-        ){
+          [object.member_username, object.buyer_username].includes(this.username)){
           
-          // Checks if selected user was the buyer of the object 
-          // so the users backpack updates with the new object
-          if(
-            object.buyer_username === this.username &&
-            object.member_username !== object.buyer_username
-          ){
+          // Checks if the object was purchased by the selected user
+          // and adds it to the backpack array
+          if(object.buyer_username === this.username &&
+            object.member_username !== object.buyer_username){
             this.backpackObjects.push(updatedObject.data.objectInstance[0]);
           }
           
