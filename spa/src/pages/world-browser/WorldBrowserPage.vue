@@ -608,8 +608,9 @@ export default Vue.extend({
       // Gets updated information for the object
       const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
       const objectId = updatedObject.data.objectInstance[0].id;
-      
-      // Checks if updated object is still in the same place
+
+      // Updates object list if the object is still in the same place
+      // Removes the object if it is not in the same place
       if(updatedObject.data.objectInstance[0].place_id === this.$store.data.place.id){
         
         // Populates altered objects array with updated information
@@ -622,13 +623,8 @@ export default Vue.extend({
             alteredSharedObjects.push(obj);
           }
         })
-        
-        // Sets shared objects list as the updated list
         this.sharedObjects = alteredSharedObjects;
       } else {
-        
-        // Removes object from shared objects array and from
-        // the world if the object was purchased.
         this.sharedObjects = this.sharedObjects.filter(obj => {
           return obj.id !== parseInt(object.obj_id);
         });
