@@ -5,6 +5,7 @@
     <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'UserView'}">DETAILS</router-link>
     <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'UserChat'}">CHAT HISTORY</router-link>
     <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'UserBanHistory'}">BAN</router-link>
+    <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'UserHireRoles'}">ROLES</router-link>
     <router-link class="btn-ui-inline mx-1 w-32"
                  :to="{name: 'UserDonor'}"
                  v-if="accessLevel === 'admin'">DONOR</router-link>

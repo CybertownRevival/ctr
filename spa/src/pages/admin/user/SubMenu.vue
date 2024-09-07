@@ -11,6 +11,11 @@
        :to="{name: 'UserBanHistory'}">HISTORY</router-link>
       <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserBanAdd'}">ADD</router-link>
     </div>
+    <div class="w-full min-w-min text-center my-2" v-else-if="isUserRoleRoute">
+      <router-link class="btn-ui-inline mx-1 w-24" :to="{name: 'UserRoles'}">CURRENT</router-link>
+      <router-link class="btn-ui-inline mx-1 w-24" :to="{name: 'UserHireRoles'}">HIRE</router-link>
+      <router-link class="btn-ui-inline mx-1 w-24" :to="{name: 'UserFireRoles'}">TERMINATE</router-link>
+    </div>
     <div class="w-full min-w-min text-center my-2"
          v-else/>
   <div class="flex w-full min-w-min items-center justify-center">
@@ -30,6 +35,9 @@ export default Vue.extend({
     },
     isUserBanRoute() {
       return this.$route.name === "UserBanHistory" || this.$route.name === "UserBanAdd";
+    },
+    isUserRoleRoute() {
+      return this.$route.name === "UserHireRoles" || this.$route.name === "UserCurrentRoles";
     },
   },
 });

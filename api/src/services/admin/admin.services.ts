@@ -66,6 +66,15 @@ export class AdminService {
     }
   }
   
+  public async getRoleList(): Promise<any> {
+    return this.roleRepository.findAll();
+  }
+  
+  public async hireRole(member_id: number, role_id: number): Promise<void> {
+    this.roleAssignmentRepository.addIdToAssignment(null, member_id, role_id);
+    return;
+  }
+  
   public async searchUsers(search: string, limit: number, offset: number): Promise<any> {
     const users = await this.memberRepository.searchUsers(search, limit, offset);
     const total = await this.memberRepository.getTotal(search);
