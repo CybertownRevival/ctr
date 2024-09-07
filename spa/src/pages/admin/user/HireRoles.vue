@@ -20,25 +20,21 @@
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "UserRoles",
+  name: "UserHireRoles",
   data() {
     return {
-      donorLevel: "first",
-      roles: [],
-      status: "None",
+      roleSelector: "first",
       error: null,
+      roles: [],
+      success: null,
     };
   },
   methods: {
     async hireRole(): Promise<void> {
-      await this.$http.post("/place/", {
+      await this.$http.post("/admin/hirerole", {
         member_id: this.$route.params.id,
-        level: this.donorLevel,
-      })
-        .then(() => {
-          this.donorLevel = "first";
-          this.getDonor();
-        });
+        role_id: this.roleSelector,
+      });
     },
     async getRoleList(): Promise<void> {
       try {
@@ -48,7 +44,8 @@ export default Vue.extend({
             role.name === "Champion" ||
               role.name === "Devotee" ||
               role.name === "Advocate" ||
-              role.name === "Supporter"
+              role.name === "Supporter" ||
+              role.name === "Admin"
           ) {
             return;
           } else {

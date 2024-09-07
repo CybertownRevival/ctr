@@ -106,6 +106,41 @@ class AdminController {
     }
   }
   
+  public async getRoleList(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (admin) {
+      try {
+        const roleList = await this.adminService.getRoleList();
+        response.status(200).json({roles: roleList});
+      } catch (e) {
+        console.log(e);
+        response.status(500).json({error: 'Internal Server Error'});
+      }
+    }
+  }
+  
+  public async hireRole(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    if (await this.memberService.canAdmin(session.id)) {
+      const {member_id, role_id} = request.body;
+      try {
+        await this.adminService.hireRole(
+          parseInt(member_id),
+          parseInt(role_id),
+        );
+        response.status(200).json({message: 'Role hired successfully'});
+      } catch(e) {
+        console.log(e);
+        response.status(500).json({error: 'Internal Server Error'});
+      }
+    } else {
+      response.status(403).json({error: 'Access Denied'});
+    }
+  }
+  
   public async searchUsers(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;

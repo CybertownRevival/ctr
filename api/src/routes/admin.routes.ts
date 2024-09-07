@@ -12,6 +12,10 @@ adminRoutes.get('/banhistory', (request, response) =>
   adminController.getBanHistory(request, response));
 adminRoutes.get('/donor', (request, response) =>
   adminController.getDonor(request, response));
+adminRoutes.post('/hirerole', (request, response) =>
+  adminController.hireRole(request, response));
+adminRoutes.get('/rolelist', (request, response) =>
+  adminController.getRoleList(request, response));
 adminRoutes.get('/usersearch', (request, response) =>
   adminController.searchUsers(request, response));
 adminRoutes.get('/userchat', (request, response) =>
