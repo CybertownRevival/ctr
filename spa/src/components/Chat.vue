@@ -765,14 +765,10 @@ export default Vue.extend({
     },
     async updateObjectLists(object){
       let alteredBackpack = [];
-      
-      // Checks if user is viewing a backpack
       if(['backpack', 'userBackpack'].includes(this.activePanel)){
         
         // Gets updated information for the object
         const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
-        
-        // Checks if user is viewing their own backpack
         if(
           this.activePanel === 'backpack' && 
           object.place_id === 0 && 
@@ -798,8 +794,6 @@ export default Vue.extend({
             }
           })
         }
-        
-        // Checks if user is viewing another users backpack
         if(
           this.activePanel === 'userBackpack' && 
           object.place_id === 0 && 
@@ -825,8 +819,6 @@ export default Vue.extend({
             }
           })
         }
-        
-        // Sets backpack as updated list
         this.backpackObjects = alteredBackpack;
       }
     },
