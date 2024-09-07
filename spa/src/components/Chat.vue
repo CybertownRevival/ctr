@@ -764,21 +764,70 @@ export default Vue.extend({
       return check3d.data.user3d[0].is_3d
     },
     async updateObjectLists(object){
+      let alteredBackpack = [];
+      
+      // Checks if user is viewing a backpack
       if(['backpack', 'userBackpack'].includes(this.activePanel)){
-        this.backpackObjects = this.backpackObjects.filter(obj => {
-          return obj.id !== parseInt(object.obj_id);
-        });
+        
+        // Gets updated information for the object
         const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
-        if(this.activePanel === 'backpack' && 
+        
+        // Checks if user is viewing their own backpack
+        if(
+          this.activePanel === 'backpack' && 
           object.place_id === 0 && 
-          [object.member_username, object.buyer_username].includes(this.$store.data.user.username)){
+          [object.member_username, object.buyer_username].includes(this.$store.data.user.username)
+        ){
+         
+          // Checks if user was the buyer of the object 
+          // so their backpack updates with the new object
+          if(
+            object.buyer_username === this.$store.data.user.username &&
+            object.member_username !== object.buyer_username
+          ){
             this.backpackObjects.push(updatedObject.data.objectInstance[0]);
           }
-        if(this.activePanel === 'userBackpack' && 
-          object.place_id === 0 && 
-          [object.member_username, object.buyer_username].includes(this.username)){
-              this.backpackObjects.push(updatedObject.data.objectInstance[0]);
+          
+          // Populates altered objects array with updated information
+          this.backpackObjects.forEach((obj) => {
+            if(obj.id === parseInt(object.obj_id)){
+              obj = updatedObject.data.objectInstance[0]
+            }
+            if(obj.member_id === this.$store.data.user.id){
+              alteredBackpack.push(obj)
+            }
+          })
         }
+        
+        // Checks if user is viewing another users backpack
+        if(
+          this.activePanel === 'userBackpack' && 
+          object.place_id === 0 && 
+          [object.member_username, object.buyer_username].includes(this.username)
+        ){
+          
+          // Checks if selected user was the buyer of the object 
+          // so the users backpack updates with the new object
+          if(
+            object.buyer_username === this.username &&
+            object.member_username !== object.buyer_username
+          ){
+            this.backpackObjects.push(updatedObject.data.objectInstance[0]);
+          }
+          
+          // Populates altered objects array with updated information
+          this.backpackObjects.forEach((obj) => {
+            if(obj.id === parseInt(object.obj_id)){
+              obj = updatedObject.data.objectInstance[0]
+            }
+            if(obj.member_id !== this.$store.data.user.id){
+              alteredBackpack.push(obj)
+            }
+          })
+        }
+        
+        // Sets backpack as updated list
+        this.backpackObjects = alteredBackpack;
       }
     },
     startSocketListeners(): void {
@@ -805,7 +854,10 @@ export default Vue.extend({
         this.setTimers(false);
       });
       this.$socket.on("update-object", (object) => {
-        if([object.member_username, object.buyer_username].includes(this.$store.data.user.username) || [object.member_username, object.buyer_username].includes(this.username)){
+        if(
+          [object.member_username, object.buyer_username].includes(this.$store.data.user.username) || 
+          [object.member_username, object.buyer_username].includes(this.username))
+        {
           this.updateObjectLists(object);
         }
       });
