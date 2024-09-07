@@ -22,7 +22,7 @@
       </div>
     </div>
     <div v-if="totalCount !== 0" class="grid-cols-1 w-4/6 justify-items-center text-center ">
-      Total Count: {{ totalCount }} <br /><br />
+      Total Count: {{ totalCount }}
     </div>
     <span v-if="pages.length > 1">Pages</span>
     <div v-if="pages.length > 1" class="flex w-full justify-center font-bold">
