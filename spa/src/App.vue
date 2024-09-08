@@ -35,6 +35,9 @@
       <div class="text-clock text-center w-full py-0.5">
         <ClockPage />
        </div>
+        <div class="flex justify-center w-full pb-5 cursor-pointer">
+          <span class="underline" style="color: yellow;" @click="openCitizenOnlineModal">Citizens Online</span>
+        </div>
        <div class="flex flex-row justify-center" v-if="$store.data.place.name">
         <span class="inline" style="color:lime;">{{ $store.data.place.name }}</span> 
 		
@@ -121,6 +124,7 @@ import Vue from "vue";
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 import ModalRoot from "./components/modals/ModalRoot.vue";
 import InfoModal from "./components/modals/InfoModal.vue";
+import CitizenOnlineModal from './components/modals/CitizenOnlineModal.vue';
 import ModalService from "./components/modals/services/ModalService.vue";
 import ClockPage from "./components/Clock.vue";
 
@@ -302,6 +306,9 @@ export default Vue.extend({
     },
     openInfoModal(): void {
       ModalService.open(InfoModal);
+    },
+    openCitizenOnlineModal(): void {
+      ModalService.open(CitizenOnlineModal);
     },
   },
   mounted() {
