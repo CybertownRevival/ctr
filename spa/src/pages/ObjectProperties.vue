@@ -180,7 +180,6 @@ methods: {
     window.close();
   },
   async changeDetails() {
-    this.emitUpdate();
     this.name = (<HTMLInputElement>document.getElementById('objectName')).value.replace(/[^0-9a-zA-Z \-\[\]\/()]/g, '');
     this.price = (<HTMLInputElement>document.getElementById('objectPrice')).value.replace(/[^0-9]/g, '');
     const badwords = require("badwords-list");
@@ -218,6 +217,7 @@ methods: {
   },
   async update() {
     this.success = 'Object updated';
+    setTimeout(this.emitUpdate, 300);
     await this.$http.post(`/object_instance/update/`, {
       id: this.objectId,
       name: this.name,
