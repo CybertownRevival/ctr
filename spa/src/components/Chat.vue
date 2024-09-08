@@ -789,6 +789,7 @@ export default Vue.extend({
               alteredBackpack.push(obj)
             }
           })
+          this.backpackObjects = alteredBackpack;
         }
         if(this.activePanel === 'userBackpack' && 
           object.place_id === 0 && 
@@ -810,8 +811,8 @@ export default Vue.extend({
               alteredBackpack.push(obj)
             }
           })
-        }
         this.backpackObjects = alteredBackpack;
+        }
       }
     },
     startSocketListeners(): void {
