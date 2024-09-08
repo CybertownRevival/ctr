@@ -445,6 +445,29 @@ class MemberController {
     }
   }
 
+  public async getOnlineUsers(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const returnUsers = [];
+      const users = await this.memberService.getOnlineUsers();
+      for (const user of users) {
+        const hasHome = await this.homeService.getHome(user.id);
+        if(hasHome){
+          user.hasHome = true;
+        } else {
+          user.hasHome = false;
+        }
+        user.id = null;
+        returnUsers.push(user);
+      }
+      response.status(200).json({ returnUsers });
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({ error });
+    }
+  }
+
   public async getStorage(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
