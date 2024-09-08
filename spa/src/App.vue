@@ -22,23 +22,25 @@
         class="flex flex-row flex-grow"
         style="height: calc(100vh - 70px) !important"
       >
-        <!--Content-->
-        <div class="flex flex-1">
-          <router-view
-            v-if="this.$route.name !== 'world-browser' &&
-            this.$route.name !== 'user-home'" />
-          <world-browser-page
-            v-show="this.$route.name === 'world-browser' ||
-            this.$route.name === 'user-home'"></world-browser-page>
+      <div class="flex flex-col">
+        <div class="flex justify-center">
+          <img src="/assets/img/logo-action.gif" />
+      </div>
+      <div class="text-clock text-center w-full py-0.5">
+        <ClockPage />
+       </div>
+        <div class="flex justify-center w-full pb-5 cursor-pointer">
+          <span class="underline" style="color: yellow;" @click="openCitizenOnlineModal">Citizens Online</span>
         </div>
-        <!--Navigation Panel-->
-        <div
-          class="flex-none w-60 bg-lines overflow-y-auto"
-          v-if="$store.data.isUser && this.$route.meta.wrapper"
-        >
-          <div class="flex flex-col">
-            <div class="flex justify-center">
-              <img src="/assets/img/logo-action.gif" />
+       <div class="flex flex-row justify-center" v-if="$store.data.place.name">
+        <span class="inline" style="color:lime;">{{ $store.data.place.name }}</span> 
+		
+	</div>
+          <div class="flex flex-row justify-center">
+            <img src="/assets/img/b2dchat.gif" @click="$store.methods.setView3d(false)"
+                 class="cursor-pointer"/>
+            <img src="/assets/img/b3dchat.gif" @click="$store.methods.setView3d(true)"
+                 class="cursor-pointer"/>
           </div>
           <div class="text-clock text-center w-full py-0.5">
           <ClockPage />
@@ -138,7 +140,6 @@ import Vue from "vue";
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 import ModalRoot from "./components/modals/ModalRoot.vue";
 import InfoModal from "./components/modals/InfoModal.vue";
-import SecurityAlertModal from './components/modals/SecurityAlertModal.vue';
 import CitizenOnlineModal from './components/modals/CitizenOnlineModal.vue';
 import ModalService from "./components/modals/services/ModalService.vue";
 import ClockPage from "./components/Clock.vue";
@@ -325,41 +326,6 @@ export default Vue.extend({
     },
     openCitizenOnlineModal(): void {
       ModalService.open(CitizenOnlineModal);
-    },
-    openNotificationModal(data): void {
-      ModalService.open(SecurityAlertModal, {
-        data: data.data,
-      });
-    },
-    receivedInstantMessage(){
-      ModalService.open(InstantMessageModal);
-    },
-    callGuide(){
-      // TO DO
-      // Add message/alert emit to all online City Guide members containing username and place the member is calling from.
-    },
-    securityListener(): void {
-      this.$socket.on("new-security-alert", data => {
-        this.openNotificationModal(data);
-      });
-    },
-    instantMessagingListener(): void {
-      this.$socket.on("instant-message-received", data => {
-        this.receivedInstantMessage();
-      })
-    },
-    async checkAccessLevel() {
-      try {
-        await this.$http.get(`/member/getadminlevel`)
-          .then((response) => {
-            this.accessLevel = response.data.accessLevel;
-            if(this.accessLevel.includes('security')){
-              this.securityListener();
-            }
-          });
-      } catch (error) {
-        this.accessLevel = null;
-      }
     },
   },
   mounted() {
