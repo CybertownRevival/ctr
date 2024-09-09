@@ -8,7 +8,7 @@
     <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'UserCurrentRoles'}">ROLES</router-link>
     <router-link class="btn-ui-inline mx-1 w-32"
                  :to="{name: 'UserDonor'}"
-                 v-if="accessLevel === 'admin'">DONOR</router-link>
+                 v-if="accessLevel.includes('admin')">DONOR</router-link>
   </div>
   <div class="w-full min-w-min place-content-center">
     <router-view :accessLevel="accessLevel" />

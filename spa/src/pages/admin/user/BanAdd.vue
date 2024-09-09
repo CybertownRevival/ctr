@@ -78,6 +78,9 @@ export default Vue.extend({
       error: "",
     };
   },
+  props: [
+    "accessLevel",
+  ],
   methods:{
     async addBan(): Promise <void>{
       try {
@@ -95,5 +98,10 @@ export default Vue.extend({
       }
     },
   },
+  created() {
+    if (!this.accessLevel.includes("security")) {
+      this.$router.push({name: "restrictedaccess"});
+    }
+  }
 });
 </script>

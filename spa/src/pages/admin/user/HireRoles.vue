@@ -29,6 +29,7 @@ export default Vue.extend({
       success: null,
     };
   },
+  props: ['accessLevel'],
   methods: {
     async hireRole(): Promise<void> {
       await this.$http.post("/admin/hirerole", {
@@ -58,6 +59,9 @@ export default Vue.extend({
     },
   },
   mounted() {
+    if (!this.accessLevel.includes('mayor')) {
+      this.$router.push({ name: "restrictedaccess" });
+    }
     this.getRoleList();
   },
 });
