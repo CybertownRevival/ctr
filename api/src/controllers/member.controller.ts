@@ -107,14 +107,30 @@ class MemberController {
   }
 
   public async getRoles(request: Request, response: Response): Promise<object> {
+    const { id } = request.params;
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    try {
-      const roles = await this.memberService.getRoles(session.id);
-      response.status(200).json({ roles });
-    } catch (error) {
-      console.log(error);
-      response.status(400).json({ error });
+    if (id !== undefined) {
+      const admin = await this.memberService.canAdmin(session.id);
+      if (admin) {
+        try {
+          const roles = await this.memberService.getRoles(parseInt(id));
+          response.status(200).json({roles});
+        } catch (e) {
+          console.error(e);
+          response.status(400).json({ error: true });
+        }
+      } else {
+        response.status(403).json({ error: 'Access denied' });
+      }
+    } else {
+      try {
+        const roles = await this.memberService.getRoles(session.id);
+        response.status(200).json({roles});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
     }
   }
 

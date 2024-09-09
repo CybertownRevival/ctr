@@ -115,9 +115,11 @@ export class RoleAssignmentRepository {
       .distinct(
         'role_assignment.role_id as id',
         'role.name as name',
+        'place.name as place',
       )
       .from('role_assignment')
       .leftJoin('role', 'role_assignment.role_id', 'role.id')
+      .leftJoin('place', 'role_assignment.place_id', 'place.id')
       .where('role_assignment.member_id', memberId);
   }
   
