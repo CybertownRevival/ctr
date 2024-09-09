@@ -41,6 +41,7 @@ import UserSearch from "@/pages/admin/user/search.vue";
 import UserChat from "@/pages/admin/user/ChatMessages.vue";
 import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
 import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
+import UserCurrentRoles from "@/pages/admin/user/CurrentRoles.vue";
 import UserHireRoles from "@/pages/admin/user/HireRoles.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
 import AvatarSearch from "@/pages/admin/avatar/search.vue";
@@ -344,9 +345,17 @@ export default [
                                 },
                             },
                             {
-                                path: "/admin/member/user/:id/roles",
+                                path: "/admin/member/user/:id/roles/hire",
                                 component: UserHireRoles,
                                 name: "UserHireRoles",
+                                meta: {
+                                    title: "Member Roles - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/roles",
+                                component: UserCurrentRoles,
+                                name: "UserCurrentRoles",
                                 meta: {
                                     title: "Member Roles - Admin Panel",
                                 },
