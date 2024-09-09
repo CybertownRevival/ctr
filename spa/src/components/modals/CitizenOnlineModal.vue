@@ -5,14 +5,13 @@
     </template>
     <template v-slot:body>
     <div class="grid" style="grid-template-rows: calc(100vh - 225px) 115px;">
-      <div class="overflow-y-auto">
+      <div style="overflow-y: auto;">
         <div class="pb-5">
           <h1 align="center">{{ users.length }} <span v-if="users.length > 1">Citizens</span><span v-else>Citizen</span> Online</h1>
         </div>
         <div class="flex-1 justify-center text-center">
-          <div class="pb-5" v-if="action">
-            <h3 v-if="security.length > 0" style="color:red;"><b>Security Alerted!</b></h3>
-            <p v-if="security.length === 0" style="width: 250px">
+          <div class="pb-5" v-if="securityAlerted">
+            <p v-if="security.length === 0">
               There are no security online at this time. Please leave a message in the security in-box<br /> <router-link :to="{slug: `enter`}" >Security In-Box.</router-link>
             </p>
             <p v-else-if="security.length === 1">
@@ -24,16 +23,13 @@
           </div>
           <div>
             <p class="pb-5">
-              Select a name to visit their home.
+              Select a name to send an instant message.
             </p>
-            <p class="pb-5" style="width:250px">
-              <b style="color: red;">Do you need to contact security?</b><br />
-              If you do, <router-link :to="{path: `/place/jail`}" ><span @click="close('Modal closed')">Click Here</span></router-link> to navigate to the Jail and leave an inbox with any details relevant to the problem.
-              <!--Removed until functionality is added-->
-              <!--Please use the Security Alert button only if you really have a security problem. You can leave a message for them at the Security In-box at the Jump Gate. 
+            <p class="pb-5">
+              Please use the Security Alert button only if you really have a security problem. You can leave a message for them at the Security In-box at the Jump Game. 
               <span style="color:lime;">
                 If you need help, you can call a City Guide using the button at the end of this list.
-              </span>-->
+              </span>
             </p>
           </div>
           <ul>
@@ -49,16 +45,13 @@
       <div>
         <div >
           <div class="pt-5">
-            <!--Hidden until functionality is expanded upon. Needs to keep track of all alerts in case multiple happen at the same time.-->
-            <!--<button class="btn-ui bold" style="width:auto;" @click="confirmSecurityAlert" v-show="!action"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>-->
+            <button class="btn-ui bold" style="width:auto;" @click="securityAlerted = true"><font color='red' size="2rem"><b>S e c u r i t y &nbsp; A l e r t</b></font></button>
             <div class="flex">
-              <!--Hidden until functionality is added-->
-              <!--<button class="btn-ui" @click="openMyMessages">My Messages</button>-->
-              <button class="btn-ui" @click="refresh">Refresh</button>
+              <button class="btn-ui">My Messages</button>
+              <button class="btn-ui">Refresh</button>
             </div>
-            <div class="flex">
-              <!--Hidden until functionality is added-->
-              <!--<button class="btn-ui" @click="openConfigure">Configure</button>-->
+            <div class="flex" style="padding-bottom: 15px;">
+              <button class="btn-ui">Configure</button>
               <button class="btn-ui" @click="close('Modal closed')">Close</button>
             </div>
           </div>
@@ -87,6 +80,7 @@ export default Vue.extend({
     return {
       users: [],
       security: [],
+      securityAlerted: false,
     };
   },
   methods: {
