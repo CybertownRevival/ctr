@@ -107,6 +107,7 @@ export class InboxService {
         'i',
         'kbd',
         'mark',
+        'marquee',
         'q',
         'rb',
         'rp',
@@ -147,6 +148,7 @@ export class InboxService {
         font: ['color', 'size'],
         map: [ 'name' ],
         area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target', 'class' ],
+        marquee: ['width', 'height', 'direction'],
       },
     });
     return cleanInfo;
