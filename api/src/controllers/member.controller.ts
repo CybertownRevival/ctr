@@ -7,7 +7,7 @@ import * as badwords from 'badwords-list';
 
 import { sendPasswordResetEmail, sendPasswordResetUnknownEmail } from '../libs';
 import { MemberService, HomeService, PlaceService } from '../services';
-import { SessionInfo } from 'session-info.interface';
+import {parseInt} from "lodash";
 
 class MemberController {
   /** List of disallowed usernames. */

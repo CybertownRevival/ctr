@@ -15,8 +15,8 @@
   <div class="col-span-7">{{info.firstname}}</div>
   <div class="font-bold col-span-1">Last Name</div>
   <div class="col-span-7">{{info.lastname}}</div>
-  <div class="font-bold col-span-1">Wallet Balance</div>
-  <div class="col-span-7">{{info.walletBalance}}</div>
+  <div class="font-bold col-span-1" v-if="this.accessLevel.includes('admin')">Wallet Balance</div>
+  <div class="col-span-7" v-if="this.accessLevel.includes('admin')">{{info.walletBalance}}</div>
   <div class="font-bold col-span-1">Experience Points</div>
   <div class="col-span-7">{{info.xp}}</div>
   <div class="font-bold col-span-1">Last Login</div>
@@ -28,8 +28,8 @@
       year: 'numeric',
       timeZone: 'America/New_York',
     })}}</div>
-  <div class="font-bold col-span-1">Last Role Payout</div>
-  <div class="col-span-7">{{new Date(info.last_weekly_role_credit)
+  <div class="font-bold col-span-1" v-if="this.accessLevel.includes('admin')">Last Role Payout</div>
+  <div class="col-span-7" v-if="this.accessLevel.includes('admin')">{{new Date(info.last_weekly_role_credit)
     .toLocaleString('en-US', {
       weekday: 'long',
       month: 'long',
@@ -50,6 +50,7 @@ export default Vue.extend({
       info: null,
     };
   },
+  props: ["accessLevel"],
   methods:{
     async getinfo(): Promise <void>{
       await this.$http.get(`/member/info/${this.$route.params.id}`)

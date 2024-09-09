@@ -101,6 +101,9 @@ export default Vue.extend({
       banReason: "",
     };
   },
+  props: [
+      "accessLevel",
+  ],
   methods:{
     async getinfo(): Promise <void>{
       await this.$http.get("/admin/banhistory/", {
@@ -123,6 +126,9 @@ export default Vue.extend({
     },
   },
   async mounted() {
+    if (!this.accessLevel.includes('security')) {
+      this.$router.push({ name: "restrictedaccess" });
+    }
     await this.getinfo();
   },
 });
