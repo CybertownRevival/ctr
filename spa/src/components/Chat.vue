@@ -77,15 +77,20 @@
         </span>
         <span v-if="activePanel === 'places'" class="flex-grow">
 <<<<<<< HEAD
+<<<<<<< HEAD
           ({{ this.activePlaces.length }}) Places
 =======
           ({{ this.activePlaces.length }}) Places 
 >>>>>>> 948c813 (Add check for security)
+=======
+          Places ({{ this.activePlaces.length }})
+>>>>>>> 4dd8f11 (Update Chat.vue)
         </span>
         <span v-if="activePanel === 'gestures'" class="flex-grow">
           Body Language
         </span>
         <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
+<<<<<<< HEAD
 <<<<<<< HEAD
           ({{  this.sharedObjects.length }}) Objects
         </span>
@@ -96,13 +101,20 @@
           ({{ this.backpackObjects.length }}) {{ this.usernameBackPack }}'s Backpack
 =======
           ({{  this.sharedObjects.length }}) Objects 
+=======
+          Objects ({{  this.sharedObjects.length }})
+>>>>>>> 4dd8f11 (Update Chat.vue)
         </span>
         <span v-if="activePanel === 'backpack'" class="flex-grow">
-          ({{  this.backpackObjects.length }}) My Backpack 
+          My Backpack ({{  this.backpackObjects.length }})
         </span>
         <span v-if="activePanel === 'userBackpack'" class="flex-grow">
+<<<<<<< HEAD
           ({{ this.backpackObjects.length }}) {{ this.usernameBackPack }}'s Backpack 
 >>>>>>> 948c813 (Add check for security)
+=======
+          {{ this.usernameBackPack }}'s Backpack ({{ this.backpackObjects.length }})
+>>>>>>> 4dd8f11 (Update Chat.vue)
         </span>
         <button
           type="button"
