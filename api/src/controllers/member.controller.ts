@@ -435,10 +435,16 @@ class MemberController {
       const users = await this.memberService.getOnlineUsers();
       for (const user of users) {
         const hasHome = await this.homeService.getHome(user.id);
+        const accessLevel = await this.memberService.getAccessLevel(user.id);
         if(hasHome){
           user.hasHome = true;
         } else {
           user.hasHome = false;
+        }
+        if(accessLevel && accessLevel === 'security'){
+          user.security = true;
+        } else {
+          user.security = false;
         }
         user.id = null;
         returnUsers.push(user);

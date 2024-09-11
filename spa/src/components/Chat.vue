@@ -76,19 +76,19 @@
           ({{ this.users.length + 1 }}) {{ this.$store.data.place.name }}
         </span>
         <span v-if="activePanel === 'places'" class="flex-grow">
-          Places ({{ this.activePlaces.length }})
+          ({{ this.activePlaces.length }}) Places 
         </span>
         <span v-if="activePanel === 'gestures'" class="flex-grow">
           Body Language
         </span>
         <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
-          Objects ({{  this.sharedObjects.length }})
+          ({{  this.sharedObjects.length }}) Objects 
         </span>
         <span v-if="activePanel === 'backpack'" class="flex-grow">
-          My Backpack ({{  this.backpackObjects.length }})
+          ({{  this.backpackObjects.length }}) My Backpack 
         </span>
         <span v-if="activePanel === 'userBackpack'" class="flex-grow">
-          {{ this.usernameBackPack }}'s Backpack ({{ this.backpackObjects.length }})
+          ({{ this.backpackObjects.length }}) {{ this.usernameBackPack }}'s Backpack 
         </span>
         <button
           type="button"
