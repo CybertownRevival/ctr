@@ -5,7 +5,7 @@
     </template>
     <template v-slot:body>
     <div class="grid" style="grid-template-rows: calc(100vh - 225px) 115px;">
-      <div style="overflow-y: auto;">
+      <div class="overflow-y-auto">
         <div class="pb-5">
           <h1 align="center">{{ users.length }} <span v-if="users.length > 1">Citizens</span><span v-else>Citizen</span> Online</h1>
         </div>
@@ -45,12 +45,12 @@
       <div>
         <div >
           <div class="pt-5">
-            <button class="btn-ui bold" style="width:auto;" @click="securityAlerted = true"><font color='red' size="2rem"><b>S e c u r i t y &nbsp; A l e r t</b></font></button>
+            <button class="btn-ui bold" style="width:auto;" @click="alertSecurity"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>
             <div class="flex">
               <button class="btn-ui">My Messages</button>
-              <button class="btn-ui">Refresh</button>
+              <button class="btn-ui" @click="refresh">Refresh</button>
             </div>
-            <div class="flex" style="padding-bottom: 15px;">
+            <div class="flex">
               <button class="btn-ui">Configure</button>
               <button class="btn-ui" @click="close('Modal closed')">Close</button>
             </div>
@@ -93,51 +93,14 @@ export default Vue.extend({
         }
       })
     },
-    confirmSecurityAlert(){
-      ModalService.open(ConfirmAlertModal);
-    },
-    openConfigure(){
-      ModalService.open(ConfigureModal);
-    },
-    openMyMessages(){
-      ModalService.open(MyMessagesModal);
-    },
-    openMemberProfile(user){
-      ModalService.open(MemberModal, {
-        user: user
-      });
-    },
     alertSecurity(){
-      let placeName = this.$store.data.place.name;
-      let placeId = this.$store.data.place.id;
-      let placeSlug = this.$store.data.place.slug;
-      let placeType = this.$store.data.place.type;
-      let placeOwner = this.$store.data.place.member_id;
-      let user = this.$store.data.user.username;
-
-      this.$socket.emit('security-alert', {
-        user_name: user,
-        place_name: placeName,
-        place_id: placeId,
-        place_slug: placeSlug,
-        place_type: placeType,
-        place_owner: placeOwner,
-        alert_details: this.details,
-      });
+      this.securityAlerted = true;
     },
     refresh(){
       this.users = [];
       this.security = [];
+      this.securityAlerted = false;
       this.getOnlineMembers();
-    },
-    openMessages(){
-      // TO DO
-      // Open last 25 messages received
-    },
-    configure(){
-      // TO DO
-      // Have options to add people to a friends list
-      // Have option to be hidden/invisible
     },
   },
   created(){
