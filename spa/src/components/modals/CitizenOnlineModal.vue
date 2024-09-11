@@ -5,7 +5,7 @@
     </template>
     <template v-slot:body>
     <div class="grid" style="grid-template-rows: calc(100vh - 225px) 115px;">
-      <div style="overflow-y: auto;">
+      <div class="overflow-y-auto">
         <div class="pb-5">
           <h1 align="center">{{ users.length }} <span v-if="users.length > 1">Citizens</span><span v-else>Citizen</span> Online</h1>
         </div>
@@ -47,12 +47,12 @@
       <div>
         <div >
           <div class="pt-5">
-            <button class="btn-ui bold" style="width:auto;" @click="securityAlerted = true"><font color='red' size="2rem"><b>S e c u r i t y &nbsp; A l e r t</b></font></button>
+            <button class="btn-ui bold" style="width:auto;" @click="alertSecurity"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>
             <div class="flex">
               <button class="btn-ui">My Messages</button>
-              <button class="btn-ui">Refresh</button>
+              <button class="btn-ui" @click="refresh">Refresh</button>
             </div>
-            <div class="flex" style="padding-bottom: 15px;">
+            <div class="flex">
               <button class="btn-ui">Configure</button>
               <button class="btn-ui" @click="close('Modal closed')">Close</button>
             </div>
@@ -85,6 +85,20 @@ export default Vue.extend({
     async getOnlineMembers(){
       const onlineUsers = await this.$http.get("/member/online_users");
       this.users = onlineUsers.data.returnUsers;
+      this.users.forEach((user) => {
+        if(user.security){
+          this.security.push(user);
+        }
+      })
+    },
+    alertSecurity(){
+      this.securityAlerted = true;
+    },
+    refresh(){
+      this.users = [];
+      this.security = [];
+      this.securityAlerted = false;
+      this.getOnlineMembers();
     },
   },
   created(){

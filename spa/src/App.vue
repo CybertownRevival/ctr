@@ -36,11 +36,15 @@
         <ClockPage />
        </div>
         <div class="flex justify-center w-full pb-5 cursor-pointer">
-          <span class="underline" style="color: yellow;" @click="openCitizenOnlineModal">Citizens Online</span>
+          <div>
+            <center>
+              <span class="underline" style="color: yellow;" @click="openCitizenOnlineModal">Citizens Online</span>
+              <button class="btn-ui"><font color='lime' size="1.5rem">Call a Guide</font></button>
+            </center>
+          </div>
         </div>
        <div class="flex flex-row justify-center" v-if="$store.data.place.name">
         <span class="inline" style="color:lime;">{{ $store.data.place.name }}</span> 
-		
 	</div>
           <div class="flex flex-row justify-center">
             <img src="/assets/img/b2dchat.gif" @click="$store.methods.setView3d(false)"

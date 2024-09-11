@@ -76,12 +76,17 @@
           ({{ this.users.length + 1 }}) {{ this.$store.data.place.name }}
         </span>
         <span v-if="activePanel === 'places'" class="flex-grow">
+<<<<<<< HEAD
           ({{ this.activePlaces.length }}) Places
+=======
+          ({{ this.activePlaces.length }}) Places 
+>>>>>>> 948c813 (Add check for security)
         </span>
         <span v-if="activePanel === 'gestures'" class="flex-grow">
           Body Language
         </span>
         <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
+<<<<<<< HEAD
           ({{  this.sharedObjects.length }}) Objects
         </span>
         <span v-if="activePanel === 'backpack'" class="flex-grow">
@@ -89,6 +94,15 @@
         </span>
         <span v-if="activePanel === 'userBackpack'" class="flex-grow">
           ({{ this.backpackObjects.length }}) {{ this.usernameBackPack }}'s Backpack
+=======
+          ({{  this.sharedObjects.length }}) Objects 
+        </span>
+        <span v-if="activePanel === 'backpack'" class="flex-grow">
+          ({{  this.backpackObjects.length }}) My Backpack 
+        </span>
+        <span v-if="activePanel === 'userBackpack'" class="flex-grow">
+          ({{ this.backpackObjects.length }}) {{ this.usernameBackPack }}'s Backpack 
+>>>>>>> 948c813 (Add check for security)
         </span>
         <button
           type="button"
