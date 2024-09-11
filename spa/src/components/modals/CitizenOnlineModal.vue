@@ -49,11 +49,11 @@
           <div class="pt-5">
             <button class="btn-ui bold" style="width:auto;" @click="alertSecurity"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>
             <div class="flex">
-              <button class="btn-ui">My Messages</button>
+              <button class="btn-ui" @click="openMessages">My Messages</button>
               <button class="btn-ui" @click="refresh">Refresh</button>
             </div>
             <div class="flex">
-              <button class="btn-ui">Configure</button>
+              <button class="btn-ui" @click="configure">Configure</button>
               <button class="btn-ui" @click="close('Modal closed')">Close</button>
             </div>
           </div>
@@ -93,12 +93,22 @@ export default Vue.extend({
     },
     alertSecurity(){
       this.securityAlerted = true;
+      // Add message/alert emit to all online security members containing username and place the member is alerting from.
     },
     refresh(){
       this.users = [];
       this.security = [];
       this.securityAlerted = false;
       this.getOnlineMembers();
+    },
+    openMessages(){
+      // TO DO
+      // Open last 25 messages received
+    },
+    configure(){
+      // TO DO
+      // Have options to add people to a friends list
+      // Have option to be hidden/invisible
     },
   },
   created(){
