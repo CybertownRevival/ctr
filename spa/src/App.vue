@@ -33,7 +33,7 @@
           <div>
             <center>
               <span class="underline" style="color: yellow;" @click="openCitizenOnlineModal">Citizens Online</span>
-              <button class="btn-ui"><font color='lime' size="1.5rem">Call a Guide</font></button>
+              <button class="btn-ui" @click="callGuide"><font color='lime' size="1.5rem">Call a Guide</font></button>
             </center>
           </div>
         </div>
@@ -330,6 +330,10 @@ export default Vue.extend({
     },
     openCitizenOnlineModal(): void {
       ModalService.open(CitizenOnlineModal);
+    },
+    callGuide(){
+      // TO DO
+      // Add message/alert emit to all online City Guide members containing username and place the member is calling from.
     },
   },
   mounted() {
