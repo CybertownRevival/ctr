@@ -260,13 +260,13 @@ methods: {
             await this.objectProperties();
             this.success = 'Object purchased!';
             this.error = '';
-          } catch(errorResponse: any) {
+          } catch(e) {
             this.success = '';
-            this.error = errorResponse;
-            console.log(errorResponse.response.data.error);
+            this.error = "Purchase failed to process.";
+            console.log("Purchase Unsuccessful");
           }
       } else {
-        this.error = "You don't have enough cc's.";
+        throw new Error("You don't have enough cc's.");
       }
     } else {
       if(this.walletBalance >= this.price) {
@@ -275,8 +275,8 @@ methods: {
             id: this.objectId});
           this.success = 'Object purchased!';
           await this.objectProperties();
-        } catch(error) {
-          console.log(error);
+        } catch(e) {
+          console.log("Purchase Unsuccessful");
         }
       }
     }
