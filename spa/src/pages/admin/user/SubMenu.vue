@@ -21,7 +21,7 @@
     <div class="w-full min-w-min text-center my-2"
          v-else/>
   <div class="flex w-full min-w-min items-center justify-center">
-    <router-view />
+    <router-view :accessLevel="accessLevel" />
   </div>
 </div>
 </template>
@@ -31,16 +31,16 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "UserSubMenu",
-  props: ['accessLevel'],
+  props: ["accessLevel"],
   computed: {
-    isUserDetailRoute() {
+    isUserDetailRoute(): boolean {
       return this.$route.name === "UserView" || this.$route.name === "UserEdit";
     },
-    isUserBanRoute() {
+    isUserBanRoute(): boolean {
       return this.$route.name === "UserBanHistory" || this.$route.name === "UserBanAdd";
     },
-    isUserRoleRoute() {
-      return this.$route.name === "UserHireRoles" || this.$route.name === "UserCurrentRoles";
+    isUserRoleRoute(): boolean {
+      return this.$route.name === "UserHireRoles" || this.$route.name === "UserCurrentRoles" || this.$route.name === "UserFireRoles";
     },
   },
 });
