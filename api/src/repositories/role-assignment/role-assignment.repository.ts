@@ -114,6 +114,7 @@ export class RoleAssignmentRepository {
     return this.db.knex
       .distinct(
         'role_assignment.role_id as id',
+        'role_assignment.place_id as place_id',
         'role.name as name',
         'place.name as place',
       )

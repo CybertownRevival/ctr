@@ -9,8 +9,8 @@
       <table>
         <tbody>
         <tr>
-          <td class="px-4 py-2 font-bold">Role</td>
-          <td class="px-4 py-2 font-bold">Place</td>
+          <td class="px-4 py-2 font-bold text-center">Role</td>
+          <td class="px-4 py-2 font-bold text-center">Place</td>
         </tr>
         <tr v-for="id in roles" :key="id">
           <td class="border text-white px-4 py-2">{{ id.name }}</td>
@@ -23,33 +23,41 @@
 </template>
 
 <script>
-  export default {
-    name: "UserCurrentRoles",
-    data() {
-      return {
-        roles: [],
-        error: "",
+export default {
+  name: "UserCurrentRoles",
+  data() {
+    return {
+      roles: [],
+      error: "",
+      loaded: false
+    };
+  },
+  props: ['accessLevel'],
+  methods: {
+    async getRoles() {
+      this.error = "";
+      try {
+        await this.$http.get(`/member/roles/${this.$route.params.id}`)
+          .then(response => {
+            this.roles = response.data.roles;
+          });
+      } catch (e) {
+        this.error = e;
       }
     },
-    props: ["accessLevel"],
-    methods: {
-      async getRoles() {
-        this.error = "";
-        try {
-          await this.$http.get("/member/roles", {id: this.$route.params.id})
-              .then(response => {
-                this.roles = response.data.roles;
-              })
-        } catch (e) {
-          this.error = e;
-        }
-      }
-    },
-    async created() {
-      if (!this.accessLevel.includes('security')) {
+    async accessLevelCheck() {
+      if (!this.accessLevel.includes('admin')) {
         this.$router.push({ name: "restrictedaccess" });
       }
-      await this.getRoles();
-    },
-  }
+    }
+  },
+  async mounted() {
+    await this.getRoles();
+  },
+  watch: {
+    accessLevel: function() {
+      this.accessLevelCheck();
+    }
+  },
+};
 </script>

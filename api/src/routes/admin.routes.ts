@@ -8,6 +8,8 @@ adminRoutes.post('/donor', (request, response) =>
   adminController.addDonor(request, response));
 adminRoutes.post('/deleteban', (request, response) =>
   adminController.deleteBan(request, response));
+adminRoutes.post('/firerole', (request, response) =>
+  adminController.fireRole(request, response));
 adminRoutes.get('/banhistory', (request, response) =>
   adminController.getBanHistory(request, response));
 adminRoutes.get('/donor', (request, response) =>

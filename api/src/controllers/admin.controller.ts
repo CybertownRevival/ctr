@@ -92,6 +92,32 @@ class AdminController {
     }
   }
   
+  public async fireRole(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const { member_id, role_id } = request.body;
+    let { place_id } = request.body
+    if (place_id !== null) {
+      place_id = parseInt(place_id);
+    }
+    const accessLevel = await this.memberService.getAccessLevel(session.id);
+    if (accessLevel.includes('mayor')) {
+      try {
+        await this.adminService.fireRole(
+          parseInt(member_id),
+          parseInt(role_id),
+          place_id,
+        );
+        response.status(200).json({message: 'Role fired successfully'});
+      } catch(e) {
+        console.log(e);
+        response.status(500).json({error: 'Internal Server Error'});
+      }
+    } else {
+      response.status(403).json({error: 'Access Denied'});
+    }
+  }
+  
   public async getDonor(request: Request, response: Response): Promise<string> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;

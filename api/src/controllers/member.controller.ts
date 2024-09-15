@@ -144,13 +144,15 @@ class MemberController {
   }
 
   public async getRoles(request: Request, response: Response): Promise<object> {
-    const { id } = request.params;
+    const id  = request.params.id;
+    console.log(id);
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     if (id !== undefined) {
-      const admin = await this.memberService.canAdmin(session.id);
-      if (admin) {
+      const admin = await this.memberService.getAccessLevel(session.id);
+      if (admin.includes('mayor')) {
         try {
+          console.debug("admin pull of roles");
           const roles = await this.memberService.getRoles(parseInt(id));
           response.status(200).json({roles});
         } catch (e) {
