@@ -46,7 +46,7 @@ memberRoutes.get('/storage', (request, response) => memberController.getStorage(
 memberRoutes.post('/storage/update', (request, response) => 
   memberController.updateStorage(request, response));
 memberRoutes.get('/info/:id', (request, response) => memberController.getInfo(request, response));
-memberRoutes.get('/roles/:id', (request, response) => memberController.getRoles(request, response));
+memberRoutes.get('/roles/:id?', (request, response) => memberController.getRoles(request, response));
 memberRoutes.get('/backpack/:username', (request, response) =>
   memberController.getBackpack(request, response),
 );
