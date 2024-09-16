@@ -216,6 +216,12 @@
     "income_cc": "225"
   },
   {
+    "name": "Lead Jail Guard",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
     "name": "Jail Guard",
     "required_xp": "200",
     "income_xp": "18",
@@ -324,6 +330,18 @@
     "income_cc": "250"
   },
   {
+    "name": "Pool Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Pool Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
     "name": "Post Office Manager",
     "required_xp": "200",
     "income_xp": "21",
@@ -379,6 +397,18 @@
   },
   {
     "name": "Theatre Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Theme Park Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Theme Park Deputy",
     "required_xp": "200",
     "income_xp": "21",
     "income_cc": "250"
