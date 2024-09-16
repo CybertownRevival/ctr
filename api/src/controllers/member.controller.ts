@@ -113,7 +113,7 @@ class MemberController {
     if (!session) return;
     if (id !== undefined) {
       const admin = await this.memberService.getAccessLevel(session.id);
-      if (admin.includes('mayor')) {
+      if (admin.includes('security')) {
         try {
           console.debug("admin pull of roles");
           const roles = await this.memberService.getRoles(parseInt(id));
