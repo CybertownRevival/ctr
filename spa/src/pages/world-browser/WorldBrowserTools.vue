@@ -43,8 +43,10 @@
       </span>
       <span href=""
             class="btn-ui">Update</span>
-      <router-link :to="{ name: 'worldAccessRights' }"
-                   class="btn-ui">Access Rights</router-link>
+      <span v-show="$store.data.place.type !== 'shop'">
+        <router-link :to="{ name: 'worldAccessRights' }"
+                     class="btn-ui">Access Rights</router-link>
+      </span>
       <br />
     </div>
   </div>
