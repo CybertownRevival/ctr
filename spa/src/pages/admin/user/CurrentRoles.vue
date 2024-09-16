@@ -14,7 +14,10 @@
         </tr>
         <tr v-for="id in roles" :key="id">
           <td class="border text-white px-4 py-2">{{ id.name }}</td>
-          <td class="border text-white px-4 py-2">{{ id.place }}</td>
+          <td class="border text-white px-4 py-2">
+            <span v-if="id.place === null">City Wide</span>
+            <span v-else>{{ id.place }}</span>
+          </td>
         </tr>
         </tbody>
       </table>
@@ -46,7 +49,7 @@ export default {
       }
     },
     async accessLevelCheck() {
-      if (!this.accessLevel.includes('admin')) {
+      if (!this.accessLevel.includes("security")) {
         this.$router.push({ name: "restrictedaccess" });
       }
     }
