@@ -85,7 +85,7 @@ export class MemberService {
     const admin = !!roleAssignments.find(
       assignment => assignment.role_id === this.roleRepository.roleMap.Admin,
     );
-    let accessLevel = [];
+    const accessLevel = [];
     if (admin) {
       accessLevel.push('admin');
     }
