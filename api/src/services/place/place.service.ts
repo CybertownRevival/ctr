@@ -253,6 +253,33 @@ export class PlaceService {
         owner: this.roleRepository.roleMap.PostOfficeManager,
         deputy: this.roleRepository.roleMap.PostOfficeDeputy,
       },
+      beach: {
+        owner: this.roleRepository.roleMap.SunsetBeachManager,
+        deputy: this.roleRepository.roleMap.SunsetBeachDeputy,
+      },
+      waterpark: {
+        owner: this.roleRepository.roleMap.WaterParkChief,
+        deputy: this.roleRepository.roleMap.WaterParkDeputy,
+      },
+      themepark: {
+        owner: this.roleRepository.roleMap.ThemeParkChief,
+        deputy: this.roleRepository.roleMap.ThemeParkDeputy,
+      },
+      theatre: {
+        owner: this.roleRepository.roleMap.TheatreChief,
+        deputy: this.roleRepository.roleMap.TheatreDeputy,
+      },
+      pool: {
+        owner: this.roleRepository.roleMap.PoolChief,
+        deputy: this.roleRepository.roleMap.PoolDeputy,
+      },
+      blackmarket: {
+        owner: this.roleRepository.roleMap.BlackMarketChief,
+        deputy: this.roleRepository.roleMap.BlackMarketDeputy,
+      },
+      jail: {
+        owner: this.roleRepository.roleMap.SecurityChief,
+      }
     };
     return roleId[slug];
   }
