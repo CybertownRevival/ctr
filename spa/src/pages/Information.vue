@@ -1,21 +1,40 @@
 <template>
-  <div class="h-full w-full bg-black flex flex-col" style="padding: 10px" v-if="loaded">
-    <div>
-      Leader<br/>
-      <span style="color: #00df00; text-decoration: underline; cursor: pointer;"
-            v-on:click="opener('#/home/'+owner)">{{ owner }}
-      </span>
+  <div>
+    <div class="h-full w-full bg-black flex flex-col"
+         style="padding: 10px"
+         v-if="$route.params.slug === 'jail'">
+      <div v-for="(job, index) in securityInfo" :key="index">
+        <div class="pb-2.5" v-if="job.length > 0">
+          <p>
+            {{ index }}<br/>
+          </p>
+          <ul>
+            <li v-for="name in job">
+              <span class="text-chat cursor-pointer underline"
+                    v-on:click="opener(`#/home/${name}`)">{{ name }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div style="padding-top: 10px">
-      <p>Deputies</p>
-      <ul>
-        <li v-for="deputy in deputies">
-          <span style="color: #00df00; text-decoration: underline; cursor: pointer"
-                v-on:click="opener('#/home/'+deputy.username)">
-          {{ deputy.username }}
-          </span>
-        </li>
-      </ul>
+    <div class="h-full w-full bg-black flex flex-col" style="padding: 10px" v-else>
+      <div>
+        Leader<br/>
+        <span style="color: #00df00; text-decoration: underline; cursor: pointer;"
+              v-on:click="opener('#/home/'+owner)">{{ owner }}
+        </span>
+      </div>
+      <div style="padding-top: 10px">
+        <p>Deputies</p>
+        <ul>
+          <li v-for="deputy in deputies">
+            <span style="color: #00df00; text-decoration: underline; cursor: pointer"
+                  v-on:click="opener('#/home/'+deputy.username)">
+            {{ deputy.username }}
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -29,7 +48,7 @@ export default Vue.extend({
     return {
       owner: null,
       deputies: [],
-      loaded: false,
+      securityInfo: {},
     };
   },
   methods: {
@@ -52,8 +71,11 @@ export default Vue.extend({
         }/getAccessInfo/`;
         break;
       case "public": {
-        console.log(this.$store.data.place.slug);
-        infopoint = `/place/getAccessInfo/${this.$route.params.slug}/${this.$route.params.id}`;
+        if (this.$route.params.slug === "jail") {
+          infopoint = "/place/getSecurityInfo";
+        } else {
+          infopoint = `/place/getAccessInfo/${this.$route.params.slug}/${this.$route.params.id}`;
+        }
         break;
       }
       case "shop": {
@@ -64,16 +86,20 @@ export default Vue.extend({
         break;
       }
       this.$http.get(infopoint).then((response) => {
-        if (response.data.data.owner.length !== 0) {
-          this.owner = response.data.data.owner[0].username;
-        } else {
-          this.owner = "";
+        if (this.$route.params.slug === "jail") {
+          this.securityInfo = response.data.securityInfo;
         }
-        response.data.data.deputies.forEach((username, index) => {
-          this.deputies[index] = username;
-        });
+        else {
+          if (response.data.data.owner.length !== 0) {
+            this.owner = response.data.data.owner[0].username;
+          } else {
+            this.owner = "";
+          }
+          response.data.data.deputies.forEach((username, index) => {
+            this.deputies[index] = username;
+          });
+        }
       });
-      this.loaded = true;
       return;
     },
     async opener(link): Promise<void> {

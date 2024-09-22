@@ -109,6 +109,34 @@ export class PlaceService {
       .roleAssignmentRepository
       .getAccessInfoByUsername(placeId, placeRoleId.owner, placeRoleId.deputy);
   }
+  
+  public async getSecurityInfo(): Promise<object> {
+    const SecurityInfo = {};
+    const securityRoles  = [
+      {mapName: 'SecurityChief', roleName: 'Security Chief'},
+      {mapName: 'SecurityCaptain', roleName: 'Security Captain'},
+      {mapName: 'SecurityLieutenant', roleName: 'Security Lieutenant'},
+      {mapName: 'SecuritySergeant', roleName: 'Security Sergeant'},
+      {mapName: 'SecurityOfficer', roleName: 'Security Officer'},
+      {mapName: 'JailGuard', roleName: 'Jail Guard'},
+    ];
+    try {
+      await Promise.all(securityRoles.map (async (role) => {
+        const roleCode = await this.roleRepository.roleMap[role.mapName];
+        await this.roleAssignmentRepository.getUsernamesByRoleId(roleCode).then(response => {
+          const users = [];
+          response.forEach(row => {
+            users.push(row.username);
+          });
+          SecurityInfo[role.roleName] = users;
+        });
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+    console.log('Security Info ', SecurityInfo);
+    return SecurityInfo;
+  }
 
   public async addStorage(name: string, memberId: number): Promise<any> {
     await this.placeRepository.create({name: name, type: 'storage', member_id: memberId});
@@ -279,7 +307,7 @@ export class PlaceService {
       },
       jail: {
         owner: this.roleRepository.roleMap.SecurityChief,
-      }
+      },
     };
     return roleId[slug];
   }
