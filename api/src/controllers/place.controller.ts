@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import {Request, response, Response} from 'express';
 import { PlaceService, MemberService } from '../services';
 import { Container } from 'typedi';
 
@@ -93,6 +93,19 @@ class PlaceController {
       console.log(error);
       response.status(400).json({ error });
     }
+  }
+  
+  public async getSecurityInfo(request: Request, response: Response): Promise<any> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if (!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    const securityInfo = await this.placeService.getSecurityInfo();
+    response.status(200).json({ securityInfo });
   }
   
   /** Provides data about the place with the given slug */

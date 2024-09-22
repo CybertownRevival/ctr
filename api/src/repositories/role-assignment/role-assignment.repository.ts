@@ -94,6 +94,13 @@ export class RoleAssignmentRepository {
     return roleResults;
   }
   
+  public async getUsernamesByRoleId(roleId: number): Promise<any> {
+    return this.db.knex('role_assignment')
+      .select('member.username')
+      .where('role_assignment.role_id', '=', roleId)
+      .leftJoin('member', 'role_assignment.member_id', 'member.id');
+  }
+  
   public async getDonor(memberId: number, roleId: any): Promise<string> {
     return this.db.knex
       .select('role.name')
