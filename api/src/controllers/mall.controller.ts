@@ -103,19 +103,24 @@ class MallController {
       }
       const columnValues = ['id', 'member_id', 'name', 'status'];
       const compareValues = ['=', '!=', '>', '<', '>=', '<='];
+      const orderValues = ['ASC', 'DESC'];
       
       const column = request.query.column.toString();
       const compare = request.query.compare.toString();
       const content = request.query.content.toString();
+      const order = request.query.orderBy.toString();
 
-      if(columnValues.includes(column) && compareValues.includes(compare)){
+      if(columnValues.includes(column) && 
+        compareValues.includes(compare) && 
+        orderValues.includes(order)){
         const objects = await this.mallService
           .getAllObjects(
             column,
             compare,
             content,
             Number(request.query.limit), 
-            Number(request.query.offset), 
+            Number(request.query.offset),
+            order,
           );
         response.status(200).json({ status: 'success', objects: objects });
       } else {

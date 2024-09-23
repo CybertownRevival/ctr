@@ -87,12 +87,14 @@ export class ObjectRepository {
     content: string, 
     limit: number, 
     offset: number,
+    orderBy: string,
   ): Promise<any> {
     const objects = await this.db.object
       .select('object.*')
       .where(column, compare, content)
       .limit(limit)
-      .offset(offset);
+      .offset(offset)
+      .orderBy('id', orderBy);
     return objects;
   }
 

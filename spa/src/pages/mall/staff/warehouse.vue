@@ -4,11 +4,16 @@
     <div class="text-red-500" v-show="error">{{ error }}</div>
     <div class="text-center w-full text-5xl mb-1">Mall Warehouse</div>
     <div class="grid grid-cols-2 w-4/6 justify-items-center">
-      <div>
+      <div v-if="totalCount !== 0">
+        Sort By:
+        <select v-model="orderBy" @change="setLimit"> 
+          <option value="ASC">Oldest First</option>
+          <option value="DESC">Newest First</option>
+        </select>
       </div>
-      <div>
+      <div v-if="totalCount !== 0">
         View Amount:
-        <select v-model="limit" @change="getResults">
+        <select v-model.number="limit" @change="setLimit">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -16,67 +21,75 @@
         </select>
       </div>
     </div>
-    <br />
-    <div class="grid-cols-1 w-4/6 justify-items-center text-center ">
-      Total Count: {{ totalCount }} <br /><br />
+    <div v-if="totalCount !== 0" class="grid-cols-1 w-4/6 justify-items-center text-center ">
+      Total Count: {{ totalCount }}
     </div>
-    <div class="flex" style="margin-bottom: 2rem;" v-for="object in objects"
-          :key="object.id">
-      <div class="w-full flex border">
-        <div>
-          <div class="flex justify-center" style="min-width:250px;min-height:250px;">
-            <img :src="'/assets/object/'+object.directory + '/' + object.image" 
-                  style="max-width:250px;max-height:250px;height:auto;width:auto;"
-                />
-          </div>
-        </div>
-        <div class="w-80">
-          <div class="flex"><div class="w-24">Name: </div><div>{{ object.name }}</div></div>
-          <div class="flex"><div class="w-24">Price: </div><div>{{ object.price }}</div></div>
-          <div class="flex" v-if="object.instances >= 1"><div class="w-24">Sold: </div><div>{{ object.instances }}</div></div>
-          <div class="flex"><div class="w-24">Quantity: </div><div>{{ object.quantity }}</div></div>
-          <div class="flex">
-            <div class="w-24">Limit: </div>
-            <div v-if="object.limit">{{ object.limit }}</div>
-            <div v-else>Unlimited</div>
-          </div>
-          <div class="flex"><div class="w-24">Created By: </div><div>{{ object.username }}</div></div>
-        </div>
-        <div>
-          <div class="w-40">
-            <button class="btn-ui" @click="updateName(object.id, object.name)">Edit Name</button>
-            <button class="btn-ui" @click="updateLimit(object.id, object.quantity)">Update Limit</button>
-            <button class="btn-ui" @click="refundUnsoldQuantity(object.id)">Destock</button>
-          </div>
-        </div>
-        <div>
+    <span v-if="pages.length > 1">Pages</span>
+    <div v-if="pages.length > 1" class="flex w-full justify-center font-bold">
+      <span class="flex justify-center" v-for="page in pages" :value="page">
+        <span class="p-2" v-if="pageNum === page">{{ page }}</span>
+        <span class="p-2 cursor-pointer" style="color:lime;" v-else-if="page > (pageNum - 5) && page < (pageNum + 5)" @click="setPageNumber(page)">{{ page }}</span>
+      </span>
+      <span class="p-2 font-bold" style="color:lime;" v-if="(pageNum + 5) <= pages.length">. . .</span>
+    </div>
+    <div v-if="totalCount === 0">No items to show</div>
+    <div v-else>
+      <div class="flex" style="margin-bottom: 2rem;" v-for="object in objects"
+            :key="object.id">
+        <div class="w-full flex border">
           <div>
-            Select a Store:<br />
-            <select v-model="store">
-              <option v-for="option in mallStoreData" :value="option.id">
-                {{ option.title }}
-              </option>
-            </select>
-            <br /><br />
+            <div class="flex justify-center" style="min-width:250px;min-height:250px;">
+              <img :src="'/assets/object/'+object.directory + '/' + object.image" 
+                    style="max-width:250px;max-height:250px;height:auto;width:auto;"
+                  />
+            </div>
           </div>
-          <button class="btn-ui" @click="drop(object.id)">Drop</button>
+          <div class="w-80">
+            <div class="flex"><div class="w-24">Name: </div><div>{{ object.name }}</div></div>
+            <div class="flex"><div class="w-24">Price: </div><div>{{ object.price }}</div></div>
+            <div class="flex" v-if="object.instances >= 1"><div class="w-24">Sold: </div><div>{{ object.instances }}</div></div>
+            <div class="flex"><div class="w-24">Quantity: </div><div>{{ object.quantity }}</div></div>
+            <div class="flex">
+              <div class="w-24">Limit: </div>
+              <div v-if="object.limit">{{ object.limit }}</div>
+              <div v-else>Unlimited</div>
+            </div>
+            <div class="flex"><div class="w-24">Created By: </div><div>{{ object.username }}</div></div>
+          </div>
+          <div>
+            <div class="w-40">
+              <button class="btn-ui" @click="updateName(object.id, object.name)">Edit Name</button>
+              <button class="btn-ui" @click="updateLimit(object.id, object.quantity)">Update Limit</button>
+              <button class="btn-ui" @click="refundUnsoldQuantity(object.id)">Destock</button>
+            </div>
+          </div>
+          <div>
+            <div>
+              Select a Store:<br />
+              <select v-model="store">
+                <option v-for="option in mallStoreData" :value="option.id">
+                  {{ option.title }}
+                </option>
+              </select>
+              <br /><br />
+            </div>
+            <button class="btn-ui" @click="drop(object.id)">Drop</button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-2 w-4/6 justify-items-center">
-      <div class="p-1 text-right w-full">
-        <button class="btn"
-                @click="back"
-                v-show="offset != 0">
-          BACK
-        </button>
-      </div>
-      <div class="p-1 text-left w-full">
-        <button class="btn"
-                @click="next"
-                v-show="totalCount - offset >= limit">
-          NEXT
-        </button>
+    <div class="flex w-full justify-center">
+      <div class="flex justify-center">
+        <div class="p-1 text-right w-full" v-if="pageNum > 1">
+          <button class="btn" @click="back">
+            BACK
+          </button>
+        </div>
+        <div class="p-1 w-full" v-if="totalCount - offset > limit">
+          <button class="btn" @click="next">
+            NEXT
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -100,7 +113,10 @@ export default Vue.extend({
       totalCount: 0,
       limit: 10,
       offset: 0,
+      orderBy: 'ASC',
       showNext: true,
+      pageNum: 1,
+      pages: [],
       column: 'status',
       compare: '=',
       content: 3,
@@ -119,8 +135,19 @@ export default Vue.extend({
         console.log(e);
       }
     },
+    setLimit(){
+      this.offset = 0;
+      this.pageNum = 1;
+      this.getResults();
+    },
+    setPageNumber(value){
+      this.pageNum = value;
+      this.offset = this.pageNum * this.limit - this.limit;
+      this.getResults();
+    },
     async getResults(): Promise<void> {
       this.objects = [];
+      this.pages = [];
       try {
         const response = await this.$http.get(`/mall/all_objects`,
         {
@@ -129,11 +156,16 @@ export default Vue.extend({
           content: this.content,
           limit: this.limit,
           offset: this.offset,
+          orderBy: this.orderBy,
         }
         );
         this.totalCount = response.data.objects.total[0].count;
         this.objects = response.data.objects.objects;
         this.showSuccess = true;
+        let pages = Math.ceil(this.totalCount/this.limit);
+        for(let i = 1; pages >= i; i++){
+          this.pages.push(i);
+        }
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
           this.error = errorResponse.response.data.error;
@@ -270,11 +302,13 @@ export default Vue.extend({
       }
     },
     async next() {
-      this.offset = this.offset + this.limit;
+      this.offset = this.pageNum * this.limit;
+      this.pageNum++
       await this.getResults();
     },
     async back() {
-      this.offset = this.offset - this.limit;
+      this.pageNum--
+      this.offset = this.pageNum * this.limit - this.limit;
       await this.getResults();
       this.showNext = true;
     },

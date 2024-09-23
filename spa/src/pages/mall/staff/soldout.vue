@@ -4,45 +4,32 @@
     <div class="text-red-500" v-show="error">{{ error }}</div>
     <div class="text-center w-full text-5xl mb-1">Sold Out Objects</div>
     <br />
-    <div class="flex" style="margin-bottom: 2rem;" v-for="object in objects"
-          :key="object.id">
-      <div class="w-full flex border">
-        <div>
-          <div class="flex justify-center" style="min-width:250px;min-height:250px;">
-            <img :src="'/assets/object/'+object.directory + '/' + object.image" 
-                  style="max-width:250px;max-height:250px;height:auto;width:auto;"
-                />
+    <div v-if="objects.length === 0">No items to show</div>
+    <div v-else>
+      <div class="flex" style="margin-bottom: 2rem;" v-for="object in objects"
+            :key="object.id">
+        <div class="w-full flex border">
+          <div>
+            <div class="flex justify-center" style="min-width:250px;min-height:250px;">
+              <img :src="'/assets/object/'+object.directory + '/' + object.image" 
+                    style="max-width:250px;max-height:250px;height:auto;width:auto;"
+                  />
+            </div>
+          </div>
+          <div class="w-80">
+            <div class="flex"><div class="w-24">Name: </div><div>{{ object.name }}</div></div>
+            <div class="flex"><div class="w-24">Price: </div><div>{{ object.price }}</div></div>
+            <div class="flex"><div class="w-24">Sold: </div><div>{{ object.instances }}</div></div>
+            <div class="flex"><div class="w-24">Quantity: </div><div>{{ object.quantity }}</div></div>
+            <div class="flex" v-if="object.limit"><div class="w-24">Limit: </div><div>{{ object.limit }}</div></div>
+            <div class="flex" v-else><div class="w-24">Limit: </div><div>Unlimited</div></div>
+            <div class="flex"><div class="w-24">Created By: </div><div>{{ object.username }}</div></div>
+            <div class="flex"><div class="w-24">Located In: </div>{{ object.store.name }}</div>
+          </div>
+          <div>
+            <button class="btn-ui" @click="remove(object.id)">Remove</button>
           </div>
         </div>
-        <div class="w-80">
-          <div class="flex"><div class="w-24">Name: </div><div>{{ object.name }}</div></div>
-          <div class="flex"><div class="w-24">Price: </div><div>{{ object.price }}</div></div>
-          <div class="flex"><div class="w-24">Sold: </div><div>{{ object.instances }}</div></div>
-          <div class="flex"><div class="w-24">Quantity: </div><div>{{ object.quantity }}</div></div>
-          <div class="flex" v-if="object.limit"><div class="w-24">Limit: </div><div>{{ object.limit }}</div></div>
-          <div class="flex" v-else><div class="w-24">Limit: </div><div>Unlimited</div></div>
-          <div class="flex"><div class="w-24">Created By: </div><div>{{ object.username }}</div></div>
-          <div class="flex"><div class="w-24">Located In: </div>{{ object.store.name }}</div>
-        </div>
-        <div>
-          <button class="btn-ui" @click="remove(object.id)">Remove</button>
-        </div>
-      </div>
-    </div>
-    <div class="grid grid-cols-2 w-4/6 justify-items-center">
-      <div class="p-1 text-right w-full">
-        <button class="btn"
-                @click="back"
-                v-show="offset != 0">
-          BACK
-        </button>
-      </div>
-      <div class="p-1 text-left w-full">
-        <button class="btn"
-                @click="next"
-                v-show="totalCount - offset >= limit">
-          NEXT
-        </button>
       </div>
     </div>
   </div>
@@ -63,13 +50,6 @@ export default Vue.extend({
       success: '',
       showSuccess: false,
       loaded: false,
-      totalCount: 0,
-      limit: 10,
-      offset: 0,
-      showNext: true,
-      column: 'status',
-      compare: '=',
-      content: 1,
     };
   },
   methods: {
@@ -124,15 +104,6 @@ export default Vue.extend({
           this.showError = true;
         }
       }
-    },
-    async next() {
-      this.offset = this.offset + this.limit;
-      await this.getResults();
-    },
-    async back() {
-      this.offset = this.offset - this.limit;
-      await this.getResults();
-      this.showNext = true;
     },
   },
 	async mounted(): Promise<void> {

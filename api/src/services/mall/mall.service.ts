@@ -95,10 +95,15 @@ export class MallService {
   }
 
   public async getAllObjects(
-    column: string, compare: string, content: string, limit: number, offset: number){
+    column: string, 
+    compare: string, 
+    content: string, 
+    limit: number, 
+    offset: number, 
+    orderBy: string){
     const returnObjects= [];
     const objects = await this.objectRepository
-      .findAllObjects(column, compare, content, limit, offset);
+      .findAllObjects(column, compare, content, limit, offset, orderBy);
     for (const obj of objects) {
       const user = await this.memberRepository.findById(obj.member_id);
       const store = await this.mallRepository.getStore(obj.id);
