@@ -76,19 +76,19 @@
           ({{ this.users.length + 1 }}) {{ this.$store.data.place.name }}
         </span>
         <span v-if="activePanel === 'places'" class="flex-grow">
-          Places ({{ this.activePlaces.length }})
+          ({{ this.activePlaces.length }}) Places
         </span>
         <span v-if="activePanel === 'gestures'" class="flex-grow">
           Body Language
         </span>
         <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
-          Objects ({{  this.sharedObjects.length }})
+          ({{  this.sharedObjects.length }}) Objects
         </span>
         <span v-if="activePanel === 'backpack'" class="flex-grow">
-          My Backpack ({{  this.backpackObjects.length }})
+          ({{  this.backpackObjects.length }}) My Backpack
         </span>
         <span v-if="activePanel === 'userBackpack'" class="flex-grow">
-          {{ this.usernameBackPack }}'s Backpack ({{ this.backpackObjects.length }})
+          ({{ this.backpackObjects.length }}) {{ this.usernameBackPack }}'s Backpack
         </span>
         <button
           type="button"
@@ -799,20 +799,54 @@ export default Vue.extend({
       return check3d.data.user3d[0].is_3d
     },
     async updateObjectLists(object){
+      let alteredBackpack = [];
       if(['backpack', 'userBackpack'].includes(this.activePanel)){
-        this.backpackObjects = this.backpackObjects.filter(obj => {
-          return obj.id !== parseInt(object.obj_id);
-        });
+
+        // Gets updated information for the object
         const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
         if(this.activePanel === 'backpack' && 
           object.place_id === 0 && 
           [object.member_username, object.buyer_username].includes(this.$store.data.user.username)){
+         
+          // Checks if the object was purchased by current user
+          // and adds it to the backpack array
+          if(object.buyer_username === this.$store.data.user.username &&
+            object.member_username !== object.buyer_username){
             this.backpackObjects.push(updatedObject.data.objectInstance[0]);
           }
+          
+          // Populates altered objects array with updated information
+          this.backpackObjects.forEach((obj) => {
+            if(obj.id === parseInt(object.obj_id)){
+              obj = updatedObject.data.objectInstance[0]
+            }
+            if(obj.member_id === this.$store.data.user.id){
+              alteredBackpack.push(obj)
+            }
+          })
+          this.backpackObjects = alteredBackpack;
+        }
         if(this.activePanel === 'userBackpack' && 
           object.place_id === 0 && 
           [object.member_username, object.buyer_username].includes(this.username)){
-              this.backpackObjects.push(updatedObject.data.objectInstance[0]);
+          
+          // Checks if the object was purchased by the selected user
+          // and adds it to the backpack array
+          if(object.buyer_username === this.username &&
+            object.member_username !== object.buyer_username){
+            this.backpackObjects.push(updatedObject.data.objectInstance[0]);
+          }
+          
+          // Populates altered objects array with updated information
+          this.backpackObjects.forEach((obj) => {
+            if(obj.id === parseInt(object.obj_id)){
+              obj = updatedObject.data.objectInstance[0]
+            }
+            if(obj.member_id !== this.$store.data.user.id){
+              alteredBackpack.push(obj)
+            }
+          })
+        this.backpackObjects = alteredBackpack;
         }
       }
     },
@@ -840,7 +874,8 @@ export default Vue.extend({
         this.setTimers(false);
       });
       this.$socket.on("update-object", (object) => {
-        if([object.member_username, object.buyer_username].includes(this.$store.data.user.username) || [object.member_username, object.buyer_username].includes(this.username)){
+        if([object.member_username, object.buyer_username].includes(this.$store.data.user.username) || 
+          [object.member_username, object.buyer_username].includes(this.username)){
           this.updateObjectLists(object);
         }
       });
