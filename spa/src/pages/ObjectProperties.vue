@@ -198,7 +198,6 @@ methods: {
     if(this.buyer === ""){
       this.buyer = null;
     }
-    setTimeout(this.emitUpdate, 300);
     await this.update();
   },
   loadObjectPreview() {
@@ -216,8 +215,9 @@ methods: {
     inline.url = new X3D.MFString(this.objectFile);
     browser.currentScene.addRootNode(inline);
   },
-  async update(): Promise<void> {
+  async update() {
     this.success = 'Object updated';
+    setTimeout(this.emitUpdate, 300);
     await this.$http.post(`/object_instance/update/`, {
       id: this.objectId,
       name: this.name,
@@ -244,28 +244,29 @@ methods: {
     if(!this.mallObject){
       if(this.walletBalance >= this.price){
         try{
-          const objectPurchase = await this.$http.post(`/object_instance/buy/`, {
-            id: this.objectId});
             await this.objectProperties();
             if(!this.price){
-              this.error = 'This object is not for sale!'
+              throw new Error('This object is not for sale!')
             }
             if(this.buyer && this.$store.data.user.username !== this.buyer) {
-              this.error = 'This object is reserved for someone else!';
+              throw new Error('This object is reserved for someone else!');
             }
             if(this.price > this.walletBalance){
-              this.error = "You don't have enough cc's.";
+              throw new Error("You don't have enough cc's.");
             }
-            if(objectPurchase.data.status === 'success'){
-              setTimeout(this.emitUpdate, 300);
-              this.success = 'Object purchased!';
-              this.error = '';
-            }
-          } catch(errorResponse: any) {
-            console.log(errorResponse.response.data.error);
+            await this.$http.post(`/object_instance/buy/`, {
+            id: this.objectId});
+            this.emitUpdate();
+            await this.objectProperties();
+            this.success = 'Object purchased!';
+            this.error = '';
+          } catch(e) {
+            this.success = '';
+            this.error = "Purchase failed to process.";
+            console.log("Purchase Unsuccessful");
           }
       } else {
-        this.error = "You don't have enough cc's.";
+        throw new Error("You don't have enough cc's.");
       }
     } else {
       if(this.walletBalance >= this.price) {
@@ -274,8 +275,8 @@ methods: {
             id: this.objectId});
           this.success = 'Object purchased!';
           await this.objectProperties();
-        } catch(error) {
-          console.log(error);
+        } catch(e) {
+          console.log("Purchase Unsuccessful");
         }
       }
     }
