@@ -32,7 +32,7 @@
       <br />
       <ul class="list-disc ml-5">
         <li>Must have the object name.</li>
-        <li>Must have teh creators name(s).</li>
+        <li>Must have the creators name(s).</li>
         <li>Must have the mall price.</li>
         <li>Must have the limit of the object, or say unlimited if there is no limit.</li>
         <li>Must show the date uploaded.</li>
@@ -61,7 +61,7 @@
         <li>Objects can only have 1 texture file applied to it.</li>
         <li>Texture files must be in the same directory as the source file. <i>(Texture file should look like "filename.jpeg" when applied to the object and not "/directory/directory/filename.jpeg")</i></li>
         <li>Textures shall not be linked to an external source.</li>
-        <li>It is best to use a base-color of white for textured objects as the colors tend to bleed through the texture and cause it to not look correct. If you intensionally want the color to bleed through, please let the mall staff know when you upload the object.</li>
+        <li>It is best to use a base-color of white for textured objects as the colors tend to bleed through the texture and cause it to not look correct. If you intentionally want the color to bleed through, please let the mall staff know when you upload the object.</li>
         <li>Posters/art must be legibly signed by the creator.</li>
       </ul>
       <br />
@@ -86,16 +86,16 @@
       <br />
       <ul class="list-disc ml-5">
         <li>Viewpoints may only be used when they are inherent to the object created. <i>(Example: A rollercoaster ride, an airplane with controls, an interactive object, etc.)</i></li>
-        <li>Viewpoint must automatically unbind from the user when the user steps away.</li>
-        <li>All viewpoitns must be named.</li>
+        <li>Viewpoints must automatically unbind from the user when the user steps away.</li>
+        <li>All viewpoints must be named.</li>
       </ul>
       <br />
       <b class="text-green">Content</b>
       <br />
       <ul class="list-disc ml-5">
-        <li>Objects shall not contain any inflammatory content. <i>(For information on what is considered inflammatory content, please see section 2 & 5 of the <a href="#/rulesandregulations">Rules & Regulations</a>.)</i></li>
+        <li>Objects shall not contain any inflammatory content. <i>(For information on what is considered inflammatory content, please see section 2 &amp; 5 of the <a href="#/rulesandregulations">Rules &amp; Regulations</a>.)</i></li>
         <li>Objects shall not contain any potentially offensive material.</li>
-        <li>Objects that depiect or contain imagery of bodily harm are not allowed.</li>
+        <li>Objects that depict or contain imagery of bodily harm are not allowed.</li>
         <li>Weapons or bombs that show gore are not allowed.</li>
         <li>If the object refers to another CT user, that user must send the mall a message giving you permission to use their name in your object.</li>
         <li>Model's clothing must meet the minimum coverage that is required in Cybertown.</li>
@@ -105,7 +105,7 @@
       <br />
       <ul class="list-disc ml-5">
         <li>All objects must have world info.</li>
-        <li>World info must contain the name of hte object, the creator, the price, the quantity, and the date it was uploaded.</li>
+        <li>World info must contain the name of the object, the creator, the price, the quantity, and the date it was uploaded.</li>
       </ul>
       <br />
       <b class="text-green">Copyrights</b>
@@ -122,7 +122,7 @@
       <b class="text-green">Permissions</b>
       <br />
       <ul class="list-disc ml-5">
-        <li>Any object that has 2 or more creators must have the creator(s) that do not upload the object inbox the malls tating their permission for the user to upload the item.</li>
+        <li>Any object that has 2 or more creators must have the creator(s) that do not upload the object inbox the mall stating their permission for the user to upload the item.</li>
         <li>The creator listed in the world info must match the user uploading the object unless permission is sent to the mall staff.</li>
       </ul>
       <br />
@@ -145,11 +145,11 @@
       <b class="text-green">Public Objects</b>
       <br />
       <ul class="list-disc ml-5">
-        <li>Object name shall not contain any of these characters: [ ] { } ( ) " * < > -</li>
+        <li>Object name shall not contain any of these characters: [ ] { } ( ) " * &lt; &gt; -</li>
         <li>The price must match the thumbnail and world info.</li>
         <li>The quantity must match the thumbnail and world info.</li>
         <li>You must only uploaded up to the limit that is listed on the thumbnail and in the world info.</li>
-        <li>Indentical objects can only be uploaded 5 times with different colors/textures unless specified on the thumbnail that the object is part of a series of a certain number.</li>
+        <li>Identical objects can only be uploaded 5 times with different colors/textures unless specified on the thumbnail that the object is part of a series of a certain number.</li>
         <li>Limited objects may only be uploaded once.</li>
         <li>Posters, wall hangings, rugs, and tapestries are limited to 1 per user per week.</li>
         <li>A maximum of 500 instances can be uploaded at one time.</li>
