@@ -90,8 +90,8 @@ export default Vue.extend({
         });
         response.data.object.objects.forEach(obj => {
         if((['Unlimited', '0', null].includes(obj.limit) ||
-          obj.quantity < parseInt(obj.limit) ||
-          obj.instances < parseInt(obj.limit)) && obj.status !== 0) 
+          obj.quantity < parseInt(obj.limit)) && 
+          obj.status !== 0) 
           {
             this.objects.push(obj);
           }
