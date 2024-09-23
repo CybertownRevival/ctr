@@ -245,7 +245,7 @@ methods: {
       if(this.walletBalance >= this.price){
         try{
             await this.objectProperties();
-            if(!this.price){
+            if(!this.price && this.price !== 0){
               throw new Error('This object is not for sale!')
             }
             if(this.buyer && this.$store.data.user.username !== this.buyer) {
