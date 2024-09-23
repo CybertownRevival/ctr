@@ -130,10 +130,7 @@ export default Vue.extend({
         this.objects = response.data.object.objects;
         this.total = response.data.object.total[0].count;
         this.showSuccess = true;
-        let pages = Math.round(this.total/this.limit);
-        if(pages < this.total/this.limit){
-          pages++
-        }
+        let pages = Math.ceil(this.total/this.limit);
         for(let i = 1; pages >= i; i++){
           this.pages.push(i);
         }
