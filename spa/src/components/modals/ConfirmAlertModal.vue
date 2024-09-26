@@ -1,12 +1,12 @@
 <template>
-  <Modal>
+  <NotificationModal>
     <template v-slot:header>
       <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
     </template>
     <template v-slot:body>
       <center>
         <h1>Please select the reason you're alerting security</h1><br />
-        <div class="grid grid-cols-3" style="width:600px;">
+        <div class="grid grid-cols-3">
           <div>
             <input type="checkbox" id="chat" v-model="chat" />
             <label for="chat"> User Chat</label>
@@ -43,19 +43,19 @@
         </div>
       </center>
     </template>
-  </Modal>
+  </NotificationModal>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import CitizenOnlineModal from './CitizenOnlineModal.vue';
-import Modal from './Modal.vue';
+import NotificationModal from './NotificationModal.vue';
 import ModalMixin from './mixins/ModalMixin';
 import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "ConfirmAlertModal",
-  components: {Modal},
+  components: {NotificationModal},
   data: () => {
     return {
       addUsername: false,

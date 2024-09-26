@@ -144,6 +144,7 @@ import Vue from "vue";
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 import ModalRoot from "./components/modals/ModalRoot.vue";
 import InfoModal from "./components/modals/InfoModal.vue";
+import SecurityAlertModal from './components/modals/SecurityAlertModal.vue';
 import CitizenOnlineModal from './components/modals/CitizenOnlineModal.vue';
 import ModalService from "./components/modals/services/ModalService.vue";
 import ClockPage from "./components/Clock.vue";
@@ -331,14 +332,36 @@ export default Vue.extend({
     openCitizenOnlineModal(): void {
       ModalService.open(CitizenOnlineModal);
     },
+    openNotificationModal(data): void {
+      ModalService.open(SecurityAlertModal, {
+        data: data.data,
+      });
+    },
     callGuide(){
       // TO DO
       // Add message/alert emit to all online City Guide members containing username and place the member is calling from.
     },
+    securityListener(): void {
+      this.$socket.on("new-security-alert", data => {
+        this.openNotificationModal(data);
+      });
+    },
+    async checkAccessLevel() {
+      try {
+        await this.$http.get(`/member/getadminlevel`)
+          .then((response) => {
+            this.accessLevel = response.data.accessLevel;
+            if(this.accessLevel === 'security'){
+              this.securityListener();
+            }
+          });
+      } catch (error) {
+        this.accessLevel = null;
+      }
+    },
   },
   mounted() {
     this.checkAccessLevel();
-    this.instantMessagingListener();
     //todo populate jumpgate with worlds
     X3D(
       () => {

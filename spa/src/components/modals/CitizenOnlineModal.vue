@@ -10,7 +10,7 @@
           <h1 align="center">{{ users.length }} <span v-if="users.length > 1">Citizens</span><span v-else>Citizen</span> Online</h1>
         </div>
         <div class="flex-1 justify-center text-center">
-          <div class="pb-5" v-if="securityAlerted">
+          <div class="pb-5" v-if="action">
             <p v-if="security.length === 0">
               There are no security online at this time. Please leave a message in the security in-box<br /> <router-link :to="{slug: `enter`}" >Security In-Box.</router-link>
             </p>
@@ -45,7 +45,7 @@
       <div>
         <div >
           <div class="pt-5">
-            <button class="btn-ui bold" style="width:auto;" @click="alertSecurity"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>
+            <button class="btn-ui bold" style="width:auto;" @click="confirmSecurityAlert" v-show="!action"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>
             <div class="flex">
               <button class="btn-ui" @click="openMessages">My Messages</button>
               <button class="btn-ui" @click="refresh">Refresh</button>
@@ -65,22 +65,18 @@
 <script lang="ts">
 import Vue from "vue";
 import ConfirmAlertModal from './ConfirmAlertModal.vue';
-import Modal from './Modal.vue';
-import ConfigureModal from './ConfigureModal.vue';
-import MyMessagesModal from './MyMessagesModal.vue';
-import MemberModal from './MemberModal.vue';
+import ListModal from './ListModal.vue';
 import ModalMixin from './mixins/ModalMixin';
 import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "CitizenOnlineModal",
-  components: {Modal},
+  components: {ListModal},
   props: ["action", "details"],
   data: () => {
     return {
       users: [],
       security: [],
-      securityAlerted: false,
     };
   },
   methods: {
@@ -93,14 +89,30 @@ export default Vue.extend({
         }
       })
     },
+    confirmSecurityAlert(){
+      ModalService.open(ConfirmAlertModal);
+    },
     alertSecurity(){
-      this.securityAlerted = true;
-      // Add message/alert emit to all online security members containing username and place the member is alerting from.
+      let placeName = this.$store.data.place.name;
+      let placeId = this.$store.data.place.id;
+      let placeSlug = this.$store.data.place.slug;
+      let placeType = this.$store.data.place.type;
+      let placeOwner = this.$store.data.place.member_id;
+      let user = this.$store.data.user.username;
+
+      this.$socket.emit('security-alert', {
+        user_name: user,
+        place_name: placeName,
+        place_id: placeId,
+        place_slug: placeSlug,
+        place_type: placeType,
+        place_owner: placeOwner,
+        alert_details: this.details,
+      });
     },
     refresh(){
       this.users = [];
       this.security = [];
-      this.securityAlerted = false;
       this.getOnlineMembers();
     },
     openMessages(){
