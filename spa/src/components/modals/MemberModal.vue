@@ -1,5 +1,5 @@
 <template>
-  <Modal>
+  <NotificationModal>
     <template v-slot:header>
       <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
     </template>
@@ -9,34 +9,32 @@
         <h3>{{ user.username }}</h3>
         <br />
         <div class="flex w-72">
-          <!--Hidden until functionality is added-->
-          <!--<button class="btn-ui no" @click="sendMessage">Send Message</button>-->
+          <button class="btn-ui no" @click="sendMessage">Send Message</button>
           <router-link style="text-decoration: none;" :to="{path: `/home/${user.username}`}" v-if="user.hasHome">
             <button class="btn-ui" @click="close('Modal closed')">
               Visit Home
             </button>  
           </router-link>
-          <div class="flex w-full justify-center" v-else>User does not have a home</div>
         </div>
         
         <br />
         <button class="btn-ui" @click="openCitizenOnlineList">Back</button>
       </center>
     </template>
-  </Modal>
+  </NotificationModal>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import CitizenOnlineModal from './CitizenOnlineModal.vue';
-import Modal from './Modal.vue';
+import NotificationModal from './NotificationModal.vue';
 import InstantMessageModal from './InstantMessageModal.vue';
 import ModalMixin from './mixins/ModalMixin';
 import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "MemberModal",
-  components: {Modal},
+  components: {NotificationModal},
   props: ["user", "status"],
   data: () => {
     return {

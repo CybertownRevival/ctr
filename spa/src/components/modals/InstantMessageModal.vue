@@ -1,5 +1,5 @@
 <template>
-  <Modal>
+  <NotificationModal>
     <template v-slot:header>
       <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
     </template>
@@ -10,7 +10,7 @@
           <br />
           Type your message here
           <br />
-          <textarea style="width: 600px; height:130px;" v-model="message"></textarea>
+          <textarea style="width: 100%; height:130px;" v-model="message"></textarea>
           <div class="flex w-96">
             <button class="btn-ui" v-if="user" @click="openMemberModal">Cancel</button>
             <button class="btn-ui" v-else @click="close('Modal closed')">Cancel</button>
@@ -27,19 +27,19 @@
         </div>    
       </center>
     </template>
-  </Modal>
+  </NotificationModal>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import MemberModal from './MemberModal.vue';
-import Modal from './Modal.vue';
+import NotificationModal from './NotificationModal.vue';
 import ModalMixin from './mixins/ModalMixin';
 import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "InstantMessageModal",
-  components: {Modal},
+  components: {NotificationModal},
   props: ["user"],
   data: () => {
     return {

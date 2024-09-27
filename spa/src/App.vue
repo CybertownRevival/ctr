@@ -337,6 +337,9 @@ export default Vue.extend({
         data: data.data,
       });
     },
+    receivedInstantMessage(){
+      ModalService.open(InstantMessageModal);
+    },
     callGuide(){
       // TO DO
       // Add message/alert emit to all online City Guide members containing username and place the member is calling from.
@@ -345,6 +348,11 @@ export default Vue.extend({
       this.$socket.on("new-security-alert", data => {
         this.openNotificationModal(data);
       });
+    },
+    instantMessagingListener(): void {
+      this.$socket.on("instant-message-received", data => {
+        this.receivedInstantMessage();
+      })
     },
     async checkAccessLevel() {
       try {
@@ -362,6 +370,7 @@ export default Vue.extend({
   },
   mounted() {
     this.checkAccessLevel();
+    this.instantMessagingListener();
     //todo populate jumpgate with worlds
     X3D(
       () => {
