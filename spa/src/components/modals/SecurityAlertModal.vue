@@ -2,14 +2,6 @@
   <NotificationModal>
     <template v-slot:header>
       <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
-      <h2 class="absolute left-0 px-2 font-bold">
-        {{ new Date().toLocaleTimeString("en-US", {
-          month: "numeric",
-          day: "numeric",
-          year: "numeric",
-          timeZone: "America/New_York",
-        }) }}
-      </h2>
     </template>
     <template v-slot:body>
       <center><h1>NEW SECURITY ALERT</h1></center>

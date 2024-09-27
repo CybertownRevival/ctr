@@ -34,12 +34,10 @@
           </div>
           <ul>
             <li v-for="user in users" :key="user.username">
-              <router-link :to="{path: `/home/${user.username}`}" v-if="user.hasHome">
-                <span @click="close('Modal closed')">
-                  {{ user.username }}
-                </span>  
-              </router-link>
-              <span class="text-white-600" v-else>{{ user.username }}</span>
+              <span class="cursor-pointer" @click="openMemberProfile(user)">
+                <span v-if="user.hasHome" style="color:lime;">{{ user.username }}</span>
+                <span v-else>{{ user.username }}</span>
+              </span>  
             </li>
           </ul>
         </div>
@@ -49,11 +47,11 @@
           <div class="pt-5">
             <button class="btn-ui bold" style="width:auto;" @click="confirmSecurityAlert" v-show="!action"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>
             <div class="flex">
-              <button class="btn-ui" @click="openMessages">My Messages</button>
+              <button class="btn-ui" @click="openMyMessages">My Messages</button>
               <button class="btn-ui" @click="refresh">Refresh</button>
             </div>
             <div class="flex">
-              <button class="btn-ui" @click="configure">Configure</button>
+              <button class="btn-ui" @click="openConfigure">Configure</button>
               <button class="btn-ui" @click="close('Modal closed')">Close</button>
             </div>
           </div>
@@ -68,6 +66,9 @@
 import Vue from "vue";
 import ConfirmAlertModal from './ConfirmAlertModal.vue';
 import ListModal from './ListModal.vue';
+import ConfigureModal from './ConfigureModal.vue';
+import MyMessagesModal from './MyMessagesModal.vue';
+import MemberModal from './MemberModal.vue';
 import ModalMixin from './mixins/ModalMixin';
 import ModalService from "./services/ModalService.vue";
 
@@ -93,6 +94,17 @@ export default Vue.extend({
     },
     confirmSecurityAlert(){
       ModalService.open(ConfirmAlertModal);
+    },
+    openConfigure(){
+      ModalService.open(ConfigureModal);
+    },
+    openMyMessages(){
+      ModalService.open(MyMessagesModal);
+    },
+    openMemberProfile(user){
+      ModalService.open(MemberModal, {
+        user: user
+      });
     },
     alertSecurity(){
       let placeName = this.$store.data.place.name;
