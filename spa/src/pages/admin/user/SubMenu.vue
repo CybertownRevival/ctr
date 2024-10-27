@@ -9,7 +9,10 @@
       <router-link
        class="btn-ui-inline mx-1 w-20"
        :to="{name: 'UserBanHistory'}">HISTORY</router-link>
-      <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserBanAdd'}">ADD</router-link>
+      <router-link
+          class="btn-ui-inline mx-1 w-20"
+          :to="{name: 'UserBanAdd'}"
+          v-if="accessLevel.includes('security')">ADD</router-link>
     </div>
     <div class="w-full min-w-min text-center my-2" v-else-if="isUserRoleRoute && accessLevel.includes('mayor')">
       <router-link class="btn-ui-inline mx-1 w-24"

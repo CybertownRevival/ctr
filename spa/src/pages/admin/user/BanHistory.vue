@@ -53,7 +53,8 @@
                   @click="
                   showDeleteModal = true;
                   banId = ban.id;
-                  banReason = ban.reason;">DELETE BAN</button>
+                  banReason = ban.reason;"
+                  v-if="accessLevel.includes('security')">DELETE BAN</button>
         </div>
       </div>
     </div>
