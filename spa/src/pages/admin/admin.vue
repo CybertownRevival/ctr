@@ -23,7 +23,7 @@ export default Vue.extend({
   name: "admin",
   data: () => {
     return {
-      accessLevel: "none",
+      accessLevel: [],
     };
   },
   methods: {
