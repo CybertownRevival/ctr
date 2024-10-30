@@ -10,7 +10,7 @@
       </div>
       <div>
         View Amount:
-        <select v-model="limit" @change="searchObjects">
+        <select v-model.number="limit" @change="searchObjects">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -20,7 +20,7 @@
     </div>
     <br />
     <div class="grid-cols-1 w-4/6 justify-items-center text-center ">
-      Total Count: {{ totalCount }} <br /><br />
+      Total Count: {{ totalCount }}
     </div>
     <div class="flex" style="margin-bottom: 2rem;" v-for="object in objects"
           :key="object.id">
@@ -48,6 +48,9 @@
           <div class="w-40">
             <button class="btn-ui" @click="updateName(object.id, object.name)">Edit Name</button>
             <button class="btn-ui" @click="updateLimit(object.id, object.quantity)">Update Limit</button>
+            <br />
+            <br />
+            <button v-if="object.status === 1" class="btn-ui" @click="remove(object.id)">Move To Warehouse</button>
           </div>
         </div>
         <div>
@@ -193,6 +196,28 @@ export default Vue.extend({
               this.showError = true;
             }
           }
+      }
+    },
+    async remove(objectId): Promise<void> {
+      this.showSuccess = false;
+      this.showError = false;
+      try {
+        this.error = '';
+        this.showError = false;
+        await this.$http.post("/mall/remove", {
+        'objectId': objectId,
+        });
+        this.success = 'Object removed from store.';
+        this.showSuccess = true;
+        this.getResults();
+      } catch (errorResponse: any) {
+        if (errorResponse.response.data.error) {
+          this.error = errorResponse.response.data.error;
+          this.showError = true;
+        } else {
+          this.error = "An unknown error occurred";
+          this.showError = true;
+        }
       }
     },
     async next() {
