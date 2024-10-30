@@ -39,7 +39,8 @@
           <div>
             <center>
               <span class="underline" style="color: yellow;" @click="openCitizenOnlineModal">Citizens Online</span>
-              <button class="btn-ui" @click="callGuide"><font color='lime' size="1.5rem">Call a Guide</font></button>
+              <!-- TO DO - Button hidden until we have City Guides and functionality gets added to the button -->
+              <!-- <button class="btn-ui" @click="callGuide"><font color='lime' size="1.5rem">Call a Guide</font></button> -->
             </center>
           </div>
         </div>
