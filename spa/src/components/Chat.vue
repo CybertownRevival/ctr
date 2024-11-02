@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-row chat space-x-1 p-1 text-chat w-full">
     <div class="messages-pane flex flex-col flex-1">
-      <div class="flex-grow p-1 overflow-y-auto h-full" ref="chatArea" >
+      <div class="flex-grow p-1 overflow-y-auto h-full" ref="chatArea">
         <ul>
           <li v-for="(msg, key) in messages" :key="key">
             <i v-if="msg.new !== true && msg.type !== 'system'" class="text-white">
