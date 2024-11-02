@@ -1,5 +1,5 @@
 <template>
-  <ListModal>
+  <Modal>
     <template v-slot:header>
         <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
     </template>
@@ -11,6 +11,7 @@
         </div>
         <div class="flex-1 justify-center text-center">
           <div class="pb-5" v-if="action">
+            <h3 v-if="security.length > 0" style="color:red;"><b>Security Alerted!</b></h3>
             <p v-if="security.length === 0">
               There are no security online at this time. Please leave a message in the security in-box<br /> <router-link :to="{slug: `enter`}" >Security In-Box.</router-link>
             </p>
@@ -25,7 +26,7 @@
             <p class="pb-5">
               Select a name to send an instant message.
             </p>
-            <p class="pb-5">
+            <p class="pb-5" style="width:250px">
               Please use the Security Alert button only if you really have a security problem. You can leave a message for them at the Security In-box at the Jump Game. 
               <span style="color:lime;">
                 If you need help, you can call a City Guide using the button at the end of this list.
@@ -59,13 +60,13 @@
       </div>
     </div>
     </template>
-  </ListModal>
+  </Modal>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import ConfirmAlertModal from './ConfirmAlertModal.vue';
-import ListModal from './ListModal.vue';
+import Modal from './Modal.vue';
 import ConfigureModal from './ConfigureModal.vue';
 import MyMessagesModal from './MyMessagesModal.vue';
 import MemberModal from './MemberModal.vue';
@@ -74,7 +75,7 @@ import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "CitizenOnlineModal",
-  components: {ListModal},
+  components: {Modal},
   props: ["action", "details"],
   data: () => {
     return {
