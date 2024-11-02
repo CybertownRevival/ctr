@@ -1,5 +1,5 @@
 <template>
-  <NotificationModal>
+  <Modal>
     <template v-slot:header>
       <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
     </template>
@@ -23,7 +23,7 @@
           <br />
           <button class="btn-ui" @click="openCitizenOnlineList">Back</button>
         </div>
-        <div v-if="view === 'buddies'">
+        <div style="width:600px;" v-if="view === 'buddies'">
           <h1>Edit Buddy List</h1>
           <br />
           <h3>Add the username of your friends so you can get notified when they come online</h3>
@@ -43,7 +43,7 @@
           <br />
           <button class="btn-ui" @click="saveBuddyList">Save</button>
         </div>
-        <div v-if="view === 'blocked'">
+        <div style="width:600px;" v-if="view === 'blocked'">
           <h1>Edit Blocked List</h1>
           <br />
           <h3>Add the username of people you no longer want to receive messages from.</h3>
@@ -65,19 +65,19 @@
         </div>
       </center>
     </template>
-  </NotificationModal>
+  </Modal>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import CitizenOnlineModal from './CitizenOnlineModal.vue';
-import NotificationModal from './NotificationModal.vue';
+import Modal from './Modal.vue';
 import ModalMixin from './mixins/ModalMixin';
 import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "ConfigureModal",
-  components: {NotificationModal},
+  components: {Modal},
   data: () => {
     return {
       visible: true,

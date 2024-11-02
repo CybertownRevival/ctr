@@ -1,5 +1,5 @@
 <template>
-  <NotificationModal>
+  <Modal>
     <template v-slot:header>
       <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
     </template>
@@ -21,20 +21,20 @@
         <button class="btn-ui" @click="openCitizenOnlineList">Back</button>
       </center>
     </template>
-  </NotificationModal>
+  </Modal>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import CitizenOnlineModal from './CitizenOnlineModal.vue';
-import NotificationModal from './NotificationModal.vue';
+import Modal from './Modal.vue';
 import InstantMessageModal from './InstantMessageModal.vue';
 import ModalMixin from './mixins/ModalMixin';
 import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "MemberModal",
-  components: {NotificationModal},
+  components: {Modal},
   props: ["user", "status"],
   data: () => {
     return {

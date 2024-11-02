@@ -22,30 +22,23 @@
         class="flex flex-row flex-grow"
         style="height: calc(100vh - 70px) !important"
       >
-      <div class="flex flex-col">
-        <div class="flex justify-center">
-          <img src="/assets/img/logo-action.gif" />
-      </div>
-      <div class="text-clock text-center w-full py-0.5">
-        <ClockPage />
-       </div>
-        <div class="flex justify-center w-full pb-5 cursor-pointer">
-          <div>
-            <center>
-              <span class="underline" style="color: yellow;" @click="openCitizenOnlineModal">Citizens Online</span>
-              <!-- TO DO - Button hidden until we have City Guides and functionality gets added to the button -->
-              <!-- <button class="btn-ui" @click="callGuide"><font color='lime' size="1.5rem">Call a Guide</font></button> -->
-            </center>
-          </div>
+        <!--Content-->
+        <div class="flex flex-1">
+          <router-view
+            v-if="this.$route.name !== 'world-browser' &&
+            this.$route.name !== 'user-home'" />
+          <world-browser-page
+            v-show="this.$route.name === 'world-browser' ||
+            this.$route.name === 'user-home'"></world-browser-page>
         </div>
-       <div class="flex flex-row justify-center" v-if="$store.data.place.name">
-        <span class="inline" style="color:lime;">{{ $store.data.place.name }}</span> 
-	</div>
-          <div class="flex flex-row justify-center">
-            <img src="/assets/img/b2dchat.gif" @click="$store.methods.setView3d(false)"
-                 class="cursor-pointer"/>
-            <img src="/assets/img/b3dchat.gif" @click="$store.methods.setView3d(true)"
-                 class="cursor-pointer"/>
+        <!--Navigation Panel-->
+        <div
+          class="flex-none w-60 bg-lines overflow-y-auto"
+          v-if="$store.data.isUser && this.$route.meta.wrapper"
+        >
+          <div class="flex flex-col">
+            <div class="flex justify-center">
+              <img src="/assets/img/logo-action.gif" />
           </div>
           <div class="text-clock text-center w-full py-0.5">
           <ClockPage />
