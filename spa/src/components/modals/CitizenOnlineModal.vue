@@ -12,7 +12,7 @@
         <div class="flex-1 justify-center text-center">
           <div class="pb-5" v-if="action">
             <h3 v-if="security.length > 0" style="color:red;"><b>Security Alerted!</b></h3>
-            <p v-if="security.length === 0">
+            <p v-if="security.length === 0" style="width: 250px">
               There are no security online at this time. Please leave a message in the security in-box<br /> <router-link :to="{slug: `enter`}" >Security In-Box.</router-link>
             </p>
             <p v-else-if="security.length === 1">
@@ -48,11 +48,13 @@
           <div class="pt-5">
             <button class="btn-ui bold" style="width:auto;" @click="confirmSecurityAlert" v-show="!action"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>
             <div class="flex">
-              <button class="btn-ui" @click="openMyMessages">My Messages</button>
+              <!--Hidden until functionality is added-->
+              <!--<button class="btn-ui" @click="openMyMessages">My Messages</button>-->
               <button class="btn-ui" @click="refresh">Refresh</button>
             </div>
             <div class="flex">
-              <button class="btn-ui" @click="openConfigure">Configure</button>
+              <!--Hidden until functionality is added-->
+              <!--<button class="btn-ui" @click="openConfigure">Configure</button>-->
               <button class="btn-ui" @click="close('Modal closed')">Close</button>
             </div>
           </div>
