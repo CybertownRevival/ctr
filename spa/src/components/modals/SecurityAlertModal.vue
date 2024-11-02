@@ -1,12 +1,12 @@
 <template>
-  <NotificationModal>
+  <Modal>
     <template v-slot:header>
       <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
     </template>
     <template v-slot:body>
       <center><h1>NEW SECURITY ALERT</h1></center>
       <br />
-      <div class="grid grid-cols-3">
+      <div class="grid">
         <div>
           <h3>
             <b>Alerting User: </b> 
@@ -58,19 +58,19 @@
         </div>
       </div>
     </template>
-  </NotificationModal>
+  </Modal>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
-import NotificationModal from './NotificationModal.vue';
+import Modal from './Modal.vue';
 import ModalMixin from './mixins/ModalMixin';
 import ModalService from "./services/ModalService.vue";
 
 export default Vue.extend({
   name: "SecurityAlertModal",
-  components: {NotificationModal},
+  components: {Modal},
   props: [
     "data"
   ],
