@@ -16,10 +16,10 @@
     <div v-if="!this.$store.data.view3d || force2d" class="w-full flex justify-center" style="min-height: 200px;">
       <span style="align-self: flex-end;"></span>
     </div>
-    <div v-if="!this.$store.data.view3d || force2d" class="h-1/3" style="display:grid; grid-template-columns: 1fr 3fr 1fr;">
+    <div v-if="!this.$store.data.view3d || force2d" class="h-full" style="display:grid; grid-template-columns: 1fr 3fr 1fr;">
       <div></div>
       <chat
-        class="bg-chat"
+        class="bg-chat h-1/3"
         ref="chat"
         v-if="loaded"
         :place="place"
