@@ -16,6 +16,7 @@
               Visit Home
             </button>  
           </router-link>
+          <div class="flex w-full justify-center" v-else>User does not have a home</div>
         </div>
         
         <br />
