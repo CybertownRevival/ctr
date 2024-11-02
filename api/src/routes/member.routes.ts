@@ -51,7 +51,8 @@ memberRoutes.post('/ping', (request, response) =>
   memberController.updateLatestActivity(request, response));
 memberRoutes.get('/info/:id', (request, response) => memberController.getInfo(request, response));
 memberRoutes.get('/roles', (request, response) => memberController.getRoles(request, response));
-memberRoutes.post('/check3d', (request, response) => memberController.check3d(request, response));
+memberRoutes.get('/check3d/:username', (request, response) => 
+  memberController.check3d(request, response));
 memberRoutes.get('/places', (request, response) => 
   memberController.getActivePlaces(request, response));
 memberRoutes.get('/backpack/:username', (request, response) =>
