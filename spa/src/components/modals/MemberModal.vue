@@ -9,7 +9,8 @@
         <h3>{{ user.username }}</h3>
         <br />
         <div class="flex w-72">
-          <button class="btn-ui no" @click="sendMessage">Send Message</button>
+          <!--Hidden until functionality is added-->
+          <!--<button class="btn-ui no" @click="sendMessage">Send Message</button>-->
           <router-link style="text-decoration: none;" :to="{path: `/home/${user.username}`}" v-if="user.hasHome">
             <button class="btn-ui" @click="close('Modal closed')">
               Visit Home
