@@ -430,12 +430,7 @@ export default Vue.extend({
       placeId: null,
       chatIntervalId: null,
       pingIntervalId: null,
-<<<<<<< HEAD
-      showRole: true,
-      showXP: true,
-=======
       chatEnabled: false,
->>>>>>> 716d4ee (Adding minimum height to chat)
     };
   },
   directives: {
