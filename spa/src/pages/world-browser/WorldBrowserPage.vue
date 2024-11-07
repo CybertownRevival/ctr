@@ -20,6 +20,7 @@
       <div></div>
       <chat
         class="bg-chat h-1/3"
+        style="min-height: 255px;"
         ref="chat"
         v-if="loaded"
         :place="place"

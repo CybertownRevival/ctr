@@ -34,10 +34,7 @@
           </li>
         </ul>
       </div>
-      <div
-        class="flex flex-none flex-row space-x-0.5 bg-black"
-        v-show="connected"
-      >
+      <div class="flex flex-none flex-row space-x-0.5 bg-black" v-show="chatEnabled">
         <input
           type="text"
           v-model="message"
@@ -101,6 +98,7 @@
             active:bg-gray-400
           "
           @click="changeActivePanel"
+          v-show="chatEnabled"
         >
           Next
         </button>
@@ -406,6 +404,7 @@ export default Vue.extend({
       placeId: null,
       chatIntervalId: null,
       pingIntervalId: null,
+      chatEnabled: false,
     };
   },
   directives: {
@@ -837,6 +836,7 @@ export default Vue.extend({
       this.$socket.on("disconnect", () => {
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
         this.setTimers(false);
+        this.chatEnabled = false;
       });
       this.$socket.on("update-object", (object) => {
         if([object.member_username, object.buyer_username].includes(this.$store.data.user.username) || 
@@ -931,7 +931,8 @@ export default Vue.extend({
   mounted() {
     this.debugMsg("starting chat page...");
     this.startSocketListeners();
-    if (this.$store.data.place) {
+    if (this.$store.data.place && this.connected) {
+      this.chatEnabled = true;
       this.startNewChat();
       this.canAdmin();
       this.getRole();
