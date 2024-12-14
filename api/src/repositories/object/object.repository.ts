@@ -179,11 +179,6 @@ export class ObjectRepository {
       .where(column, compare, content);
   }
 
-  public async totalByStatus(compare: string, status: number): Promise<any> {
-    return this.db.object.count('id as count')
-      .where('status', compare, status);
-  }
-
   private like(field: string, value: string) {
     return function() {
       this.whereRaw('?? LIKE ?', [field, `%${value}%`]);
