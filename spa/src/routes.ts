@@ -61,7 +61,7 @@ import MallPending from "@/pages/mall/staff/pending.vue";
 import MallStocked from "@/pages/mall/staff/stocked.vue";
 import MallSoldOut from "@/pages/mall/staff/soldout.vue";
 import MallObjectSearch from "@/pages/mall/staff/search.vue";
-import MallChecker from "@/pages/mall/staff/checker/checker.vue";
+import MallChecker from "@/pages/mall/checker.vue";
 
 import ObjectProperties from "./pages/ObjectProperties.vue";
 
