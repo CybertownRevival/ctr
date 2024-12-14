@@ -177,6 +177,28 @@ class ObjectController {
     });
   }
 
+  public async getObject(request: Request, response: Response): Promise<any> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    try{
+      const object = await this.objectService.findById(parseInt(request.params.id));
+      response.status(200).json({
+        status: 'success',
+        object: object,
+      });
+    } catch(error) {
+      console.error(error);
+      response.status(400).json({'error': error.message});
+    }
+  }
+
   public async increaseQuantity(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);
