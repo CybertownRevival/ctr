@@ -419,6 +419,26 @@ class MallController {
     }
   }
 
+  public async getObject(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+      const object = await this.objectService.findById(parseInt(request.params.id));
+      const username = await this.memberService.getMemberInfo(object.member_id);
+      response.status(200)
+        .json({status: 'success', object: object, username: username.username });
+    } catch(error){
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
   public async findStore(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
     try {

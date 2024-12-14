@@ -105,6 +105,30 @@ export class AdminService {
     await this.placeRepository.updatePlaces(id, column, content);
   }
 
+  public async updateObjects(
+    id: number, 
+    name: string, 
+    directory: string,
+    filename: string,
+    image: string,
+    price: number,
+    limit: number,
+    quantity: number,
+    status: number
+  ): Promise<any> {
+    await this.objectRepository
+      .update(id, {
+        name: name,
+        directory: directory,
+        filename: filename,
+        image: image,
+        price: price,
+        limit: limit,
+        quantity: quantity,
+        status: status
+      });
+  }
+
   public async searchPlaces(type: string, limit: number, offset: number): Promise<any> {
     const places = await this.placeRepository.findByType(type, limit, offset);
     const total = await this.placeRepository.totalByType(type);

@@ -40,6 +40,7 @@
     </div>
     <table class="table-auto border-collapse">
       <tr>
+        <th></th>
         <th class="p-4">ID</th>
         <th class="p-4">Name</th>
         <th class="p-4">Directory</th>
@@ -50,11 +51,12 @@
         <th class="p-4">Price</th>
         <th class="p-4">Limit</th>
         <th class="p-4">Quantity</th>
+        <th class="p-4">Sold</th>
         <th class="p-4">Status</th>
-        <th class="p-4"></th>
       </tr>
       <tr class="border" v-for="object in objects"
           :key="object.id">
+          <td class="p-4"><button v-if="accessLevel === 'admin'" class="btn-ui h-20" @click="openUpdater(object.id)">Edit Object Details</button></td>
           <td class="p-4">{{ object.id }}</td>
           <td class="p-4">{{ object.name }}</td>
           <td class="p-4">{{ object.directory }}</td>
@@ -63,10 +65,11 @@
           <td class="p-4">{{ object.texture }}</td>
           <td class="p-4">{{ object.username }}</td>
           <td class="p-4">{{ object.price }}</td>
-          <td class="p-4">{{ object.limit }}</td>
+          <td class="p-4" v-if="object.limit">1/{{ object.limit }}</td>
+          <td class="p-4" v-else>Unlimited</td>
           <td class="p-4">{{ object.quantity }}</td>
+          <td class="p-4">{{ object.instances }}</td>
           <td class="p-4">{{ objectState[object.status] }}</td>
-          <td class="p-4"><button class="btn-ui">Edit Object</button></td>
       </tr>
     </table>
     <div class="flex w-full justify-center">
@@ -145,6 +148,9 @@ export default Vue.extend({
       } catch (error) {
         console.log(error);
       }
+    },
+    openUpdater(objectId){
+      window.open("/#/admin/update-object/" + objectId, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
     setLimit(){
       this.offset = 0;

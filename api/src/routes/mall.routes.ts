@@ -39,6 +39,8 @@ mallRoutes.get('/objects/:id', (request, response) =>
 );
 mallRoutes.get('/object/:id', (request, response) => 
   mallController.findByObjectId(request, response));
+mallRoutes.get('/getObject/:id', (request, response) => 
+  mallController.getObject(request, response));
 mallRoutes.get('/store/:id', (request, response) => 
   mallController.findStore(request, response));
 mallRoutes.post('/user', (request, response) => 
