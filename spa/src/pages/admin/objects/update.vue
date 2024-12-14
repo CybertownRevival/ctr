@@ -203,10 +203,6 @@ export default Vue.extend({
           this.filename === this.newFilename &&
           this.thumbnail === this.newThumbnail)){
             try{
-              if(this.newQuantity > this.limit || this.quantity > this.newLimit){
-                this.error = "Limit cannot be less than the quantity"
-                return
-              }
               await this.$http.post(`/admin/objects/update`, {
                 id: this.id,
                 name: this.newName,

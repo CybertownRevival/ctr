@@ -272,10 +272,9 @@ class AdminController {
       }
       const quantity = request.body.quantity;
       const status = request.body.status;
-      console.log(id, name, directory, filename, image, price, limit, quantity, status);
       try {
         if(id && name && directory && filename && image && 
-          price && limit >= 0 && quantity >= 0 && status){
+          price >= 0 && limit >= 0 && quantity >= 0 && status >= 0){
           this.adminService.updateObjects(
             id,
             name,

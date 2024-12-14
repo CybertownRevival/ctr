@@ -144,6 +144,7 @@ export default Vue.extend({
           if(this.pageNum > pages){
             this.pageNum = 1;
             this.offset = 0;
+            setTimeout(this.searchObjects, 1000);
           }
       } catch (error) {
         console.log(error);
