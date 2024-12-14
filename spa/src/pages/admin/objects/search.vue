@@ -1,9 +1,9 @@
 <template>
   <div class="grid grid-cols-1 w-full place-items-center">
-    <div class="text-center w-full text-5xl mb-1">Objects</div>
-    <div class="grid grid-cols-2 w-4/6 justify-items-center">
+    <div class="text-center w-full text-5xl mb-1"></div>
+    <div class="grid grid-cols-3 w-4/6 justify-items-center">
       <div>
-        Catagory:
+        <h3>Object Status</h3>
         <select v-model.number="status" @change="searchObjects">
           <option value=9>All Objects</option>
           <option value=3>Approved Objects</option>
@@ -13,8 +13,12 @@
           <option value=0>Rejected Objects</option>
         </select>
       </div>
+      <div class="flex flex-col items-center">
+        <h3>Search Objects by Name</h3>
+        <input class="text-black" v-model="search" @input="searchObjects" type='text' />
+      </div>
       <div>
-        View Amount:
+        <h3>View Amount</h3>
         <select v-model.number="limit" @change="setLimit">
           <option value="10">10</option>
           <option value="20">20</option>
@@ -23,12 +27,8 @@
         </select>
       </div>
     </div>
-    <div class="grid-cols-1 w-4/6 justify-items-center text-center ">
+    <div class="mt-5 grid-cols-1 w-4/6 justify-items-center text-center ">
       Total Count: {{ totalCount }}
-    </div>
-    <div class="flex w-full">
-      <span class="pl-5" style="width: 150px;">Search by name</span>
-      <input class="text-black" v-model="search" @input="searchObjects" type='text' />
     </div>
     <span v-if="pages.length > 1">Pages</span>
     <div v-if="pages.length > 1" class="flex w-full justify-center font-bold">
