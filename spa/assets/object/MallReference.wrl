@@ -40,6 +40,7 @@ DEF Cube_004_TRANSFORM Transform {
      transparency 0.600
      diffuseColor .005 .096 .8
      specularColor .401 .401 .401
+     emissiveColor .005 .096 .8
     }
    }
    geometry IndexedFaceSet {
@@ -145,10 +146,11 @@ DEF Cube_005_TRANSFORM Transform {
   Shape {
    appearance Appearance {
     material DEF MA_Material_004 Material {
-     ambientIntensity 0.000
+     ambientIntensity 0.0
      shininess 0.500
      diffuseColor .023 .8 0
      specularColor .401 .401 .401
+     emissiveColor .023 .8 0
     }
    }
    geometry IndexedFaceSet {
