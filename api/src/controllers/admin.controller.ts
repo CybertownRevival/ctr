@@ -304,5 +304,4 @@ class AdminController {
 const adminService = Container.get(AdminService);
 const memberService = Container.get(MemberService);
 const avatarService = Container.get(AvatarService);
-export const adminController = new AdminController(
-  adminService, memberService, avatarService);
+export const adminController = new AdminController(adminService, memberService, avatarService);
