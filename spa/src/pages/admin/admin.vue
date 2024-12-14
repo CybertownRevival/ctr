@@ -6,6 +6,7 @@
     <div class="mb-2"><router-link class="btn-ui" :to="{name: 'UserSearch'}">Members</router-link></div>
     <div class="mb-2"><router-link class="btn-ui" :to="{name: 'PlaceSearch'}">Places</router-link></div>
     <div class="mb-2"><router-link class="btn-ui" :to="{name: 'AvatarSearch'}">Avatars</router-link></div>
+    <div class="mb-2"><router-link class="btn-ui" :to="{name: 'ObjectSearch'}">Objects</router-link></div>
   </div>
   <div class="w-11/12 h-full p-1 overflow-y-scroll"><router-view :accessLevel="accessLevel" /></div>
 </main>

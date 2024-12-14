@@ -19,6 +19,8 @@ mallRoutes.get('/soldout', (request, response)  =>
   mallController.findSoldOutObjects(request,response));
 mallRoutes.get('/objectsearch', (request, response)  => 
   mallController.searchMallObjects(request,response));
+mallRoutes.get('/allobjectsearch', (request, response)  => 
+  mallController.searchAllObjects(request,response));
 mallRoutes.post('/approve', (request, response) => mallController.approveObject(request, response));
 mallRoutes.post('/reject', (request, response) => mallController.rejectObject(request, response));
 mallRoutes.post('/refund', (request, response) => 

@@ -8,6 +8,8 @@ import {
   RoleRepository,
   AvatarRepository,
   PlaceRepository,
+  ObjectInstanceRepository,
+  ObjectRepository,
 } from '../../repositories';
 
 @Service()
@@ -20,6 +22,7 @@ export class AdminService {
    private roleRepository: RoleRepository,
    private avatarRespository: AvatarRepository,
    private placeRepository: PlaceRepository,
+   private objectRepository: ObjectRepository,
   ) {}
   
   public async addBan(ban_member_id, time_frame, type, assigner_member_id, reason): Promise<void> {
