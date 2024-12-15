@@ -8,7 +8,6 @@ import {
   RoleRepository,
   AvatarRepository,
   PlaceRepository,
-  ObjectInstanceRepository,
   ObjectRepository,
 } from '../../repositories';
 
