@@ -193,9 +193,7 @@ export default Vue.extend({
         this.newThumbnail, this.newPrice, this.newLimit, 
         this.newQuantity, this.newStatus];
 
-      if(JSON.stringify(this.details) === JSON.stringify(this.newDetails)){
-        return
-        } else {
+      if(JSON.stringify(this.details) !== JSON.stringify(this.newDetails)){
         if((this.directory !== this.newDirectory &&
           this.filename !== this.newFilename &&
           this.thumbnail !== this.newThumbnail) || 
@@ -221,7 +219,6 @@ export default Vue.extend({
             }
         } else {
           this.error = "Must change the directory, filename, and thumbnail when fixing the objects files.";
-          return
         }
       }
     },
