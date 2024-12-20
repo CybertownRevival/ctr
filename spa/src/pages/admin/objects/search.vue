@@ -141,7 +141,7 @@ export default Vue.extend({
           for(let i = 1; pages >= i; i++){
             this.pages.push(i);
           }
-          if(this.pageNum > pages){
+          if(this.pageNum > pages && this.totalCount > 0){
             this.pageNum = 1;
             this.offset = 0;
             setTimeout(this.searchObjects, 1000);
