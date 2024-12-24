@@ -10,32 +10,11 @@
       </strong>
     </div>
     <div id="world" class="world w-full flex-1" style="" v-show="this.$store.data.view3d && !force2d"></div>
-    <div v-show="!this.$store.data.view3d || force2d" class="w-full" style="min-height: fit-content;">
+    <div v-show="!this.$store.data.view3d || force2d" class="w-full flex-1">
       <component :is="mainComponent"></component>
     </div>
-    <div v-if="!this.$store.data.view3d || force2d" class="w-full flex justify-center" style="min-height: 200px;">
-      <span style="align-self: flex-end;"></span>
-    </div>
-    <div v-if="!this.$store.data.view3d || force2d" class="h-full" style="display:grid; grid-template-columns: 1fr 3fr 1fr;">
-      <div></div>
+    <div class="flex flex-none h-1/3 bg-chat">
       <chat
-        class="bg-chat h-1/3"
-        style="min-height: 255px;"
-        ref="chat"
-        v-if="loaded"
-        :place="place"
-        :shared-event="sharedEvent"
-        :shared-objects="sharedObjects"
-        @move-object="moveObject"
-        @beam-to="beamTo"
-        @drop-object="dropObject"
-        @pickup-object="pickupObject"
-      ></chat>
-      <div></div>
-    </div>
-    <div class="h-1/3" v-else>
-      <chat
-        class="bg-chat h-full"
         ref="chat"
         v-if="loaded"
         :place="place"
