@@ -1056,9 +1056,9 @@ eventOut     SFVec2f  value_changed eventOut     SFInt32  choice_changed
 url   "vrmlscript:function set_trans(v){value_changed = new SFVec2f(0,v);}function set_choice(v){if(v){choice_changed = 0;}else{choice_changed = -1;}}"
 }
 
-Sound{intensity .4
+Sound{intensity .08
 source DEF rnd1Sound AudioClip{url ["sounds/fount1.wav"]loop TRUE}
-maxBack 100 maxFront 100 minBack 10 minFront 10
+maxBack 45 maxFront 45 minBack 10 minFront 10
 }
 
 ]}]}
@@ -2874,7 +2874,7 @@ eventIn SFBool set_bool
 eventOut SFBool invert_changed
 url"vrmlscript:function set_bool(v,t){ if(v){invert_changed = false;} else{invert_changed = true;} }"}
 DEF music_trans Transform{translation 0 100 0
-children[LOD{ range 80level[Sound{intensity .9
+children[LOD{ range 80level[Sound{intensity .25
 source AudioClip{url ["sounds/music.wav"]loop TRUE}
 maxBack 50 maxFront 50 minBack 5 minFront 5
 }Group{}]}]}
