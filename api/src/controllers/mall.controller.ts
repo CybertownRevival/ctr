@@ -50,6 +50,46 @@ class MallController {
 
   }
 
+  public async findSoldOutObjects(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session || !(await this.mallService.canAdmin(session.id))) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+      const objects = await this.mallService.findSoldOut();
+      response.status(200).json({ status: 'success', objects: objects });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async searchMallObjects(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.mallService.canAdmin(session.id);
+    if (admin) {
+      try {
+        const search = request.query.search.toString().replace(/[^0-9a-zA-Z \-[\]/()]/g, '');
+        const results = await this.mallService.searchMallObjects(
+          search,
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
+        );
+        response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
   public async findAllObjects(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
 
@@ -63,19 +103,24 @@ class MallController {
       }
       const columnValues = ['id', 'member_id', 'name', 'status'];
       const compareValues = ['=', '!=', '>', '<', '>=', '<='];
+      const orderValues = ['ASC', 'DESC'];
       
       const column = request.query.column.toString();
       const compare = request.query.compare.toString();
       const content = request.query.content.toString();
+      const order = request.query.orderBy.toString();
 
-      if(columnValues.includes(column) && compareValues.includes(compare)){
+      if(columnValues.includes(column) && 
+        compareValues.includes(compare) && 
+        orderValues.includes(order)){
         const objects = await this.mallService
           .getAllObjects(
             column,
             compare,
             content,
             Number(request.query.limit), 
-            Number(request.query.offset), 
+            Number(request.query.offset),
+            order,
           );
         response.status(200).json({ status: 'success', objects: objects });
       } else {
@@ -364,15 +409,33 @@ class MallController {
 
   public async findByUsername(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string>apitoken);
+    if (!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token or access denied.',
+      });
+      return;
+    }
+    const username = request.body.username;
+    const compare = request.body.compare.toString().replace(/[^0-9]/g, '');
+    const status = request.body.status.toString().replace(/[^0-9]/g, '');
+    const limit = request.body.limit.toString().replace(/[^0-9]/g, '');
+    const offset = request.body.offset.toString().replace(/[^0-9]/g, '');
+    const compareValues = ['=', '!=', '>', '<', '>=', '<='];
+    if(!username || !compare || !status || !limit){
+      throw new Error('Missing required search parameters');
+    }
+    if(compare > '5' || status > '4' || limit < '10'){
+      throw new Error('Invalid search parameters');
+    }
     try {
-      const session = this.memberService.decodeMemberToken(<string>apitoken);
-      if (!session) {
-        response.status(400).json({
-          error: 'Invalid or missing token or access denied.',
-        });
-        return;
-      }
-      const object = await this.objectService.findByUsername(request.params.username);
+      const object = await this.objectService
+        .findByUsername(
+          username, 
+          compareValues[compare], 
+          status,
+          limit,
+          offset);
       response.status(200).json({ status: 'success', object: object });
     } catch(error){
       console.error(error);

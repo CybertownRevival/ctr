@@ -42,19 +42,17 @@
               {{ memberInfo.immigrationDate | dateFormatFilter }}
             </td>
           </tr>
-          <!-- #ifdef variable="LAD_DAYNAME" -->
-          <!-- todo: add last login date -->
-          <!--
-          <tr>
+          
+          <tr v-if="canAdmin && this.$store.data.place.block">
             <td class="font-bold text-left">
               Last Access
             </td>
             <td class="text-left">
-              <$LAD_DAYNAME>, <$LAD_MONNAME> <$LAD_MDAy> <$LAD_YEAR>
+              <!-- format Saturday, October 9 1999 -->
+              {{ memberInfo.lastAccess | dateFormatFilter }}
             </td>
           </tr>
-          -->
-          <!-- #endif variable="LAD_DAYNAME" -->
+
           <tr>
             <td class="font-bold text-left">
               Experience
@@ -115,6 +113,7 @@
 </template>
 
 <script lang="ts">
+import { dateFormatFilter } from '@/helpers/fiters';
 import Vue from 'vue';
 
 export default Vue.extend({
@@ -122,9 +121,12 @@ export default Vue.extend({
   data: () => {
     return {
       memberInfo: {},
+      canAdmin: false,
+      loaded: false,
 
     };
   },
+
   methods: {
     async getData() {
 
@@ -135,9 +137,30 @@ export default Vue.extend({
         console.log(error);
       }
     },
+    async checkAdmin() {
+      try {
+        await this.$http.get(
+          `/block/${  this.$store.data.place.block.id  }/can_admin`,
+        );
+        this.canAdmin = true;
+      } catch (e) {
+        console.log(e);
+      }
+    },
   },
   mounted() {
     this.getData();
+    this.checkAdmin();
+  },
+  watch: {
+    "$store.data.place.block": {
+      handler() {
+        if (this.$route.params.username) {
+          this.loaded = true;
+          this.checkAdmin();
+        }
+      },
+    },
   },
 });
 </script>

@@ -46,4 +46,6 @@ export interface MemberAdminView {
   last_weekly_role_credit: Date;
   /**add chatdefault */
   chatdefault?: number;
+  /**Last Access */
+  lastAccess: Date;
 }

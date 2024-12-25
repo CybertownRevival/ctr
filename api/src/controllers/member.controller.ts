@@ -63,6 +63,8 @@ class MemberController {
       if (typeof request.params.id !== 'undefined') {
         if (await this.memberService.canAdmin(session.id)) {
           memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
+        } else if (await this.memberService.canStaff(session.id)) {
+          memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
         } else if (parseInt(request.params.id) === session.id) {
           memberInfo = await this.memberService.getMemberInfo(parseInt(request.params.id));
         } else {
@@ -92,6 +94,41 @@ class MemberController {
     } catch (error) {
       console.error(error);
       response.status(400).json({ error });
+    }
+  }
+
+  public async check3d(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    try {
+      const user3d = await this.memberService.check3d(request.body.username);
+      response.status(200).json({ user3d });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async getActivePlaces(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    try {
+      const places = await this.memberService.getActivePlaces();
+      response.status(200).json( places );
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async updateLatestActivity(request: Request, response: Response): Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      await this.memberService.updateLatestActivity(session.id);
+      response.status(200).json('status: success');
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -179,6 +216,21 @@ class MemberController {
         username,
         hasHome: !!homeInfo,
       });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error.message });
+    }
+  }
+
+  public async joinedPlace(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const placeId = request.body.place_id;
+      const is3d = request.body.is_3d;
+      const id = session.id;
+      await this.memberService.joinedPlace(id, placeId, is3d);
+      response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
       response.status(400).json({ error: error.message });
@@ -376,7 +428,7 @@ class MemberController {
     }
   }
 
- public async getBackpack(request: Request, response: Response): Promise<void> {
+  public async getBackpack(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     

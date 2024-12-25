@@ -19,17 +19,17 @@
             </strong>
             <span 
               v-else-if="msg.username === $store.data.user.username && msg.new === true"
-              class="text-yellow-200">
-              {{ msg.username }}<span
-                class="inline" v-show="msg.role"
-            >[{{ msg.role }}]</span
-            >: {{ msg.msg }}
+              class="text-yellow-200 font-bold">
+              <sup class="inline" v-show="msg.role">{{ msg.role }}</sup>
+              {{ msg.username }}
+              <sub class="inline">{{ msg.exp }}</sub> : 
+              <span class="font-normal">{{ msg.msg }}</span>
               </span>
-            <span v-else-if="msg.new === true">
-              {{ msg.username }}<span
-                class="inline" v-show="msg.role"
-            >[{{ msg.role }}]</span
-            >: {{ msg.msg }}
+            <span class="font-bold"  v-else-if="msg.new === true">
+              <sup class="inline" v-show="msg.role">{{ msg.role }}</sup>
+              {{ msg.username }}
+              <sub class="inline">{{ msg.exp }}</sub> : 
+              <span class="font-normal">{{ msg.msg }}</span>
             </span>
           </li>
         </ul>
@@ -44,6 +44,7 @@
           class="flex-grow p-0.5 text-black"
           @keyup.exact.enter="sendMessage"
           maxlength="255"
+          v-focus
         />
         <button
           type="button"
@@ -75,19 +76,19 @@
           ({{ this.users.length + 1 }}) {{ this.$store.data.place.name }}
         </span>
         <span v-if="activePanel === 'places'" class="flex-grow">
-          Places (0)
+          ({{ this.activePlaces.length }}) Places
         </span>
         <span v-if="activePanel === 'gestures'" class="flex-grow">
           Body Language
         </span>
         <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
-          Objects ({{  this.sharedObjects.length }})
+          ({{  this.sharedObjects.length }}) Objects
         </span>
         <span v-if="activePanel === 'backpack'" class="flex-grow">
-          My Backpack ({{  this.backpackObjects.length }})
+          ({{  this.backpackObjects.length }}) My Backpack
         </span>
         <span v-if="activePanel === 'userBackpack'" class="flex-grow">
-          {{ this.usernameBackPack }}'s Backpack ({{ this.backpackObjects.length }})
+          ({{ this.backpackObjects.length }}) {{ this.usernameBackPack }}'s Backpack
         </span>
         <button
           type="button"
@@ -112,8 +113,8 @@
           </li>
           <li class="cursor-default" v-for="(user, key) in users" :key="key" @click="handler($event)" @contextmenu="handler($event)" @mouseup="menu(user.id, user.username)">
             <img src="/assets/img/av_mute.gif" class="inline" v-if="blockedMembers.includes(user.username) === true" />
-            <img src="/assets/img/av_def.gif" class="inline" v-else />
-            
+            <img src="/assets/img/av_def.gif" class="inline" v-else-if="user.is3d === 1" />
+            <img src="/assets/img/av_invis.gif" class="inline" v-else />
             {{ user.username }}
           </li>
         </ul>
@@ -125,6 +126,16 @@
             class="cursor-pointer hover:bg-gray-200 active:bg-gray-400"
           >
             {{ gesture }}
+          </li>
+        </ul>
+        <ul v-if="activePanel === 'places'">
+          <li
+            v-for="(places, key) in activePlaces"
+            :key="key"
+            class="cursor-pointer"
+            @click="handler($event)" @contextmenu="handler($event)"
+          >
+          <div @mouseup="menu(places.type, places.username, places.slug, places.place_id)">{{ places.name }} ({{ places.count }})</div>  
           </li>
         </ul>
         <ul v-if="activePanel === 'sharedObjects'">
@@ -190,6 +201,17 @@
           Cancel Menu
         </li>
         <li style="border: inset #EEE 3px;"></li>
+        <li v-show="menuGoTo" 
+          class="
+            p-1
+            pl-3.5
+            hover:text-white 
+            hover:bg-gray-500
+            active:bg-gray-400
+          "
+          @click="goToPlace()">
+          Go to
+        </li>
         <li v-show="menuBeamTo" 
           class="
             p-1
@@ -345,6 +367,8 @@ export default Vue.extend({
       users: [],
       backpackObjects: [],
       primaryRole: "",
+      displayRole: true,
+      xpAmount: 0,
       activePanel: "users",
       objectId: null,
       canInteractWithObject: false,
@@ -372,8 +396,24 @@ export default Vue.extend({
       menuDestroy: false,
       menuProperties: false,
       menuRequestBackpack: true,
+      menuGoTo: false,
       mallObject: false,
+      activePlaces: [],
+      placeList: [],
+      placeType: null,
+      placeUsername: null,
+      placeSlug: null,
+      placeId: null,
+      chatIntervalId: null,
+      pingIntervalId: null,
     };
+  },
+  directives: {
+    focus: {
+      inserted: function (el) {
+        el.focus()
+      }
+    }
   },
   methods: {
     handler: function(e) {
@@ -404,6 +444,10 @@ export default Vue.extend({
         this.primaryRole = response.data.PrimaryRoleName[0].name;
       }
     },
+    async getXpAmount(){
+      const info = await this.$http.get('/member/info');
+      this.xpAmount = info.data.memberInfo.xp;
+    },
     debugMsg,
     sendMessage(): void {
       this.debugMsg("sending message...");
@@ -432,10 +476,18 @@ export default Vue.extend({
         }
 
       if (this.message !== "" && this.connected && this.numberOfPosts < maxPosts) {
-        this.$socket.emit("CHAT", {
-          msg: this.message,
-          role: this.primaryRole,
-        });
+        if(this.displayRole){
+          this.$socket.emit("CHAT", {
+            msg: this.message,
+            role: this.primaryRole,
+            exp: this.xpAmount,
+          });
+        } else {
+          this.$socket.emit("CHAT", {
+            msg: this.message,
+            exp: this.xpAmount,
+          });
+        }
         this.$http
           .post("/message/place/" + this.$store.data.place.id, {
             body: this.message,
@@ -447,12 +499,38 @@ export default Vue.extend({
         this.message = "";
       }
     },
+    async getActivePlaces() {
+      this.activePlaces = [];
+      const places = await this.$http.get('/member/places');
+      places.data.forEach(place => {
+        this.activePlaces.push(place);
+      });
+      this.activePlaces.sort((a, b) => a.count - b.count).reverse(); 
+    },
+    pingActive(){
+      this.$http.post('/member/ping');
+    },
     systemMessage(msg: string): void {
       this.messages.push({
         type: "system",
         msg: msg,
         time: new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}),
       });
+    },
+    async goToPlace(){
+      if(
+        this.placeType === 'public' || 
+        this.placeType === 'shop' ||
+        this.placeType === 'colony'
+      ){
+        window.location.assign(`#/place/${this.placeSlug}`);
+      }
+      if(this.placeType === 'home'){
+        window.location.assign(`#/home/${this.placeUsername}`);
+      }
+      if(this.placeType === 'hood'){
+        window.location.assign(`#/neighborhood/${this.placeId}`);
+      }
     },
     async menu(...target){
       this.menuBeamTo = false;
@@ -466,12 +544,34 @@ export default Vue.extend({
       this.menuDestroy = false;
       this.menuProperties = false;
       this.menuRequestBackpack = false;
+      this.menuGoTo = false;
       this.mallObject = false;
+      this.placeType = null;
+      this.placeUsername = null;
+      this.placeSlug = null;
+      this.placeId = null;
 
       this.objectId = target[0];
       if(this.activePanel === 'users'){
         this.memberId = null;
         this.username = target[1];
+      }
+
+      if(this.activePanel === 'places'){
+        this.placeType = target[0];
+        if(this.placeType === 'home'){
+          this.placeUsername = target[1];
+        }
+        if(
+          this.placeType === 'public' || 
+          this.placeType === 'shop' ||
+          this.placeType === 'colony' 
+        ){
+          this.placeSlug = target[2];
+        }   
+        if(this.placeType === 'hood'){
+          this.placeId = target[3];
+        }    
       }
 
       if(this.activePanel === 'sharedObjects'){
@@ -492,6 +592,11 @@ export default Vue.extend({
         if(this.$store.data.view3d){
           this.menuBeamTo = true;
         }
+      }
+
+      //Places Panel
+      if(this.activePanel === 'places'){
+        this.menuGoTo = true;
       }
 
       //Public Objects Panel
@@ -572,6 +677,16 @@ export default Vue.extend({
       }
       
     },
+    async joinedChat() {
+      let userIs3D = 0;
+      if(this.$store.data.view3d){
+        userIs3D = 1;
+      }
+      await this.$http.post('/member/joined', {
+        place_id: this.$store.data.place.id,
+        is_3d: userIs3D
+      })
+    },
     startNewChat(): void {
       this.messages = [];
       this.users = [];
@@ -642,20 +757,63 @@ export default Vue.extend({
       }
       this.closeMenu();
     },
+    async isMember3D(username){
+      const check3d = await this.$http.post('/member/check3d', {
+        username: username,
+      });
+      return check3d.data.user3d[0].is_3d
+    },
     async updateObjectLists(object){
-      if(this.activePanel === 'userBackpack' && 
-          (object.member_username === this.username ||
-            object.buyer_username === this.username
-          )
-        ){
-          await this.loadUserBackpack();
-        }
+      let alteredBackpack = [];
+      if(['backpack', 'userBackpack'].includes(this.activePanel)){
+
+        // Gets updated information for the object
+        const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
         if(this.activePanel === 'backpack' && 
-          (object.member_username === this.$store.data.user.username ||
-          object.buyer_username === this.$store.data.user.username)
-        ){
-         await this.loadBackpack();
+          object.place_id === 0 && 
+          [object.member_username, object.buyer_username].includes(this.$store.data.user.username)){
+         
+          // Checks if the object was purchased by current user
+          // and adds it to the backpack array
+          if(object.buyer_username === this.$store.data.user.username &&
+            object.member_username !== object.buyer_username){
+            this.backpackObjects.push(updatedObject.data.objectInstance[0]);
+          }
+          
+          // Populates altered objects array with updated information
+          this.backpackObjects.forEach((obj) => {
+            if(obj.id === parseInt(object.obj_id)){
+              obj = updatedObject.data.objectInstance[0]
+            }
+            if(obj.member_id === this.$store.data.user.id){
+              alteredBackpack.push(obj)
+            }
+          })
+          this.backpackObjects = alteredBackpack;
         }
+        if(this.activePanel === 'userBackpack' && 
+          object.place_id === 0 && 
+          [object.member_username, object.buyer_username].includes(this.username)){
+          
+          // Checks if the object was purchased by the selected user
+          // and adds it to the backpack array
+          if(object.buyer_username === this.username &&
+            object.member_username !== object.buyer_username){
+            this.backpackObjects.push(updatedObject.data.objectInstance[0]);
+          }
+          
+          // Populates altered objects array with updated information
+          this.backpackObjects.forEach((obj) => {
+            if(obj.id === parseInt(object.obj_id)){
+              obj = updatedObject.data.objectInstance[0]
+            }
+            if(obj.member_id !== this.$store.data.user.id){
+              alteredBackpack.push(obj)
+            }
+          })
+        this.backpackObjects = alteredBackpack;
+        }
+      }
     },
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {
@@ -670,14 +828,21 @@ export default Vue.extend({
       });
       this.$socket.on("AV:new", event => {
         this.systemMessage(event.username + " has entered.");
-        this.users.push(event);
-      })
-      ;
+        this.isMember3D(event.username)
+          .then((response) => {
+            event.is3d = response;
+            this.users.push(event);
+          });
+      });
       this.$socket.on("disconnect", () => {
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
+        this.setTimers(false);
       });
       this.$socket.on("update-object", (object) => {
-        this.updateObjectLists(object);
+        if([object.member_username, object.buyer_username].includes(this.$store.data.user.username) || 
+          [object.member_username, object.buyer_username].includes(this.username)){
+          this.updateObjectLists(object);
+        }
       });
     },
     dropObject() {
@@ -718,6 +883,16 @@ export default Vue.extend({
       const response = await this.$http.get(`/member/backpack/${this.username}`);
       this.backpackObjects = response.data.objects;
     },
+    setTimers(status){
+      if(status === true) {
+        this.chatIntervalId = setInterval(this.systemMessage, 10 * 60 * 1000);
+        this.pingIntervalId = setInterval(this.pingActive, 5 * 60 * 1000);
+      }
+      if(status === false) {
+        clearInterval(this.chatIntervalId);
+        clearInterval(this.pingIntervalId);
+      }
+    }
   },
   watch: {
     place() {
@@ -742,10 +917,16 @@ export default Vue.extend({
       if(this.activePanel === 'backpack') {
         await this.loadBackpack();
       }
+      if(this.activePanel === 'places') {
+        await this.getActivePlaces();
+      }
     },
   },
   computed: {
     connected: function() { return this.$socket.connected; },
+  },
+  beforeDestroy() {
+    this.setTimers(false);
   },
   mounted() {
     this.debugMsg("starting chat page...");
@@ -754,7 +935,9 @@ export default Vue.extend({
       this.startNewChat();
       this.canAdmin();
       this.getRole();
-      setInterval(this.systemMessage, 5 * 60 * 1000);
+      this.getXpAmount();
+      this.joinedChat();
+      this.setTimers(true);
     }
   },
 });

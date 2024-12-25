@@ -31,8 +31,7 @@
       <router-link 
       :to="{ name: 'mall-upload' }"
       class="btn-ui">Upload</router-link>
-      <button class="btn-ui" v-on:click="opener('#/mall/creator')">My Uploads</button>
-      <br />
+      <button class="btn-ui" v-on:click="opener('#/creator/stocked')">My Uploads</button>
     </div>
     <div v-if="canAdmin">
       <span v-if="this.$store.data.place.type === 'colony'">

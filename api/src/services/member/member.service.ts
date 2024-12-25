@@ -88,7 +88,30 @@ export class MemberService {
     return !!roleAssignments.find(assignment => MAYOR_ROLES.includes(assignment.role_id));
   }
 
-  public async getAccessLevel(memberId: number): Promise<any> {
+  public async canStaff(memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    // Extracted staff roles into a constant for easy management
+    const STAFF_ROLES = [
+      this.roleRepository.roleMap.ColonyLeader,
+      this.roleRepository.roleMap.ColonyDeputy,
+      this.roleRepository.roleMap.NeighborhoodLeader,
+      this.roleRepository.roleMap.NeighborhoodDeputy,
+      this.roleRepository.roleMap.BlockLeader,
+      this.roleRepository.roleMap.BlockDeputy,
+    ];
+    return !!roleAssignments.find(assignment => STAFF_ROLES.includes(assignment.role_id));
+  }
+
+  public async joinedPlace(id: number, placeId: number, is3d: number): Promise<void> {
+    const now = new Date();
+    await this.memberRepository.joinedPlace(id, {
+      place_id: placeId,
+      is_3d: is3d,
+      last_activity: now,
+    });
+  }
+
+  public async getAccessLevel(memberId: number): Promise<string> {
     const mayor = await this.canMayor(memberId);
     const security = await this.canAdmin(memberId);
     const council = await this.canCouncil(memberId);
@@ -252,6 +275,7 @@ export class MemberService {
       chatdefault: member.chatdefault,
       last_daily_login_credit: member.last_daily_login_credit,
       last_weekly_role_credit: member.last_weekly_role_credit,
+      lastAccess: member.last_activity,
     };
   }
 
@@ -463,6 +487,42 @@ export class MemberService {
   public async getMemberId(username: string): Promise<void> {
     const userId = await this.memberRepository.findIdByUsername(username);
     return userId;
+  }
+  
+  public async check3d(username: string): Promise<void> {
+    const user = await this.memberRepository.check3d(username);
+    return user;
+  }
+
+  public async updateLatestActivity(memberId: number): Promise<void> {
+    const now = new Date();
+    await this.memberRepository.updateLatestActivity(memberId, {
+      last_activity: now,
+    });
+  }
+
+  public async getActivePlaces(): Promise<any> {
+    const returnPlaces = [];
+    const placeIds = [];
+    const activeTime = new Date(Date.now() - 5 * 60000);
+    const places = await this.memberRepository.getActivePlaces(activeTime);
+    for (const place of places) {
+      if(placeIds.indexOf(place.place_id) === -1){
+        placeIds.push(place.place_id);
+        const userPlace = await this.placeRepository.findById(place.place_id);
+        const userCount = await this.memberRepository.countByPlaceId(place.place_id, activeTime);
+        place.name = userPlace.name;
+        place.slug = userPlace.slug;
+        place.type = userPlace.type;
+        if(userPlace.member_id){
+          const userOwner = await this.memberRepository.findById(userPlace.member_id);
+          place.username = userOwner.username;
+        }
+        place.count = userCount[0].count;
+        returnPlaces.push(place);
+      }
+    }
+    return returnPlaces;
   }
 
   /**

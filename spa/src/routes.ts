@@ -51,7 +51,16 @@ import PlaceSearch from "@/pages/admin/place/search.vue";
 import MallRulesPage from "@/pages/mall/MallRulesPage.vue";
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
 import CreatorPage from "@/pages/mall/creator/CreatorPage.vue";
+import CreatorPending from "@/pages/mall/creator/pending.vue";
+import CreatorStocked from "@/pages/mall/creator/stocked.vue";
+import CreatorRestock from "@/pages/mall/creator/restock.vue";
+import CreatorCatalog from "@/pages/mall/creator/catalog.vue";
 import MallStaffPage from "@/pages/mall/staff/StaffPage.vue";
+import MallWarehouse from "@/pages/mall/staff/warehouse.vue";
+import MallPending from "@/pages/mall/staff/pending.vue";
+import MallStocked from "@/pages/mall/staff/stocked.vue";
+import MallSoldOut from "@/pages/mall/staff/soldout.vue";
+import MallObjectSearch from "@/pages/mall/staff/search.vue";
 
 import ObjectProperties from "./pages/ObjectProperties.vue";
 
@@ -432,15 +441,91 @@ export default [
             title: "Mall Staff Panel",
             wrapper: false,
         },
+        children: [
+            {
+                path: "/mall/warehouse",
+                component: MallWarehouse,
+                name: "MallWarehouse",
+                meta: {
+                    title: "Mall Object Warehouse - Mall Staff Panel",
+                },
+            },
+            {
+                path: "/mall/pending",
+                component: MallPending,
+                name: "MallPending",
+                meta: {
+                    title: "Mall Object Pending - Mall Staff Panel",
+                },
+            },
+            {
+                path: "/mall/stocked",
+                component: MallStocked,
+                name: "MallStocked",
+                meta: {
+                    title: "Mall Object Stocked - Mall Staff Panel",
+                },
+            },
+            {
+                path: "/mall/soldout",
+                component: MallSoldOut,
+                name: "MallSoldOut",
+                meta: {
+                    title: "Mall Object Sold Out - Mall Staff Panel",
+                },
+            },
+            {
+                path: "/mall/search",
+                component: MallObjectSearch,
+                name: "MallObjectSearch",
+                meta: {
+                    title: "Mall Object Search - Mall Staff Panel",
+                },
+            },
+        ]
     },
     {
-        path: "/mall/creator",
+        path: "/creator",
         component: CreatorPage,
-        name: "mall-creator",
+        name: "creator-page",
         meta: {
-            title: "Creator Panel",
+            title: "Object Creator Panel",
             wrapper: false,
         },
+        children: [
+            {
+                path: "/creator/pending",
+                component: CreatorPending,
+                name: "CreatorPending",
+                meta: {
+                    title: "Creators Pending Objects - Object Creator Panel",
+                },
+            },
+            {
+                path: "/creator/stocked",
+                component: CreatorStocked,
+                name: "CreatorStocked",
+                meta: {
+                    title: "Creators Stocked Objects - Object Creator Panel",
+                },
+            },
+            {
+                path: "/creator/restock",
+                component: CreatorRestock,
+                name: "CreatorRestock",
+                meta: {
+                    title: "Creators Restockable Objects - Object Creator Panel",
+                },
+            },
+            {
+                path: "/creator/catalog",
+                component: CreatorCatalog,
+                name: "CreatorCatalog",
+                meta: {
+                    title: "Creators Catalog - Object Creator Panel",
+                },
+            },
+        ]
     },
     {
         path: "/mall/object/:object_id",

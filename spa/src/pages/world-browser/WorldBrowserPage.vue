@@ -227,7 +227,6 @@ export default Vue.extend({
         }
       });
       this.sharedObjects.push(request.data.object_instance);
-
       this.addSharedObject(request.data.object_instance, browser);
       this.$socket.emit('SO', {
         event: 'add',
@@ -603,14 +602,51 @@ export default Vue.extend({
         this.eventNodeMap.get(eventNode.name).push(eventNode);
       }
     },
+    async updateObject(object){
+      let alteredSharedObjects = [];
+      
+      // Gets updated information for the object
+      const updatedObject = await this.$http.get(`/object_instance/${ object.obj_id }/properties/`);
+      const objectId = updatedObject.data.objectInstance[0].id;
+
+      // Updates object list if the object is still in the same place
+      // Removes the object if it is not in the same place
+      if(updatedObject.data.objectInstance[0].place_id === this.$store.data.place.id){
+        
+        // Populates altered objects array with updated information
+        this.sharedObjects.forEach((obj) => {
+          if(obj.id === parseInt(object.obj_id) &&
+            obj.place_id === this.$store.data.place.id){
+            obj = updatedObject.data.objectInstance[0]
+          }
+          if(obj.place_id === this.$store.data.place.id){
+            alteredSharedObjects.push(obj);
+          }
+        })
+        this.sharedObjects = alteredSharedObjects;
+      } else {
+        this.sharedObjects = this.sharedObjects.filter(obj => {
+          return obj.id !== parseInt(object.obj_id);
+        });
+        if(this.$store.data.view3d){
+          const browser = X3D.getBrowser();
+          const removeObject = this.sharedObjectsMap.get(objectId);
+          browser.currentScene.removeRootNode(removeObject);
+        }
+        this.sharedObjectsMap.delete(objectId);
+        this.$socket.emit('SO', {
+          event: 'remove',
+          objectId: objectId
+        });
+      }
+    },
     startSocketListeners(): void {
       this.$socket.on("VERSION", event => this.onVersion(event));
       this.$socket.on("update-object", (object) => {
         if(object.place_id === this.$store.data.place.id){
-          setTimeout(this.onSharedObjectEvent, 50)
-          }
+          this.updateObject(object);
         }
-      );
+      });
       this.$socket.on("SO", event => this.onSharedObjectEvent(event));
     },
     start3DSocketListeners(): void {
