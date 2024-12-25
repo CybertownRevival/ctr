@@ -2841,21 +2841,6 @@ Atrium{
  children [
     Fountain{}
     AtriumFloor{}
-    
-Transform{ rotation 0 1 0 .7855
-children Transform{ translation 0 8 -41
-children Anchor{
-url "http://www.3dfx.com" 
-parameter "target=external"
-description "3Dfx"
-children Shape{
- geometry IndexedFaceSet{
-  coord Coordinate{point[-5 -3 0,5 -3 0,5 3 0,-5 3 0]}
-  coordIndex [0,1,2,3,-1]
-  texCoord TextureCoordinate{point[0 0,1 0,1 1,0 1]}
-  texCoordIndex[0,1,2,3,-1]
- }
-}}}}
 
 
 
