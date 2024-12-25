@@ -7,9 +7,9 @@ EXTERNPROTO HUD[
 	eventIn MFNode addChildren
 	eventIn MFNode removeChildren
 ]
-["urn:inet:blaxxun.com:node:HUD","http://www.blaxxun.com/vrml/protos/nodes.wrl#HUD"]
+["urn:inet:blaxxun.com:node:HUD","/vrml/protos/nodes.wrl#HUD"]
 
-Inline{url"/places/no_cache/shopping/temp.wrl"}
+Inline{url"/assets/no_cache/shopping/temp.wrl"}
 
 
 EXTERNPROTO Occlusion[
@@ -24,11 +24,11 @@ eventOut SFBool isActive
 eventOut SFTime enterTime
 eventOut SFTime exitTime
 ]
-["urn:inet:blaxxun.com:node:Occlusion","http://www.blaxxun.com/vrml/protos/nodes.wrl#Occlusion","nodes.wrl#Occlusion"]
+["/assets/externprotos/nodes.wrl#Occlusion","nodes.wrl#Occlusion"]
 
 EXTERNPROTO malldirectory[
 field SFVec3f position 
-]"/externprotos/malldirectory/malldirectory.wrl#MallDirectory"
+]"/assets/externprotos/malldirectory/malldirectory.wrl#MallDirectory"
 
 EXTERNPROTO SharedObject [
 exposedField SFVec3f translation
@@ -41,7 +41,7 @@ eventOut SFTime touchTime
 eventOut SFBool isOver
 eventOut SFVec3f newPosition
 eventOut SFRotation newRotation
-] "http://www.cybertown.com/externprotos/bxx/shared.wrl#SharedObject"
+] "externprotos/bxx/shared.wrl#SharedObject"
 
 PROTO SharedEvent [
 field SFBool local FALSE
@@ -1078,7 +1078,7 @@ eventIn SFBool set_bind
 exposedField SFVec3f position 0 0 0
 exposedField SFRotation rotation 0 1 0 0
 exposedField SFVec3f scale 1 1 1 
-exposedField MFString scriptUrl "http://www.cybertown.com/cgi-bin/games/vrmltime.pl"
+exposedField MFString scriptUrl "/assets/no_cache/shopping/vrmltime.wrl"
 eventOut SFBool isNight
 eventOut SFVec2f time
 
@@ -1413,7 +1413,7 @@ PROTO AnalogClock[
 eventIn SFTime getTime
 exposedField SFVec3f position 0 0 0
 exposedField SFRotation rotation 0 1 0 0 
-exposedField MFString scriptUrl ["http://www.cybertown.com/cgi-bin/games/vrmltime.pl"]
+exposedField MFString scriptUrl ["/assets/no_cache/shopping/vrmltime.wrl"]
 exposedField MFNode minuteChildren [
  Transform{translation 0 .5 0 scale 1 1 .25
   children Shape{
@@ -2756,7 +2756,7 @@ DEF SharedZone BlaxxunZone{}
 
 DEF nav NavigationInfo {
 avatarSize[ .25 1.75 .75 ]
-headlight FALSE speed 1
+headlight FALSE speed 7.5
 type "WALK"
 visibilityLimit 140
 }
@@ -2804,12 +2804,6 @@ DEF elev_view Viewpoint{jump TRUE}
 #MALL INFO
 ##########################################
 
-##Group{
-#children[
-
- #   CacheFooler{url"http://www.cybertown.com/cgi-bin/games/fool/mall_fool_switch.pl"}
-     #Inline{url"http://www.cybertown.com/places/shopping/vrml/lix.wrl"}
-
 #]}
 
 
@@ -2822,10 +2816,10 @@ Atrium{
  doorChoice_3 1
  doorChoice_2 1 
  hallChoice_3 2
- hall_3 StoreFront{storeName"Carpet Shop" linkUrl "/cgi-bin/cybertown/place?ID=0000000000000905&plc=shop&ac=index3d"}
- door_2 StoreFront{storeName"Garden Store" linkUrl "/cgi-bin/cybertown/place?ID=0000000000000906&plc=shop&ac=index3d"}
- door_1 StoreFront{storeName"Gift Shop" linkUrl "/cgi-bin/cybertown/place?ID=0000000000000902&plc=shop&ac=index3d"}
- door_3 StoreFront{storeName"Novelty Store" linkUrl "/cgi-bin/cybertown/place?ID=0000000000000908&plc=shop&ac=index3d"}
+ hall_3 StoreFront{storeName"Carpet Shop" linkUrl "/#/place/carpetshop"}
+ door_2 StoreFront{storeName"Garden Store" linkUrl "/#/place/gardenstore"}
+ door_1 StoreFront{storeName"Gift Shop" linkUrl "/#/place/giftshop"}
+ door_3 StoreFront{storeName"Novelty Store" linkUrl "/#/place/noveltystore"}
  hall_1   [
   Transform{rotation 0 1 0 1.571 children[
   Threshold{
@@ -2838,10 +2832,10 @@ Atrium{
    doorChoice_2 1
    doorChoice_3 1
    doorChoice_4 1
-   door_1 [StoreFront{rotation 0 1 0 3.14 storeName["Furniture Shop"] linkUrl"http://www.cybertown.com/cgi-bin/cybertown/place?ID=0000000000000904&plc=shop&ac=index3d"}]
-   door_2 [StoreFront{rotation 0 1 0 3.14 storeName["Antique Shop"] linkUrl"http://www.cybertown.com/cgi-bin/cybertown/place?ID=0000000000000911&plc=shop&ac=index3d"}]
-   door_3 [StoreFront{storeName "Appliance Shop" rotation 0 1 0 3.14 linkUrl "http://www.cybertown.com/cgi-bin/cybertown/place?ID=0000000000000903&plc=shop&ac=index3d"}]
-   door_4 [StoreFront{storeName "Grocery Store" rotation 0 1 0 3.14 linkUrl "http://www.cybertown.com/cgi-bin/cybertown/place?ID=0000000000000916&plc=shop&ac=index3d"}]  
+   door_1 [StoreFront{rotation 0 1 0 3.14 storeName["Furniture Shop"] linkUrl"/#/place/furniturestore"}]
+   door_2 [StoreFront{rotation 0 1 0 3.14 storeName["Antique Shop"] linkUrl"/#/place/antiqueshop"}]
+   door_3 [StoreFront{storeName "Appliance Shop" rotation 0 1 0 3.14 linkUrl "/#/place/applianceshop"}]
+   door_4 [StoreFront{storeName "General Store" rotation 0 1 0 3.14 linkUrl "/#/place/generalstore"}]  
   }
   ]}]
  children [
@@ -2855,7 +2849,6 @@ url "http://www.3dfx.com"
 parameter "target=external"
 description "3Dfx"
 children Shape{
- appearance Appearance{texture ImageTexture{url"/ad/voodoobanner2.gif"}}
  geometry IndexedFaceSet{
   coord Coordinate{point[-5 -3 0,5 -3 0,5 3 0,-5 3 0]}
   coordIndex [0,1,2,3,-1]
@@ -2886,9 +2879,9 @@ position 0 16 0  elevatorView USE elev_view  maxFloor 3
 doorChoice_1 1
 doorChoice_2 1
 doorChoice_3 1
-door_1 StoreFront{storeName"Gallery" linkUrl "/cgi-bin/cybertown/place?ID=0000000000000901&plc=shop&ac=index3d"}
-door_2 StoreFront{storeName"Toy Store" linkUrl "/cgi-bin/cybertown/place?ID=0000000000000909&plc=shop&ac=index3d"}
-door_3 StoreFront{storeName"Electronics Store" linkUrl "/cgi-bin/cybertown/place?ID=0000000000000907&plc=shop&ac=index3d"}
+door_1 StoreFront{storeName"Fine Arts Shop" linkUrl "/#/place/fineartshop"}
+door_2 StoreFront{storeName"Toy Store" linkUrl "/#/place/toystore"}
+door_3 StoreFront{storeName"Electronics Store" linkUrl "/#/place/electronicsstore"}
 }
 
 DEF invert Script{
