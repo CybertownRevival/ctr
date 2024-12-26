@@ -59,41 +59,155 @@
         gap-x-4
         "
         style="min-width: 450px;">
-          <span id=name class="font-bold text-3xl">{{ this.name }}</span>
-          <div>Click <span class="font-bold cursor-pointer" style="color:lime" @click="changeACtive()">HERE</span> to view the object in 3D!</div>
+          <span id=name class="font-bold text-3xl">
+            {{ this.name }}
+          </span>
+          <div>
+            Click 
+            <span 
+            class="font-bold cursor-pointer" 
+            style="color:lime"
+            @click="changeACtive()">
+              HERE
+            </span> 
+            to view the object in 3D!
+          </div>
           <span class="h-1.5"></span>
-          <span v-if="this.placeId === 0 && this.ownerId === this.sessionId">This object is located in your backpack.</span>
-          <span v-else-if="this.ownerId !== this.sessionId && this.placeId === 0">This object is located in {{ this.memberUsername }}'s backpack.</span>
-          <span v-else-if="!this.mallObject && this.ownerId !== this.sessionId">This object is owned by {{ this.memberUsername }}.</span>
+          <span v-if="
+          this.placeId === 0 && 
+          this.ownerId === this.sessionId">
+            This object is located in your backpack.
+          </span>
+          <span v-else-if="
+          this.ownerId !== this.sessionId && 
+          this.placeId === 0">
+            This object is located in {{ this.memberUsername }}'s backpack.
+          </span>
+          <span v-else-if="
+          !this.mallObject && 
+          this.ownerId !== this.sessionId">
+            This object is owned by {{ this.memberUsername }}.
+          </span>
           <span class="h-1.5"></span>
-          <span>You have {{ this.walletBalance }} CC's.</span>
+          <span>
+            You have {{ this.walletBalance }} CC's.
+          </span>
           <span class="h-5"></span>
-          <span v-show="this.mallObject">Qty: {{ this.quantity - this.instances }}</span>
-          <span v-show="this.mallObject || this.price !== null && this.price !== ''">Price: {{ this.price }} CC's</span>
-          <span v-show="this.price !== null && this.price !== '' && this.buyer !=='' && this.buyer !==null">Reserved for {{ this.buyer }}</span>
+          <span v-show="this.mallObject">
+            Qty: {{ this.quantity - this.instances }}
+          </span>
+          <span v-show="
+          this.mallObject || 
+          this.price !== null && 
+          this.price !== ''">
+            Price: {{ this.price }} CC's
+          </span>
+          <span v-show="
+          this.price !== null && 
+          this.price !== '' && 
+          this.buyer !=='' && 
+          this.buyer !==null">
+            Reserved for {{ this.buyer }}
+          </span>
           <span class="h-5"></span>
-          <span v-show="this.mallObject">Created by {{ this.memberUsername }}</span>
+          <span v-show="this.mallObject">
+            Created by {{ this.memberUsername }}
+          </span>
           <div class="objectOwner grid gap-2" v-show="canModify">
-            <div class="flex"><div style="min-width: 70px;">Name: </div><input style="color:black;" type="text" id="objectName" :value="name" /></div>
-            <div class="flex" v-show="this.mallObject"><div style="min-width: 70px;">Quantity: </div><input style="color:black;" type="text" id="objectQty" maxlength="7" :value="quantity" /></div>
-            <div class="flex"><div style="min-width: 70px;">Price: </div><input style="color:black;" type="text" id="objectPrice" maxlength="7" :value="price" /></div>
-            <div class="flex"><div style="min-width: 70px;">Buyer: </div><input style="color:black;" type="text" id="objectBuyer" :value="buyer" /></div>
+            <div class="flex">
+              <div style="min-width: 70px;">Name: </div>
+              <input style="
+              color:black;" 
+              type="text" 
+              id="objectName" 
+              :value="name" />
+            </div>
+            <div class="flex" v-show="this.mallObject">
+              <div style="min-width: 70px;">Quantity: </div>
+              <input style="
+              color:black;" 
+              type="text" 
+              id="objectQty" 
+              maxlength="7" 
+              :value="quantity" />
+            </div>
+            <div class="flex">
+              <div style="min-width: 70px;">Price: </div>
+              <input style="
+              color:black;" 
+              type="text" 
+              id="objectPrice" 
+              maxlength="7" 
+              :value="price" />
+            </div>
+            <div class="flex">
+              <div style="min-width: 70px;">Buyer: </div>
+              <input style="
+              color:black;" 
+              type="text" 
+              id="objectBuyer" 
+              :value="buyer" />
+            </div>
           </div>
       </div>
     </div>
-    <span class="flex w-full justify-center text-red-600 mt-10" v-show="error">{{ this.error }}</span>
-    <span class="flex w-full justify-center" style="color: lime;" v-show="success">{{ success }}</span>
+    <span class="
+    flex 
+    w-full 
+    justify-center 
+    text-red-600 
+    mt-10" 
+    v-show="error">
+      {{ this.error }}
+    </span>
+    <span class="
+    flex 
+    w-full 
+    justify-center" style="color: lime;" 
+    v-show="success">
+      {{ success }}
+    </span>
     <div class="flex justify-center">
-      <button  type="button" class="btn mx-1 mt-10" @click="changeDetails()" v-if="this.canModify">Update</button>
-      <button  type="button" class="btn mx-1 mt-10" 
+      <button  
+      type="button" 
+      class="btn mx-1 mt-10" 
+      @click="changeDetails()" 
+      v-if="this.canModify">
+        Update
+      </button>
+      <button  
+      type="button" 
+      class="btn mx-1 mt-10" 
         v-if="
-        this.mallObject && this.instances !== this.quantity && showBuyButton ||
-        this.sessionId !== this.ownerId && this.price !== '' && (this.buyer === '' || this.buyer === this.$store.data.user.username) && this.walletBalance >= this.price && showBuyButton" @click="buyButtonClicked(), buy()">
+        this.mallObject && 
+        this.instances !== this.quantity && 
+        showBuyButton ||
+        this.sessionId !== this.ownerId && 
+        this.price !== '' && 
+        (
+          this.buyer === '' || 
+          this.buyer === this.$store.data.user.username
+        ) &&
+         this.walletBalance >= this.price && 
+         showBuyButton" 
+         @click="buyButtonClicked(), buy()">
         Buy
       </button>
-      <span v-else-if="this.mallObject && this.instances === this.quantity"></span>
-      <button type="button" class="btn mx-1 mt-10" v-else>Buy</button>
-      <button type="button" class="btn mx-1 mt-10" @click="close()">Close</button></div>
+      <span 
+      v-else-if="
+      this.mallObject && 
+      this.instances === this.quantity"></span>
+      <button 
+      type="button" 
+      class="btn mx-1 mt-10" 
+      v-else>Buy</button>
+      <button 
+      type="button" 
+      class="btn mx-1 mt-10" 
+      @click="close()">
+        Close
+      </button>
+    </div>
     </div>
   </div>
 </template>
