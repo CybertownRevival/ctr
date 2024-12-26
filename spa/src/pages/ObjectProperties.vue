@@ -85,12 +85,14 @@
     <span class="flex w-full justify-center" style="color: lime;" v-show="success">{{ success }}</span>
     <div class="flex justify-center">
       <button  type="button" class="btn mx-1 mt-10" @click="changeDetails()" v-if="this.canModify">Update</button>
+      <div v-if="showBuyButton">
         <button  type="button" class="btn mx-1 mt-10" 
           v-if="
           this.mallObject && this.instances !== this.quantity ||
-          this.sessionId !== this.ownerId && this.price !== '' && (this.buyer === '' || this.buyer === this.$store.data.user.username) && this.walletBalance >= this.price" @click="buy()">
+          this.sessionId !== this.ownerId && this.price !== '' && (this.buyer === '' || this.buyer === this.$store.data.user.username) && this.walletBalance >= this.price" @click="buyButtonClicked(), buy()">
           Buy
         </button>
+      </div>
       <button type="button" class="btn mx-1 mt-10" @click="close()">Close</button></div>
     </div>
   </div>
@@ -124,6 +126,7 @@ export default Vue.extend({
       instances: 0,
       active: "properties",
       mallObject: false,
+      showBuyButton: true,
     };
   },
 methods: {
@@ -134,7 +137,10 @@ methods: {
     this.objectId = this.$route.params.object_id;
     const info = await this.$http.get(`/member/info/${this.$store.data.user.id}`);
     this.walletBalance = info.data.memberInfo.walletBalance;
-    if(this.mallObject){      
+    if(this.mallObject){ 
+      if(!this.showBuyButton){
+        setTimeout(() => {this.showBuyButton = true;}, 300);     
+      }
       await this.$http.get(`/mall/object/${ this.objectId }`)
         .then((response) => {
           let object = response.data.object[0];
@@ -178,6 +184,9 @@ methods: {
   },
   close(){
     window.close();
+  },
+  buyButtonClicked(){
+    this.showBuyButton = false;
   },
   async changeDetails() {
     this.name = (<HTMLInputElement>document.getElementById('objectName')).value.replace(/[^0-9a-zA-Z \-\[\]\/()]/g, '');
