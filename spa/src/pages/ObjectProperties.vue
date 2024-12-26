@@ -139,7 +139,7 @@ methods: {
     this.walletBalance = info.data.memberInfo.walletBalance;
     if(this.mallObject){ 
       if(!this.showBuyButton){
-        setTimeout(() => {this.showBuyButton = true;}, 300);     
+        setTimeout(() => {this.showBuyButton = true;}, 1000);     
       }
       await this.$http.get(`/mall/object/${ this.objectId }`)
         .then((response) => {
