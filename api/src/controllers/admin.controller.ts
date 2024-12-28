@@ -56,7 +56,7 @@ class AdminController {
   public async getBanHistory(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    const admin = await this.memberService.canAdmin(session.id);
+    const admin = await this.memberService.getAccessLevel(session.id);
     if (admin) {
       try {
         const banHistory = await this.adminService
@@ -91,12 +91,12 @@ class AdminController {
       response.status(403).json({message: 'Access Denied'});
     }
   }
-  
+
   public async fireRole(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const { member_id, role_id } = request.body;
-    let { place_id } = request.body
+    let { place_id } = request.body;
     if (place_id !== null) {
       place_id = parseInt(place_id);
     }
@@ -131,11 +131,11 @@ class AdminController {
       response.status(403).json({error: 'Access Denied'});
     }
   }
-  
+
   public async getRoleList(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    const admin = await this.memberService.canAdmin(session.id);
+    const admin = await this.memberService.getAccessLevel(session.id);
     if (admin) {
       try {
         const roleList = await this.adminService.getRoleList();
@@ -146,11 +146,12 @@ class AdminController {
       }
     }
   }
-  
+
   public async hireRole(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    if (await this.memberService.canAdmin(session.id)) {
+    const accessLevel = await this.memberService.getAccessLevel(session.id);
+    if (accessLevel.includes('mayor')) {
       const {member_id, role_id} = request.body;
       try {
         await this.adminService.hireRole(
@@ -170,7 +171,7 @@ class AdminController {
   public async searchUsers(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    const admin = await this.memberService.canAdmin(session.id);
+    const admin = await this.memberService.getAccessLevel(session.id);
     if (admin) {
       try {
         const results = await this.adminService.searchUsers(
@@ -191,7 +192,7 @@ class AdminController {
   public async searchUserChat(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    const admin = await this.memberService.canAdmin(session.id);
+    const admin = await this.memberService.getAccessLevel(session.id);
     if (admin) {
       try {
         const results = await this.adminService.searchUserChat(
@@ -271,7 +272,7 @@ class AdminController {
   public async places(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    const admin = await this.memberService.canAdmin(session.id);
+    const admin = await this.memberService.getAccessLevel(session.id);
     if (admin) {
       try {
         const results = await this.adminService.searchPlaces(
@@ -293,7 +294,7 @@ class AdminController {
   public async placesUpdate(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    const admin = await this.memberService.canAdmin(session.id);
+    const admin = await this.memberService.getAccessLevel(session.id);
     if (admin) {
       try {
         this.adminService.updatePlaces(

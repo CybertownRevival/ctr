@@ -99,7 +99,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-
 export default Vue.extend({
   name: "AccessRightsPage",
   data: () => {
@@ -312,7 +311,7 @@ export default Vue.extend({
       console.error("Place is not set.");
       return;
     }
-
+    
     try {
       if (!this.hasAccess()) {
         return;

@@ -19,12 +19,12 @@ export class PlaceService {
     private roleRepository: RoleRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
   ) {}
-  
+
   public async canAdmin(slug: string, placeId: number, memberId: number):
    Promise<boolean> {
     const placeRoleId = await this.findRoleIdsBySlug(slug);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-    
+
     //check if admin even if there is no assigned roles for the place
     if (!placeRoleId) {
       if (
@@ -41,7 +41,7 @@ export class PlaceService {
         return true;
       }
     }
-    
+
     //check if worker or admin with an assigned roles for the place
     if (placeRoleId) {
       if (
@@ -65,14 +65,14 @@ export class PlaceService {
     }
     return false;
   }
-  
+
   public async canManageAccess(slug: string, placeId: number, memberId: number): Promise<boolean> {
     const placeRoleId = await this.findRoleIdsBySlug(slug);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-    
+
     //if no roles assignable, access rights is closed to all
     if(!placeRoleId) return false;
-    
+
     if (
       roleAssignments.find(assignment => {
         return (
@@ -90,7 +90,7 @@ export class PlaceService {
     }
     return false;
   }
-  
+
   public async findById(placeId: number): Promise<Place> {
     return await this.placeRepository.findById(placeId);
   }
@@ -246,7 +246,7 @@ export class PlaceService {
   public async updatePlaces(id: number, column: string, content: string): Promise<any> {
     await this.placeRepository.updatePlaces(id, column, content);
   }
-  
+
   private async findRoleIdsBySlug(slug: string): Promise<{owner: number, deputy: number}> {
     const roleId = {
       bank: {
@@ -311,7 +311,7 @@ export class PlaceService {
     };
     return roleId[slug];
   }
-  
+
   private async updateDeputyId(deputy: any): Promise<number> {
     let newDeputies = 0;
     if (deputy.username !== null && deputy.username !== '') {

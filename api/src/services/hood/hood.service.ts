@@ -36,7 +36,7 @@ export class HoodService {
       deputyCode,
     );
   }
-  
+
   public async postAccessInfo(
     hoodId: number,
     givenDeputies: any,
@@ -200,7 +200,7 @@ export class HoodService {
     }
     return false;
   }
-  
+
   private async updateDeputyId(deputy: any): Promise<number> {
     let newDeputies = 0;
     if (deputy.username !== null && deputy.username !== '') {

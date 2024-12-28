@@ -21,4 +21,5 @@ export class ColonyRepository {
       .where('colony.id', colonyId)
       .orderBy('map_location.location');
   }
+  
 }

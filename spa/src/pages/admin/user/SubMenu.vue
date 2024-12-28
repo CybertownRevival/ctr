@@ -9,16 +9,20 @@
       <router-link
        class="btn-ui-inline mx-1 w-20"
        :to="{name: 'UserBanHistory'}">HISTORY</router-link>
-      <router-link
+       <router-link
           class="btn-ui-inline mx-1 w-20"
           :to="{name: 'UserBanAdd'}"
           v-if="accessLevel.includes('security')">ADD</router-link>
     </div>
-    <div class="w-full min-w-min text-center my-2" v-else-if="isUserRoleRoute && accessLevel.includes('mayor')">
+    <div class="w-full min-w-min text-center my-2"
+     v-else-if="isUserRoleRoute && accessLevel.includes('council')">
       <router-link class="btn-ui-inline mx-1 w-24"
        :to="{name: 'UserCurrentRoles'}">CURRENT</router-link>
-      <router-link class="btn-ui-inline mx-1 w-24" :to="{name: 'UserHireRoles'}">HIRE</router-link>
-      <router-link class="btn-ui-inline mx-1 w-24"
+      <router-link
+        v-if="accessLevel.includes('mayor')"
+        class="btn-ui-inline mx-1 w-24"
+        :to="{name: 'UserHireRoles'}">HIRE</router-link>
+      <router-link v-if="accessLevel.includes('mayor')" class="btn-ui-inline mx-1 w-24"
        :to="{name: 'UserFireRoles'}">TERMINATE</router-link>
     </div>
     <div class="w-full min-w-min text-center my-2"

@@ -7,7 +7,8 @@ import * as badwords from 'badwords-list';
 
 import { sendPasswordResetEmail, sendPasswordResetUnknownEmail } from '../libs';
 import { MemberService, HomeService, PlaceService } from '../services';
-import {parseInt} from "lodash";
+import { SessionInfo } from 'session-info.interface';
+import {parseInt} from 'lodash';
 
 class MemberController {
   /** List of disallowed usernames. */
@@ -150,7 +151,7 @@ class MemberController {
     if (!session) return;
     if (id !== undefined) {
       const admin = await this.memberService.getAccessLevel(session.id);
-      if (admin.includes('security')) {
+      if (admin.includes('council') || admin.includes('security')) {
         try {
           const roles = await this.memberService.getRoles(parseInt(id));
           response.status(200).json({roles});

@@ -5,19 +5,19 @@
       <div>
         Catagory:
         <select v-model="type" @change="getResults">
-          <option value="public">Public Places</option>
-          <option value="shop">Mall Stores</option>
+          <option v-if="accessLevel.includes('admin')" value="public">Public Places</option>
+          <option v-if="accessLevel.includes('admin')" value="shop">Mall Stores</option>
           <option value="colony">Colonies</option>
           <option value="hood">Neighborhoods</option>
           <option value="block">Blocks</option>
           <option value="home">Homes</option>
           <option value="club">Clubs</option>
-          <option value="private">Private Places</option>
+          <option v-if="accessLevel.includes('security')" value="private">Private Places</option>
         </select>
       </div>
       <div>
         View Amount:
-        <select v-model="limit" @change="getResults">
+        <select v-model.number="limit" @change="getResults">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -50,13 +50,14 @@
         <td v-show="type === 'shop' && place.status === 0" class="p-4" style="color: gray;"><i>{{ status[place.status] }}</i></td>
         <td v-if="place.objects === 0" class="p-4 text-center">{{ place.objects }}</td>
         <td v-else class="p-4 text-center" style="color: yellow; font-weight: bold;">{{ place.objects }}</td>
-        <td class="p-4">
+        <td class="p-4" v-if="accessLevel.includes('security') || ['colony', 'hood', 'block', 'home'].includes(type)">
           <button class="btn-ui" @click="updateName(place.id, place.name)">Edit Name</button>
           <button class="btn-ui" @click="updateDesc(place.id, place.description)">Edit Desc</button>
           <br v-show="type === 'shop'" />
           <button v-show="type === 'shop' && place.status === 1" class="btn-ui" @click="updateStatus(place.id, place.status)">Disable</button>
           <button v-show="type === 'shop' && place.status === 0" class="btn-ui" @click="updateStatus(place.id, place.status)">Enable</button>
         </td>
+        <td v-else></td>
       </tr>
     </table>
     <div class="grid grid-cols-2 w-4/6 justify-items-center">
@@ -87,7 +88,7 @@ export default Vue.extend({
     return {
       totalCount: 0,
       places: [],
-      type: 'public',
+      type: 'colony',
       limit: 10,
       offset: 0,
       showNext: true,

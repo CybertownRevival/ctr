@@ -84,6 +84,7 @@ class InboxController {
       }
     }
   }
+  
   public async getAdminInfo(request: Request, response: Response): Promise<any> {
     const placeId = Number.parseInt(request.body.place_id);
     const type = request.body.type;

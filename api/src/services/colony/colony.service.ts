@@ -37,7 +37,7 @@ export class ColonyService {
       deputyCode,
     );
   }
-  
+
   public async postAccessInfo(
     colonyId: number,
     givenDeputies: any,
@@ -182,7 +182,7 @@ export class ColonyService {
     }
     return false;
   }
-  
+
   private async updateDeputyId(deputy: any): Promise<number> {
     let newDeputies = 0;
     if (deputy.username !== null && deputy.username !== '') {

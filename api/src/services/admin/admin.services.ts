@@ -47,7 +47,7 @@ export class AdminService {
   public async deleteBan(banId: number, updateReason: string): Promise<void>{
     await this.banRepository.deleteBan(banId, updateReason);
   }
-  
+
   public async fireRole(member_id: number, role_id: number, place_id: number): Promise<void> {
     const response: any = await this.memberRepository.getPrimaryRoleName(member_id);
     if (response.length !== 0) {
@@ -77,11 +77,11 @@ export class AdminService {
       console.log(e);
     }
   }
-  
+
   public async getRoleList(): Promise<any> {
     return this.roleRepository.findAll();
   }
-  
+
   public async hireRole(member_id: number, role_id: number): Promise<void> {
     this.roleAssignmentRepository.addIdToAssignment(null, member_id, role_id);
     return;
