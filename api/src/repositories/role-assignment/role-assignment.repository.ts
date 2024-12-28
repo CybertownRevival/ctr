@@ -29,7 +29,7 @@ export class RoleAssignmentRepository {
       }
     }
   }
-  
+
   public async addIdToAssignment(
     placeId: number,
     memberId: number,
@@ -44,7 +44,7 @@ export class RoleAssignmentRepository {
         },
       );
   }
-  
+
   public async getAccessInfoByID(
     placeId,
     ownerCode,
@@ -65,7 +65,7 @@ export class RoleAssignmentRepository {
       .where('role_id', deputyCode);
     return {deputies, owner};
   }
-  
+
   public async getAccessInfoByUsername(
     placeId,
     ownerCode,
@@ -93,7 +93,7 @@ export class RoleAssignmentRepository {
     const roleResults = await this.db.roleAssignment.where('member_id', memberId);
     return roleResults;
   }
-  
+
   public async getUsernamesByRoleId(roleId: number): Promise<any> {
     return this.db.knex('role_assignment')
       .select('member.username')
@@ -181,7 +181,7 @@ export class RoleAssignmentRepository {
     }
     return results;
   }
-  
+
   public async removeIdFromAssignment(
     placeId: number,
     memberId: number,

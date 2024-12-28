@@ -49,7 +49,7 @@ export default {
       }
     },
     async accessLevelCheck() {
-      if (!this.accessLevel.includes("security")) {
+      if (!this.accessLevel) {
         this.$router.push({ name: "restrictedaccess" });
       }
     }

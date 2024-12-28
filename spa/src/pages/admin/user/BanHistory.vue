@@ -127,7 +127,7 @@ export default Vue.extend({
     },
   },
   async mounted() {
-    if (!this.accessLevel.includes('security')) {
+    if (!this.accessLevel) {
       this.$router.push({ name: "restrictedaccess" });
     }
     await this.getinfo();

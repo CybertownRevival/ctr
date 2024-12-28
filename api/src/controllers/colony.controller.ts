@@ -59,6 +59,7 @@ class ColonyController {
       console.log(error);
     }
   }
+  
   public async canAdmin(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     const { apitoken } = request.headers;

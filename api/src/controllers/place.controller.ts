@@ -6,17 +6,17 @@ import * as badwords from 'badwords-list';
 
 class PlaceController {
   constructor(private placeService: PlaceService, private memberService: MemberService) {}
-  
+
   /** Get Admin status for the specific place's slug */
   public async canAdmin(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
     const { slug} = request.params;
     const { id } = request.params;
-    
+
     if (!slug || typeof slug !== 'string') {
       response.status(400).json({ error: 'invalid or missing place slug' });
     }
-    
+
     // the following is needed to make sure shops find the mall's place id
     let place_id = 0;
     if (id === undefined) {
@@ -25,7 +25,7 @@ class PlaceController {
     } else {
       place_id = Number.parseInt(id);
     }
-    
+
     try {
       const session = this.memberService.decodeMemberToken(<string>apitoken);
       if (!session) {
@@ -43,17 +43,17 @@ class PlaceController {
       response.status(400).json({ error });
     }
   }
-  
+
   /** Get if user can manage access rights */
   public async canManageAccess(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     const { apitoken } = request.headers;
     const { slug } = request.params;
-    
+
     if (!slug || typeof slug !== 'string') {
       response.status(400).json({ error: 'invalid or missing place slug' });
     }
-    
+
     try {
       const session = this.memberService.decodeMemberToken(<string>apitoken);
       if (!session || !(await this.placeService.canManageAccess(slug, parseInt(id), session.id))) {
@@ -68,7 +68,7 @@ class PlaceController {
       response.status(400).json({ error });
     }
   }
-  
+
   /** get users that are assigned access to the place */
   public async getAccessInfoByUsername(request: Request, response: Response): Promise<any> {
     const { id } = request.params;
@@ -94,7 +94,7 @@ class PlaceController {
       response.status(400).json({ error });
     }
   }
-  
+
   public async getSecurityInfo(request: Request, response: Response): Promise<any> {
     const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);
@@ -107,7 +107,7 @@ class PlaceController {
     const securityInfo = await this.placeService.getSecurityInfo();
     response.status(200).json({ securityInfo });
   }
-  
+
   /** Provides data about the place with the given slug */
   public async getPlace(request: Request, response: Response): Promise<void> {
     const { slug } = request.params;
@@ -159,7 +159,7 @@ class PlaceController {
       response.status(400).json({ error: error.message });
     }
   }
-  
+
   public async postAccessInfo(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
     const { slug } = request.params;
