@@ -24,9 +24,11 @@
         </div>
         <div class="text-center col-span-3">
           <select v-model="banDuration">
+            <option value="0">Warning</option>
             <option value="3">3 days</option>
             <option value="7">7 days</option>
             <option value="30">30 days</option>
+            <option value="365242.5">Indefinite</option>
           </select>
         </div>
         <div class="text-center col-span-3">
@@ -71,7 +73,7 @@ export default Vue.extend({
   name: "UserBanAdd",
   data() {
     return {
-      banDuration: 3,
+      banDuration: 0,
       banType: "jail",
       banReason: "",
       success: "",
