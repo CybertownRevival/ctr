@@ -606,19 +606,20 @@ export default Vue.extend({
           this.menuBuy = true;
         }
         if(this.memberId === this.$store.data.user.id){
-          this.menuTake = true;
           this.menuDestroy = true;
+        }
+        if(this.canModify && this.$store.data.place.type !== 'shop' ||
+          this.memberId === this.$store.data.user.id
+        ){
+          this.menuTake = true;
         }
         if(this.$store.data.view3d){
           this.menuBeamTo = true;
-          if(this.$store.data.user.id === this.memberId){
+          if(
+            this.$store.data.user.id === this.memberId ||
+            this.canModify
+          ){
             this.menuMove = true;
-          }
-          if(this.canModify){
-            this.menuMove = true;
-            if(this.$store.data.place.type !== 'shop'){
-              this.menuTake = true;
-            }
           }
         }
       }
