@@ -111,8 +111,7 @@ export class MemberService {
     });
   }
 
-  public async getAccessLevel(memberId: number): Promise<string> {
-    const access = await this.canAdmin(memberId);
+  public async getAccessLevel(memberId: number): Promise<any> {
     const mayor = await this.canMayor(memberId);
     const security = await this.canAdmin(memberId);
     const council = await this.canCouncil(memberId);
