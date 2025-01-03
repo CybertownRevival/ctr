@@ -46,7 +46,8 @@
       <div>
         <div >
           <div class="pt-5">
-            <button class="btn-ui bold" style="width:auto;" @click="confirmSecurityAlert" v-show="!action"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>
+            <!--Hidden until functionality is expanded upon. Needs to keep track of all alerts in case multiple happen at the same time.-->
+            <!--<button class="btn-ui bold" style="width:auto;" @click="confirmSecurityAlert" v-show="!action"><font color='red' size="2rem">S e c u r i t y &nbsp; A l e r t</font></button>-->
             <div class="flex">
               <!--Hidden until functionality is added-->
               <!--<button class="btn-ui" @click="openMyMessages">My Messages</button>-->
