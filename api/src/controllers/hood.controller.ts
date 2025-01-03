@@ -75,18 +75,22 @@ class HoodController {
 
     try {
       const session = this.memberService.decodeMemberToken(<string>apitoken);
-      if (!session || !(await this.hoodService.canAdmin(parseInt(id), session.id))) {
+      if (!session) {
         response.status(400).json({
           error: 'Invalid or missing token.',
         });
         return;
+      } else if (!(await this.hoodService.canAdmin(parseInt(id), session.id))) {
+        response.status(403).json({result: false});
+      } else {
+        response.status(200).json({result: true});
       }
-      response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
       response.status(400).json({ error });
     }
   }
+  
   public async canManageAccess(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     const { apitoken } = request.headers;
