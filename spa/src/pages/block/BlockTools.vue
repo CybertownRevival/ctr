@@ -44,7 +44,6 @@ export default Vue.extend({
   name: "BlockTools",
   data: () => {
     return {
-      adminCheck: false,
       canAdmin: false,
       loaded: false,
     };
@@ -52,10 +51,10 @@ export default Vue.extend({
   methods: {
     async checkAdmin() {
       try {
-        this.adminCheck = await this.$http.get(
+        const adminCheck = await this.$http.get(
           `/block/${  this.$store.data.place.block.id  }/can_admin`,
         );
-        this.canAdmin = true;
+        this.canAdmin = adminCheck;
       } catch (e) {
         console.log(e);
       }

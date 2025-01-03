@@ -29,10 +29,76 @@ export class RoleAssignmentRepository {
       }
     }
   }
+
+  public async addIdToAssignment(
+    placeId: number,
+    memberId: number,
+    roleId: number,
+  ): Promise<any> {
+    return this.db.knex('role_assignment')
+      .insert(
+        {
+          role_id: roleId,
+          member_id: memberId,
+          place_id: placeId,
+        },
+      );
+  }
+
+  public async getAccessInfoByID(
+    placeId,
+    ownerCode,
+    deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
+    const owner: any[] = await this.db.knex
+      .select(
+        'member_id',
+      )
+      .from('role_assignment')
+      .where('place_id', placeId)
+      .where('role_id', ownerCode);
+    const deputies: any[] = await this.db.knex
+      .select(
+        'member_id',
+      )
+      .from('role_assignment')
+      .where('place_id', placeId)
+      .where('role_id', deputyCode);
+    return {deputies, owner};
+  }
+
+  public async getAccessInfoByUsername(
+    placeId,
+    ownerCode,
+    deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
+    const owner: any[] = await this.db.knex
+      .select(
+        'member.username',
+      )
+      .from('role_assignment')
+      .where('role_assignment.place_id', placeId)
+      .where('role_assignment.role_id', ownerCode)
+      .innerJoin('member', 'role_assignment.member_id', 'member.id');
+    const deputies: any[] = await this.db.knex
+      .select(
+        'member.username',
+      )
+      .from('role_assignment')
+      .where('role_assignment.place_id', placeId)
+      .where('role_assignment.role_id', deputyCode)
+      .innerJoin('member', 'role_assignment.member_id', 'member.id');
+    return {deputies, owner};
+  }
   
   public async getByMemberId(memberId: number): Promise<RoleAssignment[]> {
     const roleResults = await this.db.roleAssignment.where('member_id', memberId);
     return roleResults;
+  }
+
+  public async getUsernamesByRoleId(roleId: number): Promise<any> {
+    return this.db.knex('role_assignment')
+      .select('member.username')
+      .where('role_assignment.role_id', '=', roleId)
+      .leftJoin('member', 'role_assignment.member_id', 'member.id');
   }
   
   public async getDonor(memberId: number, roleId: any): Promise<string> {
@@ -55,10 +121,13 @@ export class RoleAssignmentRepository {
     return this.db.knex
       .distinct(
         'role_assignment.role_id as id',
+        'role_assignment.place_id as place_id',
         'role.name as name',
+        'place.name as place',
       )
       .from('role_assignment')
       .leftJoin('role', 'role_assignment.role_id', 'role.id')
+      .leftJoin('place', 'role_assignment.place_id', 'place.id')
       .where('role_assignment.member_id', memberId);
   }
   
@@ -111,5 +180,17 @@ export class RoleAssignmentRepository {
       }
     }
     return results;
+  }
+
+  public async removeIdFromAssignment(
+    placeId: number,
+    memberId: number,
+    roleId: number,
+  ): Promise<any> {
+    return this.db.knex('role_assignment')
+      .where('place_id', placeId)
+      .where('member_id', memberId)
+      .where('role_id', roleId)
+      .del();
   }
 }
