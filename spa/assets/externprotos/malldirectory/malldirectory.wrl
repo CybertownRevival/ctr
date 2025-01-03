@@ -233,27 +233,27 @@ Transform {children []}
 ]}#END main Billboard
 DEF soundProx ProximitySensor{size 20 8 20 isActive IS isActive}
 Sound{intensity 1
-source DEF enterSound AudioClip{url ["/places/shop/vrml/sounds/enter.wav"]loop FALSE}
+source DEF enterSound AudioClip{url ["/assets/worlds/shopping/vrml/sounds/enter.wav"]loop FALSE}
 maxBack 5000 maxFront 5000 minBack 10 minFront 10
 }
 Sound{intensity 1
-source DEF exitSound AudioClip{url ["/places/shop/sounds/exit.wav"]loop FALSE}
+source DEF exitSound AudioClip{url ["/assets/worlds/shopping/vrml/sounds/exit.wav"]loop FALSE}
 maxBack 5000 maxFront 5000 minBack 10 minFront 10
 }
 Sound{intensity 1
-source DEF clickSound AudioClip{url ["/places/shop/sounds/16.wav"]loop FALSE}
+source DEF clickSound AudioClip{url ["/assets/worlds/shopping/vrml/sounds/16.wav"]loop FALSE}
 maxBack 5000 maxFront 5000 minBack 10 minFront 10
 }
 Sound{intensity 1
-source DEF goSound AudioClip{url ["/places/shop/sounds/confirmed.wav"]loop FALSE}
+source DEF goSound AudioClip{url ["/assets/worlds/shopping/vrml/sounds/confirmed.wav"]loop FALSE}
 maxBack 5000 maxFront 5000 minBack 10 minFront 10
 }
 Sound{intensity 1
-source DEF rnd0Sound AudioClip{url ["/places/shop/sounds/10.wav"]loop FALSE}
+source DEF rnd0Sound AudioClip{url ["/assets/worlds/shopping/vrml/sounds/10.wav"]loop FALSE}
 maxBack 5000 maxFront 5000 minBack 10 minFront 10
 }
 Sound{intensity 1
-source DEF rnd1Sound AudioClip{url ["/places/shop/sounds/11.wav"]loop FALSE}
+source DEF rnd1Sound AudioClip{url ["/assets/worlds/shopping/vrml/sounds/11.wav"]loop FALSE}
 maxBack 5000 maxFront 5000 minBack 10 minFront 10
 }
 
