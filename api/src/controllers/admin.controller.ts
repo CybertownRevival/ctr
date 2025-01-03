@@ -1,13 +1,14 @@
 import {Request, Response} from 'express';
 import { Container } from 'typedi';
 
-import { AdminService, MemberService, AvatarService } from '../services';
+import { AdminService, MemberService, AvatarService, PlaceService } from '../services';
 
 class AdminController {
   constructor(
     private adminService: AdminService, 
     private memberService: MemberService, 
     private avatarService: AvatarService,
+    private placeService: PlaceService,
   ) {}
   
   public async addBan(request: Request, response: Response): Promise<any> {
@@ -291,6 +292,36 @@ class AdminController {
     }
   }
 
+  public async searchAllPlaces(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin) {
+      try {
+        const compareValues = ['=', '!=', '>', '<', '>=', '<='];
+        const search = request.query.search.toString().replace(/[^0-9a-zA-Z \-[\]/()]/g, '');
+        const compare = request.query.compare.toString();
+        const type = request.query.type.toString();
+
+        if(compareValues.includes(compare)){
+          const results = await this.placeService.searchAllPlaces(
+            search,
+            compare,
+            type,
+            Number.parseInt(request.query.limit.toString()),
+            Number.parseInt(request.query.offset.toString()),
+          );
+          response.status(200).json({results});
+        }
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
   public async placesUpdate(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
@@ -316,4 +347,6 @@ class AdminController {
 const adminService = Container.get(AdminService);
 const memberService = Container.get(MemberService);
 const avatarService = Container.get(AvatarService);
-export const adminController = new AdminController(adminService, memberService, avatarService);
+const placeService = Container.get(PlaceService);
+export const adminController = new AdminController(
+  adminService, memberService, avatarService, placeService);
