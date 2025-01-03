@@ -94,4 +94,30 @@ export class PlaceRepository {
       .offset(offset);
   }
 
+  public async searchAllPlaces(
+    search: string, 
+    compare: string, 
+    type: string, 
+    limit: number, 
+    offset: number): Promise<any> {
+    return await this.db.place
+      .where('type',compare, type)
+      .where(this.like('name', search))
+      .limit(limit)
+      .offset(offset);
+  }
+
+  public async getSearchTotal(search: string, compare: string, type: string): Promise<any> {
+    return await this.db.place
+      .count('id as count')
+      .where('type',compare, type)
+      .where(this.like('place.name', search));
+  }
+
+  private like(field: string, value: string) {
+    return function() {
+      this.whereRaw('?? LIKE ?', [field, `%${value}%`]);
+    };
+  }
+
 }
