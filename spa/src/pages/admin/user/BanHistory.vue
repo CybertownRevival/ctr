@@ -53,7 +53,8 @@
                   @click="
                   showDeleteModal = true;
                   banId = ban.id;
-                  banReason = ban.reason;">DELETE BAN</button>
+                  banReason = ban.reason;"
+                  v-if="accessLevel.includes('security')">DELETE BAN</button>
         </div>
       </div>
     </div>
@@ -101,6 +102,9 @@ export default Vue.extend({
       banReason: "",
     };
   },
+  props: [
+      "accessLevel",
+  ],
   methods:{
     async getinfo(): Promise <void>{
       await this.$http.get("/admin/banhistory/", {
@@ -123,6 +127,9 @@ export default Vue.extend({
     },
   },
   async mounted() {
+    if (!this.accessLevel) {
+      this.$router.push({ name: "restrictedaccess" });
+    }
     await this.getinfo();
   },
 });

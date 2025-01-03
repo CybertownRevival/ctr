@@ -190,7 +190,6 @@ export default Vue.extend({
     },
     //get admin info from db and/or check if user is owner of message board
     async getAdminInfo(): Promise<any> {
-      console.log(this.placeinfo[0].type);
       return this.$http.post("/messageboard/getadmininfo", {
         place_id: this.$route.params.place_id,
         type: this.placeinfo[0].type,

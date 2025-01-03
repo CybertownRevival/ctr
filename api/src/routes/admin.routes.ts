@@ -8,10 +8,16 @@ adminRoutes.post('/donor', (request, response) =>
   adminController.addDonor(request, response));
 adminRoutes.post('/deleteban', (request, response) =>
   adminController.deleteBan(request, response));
+adminRoutes.post('/firerole', (request, response) =>
+  adminController.fireRole(request, response));
 adminRoutes.get('/banhistory', (request, response) =>
   adminController.getBanHistory(request, response));
 adminRoutes.get('/donor', (request, response) =>
   adminController.getDonor(request, response));
+adminRoutes.post('/hirerole', (request, response) =>
+  adminController.hireRole(request, response));
+adminRoutes.get('/rolelist', (request, response) =>
+  adminController.getRoleList(request, response));
 adminRoutes.get('/usersearch', (request, response) =>
   adminController.searchUsers(request, response));
 adminRoutes.get('/userchat', (request, response) =>

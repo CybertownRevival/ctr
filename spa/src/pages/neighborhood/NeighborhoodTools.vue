@@ -44,10 +44,9 @@ export default Vue.extend({
   methods: {
     async checkAdmin() {
       try {
-        await this.$http.get(
+        this.canAdmin = await this.$http.get(
           `/hood/${  this.$store.data.place.hood.id  }/can_admin`,
         );
-        this.canAdmin = true;
       } catch (e) {
         this.canAdmin = false;
       }
