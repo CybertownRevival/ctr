@@ -28,19 +28,34 @@ class MessageboardController {
   public async adminCheck(placeId, id, type): Promise<any> {
     if (type === 'colony') {
       try {
-        return await this.colonyService.canAdmin(placeId, id);
+        const access = await this.memberService.getAccessLevel(id);
+        if(access.includes('security')){
+          return true;
+        } else {
+          return await this.colonyService.canAdmin(placeId, id);
+        }
       } catch (e) {
         console.log(e);
       }
     } else if (type === 'hood') {
       try {
-        return await this.hoodService.canAdmin(placeId, id);
+        const access = await this.memberService.getAccessLevel(id);
+        if(access.includes('security')){
+          return true;
+        } else {
+          return await this.hoodService.canAdmin(placeId, id);
+        }
       } catch (e) {
         console.log(e);
       }
     } else if (type === 'block') {
       try {
-        return await this.blockService.canAdmin(placeId, id);
+        const access = await this.memberService.getAccessLevel(id);
+        if(access.includes('security')){
+          return true;
+        } else {
+          return await this.blockService.canAdmin(placeId, id);
+        }
       } catch (e) {
         console.log(e);
       }
@@ -48,22 +63,28 @@ class MessageboardController {
       try {
         const place = await this.placeService.findById(placeId);
         const access = await this.memberService.getAccessLevel(id);
-        if(place.slug === 'mall' && access === 'none'){
-          return await this.mallService.canAdmin(id);
+        if(access.includes('security')){
+          return true;
         } else {
-          return await this.memberService.canAdmin(id);
+          return await this.placeService.canAdmin(place.slug, placeId, id);
         }
       } catch (e) {
         console.log(e);
       }
     } else {
       try {
-        return await this.messageboardService.getAdminInfo(placeId, id);
+        const access = await this.memberService.getAccessLevel(id);
+        if(access.includes('security')){
+          return true;
+        } else {
+          return await this.messageboardService.getAdminInfo(placeId, id);
+        }
       } catch (e) {
         console.log(e);
       }
     }
   }
+  
   public async getAdminInfo(request: Request, response: Response): Promise<any> {
     const placeId = Number.parseInt(request.body.place_id);
     const type = request.body.type;
