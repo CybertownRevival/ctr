@@ -1,10 +1,10 @@
 <template>
   <div class="grid grid-cols-1 w-full place-items-center">
-    <div class="text-center w-full text-5xl mb-1">Places</div>
-    <div class="grid grid-cols-2 w-4/6 justify-items-center">
+    <div class="text-center w-full text-5xl mb-1"></div>
+    <div class="grid grid-cols-3 w-4/6 justify-items-center">
       <div>
-        Catagory:
-        <select v-model="type" @change="getResults">
+        <h3>Catagory</h3>
+        <select v-model="type" @change="searchPlaces">
           <option v-if="accessLevel.includes('admin')" value="public">Public Places</option>
           <option v-if="accessLevel.includes('admin')" value="shop">Mall Stores</option>
           <option value="colony">Colonies</option>
@@ -15,9 +15,13 @@
           <option v-if="accessLevel.includes('security')" value="private">Private Places</option>
         </select>
       </div>
+      <div class="flex flex-col items-center">
+        <h3>Search Places by Name</h3>
+        <input class="text-black" v-model="search" @input="searchPlaces" type='text' />
+      </div>
       <div>
-        View Amount:
-        <select v-model.number="limit" @change="getResults">
+        <h3>View Amount</h3>
+        <select v-model.number="limit" @change="setLimit">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -25,8 +29,16 @@
         </select>
       </div>
     </div>
-    <div class="grid-cols-1 w-4/6 justify-items-center text-center ">
+    <div class="mt-5 grid-cols-1 w-4/6 justify-items-center text-center ">
       Total Count: {{ totalCount }}
+    </div>
+    <span v-if="pages.length > 1">Pages</span>
+    <div v-if="pages.length > 1" class="flex w-full justify-center font-bold">
+      <span class="flex justify-center" v-for="page in pages" :value="page">
+        <span class="p-2" v-if="pageNum === page">{{ page }}</span>
+        <span class="p-2 cursor-pointer" style="color:lime;" v-else-if="page > (pageNum - 5) && page < (pageNum + 5)" @click="setPageNumber(page)">{{ page }}</span>
+      </span>
+      <span class="p-2 font-bold" style="color:lime;" v-if="(pageNum + 5) <= pages.length">. . .</span>
     </div>
     <table class="table-auto border-collapse">
       <tr>
@@ -36,7 +48,6 @@
         <th v-show="type !== 'home'" class="p-4">Slug</th>
         <th v-show="type === 'home' || type === 'club'" class="p-4">Owner</th>
         <th v-show="type === 'shop'" class="p-4">Status</th>
-        <th v-show="type !== 'block'">Objects</th>
         <th class="p-4"></th>
       </tr>
       <tr class="border" v-for="place in places"
@@ -48,9 +59,7 @@
         <td v-show="type === 'home' || type === 'club'" class="p-4">{{ place.username }}</td>
         <td v-show="type === 'shop' && place.status === 1" class="p-4" style="color: limegreen; font-weight: bold;">{{ status[place.status] }}</td>
         <td v-show="type === 'shop' && place.status === 0" class="p-4" style="color: gray;"><i>{{ status[place.status] }}</i></td>
-        <td v-if="place.objects === 0" class="p-4 text-center">{{ place.objects }}</td>
-        <td v-else class="p-4 text-center" style="color: yellow; font-weight: bold;">{{ place.objects }}</td>
-        <td class="p-4" v-if="accessLevel.includes('security') || ['colony', 'hood', 'block', 'home'].includes(type)">
+        <td class="p-4" v-if="accessLevel.includes('security') && ['home'].includes(type) || accessLevel.includes('admin')">
           <button class="btn-ui" @click="updateName(place.id, place.name)">Edit Name</button>
           <button class="btn-ui" @click="updateDesc(place.id, place.description)">Edit Desc</button>
           <br v-show="type === 'shop'" />
@@ -60,20 +69,18 @@
         <td v-else></td>
       </tr>
     </table>
-    <div class="grid grid-cols-2 w-4/6 justify-items-center">
-      <div class="p-1 text-right w-full">
-        <button class="btn"
-                @click="back"
-                v-show="offset != 0">
-          BACK
-        </button>
-      </div>
-      <div class="p-1 text-left w-full">
-        <button class="btn"
-                @click="next"
-                v-show="offset + limit <= totalCount">
-          NEXT
-        </button>
+    <div class="flex w-full justify-center">
+      <div class="flex justify-center">
+        <div class="p-1 text-right w-full" v-if="pageNum > 1">
+          <button class="btn" @click="back">
+            BACK
+          </button>
+        </div>
+        <div class="p-1 w-full" v-if="totalCount - offset > limit">
+          <button class="btn" @click="next">
+            NEXT
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -91,6 +98,10 @@ export default Vue.extend({
       type: 'colony',
       limit: 10,
       offset: 0,
+      pageNum: 1,
+      pages: [],
+      compare: '=',
+      search: '',
       showNext: true,
       error: null,
       status: ['Disabled','Active'],
@@ -100,48 +111,30 @@ export default Vue.extend({
     "accessLevel",
   ],
   methods: {
-    async getResults(): Promise<any> {
+    async searchPlaces(): Promise<any> {
+      this.places = [];
+      this.pages = [];
       try {
-        return this.$http.get(
-          "/admin/places", {
-          limit: this.limit,
-          offset: this.offset,
-          type: this.type,
-        },
-        ).then((response) => {
-          this.places = response.data.results.places;
-          if(this.type === 'home' || this.type === 'club'){
-            this.places.forEach (place => {
-              this.$http.get(`/member/info/${place.member_id}`)
-              .then(result => {
-                place.username = result.data.memberInfo.username;
-                this.places.splice(place, this.places.indexOf(place.id));
-              });
-            })
+        const searched =  await this.$http.get("/admin/allplacessearch/", {
+            limit: this.limit,
+            offset: this.offset,
+            search: this.search,
+            compare: this.compare,
+            type: this.type
+          });
+          this.places = searched.data.results.places;
+          this.totalCount = searched.data.results.total[0].count;
+          let pages = Math.ceil(this.totalCount/this.limit);
+          for(let i = 1; pages >= i; i++){
+            this.pages.push(i);
           }
-          if(this.type !== 'block'){
-            if(this.type === 'shop'){
-              this.places.forEach (place => {
-                this.$http.get(`/mall/objects/${place.id}`)
-                .then(result => {
-                  place.objects = result.data.objects.length;
-                  this.places.splice(place, this.places.indexOf[place.id]);
-                })
-              })
-            } else {
-              this.places.forEach (place => {
-                this.$http.get(`/place/${place.id}/object_instance`)
-                .then(result => {
-                  place.objects = result.data.object_instance.length;
-                  this.places.splice(place, this.places.indexOf[place.id]);
-                })
-              })
-            }
+          if(this.pageNum > pages && this.totalCount > 0){
+            this.pageNum = 1;
+            this.offset = 0;
+            setTimeout(this.searchPlaces, 1000);
           }
-          this.totalCount = response.data.results.total[0].count;
-        });
       } catch (error) {
-        this.error = error;
+        console.log(error);
       }
     },
     async updateStatus(id, state){
@@ -158,7 +151,7 @@ export default Vue.extend({
           content: updateStatus
         }).then(response => {
           if(response.data.status === 'success'){
-            this.getResults();
+            this.searchPlaces();
           }
         })
       } catch(error){
@@ -175,7 +168,7 @@ export default Vue.extend({
           content: newName
         }).then(response => {
           if(response.data.status === 'success'){
-            this.getResults();
+            this.searchPlaces();
           }
         })
       } catch(error){
@@ -193,7 +186,7 @@ export default Vue.extend({
           content: newDesc
         }).then(response => {
           if(response.data.status === 'success'){
-            this.getResults();
+            this.searchPlaces();
           }
         })
       } catch(error){
@@ -201,18 +194,30 @@ export default Vue.extend({
       }
       }
     },
+    setLimit(){
+      this.offset = 0;
+      this.pageNum = 1;
+      this.searchPlaces();
+    },
+    setPageNumber(value){
+      this.pageNum = value;
+      this.offset = this.pageNum * this.limit - this.limit;
+      this.searchPlaces();
+    },
     async next() {
-      this.offset = this.offset + this.limit;
-      await this.getResults();
+      this.offset = this.pageNum * this.limit;
+      this.pageNum++
+      await this.searchPlaces();
     },
     async back() {
-      this.offset = this.offset - this.limit;
-      await this.getResults();
+      this.pageNum--
+      this.offset = this.pageNum * this.limit - this.limit;
+      await this.searchPlaces();
       this.showNext = true;
     },
   },
   async created() {
-    await this.getResults();
+    await this.searchPlaces();
   },
 });
 </script>
