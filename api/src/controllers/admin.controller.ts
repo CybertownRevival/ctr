@@ -342,6 +342,55 @@ class AdminController {
       response.status(403).json({message: 'Access Denied'});
     }
   }
+
+  public async objectssUpdate(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.canAdmin(session.id);
+    if (admin) {
+      const id = parseInt(request.body.id);
+      const name = request.body.name;
+      const directory = request.body.directory;
+      const filename = request.body.filename;
+      const image = request.body.thumbnail;
+      const price = request.body.price;
+      let limit;
+      if(request.body.limit === '' ||
+        request.body.limit === null ||
+        request.body.limit === 'undefined'
+      ){
+        limit = 0;
+      } else {
+        limit = request.body.limit;
+      }
+      const quantity = request.body.quantity;
+      const status = request.body.status;
+      try {
+        if(id && name && directory && filename && image && 
+          price >= 0 && limit >= 0 && quantity >= 0 && status >= 0){
+          this.adminService.updateObjects(
+            id,
+            name,
+            directory,
+            filename,
+            image,
+            price,
+            limit,
+            quantity,
+            status
+          );
+        } else {
+          throw new Error ('Some details are blank. Please complete the form');
+        }
+        response.status(200).json({status: 'success'});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
 }
 
 const adminService = Container.get(AdminService);
