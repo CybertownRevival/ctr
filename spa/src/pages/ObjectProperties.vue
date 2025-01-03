@@ -195,6 +195,7 @@
       </button>
       <span 
       v-else-if="
+      !this.mallObject ||
       this.mallObject && 
       this.instances === this.quantity"></span>
       <button 
