@@ -22,15 +22,6 @@ export class HoodService {
     private roleRepository: RoleRepository,
     private memberRepository: MemberRepository,
   ) {}
-
-  private async updateDeputyId(deputy: any): Promise<number> {
-    let newDeputies = 0;
-    if (deputy.username !== null) {
-      const result = await this.memberRepository.findIdByUsername(deputy.username);
-      newDeputies = result[0].id;
-    }
-    return newDeputies;
-  }
   
   public async find(hoodId: number): Promise<Place> {
     return await this.hoodRepository.find(hoodId);
@@ -39,9 +30,13 @@ export class HoodService {
   public async getAccessInfoByUsername(hoodId: number): Promise<object> {
     const deputyCode = await this.roleRepository.roleMap.NeighborhoodDeputy;
     const ownerCode = await this.roleRepository.roleMap.NeighborhoodLeader;
-    return await this.hoodRepository.getAccessInfoByUsername(hoodId, ownerCode, deputyCode);
+    return await this.roleAssignmentRepository.getAccessInfoByUsername(
+      hoodId, 
+      ownerCode, 
+      deputyCode,
+    );
   }
-  
+
   public async postAccessInfo(
     hoodId: number,
     givenDeputies: any,
@@ -53,24 +48,26 @@ export class HoodService {
     const deputyCode = await this.roleRepository.roleMap.NeighborhoodDeputy;
     const ownerCode = await this.roleRepository.roleMap.NeighborhoodLeader;
     let oldOwner = null;
-    let newOwner = null;
+    let newOwner = 0;
     const oldDeputies = [0,0,0,0,0,0,0,0];
     const newDeputies = [0,0,0,0,0,0,0,0];
-    const data = await this.hoodRepository.getAccessInfoByID(hoodId, ownerCode, deputyCode);
+    const data = await this
+      .roleAssignmentRepository
+      .getAccessInfoByID(hoodId, ownerCode, deputyCode);
     if (data.owner.length > 0) {
       oldOwner = data.owner[0].member_id;
     } else {
       oldOwner = 0;
     }
-    try {
-      newOwner = await this.memberRepository.findIdByUsername(givenOwner);
-      newOwner = newOwner[0].id;
-    } catch (error) {
-      newOwner = 0;
+    if (givenOwner !== null && givenOwner !== '') {
+      const result = await this.memberRepository.findIdByUsername(givenOwner);
+      if (Array.isArray(result) && result.length > 0 && result[0].id) {
+        newOwner = result[0].id;
+      }
     }
     if (newOwner !== 0) {
       if (oldOwner !== 0) {
-        await this.hoodRepository.removeIdFromAssignment(hoodId, oldOwner, ownerCode);
+        await this.roleAssignmentRepository.removeIdFromAssignment(hoodId, oldOwner, ownerCode);
         const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
         if (response.length !== 0) {
           const primaryRoleId = response[0].primary_role_id;
@@ -79,7 +76,18 @@ export class HoodService {
           }
         }
       }
-      await this.hoodRepository.addIdToAssignment(hoodId, newOwner, ownerCode);
+      await this.roleAssignmentRepository.addIdToAssignment(hoodId, newOwner, ownerCode);
+    } else {
+      if (oldOwner !== 0) {
+        await this.roleAssignmentRepository.removeIdFromAssignment(hoodId, oldOwner, ownerCode);
+        const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
+        if (response.length !== 0) {
+          const primaryRoleId = response[0].primary_role_id;
+          if (ownerCode === primaryRoleId){
+            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          }
+        }
+      }
     }
     data.deputies.forEach((deputies, index) => {
       oldDeputies[index] = deputies.member_id;
@@ -91,7 +99,7 @@ export class HoodService {
       if (oldDeputies !== newDeputies[index]) {
         if (newDeputies[index] === 0) {
           try {
-            this.hoodRepository.removeIdFromAssignment(hoodId, oldDeputies, deputyCode);
+            this.roleAssignmentRepository.removeIdFromAssignment(hoodId, oldDeputies, deputyCode);
           } catch (e) {
             console.log(e);
           }
@@ -108,7 +116,7 @@ export class HoodService {
           }
         } else {
           try {
-            this.hoodRepository.removeIdFromAssignment(hoodId, oldDeputies, deputyCode);
+            this.roleAssignmentRepository.removeIdFromAssignment(hoodId, oldDeputies, deputyCode);
             this.memberRepository.getPrimaryRoleName(oldDeputies)
               .then((response: any) => {
                 if (response.length !== 0) {
@@ -118,7 +126,7 @@ export class HoodService {
                   }
                 }
               });
-            this.hoodRepository.addIdToAssignment(hoodId, newDeputies[index], deputyCode);
+            this.roleAssignmentRepository.addIdToAssignment(hoodId, newDeputies[index], deputyCode);
           } catch (e) {
             console.log(e);
           }
@@ -191,5 +199,16 @@ export class HoodService {
       return true;
     }
     return false;
+  }
+
+  private async updateDeputyId(deputy: any): Promise<number> {
+    let newDeputies = 0;
+    if (deputy.username !== null && deputy.username !== '') {
+      const result = await this.memberRepository.findIdByUsername(deputy.username);
+      if (Array.isArray(result) && result.length > 0 && result[0].id) {
+        newDeputies = result[0].id;
+      }
+    }
+    return newDeputies;
   }
 }

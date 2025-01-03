@@ -8,6 +8,7 @@ import * as badwords from 'badwords-list';
 import { sendPasswordResetEmail, sendPasswordResetUnknownEmail } from '../libs';
 import { MemberService, HomeService, PlaceService } from '../services';
 import { SessionInfo } from 'session-info.interface';
+import {parseInt} from 'lodash';
 
 class MemberController {
   /** List of disallowed usernames. */
@@ -144,14 +145,31 @@ class MemberController {
   }
 
   public async getRoles(request: Request, response: Response): Promise<object> {
+    const id  = request.params.id;
+    console.log(id);
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    try {
-      const roles = await this.memberService.getRoles(session.id);
-      response.status(200).json({ roles });
-    } catch (error) {
-      console.log(error);
-      response.status(400).json({ error });
+    if (id !== undefined) {
+      const admin = await this.memberService.getAccessLevel(session.id);
+      if (admin.includes('council') || admin.includes('security')) {
+        try {
+          const roles = await this.memberService.getRoles(parseInt(id));
+          response.status(200).json({roles});
+        } catch (e) {
+          console.error(e);
+          response.status(400).json({ error: true });
+        }
+      } else {
+        response.status(403).json({ error: 'Access denied' });
+      }
+    } else {
+      try {
+        const roles = await this.memberService.getRoles(session.id);
+        response.status(200).json({roles});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
     }
   }
 
