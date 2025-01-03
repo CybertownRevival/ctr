@@ -41,6 +41,9 @@ import UserSearch from "@/pages/admin/user/search.vue";
 import UserChat from "@/pages/admin/user/ChatMessages.vue";
 import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
 import UserBanAdd from "@/pages/admin/user/BanAdd.vue";
+import UserCurrentRoles from "@/pages/admin/user/CurrentRoles.vue";
+import UserHireRoles from "@/pages/admin/user/HireRoles.vue";
+import UserFireRoles from "@/pages/admin/user/FireRoles.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
 import AvatarSearch from "@/pages/admin/avatar/search.vue";
 import PlaceSearch from "@/pages/admin/place/search.vue";
@@ -283,7 +286,7 @@ export default [
         meta: { wrapper: false },
     },
     {
-        path: "/information/:type/:id",
+        path: "/information/:type/:id/:slug?",
         component: InformationPage,
         name: "information",
         meta: {
@@ -340,6 +343,30 @@ export default [
                                 name: "UserChat",
                                 meta: {
                                     title: "Member Chat - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/roles/hire",
+                                component: UserHireRoles,
+                                name: "UserHireRoles",
+                                meta: {
+                                    title: "Member Hire Roles - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/roles",
+                                component: UserCurrentRoles,
+                                name: "UserCurrentRoles",
+                                meta: {
+                                    title: "Member Current Roles - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/roles/fire",
+                                component: UserFireRoles,
+                                name: "UserFireRoles",
+                                meta: {
+                                    title: "Member Fire Roles - Admin Panel",
                                 },
                             },
                             {

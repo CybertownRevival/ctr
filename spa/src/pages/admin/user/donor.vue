@@ -31,6 +31,7 @@ export default Vue.extend({
       status: "None",
     };
   },
+  props: ["accessLevel"],
   methods: {
     async setDonor(): Promise<void> {
       await this.$http.post("/admin/donor", {
@@ -61,6 +62,9 @@ export default Vue.extend({
     },
   },
   mounted() {
+    if (!this.accessLevel.includes('admin')) {
+      this.$router.push({ name: "restrictedaccess" });
+    }
     this.getDonor();
   },
 });
