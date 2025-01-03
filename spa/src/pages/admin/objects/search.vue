@@ -56,7 +56,7 @@
       </tr>
       <tr class="border" v-for="object in objects"
           :key="object.id">
-          <td class="p-4"><button v-if="accessLevel === 'admin'" class="btn-ui h-20" @click="openUpdater(object.id)">Edit Object Details</button></td>
+          <td class="p-4"><button v-if="accessLevel.includes('admin')" class="btn-ui h-20" @click="openUpdater(object.id)">Edit Object Details</button></td>
           <td class="p-4">{{ object.id }}</td>
           <td class="p-4">{{ object.name }}</td>
           <td class="p-4">{{ object.directory }}</td>

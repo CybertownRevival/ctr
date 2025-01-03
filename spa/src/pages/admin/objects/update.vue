@@ -56,7 +56,7 @@
         </div>
       </div>
     </div>
-    <div v-if="accessLevel === 'admin'">
+    <div v-if="accessLevel.includes('admin')">
       <table class="my-5">
         <tr>
           <td>Update Name: </td>
