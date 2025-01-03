@@ -322,4 +322,19 @@ export class PlaceService {
     }
     return newDeputies;
   }
+
+  public async searchAllPlaces(
+    search: string, 
+    compare: string, 
+    type: string, 
+    limit: number, 
+    offset: number): Promise<any> {
+    const places = await this.placeRepository.searchAllPlaces(
+      search, compare, type, limit, offset);
+    const total = await this.placeRepository.getSearchTotal(search, compare, type);
+    return {
+      places: places,
+      total: total,
+    };
+  }
 }
