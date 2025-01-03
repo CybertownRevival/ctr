@@ -6,7 +6,7 @@
     <div class="mb-2">
       <router-link class="btn-ui" :to="{name: 'UserSearch'}">Members</router-link>
     </div>
-    <div class="mb-2">
+    <div class="mb-2" v-if="accessLevel.includes('admin')">
       <router-link class="btn-ui" :to="{name: 'PlaceSearch'}">Places</router-link>
     </div>
     <div class="mb-2" v-if="accessLevel.includes('admin')">
