@@ -26,21 +26,22 @@ export default Vue.extend({
   name: "admin",
   data: () => {
     return {
-      accessLevel: "none",
+      accessLevel: [],
     };
   },
   methods: {
     async getAdminLevel(): Promise<void> {
       try{
-        await this.$http.get("/member/getadminlevel")
-          .then((response) => {
-            this.accessLevel = response.data.accessLevel;
-            if (this.accessLevel === "none"){
-              this.$router.push({name: "restrictedaccess"});
-            }
-          });
+        const access = await this.$http.get("/member/getadminlevel");
+        this.accessLevel = access.data.accessLevel;
+        this.accessCheck();
       } catch (e) {
         console.log(e);
+      }
+    },
+    accessCheck() {
+      if (this.accessLevel.length <= 0){
+        this.$router.push({name: "restrictedaccess"});
       }
     },
   },

@@ -24,9 +24,11 @@
         </div>
         <div class="text-center col-span-3">
           <select v-model="banDuration">
+            <option value="0">Warning</option>
             <option value="3">3 days</option>
             <option value="7">7 days</option>
             <option value="30">30 days</option>
+            <option value="365242.5">Indefinite</option>
           </select>
         </div>
         <div class="text-center col-span-3">
@@ -61,7 +63,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
@@ -71,13 +72,16 @@ export default Vue.extend({
   name: "UserBanAdd",
   data() {
     return {
-      banDuration: 3,
+      banDuration: 0,
       banType: "jail",
       banReason: "",
       success: "",
       error: "",
     };
   },
+  props: [
+    "accessLevel",
+  ],
   methods:{
     async addBan(): Promise <void>{
       try {
@@ -94,6 +98,11 @@ export default Vue.extend({
         this.error = e.response.data.message;
       }
     },
+  },
+  created() {
+    if (!this.accessLevel.includes("security")) {
+      this.$router.push({name: "restrictedaccess"});
+    }
   },
 });
 </script>
