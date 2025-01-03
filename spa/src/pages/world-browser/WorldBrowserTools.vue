@@ -5,14 +5,20 @@
             v-on:click="opener('#/information/'
               + $store.data.place.type
               + '/'
-              + $store.data.place.id)">Information</button>
+              + $store.data.place.id
+              + '/'
+              + $store.data.place.slug)">Information</button>
     <span v-if="$store.data.place.slug === 'employment'">
       <button class="btn-ui"
               v-on:click="opener('#/messageboard/' + $store.data.place.id)">Job Offers</button>
     </span>
     <span v-else-if="$store.data.place.type === 'shop'">
-      <button class="btn-ui" v-on:click="opener(`#/inbox/${mallId.data.place.id}`)">Mall Inbox</button>
-      <button class="btn-ui" v-on:click="opener(`#/messageboard/${mallId.data.place.id}`)">Mall Messages</button>
+      <button class="btn-ui" v-on:click="opener(`#/inbox/${mallId.data.place.id}`)">
+        Mall Inbox
+      </button>
+      <button class="btn-ui" v-on:click="opener(`#/messageboard/${mallId.data.place.id}`)">
+        Mall Messages
+      </button>
     </span>
     <span v-else>
     <button class="btn-ui"
@@ -26,17 +32,21 @@
       :to="{ name: 'mall-upload' }"
       class="btn-ui">Upload</router-link>
       <button class="btn-ui" v-on:click="opener('#/creator/stocked')">My Uploads</button>
+      <br />
     </div>
-    <br />
     <div v-if="canAdmin">
-      <span href=""
-            class="btn-ui">Message to All</span>
-      <span href=""
-            class="btn-ui">Inbox to All</span>
+      <span v-if="this.$store.data.place.type === 'colony'">
+        <span href=""
+              class="btn-ui">Message to All</span>
+        <span href=""
+              class="btn-ui">Inbox to All</span>
+      </span>
       <span href=""
             class="btn-ui">Update</span>
-      <router-link :to="{ name: 'worldAccessRights' }"
-                   class="btn-ui">Access Rights</router-link>
+      <span v-show="$store.data.place.type !== 'shop'">
+        <router-link :to="{ name: 'worldAccessRights' }"
+                     class="btn-ui">Access Rights</router-link>
+      </span>
       <br />
     </div>
   </div>
@@ -58,13 +68,24 @@ export default Vue.extend({
   },
   methods: {
     async getMallId(){
-      this.mallId = await this.$http.get('/place/mall')
+      this.mallId = await this.$http.get('/place/mall');
     },
     async checkAdmin() {
+      let endpoint;
+      switch (this.$store.data.place.type) {
+      case "colony":
+        endpoint = `/colony/${this.$store.data.place.id}/can_admin`;
+        break;
+      case "public":
+        endpoint = `/place/can_admin/${this.$store.data.place.slug}`;
+        break;
+      case "shop":
+        endpoint = "/place/can_admin/mall";
+        break;
+      }
       try {
-        this.adminCheck = await this.$http.get(
-          `/colony/${this.$store.data.place.id}/can_admin`);
-        this.canAdmin = true;
+        const adminCheck = await this.$http.get(endpoint);
+        this.canAdmin = adminCheck.data.result;
       } catch (error) {
         this.canAdmin = false;
       }

@@ -59,19 +59,24 @@ class ColonyController {
       console.log(error);
     }
   }
+  
   public async canAdmin(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     const { apitoken } = request.headers;
 
     try {
       const session = this.memberService.decodeMemberToken(<string>apitoken);
-      if (!session || !(await this.colonyService.canAdmin(parseInt(id), session.id))) {
+      if (!session) {
         response.status(400).json({
           error: 'Invalid or missing token.',
         });
         return;
+      } else if (!(await this.colonyService.canAdmin(Number.parseInt(id), session.id))) {
+        response.status(403).json({ result: false });
+        return;
+      } else {
+        response.status(200).json({result: true});
       }
-      response.status(200).json({ status: 'success' });
     } catch (error) {
       console.error(error);
       response.status(400).json({ error });

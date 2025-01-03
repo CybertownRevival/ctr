@@ -20,19 +20,19 @@
       Total Count: {{ this.totalCount }}
     </div>
   <div class="grid grid-cols-5 text-center w-4/6"
-       :class="{'grid-cols-7': accessLevel === 'admin'}">
+       :class="{'grid-cols-7': accessLevel.includes('admin')}">
     <div class="border-white border w-full pl-1">ID</div>
     <div class="col-span-2 border-white border w-full pl-1">Username</div>
     <div
       class="col-span-2 border-white border w-full pl-1"
-      v-show="accessLevel==='admin'">Email</div>
+      v-show="accessLevel.includes('admin')">Email</div>
     <div class="col-span-2 border-white border w-full pl-1">Last Login</div>
   </div>
   <div
       class="grid grid-cols-5 w-4/6"
       v-for="(id) in users"
       :key="id.id"
-      :class="{'grid-cols-7': accessLevel === 'admin'}">
+      :class="{'grid-cols-7': accessLevel.includes('admin')}">
     <div class="border-white border w-full pl-1 text-center">{{ id.id }}</div>
     <div class="col-span-2 border-white border w-full pl-1">
       <router-link :to="'/admin/member/user/'+id.id">
@@ -41,7 +41,7 @@
     </div>
     <div
      class="col-span-2 border-white border w-full pl-1"
-     v-show="accessLevel==='admin'">{{ id.email }}</div>
+     v-show="accessLevel.includes('admin')">{{ id.email }}</div>
     <div class="col-span-2 border-white border w-full pl-1">{{ new Date(id.last_daily_login_credit)
         .toLocaleString('en-US', {
           weekday: 'short',

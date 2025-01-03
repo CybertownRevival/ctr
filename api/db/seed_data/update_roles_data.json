@@ -1,0 +1,446 @@
+[
+  {
+    "name": "Admin",
+    "required_xp": "0",
+    "income_xp": "0",
+    "income_cc": "0"
+  },
+  {
+    "name": "Apprentice World Builder",
+    "required_xp": "0",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Arcade Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Arcade Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "230"
+  },
+  {
+    "name": "Bank Cashier",
+    "required_xp": "100",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Bank Manager",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Black Market Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Black Market Chief",
+    "required_xp": "500",
+    "income_xp": "26",
+    "income_cc": "300"
+  },
+  {
+    "name": "Black Sun Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Black Sun Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "230"
+  },
+  {
+    "name": "Block Deputy",
+    "required_xp": "100",
+    "income_xp": "19",
+    "income_cc": "225"
+  },
+  {
+    "name": "Block Leader",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "City Guide",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "City Mayor",
+    "required_xp": "1000",
+    "income_xp": "34",
+    "income_cc": "400"
+  },
+  {
+    "name": "Club Assistant",
+    "required_xp": "0",
+    "income_xp": "13",
+    "income_cc": "150"
+  },
+  {
+    "name": "Club Owner",
+    "required_xp": "500",
+    "income_xp": "17",
+    "income_cc": "200"
+  },
+  {
+    "name": "Clubs Chief",
+    "required_xp": "500",
+    "income_xp": "26",
+    "income_cc": "300"
+  },
+  {
+    "name": "Clubs Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Colony Deputy",
+    "required_xp": "750",
+    "income_xp": "28",
+    "income_cc": "325"
+  },
+  {
+    "name": "Colony Leader",
+    "required_xp": "1000",
+    "income_xp": "30",
+    "income_cc": "350"
+  },
+  {
+    "name": "Colony Secretary",
+    "required_xp": "300",
+    "income_xp": "20",
+    "income_cc": "275"
+  },
+  {
+    "name": "Com Tech",
+    "required_xp": "0",
+    "income_xp": "30",
+    "income_cc": "350"
+  },
+  {
+    "name": "CRVN Staff",
+    "required_xp": "200",
+    "income_xp": "20",
+    "income_cc": "235"
+  },
+  {
+    "name": "CRVN Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Deputy Mayor",
+    "required_xp": "1000",
+    "income_xp": "32",
+    "income_cc": "375"
+  },
+  {
+    "name": "Deputy Security Chief",
+    "required_xp": "500",
+    "income_xp": "26",
+    "income_cc": "300"
+  },
+  {
+    "name": "Deputy Senior City Guide",
+    "required_xp": "200",
+    "income_xp": "20",
+    "income_cc": "250"
+  },
+  {
+    "name": "Employment Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Employment Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "ePlex Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "ePlex Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Flea Market Chief",
+    "required_xp": "500",
+    "income_xp": "26",
+    "income_cc": "300"
+  },
+  {
+    "name": "Flea Market Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Fun Park Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Fun Park Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Item Creator",
+    "required_xp": "0",
+    "income_xp": "19",
+    "income_cc": "225"
+  },
+  {
+    "name": "Lead Jail Guard",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Jail Guard",
+    "required_xp": "200",
+    "income_xp": "18",
+    "income_cc": "230"
+  },
+  {
+    "name": "Le Cafe Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Le Cafe Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Library Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Library Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Mall Deputy",
+    "required_xp": "0",
+    "income_xp": "23",
+    "income_cc": "280"
+  },
+  {
+    "name": "Mall Item Checker",
+    "required_xp": "0",
+    "income_xp": "26",
+    "income_cc": "300"
+  },
+  {
+    "name": "Mall Manager",
+    "required_xp": "0",
+    "income_xp": "26",
+    "income_cc": "300"
+  },
+  {
+    "name": "Master Item Creator",
+    "required_xp": "0",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Master World Builder",
+    "required_xp": "0",
+    "income_xp": "26",
+    "income_cc": "300"
+  },
+  {
+    "name": "Mayors Secretary",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Museum Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Museum Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Neighborhood Deputy",
+    "required_xp": "300",
+    "income_xp": "23",
+    "income_cc": "275"
+  },
+  {
+    "name": "Neighborhood Leader",
+    "required_xp": "500",
+    "income_xp": "26",
+    "income_cc": "300"
+  },
+  {
+    "name": "News Editor",
+    "required_xp": "300",
+    "income_xp": "23",
+    "income_cc": "275"
+  },
+  {
+    "name": "Outlands Chief",
+    "required_xp": "500",
+    "income_xp": "26",
+    "income_cc": "300"
+  },
+  {
+    "name": "Outlands Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Pool Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Pool Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Post Office Manager",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Security Chief",
+    "required_xp": "1000",
+    "income_xp": "30",
+    "income_cc": "350"
+  },
+  {
+    "name": "Security Officer",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Senior City Guide",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Suburbs Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Suburbs Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Sunset Beach Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Sunset Beach Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Theatre Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Theatre Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Theme Park Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Theme Park Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "vDrome Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "vDrome Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "Water Park Chief",
+    "required_xp": "500",
+    "income_xp": "24",
+    "income_cc": "280"
+  },
+  {
+    "name": "Water Park Deputy",
+    "required_xp": "200",
+    "income_xp": "21",
+    "income_cc": "250"
+  },
+  {
+    "name": "World Builder",
+    "required_xp": "0",
+    "income_xp": "23",
+    "income_cc": "275"
+  }
+]

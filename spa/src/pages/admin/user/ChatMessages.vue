@@ -117,6 +117,7 @@ export default Vue.extend({
       error: null,
     };
   },
+  props: ["accessLevel"],
   methods: {
     async getUserChat(): Promise<any> {
       try {
@@ -170,6 +171,9 @@ export default Vue.extend({
     },
   },
   async created() {
+    if (!this.accessLevel.includes('security')) {
+      this.$router.push({ name: "restrictedaccess"});
+    }
     await this.getUserChat();
   },
 });
