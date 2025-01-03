@@ -353,7 +353,7 @@ export default Vue.extend({
         await this.$http.get(`/member/getadminlevel`)
           .then((response) => {
             this.accessLevel = response.data.accessLevel;
-            if(this.accessLevel === 'security'){
+            if(this.accessLevel.includes('security')){
               this.securityListener();
             }
           });
