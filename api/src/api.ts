@@ -7,19 +7,20 @@ import morgan from 'morgan';
 import {
   adminRoutes,
   avatarRoutes,
-  memberRoutes,
-  messageRoutes,
-  placeRoutes,
-  objectInstanceRoutes,
-  objectRoutes,
-  colonyRoutes,
-  hoodRoutes,
   blockRoutes,
+  clubRoutes,
+  colonyRoutes,
+  fleamarketRoutes,
   homeRoutes,
-  messageboardRoutes,
+  hoodRoutes,
   inboxRoutes,
   mallRoutes,
-  fleamarketRoutes,
+  memberRoutes,
+  messageRoutes,
+  messageboardRoutes,
+  objectInstanceRoutes,
+  objectRoutes,
+  placeRoutes,
 } from './routes';
 
 require('./cron/cron')();
@@ -62,6 +63,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/inbox', inboxRoutes);
 app.use('/api/mall', mallRoutes);
 app.use('/api/fleamarket', fleamarketRoutes);
+app.use('/api/club', clubRoutes);
 
 app.use((request, response, next) => {
   const error = new Error('Not found');
