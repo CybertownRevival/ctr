@@ -9,8 +9,8 @@ class ClubController {
   constructor(
     private clubService: ClubService,
     private memberService: MemberService,
-  ) {
-  }
+  ) {}
+  
   public async getAllClubs(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) {
@@ -25,19 +25,13 @@ class ClubController {
       response.status(401).json({message: 'Session not found or invalid'});
       return;
     }
-    //get the user's xp if less than 500 throw error
-    const userInfo = this.memberService.getMemberInfoPublic(session.id);
-    if (userInfo.xp < 500) {
-      throw new Error('You need at least 500 xp to create a club!');
-      return;
-    }
     const {name, description, type} = request.body;
-    const club = this.clubService.createClub(name, description, type);
+    const club = await this.clubService.createClub(session.id, name, description, type);
     if (!club) {
       response.status(400).send({message: 'Error creating club'});
       return;
     }
-    response.status(200).send({success: 'Club created successfully'});
+    response.status(200).send({success: club});
   }
 
   public async deleteClub(request: Request, response: Response): Promise<void> {

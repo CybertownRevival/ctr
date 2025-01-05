@@ -1,6 +1,7 @@
 export * from './admin.controller';
 export * from './avatar.controller';
 export * from './block.controller';
+export * from './club.controller';
 export * from './colony.controller';
 export * from './fleamarket.controller';
 export * from './home.controller';
