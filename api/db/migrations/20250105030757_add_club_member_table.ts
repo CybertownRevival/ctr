@@ -1,4 +1,4 @@
-import { Knex } from "knex";
+import { Knex } from 'knex';
 
 const COLLATE = 'utf8mb4_unicode_ci';
 function applyCommon(table: Knex.CreateTableBuilder) {
@@ -28,8 +28,8 @@ export async function up(knex: Knex): Promise<void> {
         .references('member.id');
 
       table.boolean('status')
-       .notNullable()
-       .defaultTo(false);
+        .notNullable()
+        .defaultTo(false);
     });
   }
 }
