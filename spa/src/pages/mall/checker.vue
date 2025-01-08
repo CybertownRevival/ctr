@@ -39,12 +39,14 @@ export default Vue.extend({
       browser.currentScene.addRootNode(inline);
     },
     async loadObject(){
-      const object = await this.$http.get(`/object/getObject/${ this.$route.params.object_id }`);
-        let objectPath = `/assets/object/${object.data.object.directory}/${object.data.object.filename}`;
-        const browser = X3D.getBrowser();
-        const inline = browser.currentScene.createNode("Inline");
-        inline.url = new X3D.MFString(objectPath);
-        browser.currentScene.addRootNode(inline);
+      await this.$http.get(`/object/getObject/${ this.$route.params.object_id }`)
+        .then((response) =>{
+          let objectPath = `/assets/object/${response.data.object.directory}/${response.data.object.filename}`;
+          const browser = X3D.getBrowser();
+          const inline = browser.currentScene.createNode("Inline");
+          inline.url = new X3D.MFString(objectPath);
+          browser.currentScene.addRootNode(inline);
+        })
     },
   },
   mounted() {
