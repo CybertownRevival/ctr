@@ -20,15 +20,15 @@
             <span 
               v-else-if="msg.username === $store.data.user.username && msg.new === true"
               class="text-yellow-200 font-bold">
-              <sup class="inline" v-show="msg.role">{{ msg.role }}</sup>
+              <sup class="inline" v-if="showRole" v-show="msg.role">{{ msg.role }}</sup>
               {{ msg.username }}
-              <sub class="inline">{{ msg.exp }}</sub> : 
+              <sub class="inline" v-if="showXP">{{ msg.exp }}</sub> : 
               <span class="font-normal">{{ msg.msg }}</span>
               </span>
             <span class="font-bold"  v-else-if="msg.new === true">
-              <sup class="inline" v-show="msg.role">{{ msg.role }}</sup>
+              <sup class="inline" v-if="showRole" v-show="msg.role">{{ msg.role }}</sup>
               {{ msg.username }}
-              <sub class="inline">{{ msg.exp }}</sub> : 
+              <sub class="inline" v-if="showXP">{{ msg.exp }}</sub> : 
               <span class="font-normal">{{ msg.msg }}</span>
             </span>
           </li>
@@ -105,7 +105,7 @@
       </div>
       <div class="flex-grow overflow-y-auto p-1 messages-pane">
         <ul v-if="activePanel === 'users'">
-          <li class="text-white">
+          <li class="text-white" @click="handler($event)" @contextmenu="handler($event)" @mouseup="menu($store.data.user.id)">
             <img src="/assets/img/av_me.gif" class="inline" />
             {{ this.$store.data.user.username }}
           </li>
@@ -196,7 +196,7 @@
             active:bg-gray-400
           "
           @click="closeMenu()">
-          Cancel Menu
+          Close Menu
         </li>
         <li style="border: inset #EEE 3px;"></li>
         <li v-show="menuGoTo" 
@@ -209,6 +209,30 @@
           "
           @click="goToPlace()">
           Go to
+        </li>
+        <li v-show="menuToggleRole" 
+          class="
+            p-1
+            pl-3.5
+            hover:text-white 
+            hover:bg-gray-500
+            active:bg-gray-400
+          "
+          >
+          <input type="checkbox" id="role" v-model="showRole" />
+          <label for="role"> Users Roles</label>
+        </li>
+        <li v-show="menuToggleXP" 
+          class="
+            p-1
+            pl-3.5
+            hover:text-white 
+            hover:bg-gray-500
+            active:bg-gray-400
+          "
+          >
+          <input type="checkbox" id="XP" v-model="showXP" />
+          <label for="XP"> Users XP</label>
         </li>
         <li v-show="menuBeamTo" 
           class="
@@ -329,7 +353,7 @@
         >
           Properties
         </li>
-        <li v-if="activePanel === 'users'" style="border:inset #EEE 3px;"></li>
+        <li v-if="menuRequestBackpack && activePanel === 'users'" style="border:inset #EEE 3px;"></li>
         <li v-show="menuRequestBackpack" 
           class="
             p-1
@@ -395,6 +419,8 @@ export default Vue.extend({
       menuProperties: false,
       menuRequestBackpack: true,
       menuGoTo: false,
+      menuToggleRole: false,
+      menuToggleXP: false,
       mallObject: false,
       activePlaces: [],
       placeList: [],
@@ -405,6 +431,8 @@ export default Vue.extend({
       chatIntervalId: null,
       pingIntervalId: null,
       chatEnabled: false,
+      showRole: true,
+      showXP: true,
     };
   },
   directives: {
@@ -544,6 +572,8 @@ export default Vue.extend({
       this.menuProperties = false;
       this.menuRequestBackpack = false;
       this.menuGoTo = false;
+      this.menuToggleRole = false;
+      this.menuToggleXP = false;
       this.mallObject = false;
       this.placeType = null;
       this.placeUsername = null;
@@ -584,12 +614,17 @@ export default Vue.extend({
 
       //User Panel
       if(this.activePanel === 'users'){
-        this.menuIgnore = true;
-        this.menuInviteChat = true;
-        this.menuRequestBackpack = true;
-        this.menuWhisper = true;
-        if(this.$store.data.view3d){
-          this.menuBeamTo = true;
+        if(target[0] === this.$store.data.user.id){
+          this.menuToggleRole = true;
+          this.menuToggleXP = true;
+        } else {
+          this.menuIgnore = true;
+          this.menuInviteChat = true;
+          this.menuRequestBackpack = true;
+          this.menuWhisper = true;
+          if(this.$store.data.view3d){
+            this.menuBeamTo = true;
+          }
         }
       }
 
