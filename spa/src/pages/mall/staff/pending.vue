@@ -60,7 +60,7 @@
               <button class="btn-ui" @click="opener(object.directory, object.filename)">WRL</button>
               <button class="btn-ui" @click="updateLimit(object.id, object.quantity)">Update Limit</button>
               <br />
-              <button class="btn-ui" @click="checkItem(object.id)">Check Item</button>
+              <button class="btn-ui" @click="checkItem(object.directory, object.filename)">Check Item</button>
             </div>
           </div>
           <div>
@@ -228,8 +228,8 @@ export default Vue.extend({
           }
       }
     },
-    checkItem(objectId) {
-      window.open("/#/mall/checker/"+objectId, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
+    checkItem(object_dir, object_file) {
+      window.open(`/#/mall/checker/${object_dir}/${object_file}`, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
     async approve(objectId): Promise<void> {
       this.showSuccess = false;

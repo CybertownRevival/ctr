@@ -18,8 +18,11 @@ export default Vue.extend({
   name: "MallChecker",
   data() {
     return {
+<<<<<<< HEAD
       directory: "",
       file: "",
+=======
+>>>>>>> c411653 (Loading Objects)
     }
   },
   methods: {
@@ -40,7 +43,11 @@ export default Vue.extend({
       browser.currentScene.addRootNode(inline);
     },
     async loadObject(){
+<<<<<<< HEAD
       let objectPath = `/assets/object/${this.directory}/${this.file}`;
+=======
+      let objectPath = `/assets/object/${this.$route.params.object_dir}/${this.$route.params.object_file}`;
+>>>>>>> c411653 (Loading Objects)
       const browser = X3D.getBrowser();
       const inline = browser.currentScene.createNode("Inline");
       inline.url = new X3D.MFString(objectPath);

@@ -435,7 +435,7 @@ export default [
         },
     },
     {
-        path: "/mall/checker/:object_id",
+        path: "/mall/checker/:object_dir/:object_file",
         component: MallChecker,
         name: "mall-checker",
         meta: {
