@@ -24,13 +24,16 @@
           </div>
           <div>
             <p class="pb-5">
-              Select a name to send an instant message.
+              Select a name to visit their home.
             </p>
             <p class="pb-5" style="width:250px">
-              Please use the Security Alert button only if you really have a security problem. You can leave a message for them at the Security In-box at the Jump Game. 
+              <b style="color: red;">Do you need to contact security?</b><br />
+              If you do, <router-link :to="{path: `/place/jail`}" ><span @click="close('Modal closed')">Click Here</span></router-link> to navigate to the Jail and leave an inbox with the details for security.
+              <!--Removed until functionality is added-->
+              <!--Please use the Security Alert button only if you really have a security problem. You can leave a message for them at the Security In-box at the Jump Gate. 
               <span style="color:lime;">
                 If you need help, you can call a City Guide using the button at the end of this list.
-              </span>
+              </span>-->
             </p>
           </div>
           <ul>
