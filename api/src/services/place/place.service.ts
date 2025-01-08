@@ -270,8 +270,8 @@ export class PlaceService {
         deputy: this.roleRepository.roleMap.FleaMarketDeputy,
       },
       mall: {
-        owner: this.roleRepository.roleMap.BankManager,
-        deputy: this.roleRepository.roleMap.BankCashier,
+        owner: this.roleRepository.roleMap.MallManager,
+        deputy: this.roleRepository.roleMap.MallDeputy,
       },
       outlands: {
         owner: this.roleRepository.roleMap.OutlandsChief,
