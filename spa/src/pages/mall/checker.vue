@@ -19,8 +19,11 @@ export default Vue.extend({
   data() {
     return {
 <<<<<<< HEAD
+<<<<<<< HEAD
       directory: "",
       file: "",
+=======
+>>>>>>> c411653 (Loading Objects)
 =======
 >>>>>>> c411653 (Loading Objects)
     }
@@ -44,7 +47,11 @@ export default Vue.extend({
     },
     async loadObject(){
 <<<<<<< HEAD
+<<<<<<< HEAD
       let objectPath = `/assets/object/${this.directory}/${this.file}`;
+=======
+      let objectPath = `/assets/object/${this.$route.params.object_dir}/${this.$route.params.object_file}`;
+>>>>>>> c411653 (Loading Objects)
 =======
       let objectPath = `/assets/object/${this.$route.params.object_dir}/${this.$route.params.object_file}`;
 >>>>>>> c411653 (Loading Objects)
