@@ -16,6 +16,9 @@ export class Db {
   get avatar() {
     return this.knex<Models.Avatar, Models.Avatar[]>('avatar');
   }
+  get clubMember() {
+    return this.knex<Models.ClubMember, Models.ClubMember[]>('club_member');
+  }
   get home() {
     return this.knex<Models.Home, Models.Home[]>('home');
   }
