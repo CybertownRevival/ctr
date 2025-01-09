@@ -1,4 +1,5 @@
 export * from './avatar.model';
+export * from './club-member.model';
 export * from './mall.model';
 export * from './map-location.model';
 export * from './member.model';
