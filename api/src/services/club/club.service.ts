@@ -58,7 +58,7 @@ export class ClubService {
     //create the club
     const place = await this.placeRepository.create(params);
     //find the role id for club owner
-    const roleId = await this.roleRepository.roleMap.ClubOwner;
+    const roleId = this.roleRepository.roleMap.ClubOwner;
     //hire the user as the owner of the club
     await this.roleAssignmentRepository.addIdToAssignment(place, memberId, roleId);
     return place;
