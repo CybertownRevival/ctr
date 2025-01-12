@@ -90,8 +90,8 @@ export class PlaceRepository {
  * @param type
  * @return string
  */
-  public async totalByType(type: string): Promise<any> {
-    return this.db.place.count('id as count').where('type', type);
+  public async totalByType(type: string[]): Promise<any> {
+    return this.db.place.count('id as count').whereIn('type', type);
   }
 
   /**
@@ -101,10 +101,10 @@ export class PlaceRepository {
    * @param offset
    * @returns
    */
-  public async findByType(type: string, limit: number, offset: number): Promise<any> {
+  public async findByType(type: string[], limit: number, offset: number): Promise<any> {
     return this.db.place
       .select(['place.*'])
-      .where('place.type', type)
+      .whereIn('place.type', type)
       .orderBy('place.id')
       .limit(limit)
       .offset(offset);

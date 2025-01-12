@@ -123,7 +123,7 @@ export class AdminService {
     await this.placeRepository.updatePlaces(id, column, content);
   }
 
-  public async searchPlaces(type: string, limit: number, offset: number): Promise<any> {
+  public async searchPlaces(type: string[], limit: number, offset: number): Promise<any> {
     const places = await this.placeRepository.findByType(type, limit, offset);
     const total = await this.placeRepository.totalByType(type);
     return {
