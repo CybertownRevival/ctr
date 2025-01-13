@@ -150,7 +150,7 @@ export class AdminService {
   }
 
   public async searchPlaces(type: string[], limit: number, offset: number): Promise<any> {
-    const places = await this.placeRepository.findByType(type, limit, offset);
+    const places = await this.placeRepository.findByType(type, limit, offset, [0,1]);
     const total = await this.placeRepository.totalByType(type);
     return {
       places: places,
