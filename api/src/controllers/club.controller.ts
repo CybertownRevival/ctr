@@ -18,12 +18,13 @@ class ClubController {
       return;
     }
     const {name, description, type} = request.body;
-    const club = await this.clubService.createClub(session.id, name, description, type);
-    if (!club) {
-      response.status(400).send({message: 'Error creating club'});
-      return;
+    try {
+      const club = await this.clubService.createClub(session.id, name, description, type);
+      response.status(200).json({success: club});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({message: error.message});
     }
-    response.status(200).send({success: club});
   }
 
   public async deleteClub(request: Request, response: Response): Promise<void> {

@@ -107,10 +107,11 @@ export class PlaceRepository {
    * @param offset
    * @returns
    */
-  public async findByType(type: string[], limit: number, offset: number): Promise<any> {
+  public async findByType(type: string[], limit: number, offset: number, status: number[]): Promise<any> {
     return this.db.place
       .select(['place.*'])
       .whereIn('place.type', type)
+      .whereIn('place.status', status)
       .orderBy('place.id')
       .limit(limit)
       .offset(offset);
