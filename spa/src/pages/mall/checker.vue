@@ -18,14 +18,15 @@ export default Vue.extend({
   name: "MallChecker",
   data() {
     return {
-<<<<<<< HEAD
-<<<<<<< HEAD
       directory: "",
       file: "",
+<<<<<<< HEAD
 =======
 >>>>>>> c411653 (Loading Objects)
 =======
 >>>>>>> c411653 (Loading Objects)
+=======
+>>>>>>> ebe5ed5 (Update object path logic in MallChecker component)
     }
   },
   methods: {
@@ -46,15 +47,14 @@ export default Vue.extend({
       browser.currentScene.addRootNode(inline);
     },
     async loadObject(){
-<<<<<<< HEAD
-<<<<<<< HEAD
-      let objectPath = `/assets/object/${this.directory}/${this.file}`;
-=======
       let objectPath = `/assets/object/${this.$route.params.object_dir}/${this.$route.params.object_file}`;
+<<<<<<< HEAD
 >>>>>>> c411653 (Loading Objects)
 =======
       let objectPath = `/assets/object/${this.$route.params.object_dir}/${this.$route.params.object_file}`;
 >>>>>>> c411653 (Loading Objects)
+=======
+>>>>>>> ebe5ed5 (Update object path logic in MallChecker component)
       const browser = X3D.getBrowser();
       const inline = browser.currentScene.createNode("Inline");
       inline.url = new X3D.MFString(objectPath);
