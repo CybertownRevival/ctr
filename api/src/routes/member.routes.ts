@@ -55,8 +55,7 @@ memberRoutes.post('/check3d', (request, response) => memberController.check3d(re
 memberRoutes.get('/places', (request, response) => 
   memberController.getActivePlaces(request, response));
 memberRoutes.get('/backpack/:username', (request, response) =>
-  memberController.getBackpack(request, response));
-memberRoutes.get('/online_users', (request, response) =>
-  memberController.getOnlineUsers(request, response));
+  memberController.getBackpack(request, response),
+);
 
 export { memberRoutes };
