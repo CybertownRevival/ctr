@@ -18,7 +18,8 @@ export default Vue.extend({
   name: "MallChecker",
   data() {
     return {
-      
+      directory: "",
+      file: "",
     }
   },
   methods: {
@@ -39,13 +40,20 @@ export default Vue.extend({
       browser.currentScene.addRootNode(inline);
     },
     async loadObject(){
-      const object = await this.$http.get(`/object/getObject/${ this.$route.params.object_id }`);
-        let objectPath = `/assets/object/${object.data.object.directory}/${object.data.object.filename}`;
-        const browser = X3D.getBrowser();
-        const inline = browser.currentScene.createNode("Inline");
-        inline.url = new X3D.MFString(objectPath);
-        browser.currentScene.addRootNode(inline);
+      let objectPath = `/assets/object/${this.directory}/${this.file}`;
+      const browser = X3D.getBrowser();
+      const inline = browser.currentScene.createNode("Inline");
+      inline.url = new X3D.MFString(objectPath);
+      browser.currentScene.addRootNode(inline);
     },
+    async getObjectDetails(){
+      const object = await this.$http.get(`/object/get_object/${ this.$route.params.object_id }`);
+      this.directory = object.data.object.directory;
+      this.file = object.data.object.filename;
+    },
+  },
+  created(){
+    this.getObjectDetails();
   },
   mounted() {
     setTimeout(this.loadObjectPreview, 1000);
