@@ -34,10 +34,7 @@
           </li>
         </ul>
       </div>
-      <div
-        class="flex flex-none flex-row space-x-0.5 bg-black"
-        v-show="connected"
-      >
+      <div class="flex flex-none flex-row space-x-0.5 bg-black" v-show="chatEnabled">
         <input
           type="text"
           v-model="message"
@@ -76,19 +73,19 @@
           ({{ this.users.length + 1 }}) {{ this.$store.data.place.name }}
         </span>
         <span v-if="activePanel === 'places'" class="flex-grow">
-          ({{ this.activePlaces.length }}) Places
+          Places ({{ this.activePlaces.length }})
         </span>
         <span v-if="activePanel === 'gestures'" class="flex-grow">
           Body Language
         </span>
         <span v-if="activePanel === 'sharedObjects'" class="flex-grow">
-          ({{  this.sharedObjects.length }}) Objects
+          Objects ({{  this.sharedObjects.length }})
         </span>
         <span v-if="activePanel === 'backpack'" class="flex-grow">
-          ({{  this.backpackObjects.length }}) My Backpack
+          My Backpack ({{  this.backpackObjects.length }})
         </span>
         <span v-if="activePanel === 'userBackpack'" class="flex-grow">
-          ({{ this.backpackObjects.length }}) {{ this.usernameBackPack }}'s Backpack
+          {{ this.usernameBackPack }}'s Backpack ({{ this.backpackObjects.length }})
         </span>
         <button
           type="button"
@@ -101,6 +98,7 @@
             active:bg-gray-400
           "
           @click="changeActivePanel"
+          v-show="chatEnabled"
         >
           Next
         </button>
@@ -432,8 +430,10 @@ export default Vue.extend({
       placeId: null,
       chatIntervalId: null,
       pingIntervalId: null,
+      chatEnabled: false,
       showRole: true,
       showXP: true,
+
     };
   },
   directives: {
@@ -873,6 +873,7 @@ export default Vue.extend({
       this.$socket.on("disconnect", () => {
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
         this.setTimers(false);
+        this.chatEnabled = false;
       });
       this.$socket.on("update-object", (object) => {
         if([object.member_username, object.buyer_username].includes(this.$store.data.user.username) || 
@@ -967,7 +968,8 @@ export default Vue.extend({
   mounted() {
     this.debugMsg("starting chat page...");
     this.startSocketListeners();
-    if (this.$store.data.place) {
+    if (this.$store.data.place && this.connected) {
+      this.chatEnabled = true;
       this.startNewChat();
       this.canAdmin();
       this.getRole();

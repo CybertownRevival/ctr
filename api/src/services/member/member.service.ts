@@ -562,6 +562,12 @@ export class MemberService {
     }
   }
 
+  public async getOnlineUsers(): Promise<any> {
+    const activeTime = new Date(Date.now() - 5 * 60000);
+    const users = await this.memberRepository.findOnlineUsers(activeTime);
+    return users;
+  }
+
   public async getBackpack(username: string): Promise<any> {
     let memberId = null;
     let userId = null;
