@@ -433,7 +433,6 @@ export default Vue.extend({
       chatEnabled: false,
       showRole: true,
       showXP: true,
-
     };
   },
   directives: {
