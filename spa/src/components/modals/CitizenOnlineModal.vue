@@ -4,7 +4,7 @@
         <button type="button" class="btn-ui-inline" @click="close('Modal closed')">X</button>
     </template>
     <template v-slot:body>
-    <div class="grid" style="grid-template-rows: calc(100vh - 225px) 115px;">
+    <div class="grid" style="grid-template-rows: calc(100vh - 225px) 115px; max-width: 250px;">
       <div class="overflow-y-auto">
         <div class="pb-5">
           <h1 align="center">{{ users.length }} <span v-if="users.length > 1">Citizens</span><span v-else>Citizen</span> Online</h1>
@@ -13,7 +13,11 @@
           <div class="pb-5" v-if="action">
             <h3 v-if="security.length > 0" style="color:red;"><b>Security Alerted!</b></h3>
             <p v-if="security.length === 0" style="width: 250px">
-              There are no security online at this time. Please leave a message in the security in-box<br /> <router-link :to="{slug: `enter`}" >Security In-Box.</router-link>
+              There are no security online at this time. Please leave a message in the security in-box
+              <br /> 
+              <span @click="opener(`/#/inbox/${ jailId }`)">
+                <b style="color: lime; cursor: pointer;">Security In-Box</b>
+              </span>
             </p>
             <p v-else-if="security.length === 1">
               1 City Security Member Reached.
@@ -27,16 +31,34 @@
               Select a name to visit their home.
             </p>
             <p class="pb-5" style="width:250px">
+              <!--This message is temporary until security alerts are implemented.-->
               <b style="color: red;">Do you need to contact security?</b><br />
-              If you do, <router-link :to="{path: `/place/jail`}" ><span @click="close('Modal closed')">Click Here</span></router-link> to navigate to the Jail and leave an inbox with any details relevant to the problem.
+              <div v-if="jailId">
+                If you do, 
+                <span @click="opener(`/#/inbox/${ jailId }`)">
+                  <b style="color: lime; cursor: pointer;">Click Here</b>
+                </span> 
+                to leave security a message with any details relevant to the problem.
+              </div>
+              <div v-else>
+                If you do, 
+                <router-link :to="{path: `/place/jail`}" >
+                  <span @click="close('Modal closed')">Click Here</span>
+                </router-link> 
+                to navigate to the Jail and leave an inbox with any details relevant to the problem.
+              </div>
               <!--Removed until functionality is added-->
-              <!--Please use the Security Alert button only if you really have a security problem. You can leave a message for them at the Security In-box at the Jump Gate. 
+              <!--Please use the Security Alert button only if you really have a security problem. 
+              You can leave a message for them at the 
+              <span @click="opener(`/#/inbox/${ jailId }`)">
+                <b style="color: lime; cursor: pointer;">Security In-Box</b>
+              </span>.
               <span style="color:lime;">
                 If you need help, you can call a City Guide using the button at the end of this list.
               </span>-->
             </p>
           </div>
-          <ul>
+          <ul class="p-5">
             <li v-for="user in users" :key="user.username">
               <span class="cursor-pointer" @click="openMemberProfile(user)">
                 <span v-if="user.hasHome" style="color:lime;">{{ user.username }}</span>
@@ -87,6 +109,7 @@ export default Vue.extend({
     return {
       users: [],
       security: [],
+      jailId: null,
     };
   },
   methods: {
@@ -98,6 +121,10 @@ export default Vue.extend({
           this.security.push(user);
         }
       })
+    },
+    async getJailId(){
+      const jail = await this.$http.get("/place/jail");
+      this.jailId = jail.data.place.id;
     },
     confirmSecurityAlert(){
       ModalService.open(ConfirmAlertModal);
@@ -145,9 +172,13 @@ export default Vue.extend({
       // Have options to add people to a friends list
       // Have option to be hidden/invisible
     },
+    async opener(link) {
+      window.open(link, "targetWindow", "height=650,width=800,menubar=no,status=no");
+    },
   },
   created(){
     this.getOnlineMembers();
+    this.getJailId();
   },
   mounted(){
     if(this.action){
