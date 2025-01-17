@@ -26,11 +26,11 @@
               {{ security.length }} City Security Members Reached
             </p>
           </div>
-          <div>
+          <div style="width: 200px;">
             <p class="pb-5">
               Select a name to visit their home.
             </p>
-            <p class="pb-5" style="width:250px">
+            <p class="pb-5">
               <!--This message is temporary until security alerts are implemented.-->
               <b style="color: red;">Do you need to contact security?</b><br />
               <div v-if="jailId">
