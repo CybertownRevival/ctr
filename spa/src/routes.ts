@@ -61,6 +61,7 @@ import MallPending from "@/pages/mall/staff/pending.vue";
 import MallStocked from "@/pages/mall/staff/stocked.vue";
 import MallSoldOut from "@/pages/mall/staff/soldout.vue";
 import MallObjectSearch from "@/pages/mall/staff/search.vue";
+import MallChecker from "@/pages/mall/checker.vue";
 
 import ObjectProperties from "./pages/ObjectProperties.vue";
 
@@ -431,6 +432,15 @@ export default [
         meta: {
             title: "Mall Upload",
             wrapper: true,
+        },
+    },
+    {
+        path: "/mall/checker/:object_id",
+        component: MallChecker,
+        name: "mall-checker",
+        meta: {
+            title: "Mall Checker",
+            wrapper: false,
         },
     },
     {

@@ -59,6 +59,8 @@
               <button class="btn-ui" v-show="object.texture" @click="opener(object.directory, object.texture)">Texture</button> 
               <button class="btn-ui" @click="opener(object.directory, object.filename)">WRL</button>
               <button class="btn-ui" @click="updateLimit(object.id, object.quantity)">Update Limit</button>
+              <br />
+              <button class="btn-ui" @click="checkItem(object.id)">Check Item</button>
             </div>
           </div>
           <div>
@@ -225,6 +227,9 @@ export default Vue.extend({
             }
           }
       }
+    },
+    checkItem(objectId) {
+      window.open("/#/mall/checker/"+objectId, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
     async approve(objectId): Promise<void> {
       this.showSuccess = false;
