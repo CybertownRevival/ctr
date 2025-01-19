@@ -32,7 +32,7 @@
         </button>
         <div class="flex-1 w-4/5 border p-2 mb-5">
           <h2 class="flex mb-5">Objects In {{ unitName }}</h2>
-          <div class="grid w-full justify-center" style="grid-template-columns: 1fr 1fr 1fr 1fr;" v-if="storageObjects.length >= 1">
+          <div class="grid w-full justify-center" style="grid-template-columns: 1fr 1fr 1fr 1fr; max-height: 45vh; overflow-y: auto;" v-if="storageObjects.length >= 1">
             <div v-for="(obj, key) in storageObjects" :key="key">
               <div class="flex">
                 <div class="px-2">
@@ -61,7 +61,7 @@
       <div class="flex w-full justify-center" v-show="username === $store.data.user.username && page === 'unit'">
         <div class="flex-1 w-4/5 border p-2">
           <h2 class="flex mb-5">My Backpack</h2>
-          <div class="grid w-full justify-center" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+          <div class="grid w-full justify-center" style="grid-template-columns: 1fr 1fr 1fr 1fr; max-height: 30vh; overflow-y: auto;">
             <div v-for="(obj, key) in backpack" :key="key">
               <div class="flex">
                 <div class="px-2">
