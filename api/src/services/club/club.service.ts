@@ -24,11 +24,20 @@ export class ClubService {
     description: string, 
     type: string,
   ): Promise<number> {
+    //if club name is less than 3 characters throw error
+    if (name.length < 3) {
+      throw new Error('Club name must be at least 3 characters');
+    }
     //get the user's xp if less than 500 throw error
     const userInfo = await this.memberRepository.find({id: memberId});
     console.log(userInfo.xp);
     if (userInfo.xp < 500) {
       throw new Error('You need at least 500 xp to create a club');
+    }
+    //check if club name already exists
+    const clubExists = await this.placeRepository.findByName(name);
+    if (clubExists) {
+      throw new Error('Club name already exists');
     }
     //get the number of clubs the user has
     const clubCount = await this.placeRepository.countClubs(memberId);
@@ -36,6 +45,7 @@ export class ClubService {
     if (clubCount >= 3) {
       throw new Error('You can only have upto 3 clubs');
     }
+    
     /*
     * if club is private, private is true,
     * else if public, private is false,
@@ -55,6 +65,7 @@ export class ClubService {
       name: name,
       description: description,
       private: isPrivate,
+      type: 'club',
     };
     //create the club and capture place id
     const placeId = await this.placeRepository.create(params);
@@ -83,14 +94,20 @@ export class ClubService {
 
   public async searchClubs(search: string, limit: number, offset: number): Promise<any> {
     const clubs = await this.placeRepository.findByType(
-      ['public_club', 'private_club'], 
+      ['club'],
       limit, 
       offset,
-     [1],
+      [1],
+      'name',
     );
-    const total = await this.placeRepository.totalByType(['public_club', 'private_club']);
+    const clubsResults = clubs.map((club) => ({
+      id: club.id,
+      description: club.description,
+      name: club.name,
+    }));
+    const total = await this.placeRepository.totalByType(['club']);
     return {
-      clubs: clubs,
+      clubs: clubsResults,
       total: total,
     };
   }
