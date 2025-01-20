@@ -3,12 +3,14 @@ import { Container } from 'typedi';
 import {
   ClubService,
   MemberService,
+  PlaceService,
 } from '../services/';
 
 class ClubController {
   constructor(
     private clubService: ClubService,
     private memberService: MemberService,
+    private placeService: PlaceService,
   ) {}
 
   public async createClub(request: Request, response: Response): Promise<void> {
@@ -32,6 +34,37 @@ class ClubController {
     if (!session) {
       response.status(401).send();
       return;
+    }
+    const clubId = Number.parseInt(request.query.clubId.toString());
+    const canAdmin = await this.placeService.canAdmin('clubs', clubId, session.id);
+    
+    if (canAdmin) {
+      try {
+        await this.clubService.deleteClub(clubId);
+        response.status(200).json({success: true});
+        return;
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({message: error.message});
+        return;
+      }
+    }
+  }
+  
+  //get members of a club
+  public async getClubMembers(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) {
+      response.status(401).json({message: 'Session not found or invalid'});
+      return;
+    }
+    const clubId = Number.parseInt(request.query.clubId.toString());
+    try {
+      const members = await this.clubService.getMembers(clubId);
+      response.status(200).json({members});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({message: error.message});
     }
   }
 
@@ -65,7 +98,9 @@ class ClubController {
 
 const clubService = Container.get(ClubService);
 const memberService = Container.get(MemberService);
+const placeService = Container.get(PlaceService);
 export const clubController = new ClubController(
   clubService,
   memberService,
+  placeService,
 );
