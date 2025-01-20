@@ -28,6 +28,13 @@ export class ClubMemberRepository {
     return;
   }
   
+  public async removeAllMembers(clubId: number): Promise<void> {
+    await knex('club_member')
+      .where({club_id: clubId})
+      .del();
+    return;
+  }
+  
   public async getMembers(clubId: number): Promise<any> {
     return knex('club_member')
       .select('member_id', 'status')
