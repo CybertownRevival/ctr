@@ -109,14 +109,14 @@
 
       </div>
     </div>
-    <storage></storage>
+    <storage :member_id="this.$store.data.place.member_id" v-if="showStorage"></storage>
   </div>
 </template>
 
 <script lang="ts">
 import { dateFormatFilter } from '@/helpers/fiters';
 import Vue from 'vue';
-import Storage from "../../Storage.vue";
+import Storage from "../../storage/Storage.vue";
 
 export default Vue.extend({
   name: "HomeMain2d",
@@ -126,16 +126,19 @@ export default Vue.extend({
       memberInfo: {},
       canAdmin: false,
       loaded: false,
-
+      showStorage: false,
     };
   },
 
   methods: {
     async getData() {
-
+      this.showStorage = false;
       try {
         const response = await this.$http.get("/member/info/"+this.$store.data.place.member_id);
         this.memberInfo = response.data.memberInfo;
+        if(this.$store.data.place.member_id === this.$store.data.user.id){
+          this.showStorage = true;
+        }
       } catch (error) {
         console.log(error);
       }

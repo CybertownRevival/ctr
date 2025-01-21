@@ -477,8 +477,9 @@ class MemberController {
   public async getStorage(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
+    const member_id = parseInt(request.body.member_id);
     try {
-      const storage = await this.memberService.getStorage(session.id);
+      const storage = await this.memberService.getStorage(member_id);
       response.status(200).json({ storage });
     } catch (error) {
       console.log(error);
