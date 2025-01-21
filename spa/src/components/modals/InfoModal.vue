@@ -27,14 +27,13 @@
                   </a>
                 </td>
               </tr>
+            </table>
+            <table>
               <tr>
                 <td width=200 align=center>
                   <a href="#" @click="openAccountModal">
                     <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>My Account</b>
                   </a>
-                </td>
-                <td width=200 align=center>
-                  <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Storage Units</b>
                 </td>
                 <td width=200 align=center>
                   <a href="#" @click="openAvatarModal">
