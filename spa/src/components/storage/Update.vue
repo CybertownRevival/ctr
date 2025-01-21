@@ -7,7 +7,7 @@
           <div class="flex"><div>
             <h3>
               <div class="flex mb-2">
-                <button class="btn" style="line-height:13px;" @click="updateName(unit.id, unit.name, unit.count), changePage('updateName')">
+                <button style="color:lime; text-decoration: underline;" @click="updateName(unit.id, unit.name, unit.count), changePage('updateName')">
                   {{ unit.name }}
                 </button>
                 <span class="flex px-2">( {{ unit.count }} </span>
@@ -36,7 +36,7 @@
       <span v-if="unitCount === 1">Object</span>
       <span v-else>Objects</span>
       )
-      <div class="flex mt-5">
+      <div class="flex py-5">
         <button class="btn mx-2" @click="editName()">Update</button>
         <button class="btn mx-2" @click="changePage('updateStorage')">Cancel</button>
       </div>

@@ -7,7 +7,7 @@
           <div class="flex">
             <div class="px-2">
               <h3>
-                <a href="#" @click="storageOpener(unit.id)">{{ unit.name }}</a> 
+                <button @click="storageOpener(unit.id)" style="color:lime;text-decoration: underline;">{{ unit.name }}</button> 
                 ( {{ unit.count }} 
                 <span v-if="unit.count === 1">Object</span>
                 <span v-else>Objects</span>
@@ -79,7 +79,7 @@ export default Vue.extend({
       }
     },
     storageOpener(id) {  
-      window.open("/#/storage/"+id, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
+      window.open("/#/storage/unit/"+id, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
     updateStorageAreas() {
       window.open("/#/storage/update", "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");

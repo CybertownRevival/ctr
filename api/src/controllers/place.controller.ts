@@ -121,6 +121,8 @@ class PlaceController {
   }
 
   public async getPlaceById(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
     try {
       const place = await this.placeService.findById(parseInt(request.params.id));
       response.status(200).json({ place });
