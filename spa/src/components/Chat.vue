@@ -111,7 +111,7 @@
           </li>
           <li class="cursor-default" v-for="(user, key) in users" :key="key" @click="handler($event)" @contextmenu="handler($event)" @mouseup="menu(user.id, user.username)">
             <img src="/assets/img/av_mute.gif" class="inline" v-if="blockedMembers.includes(user.username) === true" />
-            <img src="/assets/img/av_def.gif" class="inline" v-else-if="user.is3d === 1" />
+            <img src="/assets/img/av_def.gif" class="inline" v-else-if="worldMembers.includes(user.username) === true" />
             <img src="/assets/img/av_invis.gif" class="inline" v-else />
             {{ user.username }}
           </li>
@@ -430,6 +430,7 @@ export default Vue.extend({
       placeId: null,
       chatIntervalId: null,
       pingIntervalId: null,
+      worldMembers: [],
       chatEnabled: false,
       showRole: true,
       showXP: true,
@@ -792,12 +793,12 @@ export default Vue.extend({
       }
       this.closeMenu();
     },
-    async isMember3D(username){
-      const check3d = await this.$http.post('/member/check3d', {
-        username: username,
-      });
-      return check3d.data.user3d[0].is_3d
-    },
+    async isMember3D(user){
+      const check3D = await this.$http.get(`/member/check3d/${user.username}`);
+        if(check3D.data.user3d[0].is_3d === 1){
+          this.worldMembers.push(user.username);
+        }
+      },
     async updateObjectLists(object){
       let alteredBackpack = [];
       if(['backpack', 'userBackpack'].includes(this.activePanel)){
@@ -860,14 +861,15 @@ export default Vue.extend({
       this.$socket.on("AV:del", event => {
         this.systemMessage(event.username + " has left.");
         this.users = this.users.filter((u) => u.id !== event.id);
+        let index = this.worldMembers.indexOf(event.username);
+        if(index > -1){
+          this.worldMembers.splice(index, 1);
+        }
       });
       this.$socket.on("AV:new", event => {
         this.systemMessage(event.username + " has entered.");
-        this.isMember3D(event.username)
-          .then((response) => {
-            event.is3d = response;
-            this.users.push(event);
-          });
+        this.users.push(event);
+        this.isMember3D(event);
       });
       this.$socket.on("disconnect", () => {
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
