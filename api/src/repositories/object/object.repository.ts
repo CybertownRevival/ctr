@@ -107,11 +107,31 @@ export class ObjectRepository {
       .offset(offset);
   }
 
+  public async searchAllObjects(
+    search: string, 
+    compare: string, 
+    status:number, 
+    limit: number, 
+    offset: number): Promise<any> {
+    return await this.db.object
+      .where('status',compare, status)
+      .where(this.like('name', search))
+      .limit(limit)
+      .offset(offset);
+  }
+
   public async getTotal(search: string): Promise<any> {
     return await this.db.object
       .count('id as count')
       .where('status','!=', '0')
       .where('status','!=', '2')
+      .where(this.like('object.name', search));
+  }
+
+  public async getSearchTotal(search: string, compare: string, status: number): Promise<any> {
+    return await this.db.object
+      .count('id as count')
+      .where('status',compare, status)
       .where(this.like('object.name', search));
   }
 
