@@ -3,9 +3,15 @@
     <div class="flex flex-col w-full place-items-center">
     <div class="text-red-500" v-show="error">{{ error }}</div>
     <div class="text-center w-full text-5xl mb-1">My Restockable Objects</div>
-    <div class="grid grid-cols-2 w-4/6 justify-items-center">
-      <div>
+    <div class="grid grid-cols w-4/6 justify-items-center">
+      <div class="mt-5">
+        <select v-model.number="sortList" @change="getResults()">
+          <option value=9>All Restockable</option>
+          <option value=1>Stocked</option>
+          <option value=4>Destocked</option>
+        </select>
       </div>
+      <div></div>
     </div>
     <br />
     <div class="grid-cols-1 w-4/6 justify-items-center text-center ">
@@ -48,7 +54,7 @@
           </div>
           <div>
             <br />
-            <button class="btn-ui" @click="addQuantity(object.id)" v-show="['Unlimited', '0', null].includes(object.limit) || object.quantity < object.limit">Add More</button>
+            <button class="btn-ui" @click="addQuantity(object.id)" v-show="['Unlimited', '0', 0, null].includes(object.limit) || object.quantity < object.limit">Add More</button>
           </div>
         </div>
       </div>
@@ -75,6 +81,7 @@ export default Vue.extend({
       limit: 1000,
       offset: 0,
       showNext: true,
+      sortList: 9,
     };
   },
   methods: {
@@ -89,11 +96,15 @@ export default Vue.extend({
           offset: this.offset,
         });
         response.data.object.objects.forEach(obj => {
-        if((['Unlimited', '0', null].includes(obj.limit) ||
-          obj.quantity < parseInt(obj.limit)) && 
-          obj.status !== 0) 
+        if((['Unlimited', '0', 0, null].includes(obj.limit) ||
+          obj.quantity < parseInt(obj.limit)) && obj.status !== 0) 
           {
-            this.objects.push(obj);
+            if(this.sortList === obj.status){
+              this.objects.push(obj);
+            }
+            if(this.sortList === 9){
+              this.objects.push(obj);
+            }
           }
         })
         this.total = this.objects.length;
