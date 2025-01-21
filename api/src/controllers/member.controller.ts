@@ -102,7 +102,7 @@ class MemberController {
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;
     try {
-      const user3d = await this.memberService.check3d(request.body.username);
+      const user3d = await this.memberService.check3d(request.params.username);
       response.status(200).json({ user3d });
     } catch (error) {
       console.error(error);
