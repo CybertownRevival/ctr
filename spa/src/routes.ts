@@ -28,6 +28,8 @@ import HomeTools from "@/pages/home/HomeTools.vue";
 import HomeUpdatePage from "@/pages/home/HomeUpdatePage.vue";
 import HomeUpdateHomePage from "@/pages/home/HomeUpdateHomePage.vue";
 
+import UpdateStorageArea from "@/components/storage/Update.vue";
+
 import MessageBoard from "@/pages/MessageBoard.vue";
 import Inbox from "@/pages/Inbox.vue";
 
@@ -569,6 +571,14 @@ export default [
             default: ObjectProperties,
         },
         name: "object-properties",
+        meta: { wrapper: false },
+    },
+    {
+        path: "/storage/update",
+        components: {
+            default: UpdateStorageArea,
+        },
+        name: "update-storage",
         meta: { wrapper: false },
     },
 ];
