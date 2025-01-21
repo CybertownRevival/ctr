@@ -40,36 +40,58 @@
     </div>
     <table class="table-auto border-collapse">
       <tr>
-        <th></th>
         <th class="p-4">ID</th>
-        <th class="p-4">Name</th>
-        <th class="p-4">Directory</th>
-        <th class="p-4">Filename</th>
-        <th class="p-4">Thumbnail</th>
-        <th class="p-4">Texture</th>
-        <th class="p-4">Creator</th>
-        <th class="p-4">Price</th>
-        <th class="p-4">Limit</th>
-        <th class="p-4">Quantity</th>
-        <th class="p-4">Sold</th>
+        <th class="p-4">Object Name</th>
+        <th class="p-4">File Details</th>
+        <th class="p-4">Uploaded By</th>
+        <th class="p-4">Statistics</th>
         <th class="p-4">Status</th>
+        <th class="p-4"></th>
       </tr>
-      <tr class="border" v-for="object in objects"
+      <tr class="border" style="vertical-align: top;" v-for="object in objects"
           :key="object.id">
-          <td class="p-4"><button v-if="accessLevel.includes('admin')" class="btn-ui h-20" @click="openUpdater(object.id)">Edit Object Details</button></td>
-          <td class="p-4">{{ object.id }}</td>
-          <td class="p-4">{{ object.name }}</td>
-          <td class="p-4">{{ object.directory }}</td>
-          <td class="p-4">{{ object.filename }}</td>
-          <td class="p-4">{{ object.image }}</td>
-          <td class="p-4">{{ object.texture }}</td>
-          <td class="p-4">{{ object.username }}</td>
-          <td class="p-4">{{ object.price }}</td>
-          <td class="p-4" v-if="object.limit">1/{{ object.limit }}</td>
-          <td class="p-4" v-else>Unlimited</td>
-          <td class="p-4">{{ object.quantity }}</td>
-          <td class="p-4">{{ object.instances }}</td>
-          <td class="p-4">{{ objectState[object.status] }}</td>
+          <td class="p-5">{{ object.id }}</td>
+          <td class="p-5" style="color:lime;">{{ object.name }}</td>
+          <td class="p-4">
+            <div class="grid" style="grid-template-columns: 100px auto;">
+              <span class="p-1 text-right italic">Directory: </span>
+              <span class="p-1 font-bold">{{ object.directory }}</span>
+            </div>
+            <div class="grid" style="grid-template-columns: 100px auto;">
+              <span class="p-1 text-right italic">Filename: </span>
+              <span class="p-1 font-bold">{{ object.filename }}</span>
+            </div>
+            <div class="grid" style="grid-template-columns: 100px auto;">
+              <span class="p-1 text-right italic">Thumbnail: </span>
+              <span class="p-1 font-bold">{{ object.image }}</span>
+            </div>
+            <div class="grid" style="grid-template-columns: 100px auto;">
+              <span class="p-1 text-right italic">Texture: </span>
+              <span class="p-1 font-bold">{{ object.texture }}</span>
+            </div>
+          </td>
+          <td class="p-5" style="color:lime;">{{ object.username }}</td>
+          <td class="p-4">
+            <div class="grid grid-cols-2">
+              <span class="p-1 text-right italic">Price: </span>
+              <span class="p-1 font-bold">{{ object.price }}</span>
+            </div>
+            <div class="grid grid-cols-2">
+              <span class="p-1 text-right italic">Limit: </span>
+              <span class="p-1 font-bold" v-if="object.limit">1/{{ object.limit }}</span>
+              <span class="p-1 font-bold" v-else>Unlimited</span>
+            </div>
+            <div class="grid grid-cols-2">
+              <span class="p-1 text-right italic">Quantity: </span>
+              <span class="p-1 font-bold">{{ object.quantity }}</span>
+            </div>
+            <div class="grid grid-cols-2">
+              <span class="p-1 text-right italic">Sold: </span>
+              <span class="p-1 font-bold">{{ object.instances }}</span>
+            </div>
+          </td>
+          <td class="p-5 font-bold" style="color:lime;">{{ objectState[object.status] }}</td>
+          <td class="p-5"><button class="btn-ui p-2" @click="openUpdater(object.id)">Update<br />Object</button></td>
       </tr>
     </table>
     <div class="flex w-full justify-center">
