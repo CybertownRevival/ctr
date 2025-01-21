@@ -8,6 +8,7 @@ import {
   RoleRepository,
   AvatarRepository,
   PlaceRepository,
+  ObjectRepository,
 } from '../../repositories';
 
 @Service()
@@ -20,6 +21,7 @@ export class AdminService {
    private roleRepository: RoleRepository,
    private avatarRespository: AvatarRepository,
    private placeRepository: PlaceRepository,
+   private objectRepository: ObjectRepository,
   ) {}
   
   public async addBan(ban_member_id, time_frame, type, assigner_member_id, reason): Promise<void> {
@@ -121,6 +123,30 @@ export class AdminService {
 
   public async updatePlaces(id: number, column: string, content: string): Promise<any> {
     await this.placeRepository.updatePlaces(id, column, content);
+  }
+
+  public async updateObjects(
+    id: number, 
+    name: string, 
+    directory: string,
+    filename: string,
+    image: string,
+    price: number,
+    limit: number,
+    quantity: number,
+    status: number
+  ): Promise<any> {
+    await this.objectRepository
+      .update(id, {
+        name: name,
+        directory: directory,
+        filename: filename,
+        image: image,
+        price: price,
+        limit: limit,
+        quantity: quantity,
+        status: status
+      });
   }
 
   public async searchPlaces(type: string, limit: number, offset: number): Promise<any> {
