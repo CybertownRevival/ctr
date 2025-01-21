@@ -109,15 +109,18 @@
 
       </div>
     </div>
+    <storage></storage>
   </div>
 </template>
 
 <script lang="ts">
 import { dateFormatFilter } from '@/helpers/fiters';
 import Vue from 'vue';
+import Storage from "../../Storage.vue";
 
 export default Vue.extend({
   name: "HomeMain2d",
+  components: { Storage },
   data: () => {
     return {
       memberInfo: {},
