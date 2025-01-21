@@ -32,11 +32,11 @@
         </button>
         <div class="flex-1 w-4/5 border p-2 mb-5">
           <h2 class="flex mb-5">Objects In {{ unitName }}</h2>
-          <div class="grid w-full justify-center" style="grid-template-columns: 1fr 1fr 1fr 1fr; max-height: 45vh; overflow-y: auto;" v-if="storageObjects.length >= 1">
+          <div class="grid w-full justify-center" style="grid-template-columns: repeat(4, minmax(130px, 1fr)); max-height: 45vh; overflow-y: auto;" v-if="storageObjects.length >= 1">
             <div v-for="(obj, key) in storageObjects" :key="key">
               <div class="flex">
-                <div class="px-2">
-                  <h3>
+                <div class="px-2" style="overflow-x: hidden;">
+                  <h3 class="flex" style="white-space: nowrap;">
                     <input type="checkbox" v-model="moveToBackpack" :value="obj.id" />
                     <a href="#" @click="objectOpener(obj.id)" class="px-2">
                       <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
@@ -61,11 +61,11 @@
       <div class="flex w-full justify-center" v-show="username === $store.data.user.username && page === 'unit'">
         <div class="flex-1 w-4/5 border p-2">
           <h2 class="flex mb-5">My Backpack</h2>
-          <div class="grid w-full justify-center" style="grid-template-columns: 1fr 1fr 1fr 1fr; max-height: 30vh; overflow-y: auto;">
+          <div class="grid w-full justify-center" style="grid-template-columns: repeat(4, minmax(130px, 1fr)); max-height: 30vh; overflow-y: auto;">
             <div v-for="(obj, key) in backpack" :key="key">
               <div class="flex">
-                <div class="px-2">
-                  <h3>
+                <div class="px-2" style="overflow-x: hidden;">
+                  <h3 class="flex" style="white-space: nowrap;">
                     <input type="checkbox" v-model="moveToStorage" :value="obj.id" />
                     <a href="#" @click="objectOpener(obj.id)" class="px-2">
                       <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
