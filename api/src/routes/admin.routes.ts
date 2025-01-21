@@ -34,5 +34,7 @@ adminRoutes.get('/allplacessearch', (request, response) =>
   adminController.searchAllPlaces(request, response));
 adminRoutes.post('/places/update', (request, response) =>
   adminController.placesUpdate(request, response));
+adminRoutes.post('/objects/update', (request, response) =>
+  adminController.objectssUpdate(request, response));
 
 export {adminRoutes};

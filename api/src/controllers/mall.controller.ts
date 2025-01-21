@@ -90,6 +90,36 @@ class MallController {
     }
   }
 
+  public async searchAllObjects(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.mallService.canAdmin(session.id);
+    if (admin) {
+      try {
+        const compareValues = ['=', '!=', '>', '<', '>=', '<='];
+        const search = request.query.search.toString().replace(/[^0-9a-zA-Z \-[\]/()]/g, '');
+        const compare = request.query.compare.toString();
+        const status = parseInt(request.query.status.toString());
+
+        if(compareValues.includes(compare)){
+          const results = await this.mallService.searchAllObjects(
+            search,
+            compare,
+            status,
+            Number.parseInt(request.query.limit.toString()),
+            Number.parseInt(request.query.offset.toString()),
+          );
+          response.status(200).json({results});
+        }
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
   public async findAllObjects(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
 
@@ -383,6 +413,26 @@ class MallController {
       }
       const object = await this.objectService.findByObjectId(parseInt(request.params.id));
       response.status(200).json({ status: 'success', object: object });
+    } catch(error){
+      console.error(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async getObject(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    try {
+      const session = this.memberService.decodeMemberToken(<string>apitoken);
+      if (!session) {
+        response.status(400).json({
+          error: 'Invalid or missing token or access denied.',
+        });
+        return;
+      }
+      const object = await this.objectService.findById(parseInt(request.params.id));
+      const username = await this.memberService.getMemberInfo(object.member_id);
+      response.status(200)
+        .json({status: 'success', object: object, username: username.username });
     } catch(error){
       console.error(error);
       response.status(400).json({ error });
