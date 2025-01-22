@@ -1,7 +1,7 @@
 <template>
-<div class="w-full">
+<div class="w-full" v-if="showStorage || unitOwner === $store.data.user.id">
   <div class="flex w-full justify-center">
-    <div class="flex-1 w-4/5 border p-2 mb-5" :style="{'height' :panelMaxHeight}">
+    <div class="flex-1 w-4/5 p-2 mb-5" :style="{'height' :panelMaxHeight}">
       <h2 class="flex mb-5">Objects In {{ unitName }}</h2>
       <div class="mb-5" v-if="storageObjects.length >= 1">{{ storageObjects.length }} object<span v-if="storageObjects.length !== 1">s</span> in this area</div>
       <div class="grid w-full justify-center" :style="{'height' :maxHeight}" style="grid-template-columns: repeat(3, minmax(130px, 1fr)); overflow-y: auto;" v-if="storageObjects.length >= 1">
@@ -30,12 +30,15 @@
       <div v-if="storageObjects.length === 0">
         <span>No objects in this area.</span>
         <br />
-        <button style="color:lime; text-decoration: underline;" v-if="unitOwner === $store.data.user.id">Delete Storage Area</button>
+        <!-- Removed until functionality is added -->
+        <!--<button style="color:lime; text-decoration: underline;" v-if="unitOwner === $store.data.user.id">Delete Storage Area</button>-->
       </div>
+      <br />
+      <hr v-if="unitOwner === $store.data.user.id && storageObjects.length >= 1" />
     </div>
   </div>
-  <div class="flex w-full justify-center" :style="{'max-height' :panelMaxHeight}" v-if="unitOwner === $store.data.user.id">
-    <div class="flex-1 w-4/5 border p-2">
+  <div class="flex w-full h-full justify-center" :style="{'max-height' :panelMaxHeight}" v-if="unitOwner === $store.data.user.id">
+    <div class="flex-1 w-full border p-2">
       <h2 class="flex mb-5">My Backpack</h2>
       <div class="mb-5">{{ backpack.length }} object<span v-if="backpack.length !== 1">s</span> in your backpack.</div>
       <div class="grid w-full justify-center" :style="{'max-height' :maxHeight}" style="grid-template-columns: repeat(3, minmax(130px, 1fr)); overflow-y: auto;">
@@ -65,6 +68,9 @@
     </div>
   </div>
 </div>
+<div class="flex w-full justify-center" v-else>
+  <span class="mt-10" style="color:lime; font-weight: bold;">This storage area is private.</span>
+</div>
 </template>
 
 <script lang="ts">
@@ -84,8 +90,9 @@ export default Vue.extend({
     showError: false,
     error: "",
     showSuccess: false,
-    maxHeight: '190px',
-    panelMaxHeight: '350px',
+    showStorage: false,
+    maxHeight: '180px',
+    panelMaxHeight: '340px',
   }),
   methods: {
     async getStorageObjects(){
@@ -108,8 +115,8 @@ export default Vue.extend({
       this.unitName = place.data.place.name;
       this.unitOwner = place.data.place.member_id;
       if(this.unitOwner !== this.$store.data.user.id){
-        this.maxHeight = '575px'
-        this.panelMaxHeight = '675px'
+        this.maxHeight = '585px'
+        this.panelMaxHeight = '680px'
       }
     },
     async moveObjectsToBackpack(){
