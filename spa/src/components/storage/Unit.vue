@@ -8,10 +8,10 @@
         <div v-for="(obj, key) in storageObjects" :key="key">
           <div style="width:300px; overflow-x: hidden;">
             <input type="checkbox" v-model="moveToBackpack" :value="obj.id" v-if="unitOwner === $store.data.user.id" />
-            <a href="#" @click="objectOpener(obj.id)" class="px-2">
+            <button class="text-lg underline px-2" style="color:lime;" @click="objectOpener(obj.id)">
               <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
               <span v-else>{{ obj.name }}</span>
-            </a> 
+            </button> 
           </div>
         </div>
       </div>
@@ -42,10 +42,10 @@
             <div class="px-2" style="overflow-x: hidden;">
               <h3 class="flex" style="white-space: nowrap; width:300px;">
                 <input type="checkbox" v-model="moveToStorage" :value="obj.id" />
-                <a href="#" @click="objectOpener(obj.id)" class="px-2">
+                <button class="text-l underline px-2" style="color:lime;" @click="objectOpener(obj.id)">
                   <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
                   <span v-else>{{ obj.name }}</span>
-                </a> 
+                </button> 
               </h3>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default Vue.extend({
       }
     },
     objectOpener(id) {  
-      window.open("/#/object/"+id, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
+      window.open("/#/object/"+id, "_targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
   },
   created() {
