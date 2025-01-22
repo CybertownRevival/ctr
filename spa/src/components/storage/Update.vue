@@ -1,11 +1,14 @@
 <template>
-  <div class="flex w-full justify-center">
-    <div class="flex-1 w-4/5 p-2" v-if="page === 'updateStorage'">
-      <h2 class="mb-5">Update Storage Area Names</h2>
-      <div class="flex-1 w-full justify-center">
+  <div class="flex w-full h-full justify-center">
+    <div class="flex-1 h-full p-2" v-if="page === 'updateStorage'">
+      <h1 class="mb-5 justify-center">Update Storage Area Names</h1>
+      <div class="pb-5 justify-center font-bold">
+        <h3 style="color:lime;">{{ units.length }} / {{ storageLimit }}</h3>
+      </div>
+      <div class="flex-1 h-full w-full justify-center">
         <div v-for="(unit, key) in units" :key="key">
-          <div class="flex"><div>
-            <h3>
+          <div class="flex">
+            <div class="text-2xl">
               <div class="flex mb-2">
                 <button style="color:lime; text-decoration: underline;" @click="updateName(unit.id, unit.name, unit.count), changePage('updateName')">
                   {{ unit.name }}
@@ -15,23 +18,25 @@
                   <span v-else>Objects </span>
                   <span class="flex px-2">)</span>
               </div>
+            </div>
+          </div>
+        </div>
+        <div class="py-5">
+          <div class="flex" v-if="units.length < storageLimit">
+            <h3>
+              <button @click="addStorage()" style="color:lime; text-decoration: underline;">Create New Area</button>
             </h3>
-          </div></div>
-        </div>
-        <div class="flex" v-if="units.length < 50">
-          <h3>
-            <button @click="addStorage()" style="color:lime; text-decoration: underline;">Create New Area</button>
-          </h3>
-        </div>
-        <div class="flex">
-          <h3>
-            <button @click="changePage('updateAccess')" style="color:lime; text-decoration: underline;">Change Object Access</button>
-          </h3>
+          </div>
+          <div class="flex">
+            <h3>
+              <button @click="changePage('updateAccess')" style="color:lime; text-decoration: underline;">Change Object Access</button>
+            </h3>
+          </div>
         </div>
       </div>
     </div>
     <div v-else-if="page === 'updateName'">
-      <h2 class="mb-5">Update Storage Area {{ unitName }}</h2>
+      <h1 class="mb-5">Update Storage Area {{ unitName }}</h1>
       <input type="text" style="color:black;" v-model="unitNewName" /> ( {{ unitCount }} 
       <span v-if="unitCount === 1">Object</span>
       <span v-else>Objects</span>
@@ -77,6 +82,7 @@ export default Vue.extend({
     unitCount: null,
     page: 'updateStorage',
     access: 'private',
+    storageLimit: 25,
   }),
   methods: {
     async updateName(id, name, count) {
