@@ -3,7 +3,7 @@
     <div class="flex-1 h-full p-2" v-if="page === 'updateStorage'">
       <h1 class="mb-5 justify-center">Update Storage Area Names</h1>
       <div class="pb-5 justify-center font-bold">
-        <h3 style="color:lime;">{{ units.length }} / {{ storageLimit }}</h3>
+        <h3>Your Storage Areas: <span style="color:lime;">{{ units.length }}</span> / {{ storageLimit }}</h3>
       </div>
       <div class="flex-1 h-full w-full justify-center">
         <div v-for="(unit, key) in units" :key="key">
