@@ -1,21 +1,17 @@
 <template>
 <div class="w-full" v-if="showStorage || unitOwner === $store.data.user.id">
-  <div class="flex w-full justify-center">
-    <div class="flex-1 w-4/5 p-2 mb-5" :style="{'height' :panelMaxHeight}">
+  <div class="flex w-full h-full justify-center" :style="{'height' :panelMaxHeight}">
+    <div class="flex-1 w-full border p-2">
       <h2 class="flex mb-5">Objects In {{ unitName }}</h2>
       <div class="mb-5" v-if="storageObjects.length >= 1">{{ storageObjects.length }} object<span v-if="storageObjects.length !== 1">s</span> in this area</div>
-      <div class="grid w-full justify-center" :style="{'height' :maxHeight}" style="grid-template-columns: repeat(3, minmax(130px, 1fr)); overflow-y: auto;" v-if="storageObjects.length >= 1">
+      <div class="flex w-full" :style="{'max-height' :maxHeight}" style="flex-wrap: wrap; overflow-y: auto;" v-if="storageObjects.length >= 1">
         <div v-for="(obj, key) in storageObjects" :key="key">
-          <div class="flex">
-            <div class="px-2" style="overflow-x: hidden;">
-              <h3 class="flex" style="white-space: nowrap;">
-                <input type="checkbox" v-model="moveToBackpack" :value="obj.id" v-if="unitOwner === $store.data.user.id" />
-                <a href="#" @click="objectOpener(obj.id)" class="px-2">
-                  <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
-                  <span v-else>{{ obj.name }}</span>
-                </a> 
-              </h3>
-            </div>
+          <div style="width:300px; overflow-x: hidden;">
+            <input type="checkbox" v-model="moveToBackpack" :value="obj.id" v-if="unitOwner === $store.data.user.id" />
+            <a href="#" @click="objectOpener(obj.id)" class="px-2">
+              <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
+              <span v-else>{{ obj.name }}</span>
+            </a> 
           </div>
         </div>
       </div>
@@ -34,18 +30,17 @@
         <!--<button style="color:lime; text-decoration: underline;" v-if="unitOwner === $store.data.user.id">Delete Storage Area</button>-->
       </div>
       <br />
-      <hr v-if="unitOwner === $store.data.user.id && storageObjects.length >= 1" />
     </div>
   </div>
-  <div class="flex w-full h-full justify-center" :style="{'max-height' :panelMaxHeight}" v-if="unitOwner === $store.data.user.id">
+  <div class="flex w-full h-full justify-center" :style="{'height' :panelMaxHeight}" v-if="unitOwner === $store.data.user.id">
     <div class="flex-1 w-full border p-2">
       <h2 class="flex mb-5">My Backpack</h2>
       <div class="mb-5">{{ backpack.length }} object<span v-if="backpack.length !== 1">s</span> in your backpack.</div>
-      <div class="grid w-full justify-center" :style="{'max-height' :maxHeight}" style="grid-template-columns: repeat(3, minmax(130px, 1fr)); overflow-y: auto;">
+      <div class="flex w-full" :style="{'max-height' :maxHeight}" style="flex-wrap: wrap; overflow-y: auto;">
         <div v-for="(obj, key) in backpack" :key="key">
-          <div class="flex">
+          <div>
             <div class="px-2" style="overflow-x: hidden;">
-              <h3 class="flex" style="white-space: nowrap;">
+              <h3 class="flex" style="white-space: nowrap; width:300px;">
                 <input type="checkbox" v-model="moveToStorage" :value="obj.id" />
                 <a href="#" @click="objectOpener(obj.id)" class="px-2">
                   <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>

@@ -82,7 +82,7 @@ export default Vue.extend({
     unitCount: null,
     page: 'updateStorage',
     access: 'private',
-    storageLimit: 25,
+    storageLimit: 36,
   }),
   methods: {
     async updateName(id, name, count) {
