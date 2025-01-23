@@ -6,7 +6,7 @@
         <div v-for="(unit, key) in units" :key="key">
           <div class="px-2 text-left" style="width: 300px;">
             <h3>
-              <button class="text-lg underline" @click="storageOpener(unit.id)" style="color:lime;">{{ unit.name }}</button> 
+              <a href="#" class="text-lg" @click.prevent="storageOpener(unit.id)">{{ unit.name }}</a> 
               ( {{ unit.count }} 
               <span v-if="unit.count === 1">Object</span>
               <span v-else>Objects</span>
@@ -17,13 +17,13 @@
       </div>
       <div class="flex" v-else>
         <h3 v-if="member_id === this.$store.data.user.id">
-          <button class="text-lg underline" style="color:lime;" @click="addStorage()">Create</button>
+          <a href="#" class="text-lg" @click.prevent="addStorage()">Create</a>
         </h3>
       </div>
       <br />
       <div class="flex">
         <h3 v-if="units.length >= 1 && member_id === this.$store.data.user.id">
-          <button class="text-lg underline" style="color:lime;" @click="updateStorageAreas()">Edit</button>
+          <a href="#" class="text-lg" @click.prevent="updateStorageAreas()">Edit</a>
         </h3>
       </div>
     </div>
