@@ -2,9 +2,9 @@
   <div class="flex w-7/8 justify-center p-5">
     <div class="flex-1 w-4/5 p-2">
       <h2 class="flex mb-2">Object Storage Areas</h2>
-      <div class="flex w-full justify-left" v-if="units.length >= 1" style="flex-wrap: wrap; overflow-y: auto; max-height: 180px;">
+      <div class="flex w-full justify-left flex-wrap overflow-y-auto" v-if="units.length >= 1" style="max-height: 180px;">
         <div v-for="(unit, key) in units" :key="key">
-          <div class="px-2 text-left" style="width: 400px;">
+          <div class="px-2 text-left" style="width: 325px;">
             <h3>
               <a href="#" class="text-lg" @click.prevent="storageOpener(unit.id)">{{ unit.name }}</a> 
               ( {{ unit.count }} 
