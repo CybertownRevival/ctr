@@ -4,9 +4,9 @@
     <div class="flex-1 w-full border p-2">
       <h2 class="flex mb-5">Objects In {{ unitName }}</h2>
       <div class="mb-5" v-if="storageObjects.length >= 1">{{ storageObjects.length }} object<span v-if="storageObjects.length !== 1">s</span> in this area</div>
-      <div class="flex w-full" :style="{'max-height' :maxHeight}" style="flex-wrap: wrap; overflow-y: auto;" v-if="storageObjects.length >= 1">
+      <div class="flex flex-wrap w-full overflow-y-auto" :style="{'max-height' :maxHeight}" v-if="storageObjects.length >= 1">
         <div v-for="(obj, key) in storageObjects" :key="key">
-          <div style="width:300px; overflow-x: hidden;">
+          <div class="overflow-x-hidden whitespace-nowrap" style="width:300px;">
             <input type="checkbox" v-model="moveToBackpack" :value="obj.id" v-if="unitOwner === $store.data.user.id" />
             <a href="#" class="text-lg px-2" @click.prevent="objectOpener(obj.id)">
               <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
@@ -27,7 +27,7 @@
         <span>No objects in this area.</span>
         <br />
         <!-- Removed until functionality is added -->
-        <!--<button style="color:lime; text-decoration: underline;" v-if="unitOwner === $store.data.user.id">Delete Storage Area</button>-->
+        <!--<a href="#" @click.prevent="" v-if="unitOwner === $store.data.user.id">Delete Storage Area</a>-->
       </div>
       <br />
     </div>
@@ -36,11 +36,11 @@
     <div class="flex-1 w-full border p-2">
       <h2 class="flex mb-5">My Backpack</h2>
       <div class="mb-5">{{ backpack.length }} object<span v-if="backpack.length !== 1">s</span> in your backpack.</div>
-      <div class="flex w-full" :style="{'max-height' :maxHeight}" style="flex-wrap: wrap; overflow-y: auto;">
+      <div class="flex flex-wrap w-full overflow-y-auto" :style="{'max-height' :maxHeight}">
         <div v-for="(obj, key) in backpack" :key="key">
           <div>
-            <div class="px-2" style="overflow-x: hidden;">
-              <h3 class="flex" style="white-space: nowrap; width:300px;">
+            <div class="px-2 overflow-x-hidden">
+              <h3 class="overflow-x-hidden whitespace-nowrap" style="width:300px;">
                 <input type="checkbox" v-model="moveToStorage" :value="obj.id" />
                 <a href="#" class="text-lg px-2" @click.prevent="objectOpener(obj.id)">
                   <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
@@ -64,7 +64,7 @@
   </div>
 </div>
 <div class="flex w-full justify-center" v-else>
-  <span class="mt-10" style="color:lime; font-weight: bold;">This storage area is private.</span>
+  <span class="mt-10 font-bold" style="color:lime;">This storage area is private.</span>
 </div>
 </template>
 
