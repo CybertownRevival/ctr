@@ -8,10 +8,10 @@
         <div v-for="(obj, key) in storageObjects" :key="key">
           <div style="width:300px; overflow-x: hidden;">
             <input type="checkbox" v-model="moveToBackpack" :value="obj.id" v-if="unitOwner === $store.data.user.id" />
-            <button class="text-lg underline px-2" style="color:lime;" @click="objectOpener(obj.id)">
+            <a href="#" class="text-lg px-2" @click.prevent="objectOpener(obj.id)">
               <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
               <span v-else>{{ obj.name }}</span>
-            </button> 
+            </a> 
           </div>
         </div>
       </div>
@@ -42,10 +42,10 @@
             <div class="px-2" style="overflow-x: hidden;">
               <h3 class="flex" style="white-space: nowrap; width:300px;">
                 <input type="checkbox" v-model="moveToStorage" :value="obj.id" />
-                <button class="text-l underline px-2" style="color:lime;" @click="objectOpener(obj.id)">
+                <a href="#" class="text-lg px-2" @click.prevent="objectOpener(obj.id)">
                   <span v-if="obj.object_name !== ''">{{ obj.object_name }}</span>
                   <span v-else>{{ obj.name }}</span>
-                </button> 
+                </a> 
               </h3>
             </div>
           </div>

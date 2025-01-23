@@ -10,9 +10,9 @@
           <div class="flex">
             <div class="text-2xl">
               <div class="flex mb-2">
-                <button class="underline" style="color:lime;" @click="updateName(unit.id, unit.name, unit.count), changePage('updateName')">
+                <a href="#" @click.prevent="updateName(unit.id, unit.name, unit.count), changePage('updateName')">
                   {{ unit.name }}
-                </button>
+                </a>
                 <span class="flex px-2">( {{ unit.count }} </span>
                   <span v-if="unit.count === 1">Object </span>
                   <span v-else>Objects </span>
@@ -24,12 +24,12 @@
         <div class="py-5">
           <div class="flex" v-if="units.length < storageLimit">
             <h3>
-              <button class="underline" @click="addStorage()" style="color:lime;">Create New Area</button>
+              <a href="#" @click.prevent="addStorage()">Create New Area</a>
             </h3>
           </div>
           <div class="flex">
             <h3>
-              <button class="underline" @click="changePage('updateAccess')" style="color:lime;">Change Object Access</button>
+              <a href="#" @click.prevent="changePage('updateAccess')">Change Object Access</a>
             </h3>
           </div>
         </div>
