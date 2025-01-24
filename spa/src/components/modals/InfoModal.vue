@@ -14,7 +14,7 @@
             <table border="0">
               <tr>
                 <td width="200" align="center">
-                  <a href="#" @click="openPersonalInfoModal">
+                  <a href="#" @click.prevent="openPersonalInfoModal">
                     <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Personal Info</b>
                   </a>
                 </td>
@@ -22,7 +22,7 @@
                   <img src="/assets/img/icon_myhouse.jpg" border=0><br><b>Visit My House</b>
                 </td>
                 <td width=200 align=center>
-                  <a href="#" @click="openAvatarModal">
+                  <a href="#" @click.prevent="openAvatarModal">
                     <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>My Avatar</b>
                   </a>
                 </td>
@@ -31,12 +31,12 @@
             <table>
               <tr>
                 <td width=200 align=center>
-                  <a href="#" @click="openAccountModal">
+                  <a href="#" @click.prevent="openAccountModal">
                     <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>My Account</b>
                   </a>
                 </td>
                 <td width=200 align=center>
-                  <a href="#" @click="openAvatarModal">
+                  <a href="#" @click.prevent="openAvatarModal">
                     <img src="/assets/img/icon_myinfo.jpg" border=0><br><b>Avatar Library</b>
                   </a>
                 </td>

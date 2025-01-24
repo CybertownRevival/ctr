@@ -65,7 +65,7 @@
               <div class="menu">
                 <a href="#"
                   class="menuLink"
-                  @click="openInfoModal"
+                  @click.prevent="openInfoModal"
                   style="top: 78px"
                 ></a>
                 <router-link
