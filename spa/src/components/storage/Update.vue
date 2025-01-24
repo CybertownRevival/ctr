@@ -10,9 +10,9 @@
           <div class="flex">
             <div class="text-2xl">
               <div class="flex mb-2">
-                <button style="color:lime; text-decoration: underline;" @click="updateName(unit.id, unit.name, unit.count), changePage('updateName')">
+                <a href="#" @click.prevent="updateName(unit.id, unit.name, unit.count), changePage('updateName')">
                   {{ unit.name }}
-                </button>
+                </a>
                 <span class="flex px-2">( {{ unit.count }} </span>
                   <span v-if="unit.count === 1">Object </span>
                   <span v-else>Objects </span>
@@ -24,12 +24,12 @@
         <div class="py-5">
           <div class="flex" v-if="units.length < storageLimit">
             <h3>
-              <button @click="addStorage()" style="color:lime; text-decoration: underline;">Create New Area</button>
+              <a href="#" @click.prevent="addStorage()">Create New Area</a>
             </h3>
           </div>
           <div class="flex">
             <h3>
-              <button @click="changePage('updateAccess')" style="color:lime; text-decoration: underline;">Change Object Access</button>
+              <a href="#" @click.prevent="changePage('updateAccess')">Change Object Access</a>
             </h3>
           </div>
         </div>
@@ -47,8 +47,8 @@
       </div>
     </div>
     <div v-else>
-      <h2 class="mb-5">Object Storage Area Access</h2>
-      <span style="color:lime;">Coming soon<br /> Storage areas are <br /><b>Private/Hidden</b><br /> by default.</span><br />
+      <h1 class="mb-5">Object Storage Area Access</h1>
+      <span class="text-lg" style="color:lime;">Coming soon<br /> Storage areas are <br /><b>Private/Hidden</b><br /> by default.</span><br />
       <div class="hidden">
         <input type="radio" id="public" name="storageAccess" value="public" v-model="access">
         <lable for="public">Everybody can see the objects.</lable>
