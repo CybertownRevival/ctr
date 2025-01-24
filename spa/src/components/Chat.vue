@@ -868,10 +868,9 @@ export default Vue.extend({
       }
     },
     textToSpeech(data){
-      const user = data.username;
       const message = data.msg;
       let speech = new SpeechSynthesisUtterance();
-      speech.text = user + " said: " + message;
+      speech.text = message;
       window.speechSynthesis.speak(speech);
     },
     startSocketListeners(): void {
