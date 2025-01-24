@@ -2,7 +2,7 @@
   <div class="flex flex-row chat space-x-1 p-1 text-chat w-full">
     <div class="messages-pane flex flex-col flex-1">
       <div class="flex-grow p-1 overflow-y-auto h-full" ref="chatArea">
-        <ul>
+        <ul class="text-base">
           <li v-for="(msg, key) in messages" :key="key">
             <i v-if="msg.new !== true && msg.type !== 'system'" class="text-white">
               {{ msg.username }}: {{ msg.msg }}
@@ -59,7 +59,7 @@
         </button>
       </div>
     </div>
-    <div class="flex flex-none flex-col w-60 space-0.5 bg-black">
+    <div class="flex flex-none flex-col w-60 space-0.5 bg-black text-base">
       <div
         class="
           flex flex-none
@@ -233,6 +233,18 @@
           >
           <input type="checkbox" id="XP" v-model="showXP" />
           <label for="XP"> Users XP</label>
+        </li>
+        <li v-show="menuToggleSpeech" 
+          class="
+            p-1
+            pl-3.5
+            hover:text-white 
+            hover:bg-gray-500
+            active:bg-gray-400
+          "
+          >
+          <input type="checkbox" id="speech" v-model="tts" />
+          <label for="speech"> Text To Speech</label>
         </li>
         <li v-show="menuBeamTo" 
           class="
@@ -421,6 +433,7 @@ export default Vue.extend({
       menuGoTo: false,
       menuToggleRole: false,
       menuToggleXP: false,
+      menuToggleSpeech: false,
       mallObject: false,
       activePlaces: [],
       placeList: [],
@@ -434,6 +447,7 @@ export default Vue.extend({
       chatEnabled: false,
       showRole: true,
       showXP: true,
+      tts: false,
     };
   },
   directives: {
@@ -575,6 +589,7 @@ export default Vue.extend({
       this.menuGoTo = false;
       this.menuToggleRole = false;
       this.menuToggleXP = false;
+      this.menuToggleSpeech = false;
       this.mallObject = false;
       this.placeType = null;
       this.placeUsername = null;
@@ -618,6 +633,7 @@ export default Vue.extend({
         if(target[0] === this.$store.data.user.id){
           this.menuToggleRole = true;
           this.menuToggleXP = true;
+          this.menuToggleSpeech = true;
         } else {
           this.menuIgnore = true;
           this.menuInviteChat = true;
@@ -851,11 +867,20 @@ export default Vue.extend({
         }
       }
     },
+    textToSpeech(data){
+      const message = data.msg;
+      let speech = new SpeechSynthesisUtterance();
+      speech.text = message;
+      window.speechSynthesis.speak(speech);
+    },
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {
         this.debugMsg("chat message received...", data);
         if(this.blockedMembers.includes(data.username) === false){
           this.messages.push(data);
+          if(this.tts){
+            this.textToSpeech(data);
+          }
         } 
       });
       this.$socket.on("AV:del", event => {
