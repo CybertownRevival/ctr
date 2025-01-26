@@ -25,7 +25,7 @@ class ClubController {
       response.status(200).json({success: club});
     } catch (error) {
       console.log(error);
-      response.status(400).json({message: error.message});
+      response.status(400).json({'error': error.message});
     }
   }
 
