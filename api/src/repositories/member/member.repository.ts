@@ -61,7 +61,8 @@ export class MemberRepository {
     return this.db.knex
       .select('id','username')
       .from('member')
-      .where('last_activity','>=', current);
+      .where('last_activity','>=', current)
+      .orderBy('username', 'ASC');
   }
 
   public async getActivePlaces(current: Date): Promise<any> {
