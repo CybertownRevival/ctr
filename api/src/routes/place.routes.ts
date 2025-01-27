@@ -13,9 +13,9 @@ placeRoutes.get('/getSecurityInfo',
   (request, response) => placeController.getSecurityInfo(request, response));
 placeRoutes.get('/:placeId/object_instance',
   (request, response) => placeController.getPlaceObjects(request, response));
-placeRoutes.get('/:slug',
+placeRoutes.get('/getPlaceBySlug/:slug',
   (request, response) => placeController.getPlace(request, response));
-placeRoutes.get('/:id',
+placeRoutes.get('/getPlaceById/:id',
   (request, response) => placeController.getPlaceById(request, response));
 placeRoutes.post('/add_storage', (request, response) => 
   placeController.addStorage(request, response));
