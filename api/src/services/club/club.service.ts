@@ -73,6 +73,7 @@ export class ClubService {
       description: description,
       private: isPrivate,
       type: 'club',
+      slug: 'personalclub',
     };
     
     //create the club and capture place id

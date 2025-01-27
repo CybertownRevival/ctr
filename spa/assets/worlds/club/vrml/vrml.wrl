@@ -1,0 +1,198 @@
+#VRML V2.0 utf8
+# hg fix 09/2001 light
+# clubs/vrml.tmpl
+# 3d clubhouse
+
+EXTERNPROTO BlaxxunZone [
+eventIn         MFNode   addEvents
+eventIn         MFNode   removeEvents
+eventIn         MFNode   addAvatars
+eventIn         MFNode   removeAvatars
+exposedField    MFNode   events
+exposedField    MFNode   avatars
+eventOut        MFNode   events_added
+eventOut        MFNode   events_removed
+eventOut        MFNode   avatars_added
+eventOut        MFNode   avatars_removed
+eventIn         SFInt32  set_myAvatarGesture
+eventIn         SFInt32  myAvatarGestureFromServer
+eventOut        SFInt32  myAvatarGesture_changed
+eventOut        SFInt32  myAvatarGestureToServer
+exposedField    MFString sendToChat
+exposedField    SFFloat  beamToDistance
+exposedField    MFString groupChatName
+exposedField    MFString groupChat
+] "/externprotos/shared_xite.wrl#BlaxxunZone"
+
+EXTERNPROTO SharedObject [
+exposedField SFVec3f translation
+exposedField SFRotation rotation
+exposedField MFNode children
+exposedField SFString name
+exposedField SFString id
+eventIn SFBool startMove
+eventOut SFBool isOver
+eventOut SFTime touchTime
+eventOut SFVec3f newPosition
+eventOut SFRotation newRotation
+] "/externprotos/shared_xite.wrl#SharedObject"
+
+EXTERNPROTO SharedEvent [
+exposedField   SFString	name
+exposedField   SFString	type
+eventIn	       SFTime   set_time
+eventOut       SFTime   timeToServer
+eventIn	       SFTime   timeFromServer
+eventOut       SFTime   time_changed
+] [ "/externprotos/shared_xite.wrl#SharedEvent" ]
+
+PROTO BlaxxunZone [#PROTO supplied by BLAXXUN
+eventIn         MFNode   addEvents
+eventIn         MFNode   removeEvents
+eventIn         MFNode   addAvatars
+eventIn         MFNode   removeAvatars
+exposedField    MFNode   events NULL
+exposedField    MFNode   avatars NULL
+exposedField    SFString myAvatarURL ""
+exposedField    SFString myAvatarName ""
+exposedField    SFFloat  number_avatars 0
+eventOut        MFNode   avatars_added
+eventOut        MFNode   avatars_removed
+exposedField    MFNode   avatarLOD []
+exposedField    MFFloat   avatarRange []
+]{
+Transform {
+addChildren IS addEvents
+removeChildren IS removeEvents
+children IS events
+}
+Transform {
+        addChildren IS addAvatars
+        removeChildren IS removeAvatars
+        children IS avatars
+}
+}# END BlaxxunZone
+
+DEF SharedZone BlaxxunZone {
+  events [
+    DEF F_SELight SharedEvent { name "F_SELight" }
+   ]
+}
+
+EXTERNPROTO Club[
+exposedField SFColor roofColor
+exposedField SFColor wallColor
+exposedField SFColor floorColor
+exposedField MFString meetingPicture
+exposedField MFString assemblyPicture
+exposedField MFString galleryPicture1
+exposedField MFString galleryPicture2
+exposedField MFString galleryPicture3
+exposedField MFString floorImage
+exposedField MFString stoneImage
+exposedField MFString roofImage
+exposedField MFString stuccImage
+exposedField MFString officeImage
+exposedField MFString doorImage
+exposedField MFString sunwinImage
+exposedField MFString fernImage
+]"club_proto_og.wrl#Club"
+
+NavigationInfo{
+	type ["WALK" "ANY" ]
+	avatarSize      [0.25, 1.75, .5]
+	speed 3.5
+	headlight FALSE
+}
+
+DirectionalLight{direction -1 -.5 -1}
+DirectionalLight{direction 1 -.5 -1}
+DirectionalLight{direction 0 .5 1}
+DirectionalLight{direction .5 0 -.5 color 1 .75 .25 intensity .65}
+
+Background{
+skyColor[0 0 .5,0 .5 .75,1 .9 .8]
+skyAngle [1.409,1.571]
+groundColor[0 0 0.5,0 .5 .75,1 .6 .4,1 .9 .8]
+groundAngle [1.2,1.5,1.571]
+}
+
+DEF ROOT Group{
+children[
+
+
+DEF thisClub Club{
+#roofColor <$CEC>
+#wallColor <$WAC>
+#floorColor <$FLC>
+roofColor .9 .9 .85
+wallColor 0 .2 0
+floorColor .6 .55 .45
+floorImage ["images/floor.gif"]
+stoneImage ["images/stone.jpg"]
+roofImage ["images/roof.jpg"]
+stuccImage ["images/stucc.gif"]
+officeImage ["images/office.jpg"]
+doorImage ["images/door.jpg"]
+sunwinImage ["images/sunwin2.jpg"]
+fernImage ["images/fern.jpg"]
+#<!--#ifdef variable="ST1" value="1"-->
+galleryPicture1 ["images/locked.gif"]
+#<!--#endif variable="ST1" -->
+#<!--#ifdef variable="ST1" value="0"-->
+#galleryPicture1 ["<$g_HTMLRoot><$GP1>"]
+#<!--#endif variable="ST1" -->
+#
+#<!--#ifdef variable="ST2" value="1"-->
+galleryPicture2 ["images/locked.gif"]
+#<!--#endif variable="ST2" -->
+#<!--#ifdef variable="ST2" value="0"-->
+#galleryPicture2 ["<$g_HTMLRoot><$GP2>"]
+#<!--#endif variable="ST2" -->
+#
+#<!--#ifdef variable="ST3" value="1"-->
+galleryPicture3 ["images/locked.gif"]
+#<!--#endif variable="ST3" -->
+#<!--#ifdef variable="ST3" value="0"-->
+#galleryPicture3 ["<$g_HTMLRoot><$GP3>"]
+#<!--#endif variable="ST3" -->
+#
+#<!--#ifdef variable="STM" value="1"-->
+meetingPicture ["images/locked.gif"]
+#<!--#endif variable="STM" -->
+#<!--#ifdef variable="STM" value="0"-->
+#meetingPicture   ["<$g_HTMLRoot><$MRP>"]
+#<!--#endif variable="STM" -->
+#
+#<!--#ifdef variable="STA" value="1"-->
+assemblyPicture ["images/locked.gif"]
+#<!--#endif variable="STA" -->
+#<!--#ifdef variable="STA" value="0"-->
+#assemblyPicture  ["<$g_HTMLRoot><$ARP>"]
+#<!--#endif variable="STA" -->
+}
+
+
+Viewpoint {
+position 17 -1.3 28
+orientation 0 1 0 .7
+description "Gallery"
+}
+Viewpoint {
+position 39 1.7 -3
+orientation 0 1 0 -1.571
+description "Meeting Room"
+}
+Viewpoint {
+position 4 4.7 -18
+orientation 0 1 0 .2
+description "Assembly Hall"
+}
+Viewpoint {
+position 3 6.25 -45
+orientation 0 1 0 3.142
+description "Assembly Hall Stage"
+}
+
+
+]}
