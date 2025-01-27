@@ -31,10 +31,21 @@ router.beforeEach((to, from, next) => {
     document.title = "Cybertown";
   }
   if (to.fullPath.includes("/place/")) {
-    api.get<any>(`/place/${ to.params.id }`)
+    api.get<any>(`/place/getPlaceBySlug/${to.params.id}`)
       .then(response => {
         const Data = response.data;
         const place = {...Data.place};
+        appStore.methods.setPlace(place);
+      });
+  } else if (to.fullPath.includes("/club/")) {
+    api.get<any>(`/place/getPlaceById/${to.params.id}`)
+      .then(response => {
+        const Data = response.data;
+        const place = {
+          ...Data.place,
+          assets_dir: "club/vrml/",
+          world_filename: "vrml.wrl",
+        };
         appStore.methods.setPlace(place);
       });
   } else {
@@ -53,7 +64,8 @@ router.beforeEach((to, from, next) => {
       });
   }
 
-  if (!["login", "logout", "signup", "forgot", "password_reset", "about", "privacypolicy", "rulesandregulations", "banned"]
+  if (!["login", "logout", "signup", "forgot", "password_reset",
+    "about", "privacypolicy", "rulesandregulations", "banned"]
     .includes(to.name)) {
     api.get<{
       user: User,
@@ -67,7 +79,7 @@ router.beforeEach((to, from, next) => {
         const  { banInfo, banned } = response.data;
         if (banned) {
           if (
-           banInfo.type === "jail" &&
+            banInfo.type === "jail" &&
            to.fullPath.includes("/messageboard/") ||
            to.fullPath.includes("/inbox/") ||
            to.fullPath.includes("/information/")
@@ -77,7 +89,7 @@ router.beforeEach((to, from, next) => {
             next();
           } else if (to.fullPath !== "/place/jail" && banInfo.type === "jail") {
             next("/place/jail");
-            api.get<any>("/place/jail")
+            api.get<any>("/place/getPlaceBySlug/jail")
               .then(response => {
                 const Data = response.data;
                 const place = {...Data.place};
