@@ -28,8 +28,18 @@
           <table border="0">
             <tr>
               <td><b>Owner</b>:</td>
-              <td>
+              <td v-if="!$route.fullPath.includes('/club/')">
                 <input class="input-text" SIZE="16" v-model="owner" />
+              </td>
+              <td v-else>
+                {{ owner }}
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td class="text-yellow-200" v-if="$route.fullPath.includes('/club/')">
+                <i>Owner cannot be changed in clubs.</i>
               </td>
             </tr>
           </table>
@@ -145,6 +155,10 @@ export default Vue.extend({
         endpoint =
           `/place/can_manage_access/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
         break;
+      case "club":
+        endpoint =
+          `/place/can_manage_access/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
+        break;
       case "shop": {
         const mallId = await this.$http.get("api/place/mall");
         endpoint = `/place/can_manage_access/mall/${mallId.data.id}`;
@@ -183,6 +197,10 @@ export default Vue.extend({
       case "public":
         infopoint =
             `/place/getAccessInfo/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
+        break;
+      case "club":
+        infopoint =
+              `/place/getAccessInfo/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
         break;
       case "shop": {
         infopoint = "/place/getAccessInfo/mall";
@@ -271,6 +289,10 @@ export default Vue.extend({
         }/postAccessInfo/`;
         break;
       case "public":
+        updatepoint =
+          `/place/postAccessInfo/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
+        break;
+      case "club":
         updatepoint =
           `/place/postAccessInfo/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
         break;
