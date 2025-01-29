@@ -162,6 +162,22 @@ class PlaceController {
     }
   }
 
+  public async deleteStorage(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    try {
+      const unitID = request.body.id;
+      const place = await this.placeService.findById(unitID);
+      if(place.member_id === session.id){
+        await this.placeService.deleteStorage(unitID);
+        response.status(200).json({status: 'success'});
+      }; 
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error.message });
+    }
+  }
+
   public async postAccessInfo(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
     const { slug } = request.params;

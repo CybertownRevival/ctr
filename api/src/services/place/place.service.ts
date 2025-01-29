@@ -142,6 +142,10 @@ export class PlaceService {
     await this.placeRepository.create({name: name, type: 'storage', member_id: memberId});
   }
   
+  public async deleteStorage(id: number): Promise<any> {
+    await this.placeRepository.deleteStorageArea(id);
+  }
+
   public async postAccessInfo(
     slug: string,
     placeId: number,
