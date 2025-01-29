@@ -166,6 +166,10 @@ export default Vue.extend({
           this.mainComponent = () => import(
             "@/components/place/mall/main2d.vue"
           );
+        } else if(this.$store.data.place.type === "club"){
+          this.mainComponent = () => import(
+            "@/components/place/club/main2d.vue"
+          );
         } else {
           this.mainComponent = () => import(
             `@/components/place/${this.$store.data.place.slug}/main2d.vue`
