@@ -1,5 +1,5 @@
 <template>
-<div class="w-full" v-if="showStorage || unitOwner === $store.data.user.id">
+<div class="w-full" v-if="(showStorage || unitOwner === $store.data.user.id) && !areaDeleted">
   <div class="flex w-full h-full justify-center" :style="{'height' :panelMaxHeight}">
     <div class="flex-1 w-full border p-2">
       <h2 class="flex mb-5">Objects In {{ unitName }}</h2>
@@ -26,8 +26,7 @@
       <div v-if="storageObjects.length === 0">
         <span>No objects in this area.</span>
         <br />
-        <!-- Removed until functionality is added -->
-        <!--<a href="#" @click.prevent="" v-if="unitOwner === $store.data.user.id">Delete Storage Area</a>-->
+        <a href="#" @click.prevent="deleteStorageArea" v-if="unitOwner === $store.data.user.id">Delete Storage Area</a>
       </div>
       <br />
     </div>
@@ -63,6 +62,9 @@
     </div>
   </div>
 </div>
+<div class="flex w-full justify-center" v-else-if="areaDeleted">
+  <span class="mt-10 font-bold" style="color:lime;">This storage area has been deleted. Please close this window.</span>
+</div>
 <div class="flex w-full justify-center" v-else>
   <span class="mt-10 font-bold" style="color:lime;">This storage area is private.</span>
 </div>
@@ -88,6 +90,7 @@ export default Vue.extend({
     showStorage: false,
     maxHeight: '180px',
     panelMaxHeight: '340px',
+    areaDeleted: false,
   }),
   methods: {
     async getStorageObjects(){
@@ -160,9 +163,29 @@ export default Vue.extend({
     objectOpener(id) {  
       window.open("/#/object/"+id, "_targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
+    async deleteStorageArea(){
+      try{
+        if(this.storageObjects.length === 0){
+          await this.$http.post('/place/delete_storage', {
+            id: this.unitId,
+          }).then(() => {
+            this.areaDeleted = true;
+          })
+        }
+    } catch(error) {
+      console.log(error);
+    }
+    },
+    async checkStorageStatus() {
+      const place = await this.$http.get(`/place/by_id/${this.unitId}`);
+      if(place.data.place.status === 0){
+        this.areaDeleted = true;
+      }
+    }
   },
   created() {
     this.unitId = this.$route.params.id;
+    this.checkStorageStatus();
   },
   mounted() {
     this.getStorageObjects();

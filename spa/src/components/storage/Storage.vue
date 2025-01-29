@@ -6,7 +6,8 @@
         <div v-for="(unit, key) in units" :key="key">
           <div class="px-2 text-left" style="width: 325px;">
             <h3>
-              <a href="#" class="text-lg" @click.prevent="storageOpener(unit.id)">{{ unit.name }}</a> 
+              <a href="#" class="text-lg" v-if="unit.name" @click.prevent="storageOpener(unit.id)">{{ unit.name }}</a>
+              <a href="#" class="text-lg" v-else @click.prevent="storageOpener(unit.id)">Empty Name</a>
               ( {{ unit.count }} 
               <span v-if="unit.count === 1">Object</span>
               <span v-else>Objects</span>
@@ -44,7 +45,6 @@ export default Vue.extend({
       showError: false,
       error: "",
       showSuccess: false,
-      current: null,
   }),
   methods: {
     async getUnits(){
@@ -85,7 +85,6 @@ export default Vue.extend({
   },
   mounted() {
     this.getUnits();
-    this.current = this.$route.path;
   }
 });
 </script>

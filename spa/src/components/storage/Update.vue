@@ -10,9 +10,13 @@
           <div class="flex">
             <div class="text-2xl">
               <div class="flex mb-2">
-                <a href="#" @click.prevent="updateName(unit.id, unit.name, unit.count), changePage('updateName')">
+                <a href="#" v-if="unit.name"
+                @click.prevent="updateName(unit.id, unit.name, unit.count), changePage('updateName')">
                   {{ unit.name }}
                 </a>
+                <button class="btn-ui" v-else
+                @click.prevent="updateName(unit.id, unit.name, unit.count), 
+                changePage('updateName')">Add Name</button>
                 <span class="flex px-2">( {{ unit.count }} </span>
                   <span v-if="unit.count === 1">Object </span>
                   <span v-else>Objects </span>
@@ -93,12 +97,17 @@ export default Vue.extend({
     },
     async editName() {
       try {
-        console.log(this.unitName, this.unitNewName);
         this.unitNewName = this.unitNewName.replace(/[^0-9a-zA-Z \-\[\]\/()]/g, '');
+        let emptyNameTest = this.unitNewName.replace(/[^0-9a-zA-Z\-\[\]\/()]/g, '');
         const badwords = require("badwords-list");
         const bannedwords = badwords.regex;
         if(this.unitNewName.match(bannedwords)){
           alert('You can not use this type of language on CTR!');
+          this.unitNewName = this.unitName;
+          return
+        }
+        if(!this.unitNewName || !emptyNameTest){
+          alert('You must enter a name for your storage area.');
           this.unitNewName = this.unitName;
           return
         }

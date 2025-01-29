@@ -39,7 +39,7 @@ export class PlaceRepository {
   public async findStorageByUserID(memberId: number): Promise<any> {
     return await this.db.place
       .select('place.name', 'place.id')
-      .where({type: 'storage', member_id: memberId})
+      .where({type: 'storage', member_id: memberId, status: 1})
       .orderBy('place.name', 'asc');
   }
 
@@ -51,6 +51,12 @@ export class PlaceRepository {
   public async create(placeParams: Partial<Place>): Promise<number> {
     const [placeId] = await this.db.place.insert(placeParams);
     return placeId;
+  }
+
+  public async deleteStorageArea(id: number): Promise<any> {
+    return await this.db.place.update({
+      status: 0,
+    }).where('id', id);
   }
 
   public async updateHomeByMemberId(memberId: number, props: Partial<Place>, returning = false):
