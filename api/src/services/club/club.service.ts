@@ -106,6 +106,10 @@ export class ClubService {
   public async getMembers(place_id: number): Promise<any> {
     return this.clubMemberRepository.getMembers(place_id);
   }
+  
+  public async getMemberCount(place_id: number): Promise<number> {
+    return this.clubMemberRepository.getMemberCount(place_id);
+  }
 
   public async updateClub(
     place_id: number,
