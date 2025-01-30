@@ -275,6 +275,19 @@ export class TransactionRepository {
     ;
   }
 
+  public async getLatestTransactions(): Promise<any> {
+    return this.db.knex
+      .select('*', 'member.username')
+      .from('transaction')
+      .limit(10)
+      .orderBy('transaction.id', 'DESC')
+      .join('member', function() {
+        this.on('member.wallet_id', '=', 'transaction.recipient_wallet_id')
+          .orOn('member.wallet_id', '=', 'transaction.recipient_wallet_id')
+      })
+    ;
+  }
+
   public async searchTransactions(
     userWallet: number, type: string, limit: number, offset: number): Promise<any> {
     return this.db.knex

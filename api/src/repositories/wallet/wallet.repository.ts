@@ -23,7 +23,19 @@ export class WalletRepository {
   
   }
 
-  public async getMoneyData(): Promise<any> {
-    return this.db.wallet.select('balance');
+  public async getTotalBalance(): Promise<any> {
+    return this.db.wallet.sum({balance: 'balance'});
+  }
+
+  public async getAverageBalance(): Promise<any> {
+    return this.db.wallet.avg({balance: 'balance'});
+  }
+
+  public async getWalletData(): Promise<any> {
+    return this.db.wallet
+      .select('wallet.*', 'member.username')
+      .orderBy('balance', 'DESC')
+      .limit(10)
+      .join('member', 'member.wallet_id', 'wallet.id');
   }
 }

@@ -139,6 +139,27 @@ export class ObjectInstanceRepository {
     return parseInt(Object.values(count[0])[0]);
   }
 
+  public async findForSale(): Promise<any> {
+    return this.db.objectInstance
+      .count('id as count')
+      .where('object_price', '!=', '')
+      .orWhere('object_price', '!=', null);
+  }
+
+  public async averageForSale(): Promise<any> {
+    return this.db.objectInstance
+      .avg({price: 'object_price'})
+      .where('object_price', '!=', '')
+      .orWhere('object_price', '!=', null);
+  }
+
+  public async highestForSale(): Promise<any> {
+    return this.db.objectInstance
+      .avg({price: 'object_price'})
+      .where('object_price', '!=', '')
+      .orWhere('object_price', '!=', null);
+  }
+
   public async totalCount(): Promise<number> {
     const count = await this.db.objectInstance
       .count('object_id as total')

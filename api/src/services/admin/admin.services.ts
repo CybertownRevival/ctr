@@ -2,28 +2,35 @@ import { Service } from 'typedi';
 
 import {
   BanRepository,
+  BlockRepository,
   MemberRepository,
   MessageRepository,
+  MessageboardRepository,
   RoleAssignmentRepository,
   RoleRepository,
   AvatarRepository,
   PlaceRepository,
   ObjectRepository,
+  ObjectInstanceRepository,
   TransactionRepository,
   WalletRepository,
 } from '../../repositories';
+import { Block } from 'typescript/lib/typescript';
 
 @Service()
 export class AdminService {
   constructor(
    private banRepository: BanRepository,
+   private blockRepository: BlockRepository,
    private memberRepository: MemberRepository,
    private messageRepository: MessageRepository,
+   private messageboardRepository: MessageboardRepository,
    private roleAssignmentRepository: RoleAssignmentRepository,
    private roleRepository: RoleRepository,
    private avatarRespository: AvatarRepository,
    private placeRepository: PlaceRepository,
    private objectRepository: ObjectRepository,
+   private objectInstanceRepository: ObjectInstanceRepository,
    private transactionRepository: TransactionRepository,
    private walletRepository: WalletRepository,
   ) {}
@@ -112,31 +119,126 @@ export class AdminService {
     };
   }
 
-  public async getMoneyData(): Promise<any> {
-    return await this.walletRepository.getMoneyData();
-  }
+  public async getCommunityData(): Promise<any> {
+    const second = 1000;
+    const minute = 60 * second;
+    const hour = 60 * minute;
+    const day = 24 * hour;
+    const past30Min = new Date(Date.now() - .5 * hour);
+    const pastDay = new Date(Date.now() - day);
+    const pastWeek = new Date(Date.now() - 7 * day);
+    const pastMonth = new Date(Date.now() - 30 * day);
+    
+    // User Activity
+    const usersDaily = await this.memberRepository.countByDuration(pastDay);
+    const usersWeekly = await this.memberRepository.countByDuration(pastWeek);
+    const usersMonthly = await this.memberRepository.countByDuration(pastMonth);
+    
+    // Security Data
+    const recentBan = await this.banRepository.getRecentBan(pastWeek);
+    const recentJail = await this.banRepository.getRecentJail(pastWeek);
+    const banEnding = await this.banRepository.getUnbannedSoon(pastWeek);
+    const totalBanned = await this.banRepository.getBannedTotal();
+    const totalJailed = await this.banRepository.getJailedTotal() ;
+    
+    // Place Data
+    const colonies = await this.placeRepository.totalByType('colony');
+    const hoods =  await this.placeRepository.totalByType('hood');
+    const blocks = await this.placeRepository.totalByType('block');
+    const freeSpots = await this.blockRepository.totalFreeSpots();
+    const homes = await this.placeRepository.totalByType('home');
+    const clubs = await this.placeRepository.totalByType('club');
+    const storages = await this.placeRepository.totalByType('storage');
+    const privatePlaces = await this.placeRepository.totalByType('private');
+    
+    // Member Data
+    const members = await this.memberRepository.getMemberTotal();
+    
+    // Money Data
+    const walletData = await this.walletRepository.getWalletData();
+    const averageBalance = await this.walletRepository.getAverageBalance();
+    const totalBalance = await this.walletRepository.getTotalBalance();
+    const topBalance = walletData[0].balance;
+    const latestTransactions = await this.transactionRepository.getLatestTransactions();
+    
+    // Object Data
+    //// Object Instances
+    const totalUserObjects = await this.objectInstanceRepository.totalCount();
+    const totalForSale = await this.objectInstanceRepository.findForSale();
+    const averagePrice = await this.objectInstanceRepository.averageForSale();
+    const highestPrice = await this.objectInstanceRepository.highestForSale();
+    //// Mall Objects
+    const mallAveragePrice = await this.objectRepository.getAverageMallPrice();
+    const mallHighestPrice = await this.objectRepository.getHighestMallPrice();
+    const totalMallObjects= await this.objectRepository.getAcceptedTotal();
+    const totalPending = await this.objectRepository.getTotalByStatus(2);
+    const totalApproved = await this.objectRepository.getTotalByStatus(3);
+    const totalRejected = await this.objectRepository.getTotalByStatus(0);
+    const totalStocked = await this.objectRepository.getTotalByStatus(1);
+    const totalDestocked = await this.objectRepository.getTotalByStatus(4);
+    const totalUploaded= await this.objectRepository.getUploadTotal();
+    
+    // Message Data
+    const latestChat = await this.messageRepository.getActiveChats(past30Min);
+    const latestMB = await this.messageboardRepository.getActiveMB(past30Min)
 
-  public async getMemberData(): Promise<any> {
-    const returnBanned = [];
-    const returnJailed = [];
-    const memberTotal = await this.memberRepository.getMemberTotal();
-    const bannedTotal = await this.banRepository.getBannedTotal();
-    const jailedTotal = await this.banRepository.getJailedTotal();
-    for (const banned of bannedTotal) {
-      if(returnBanned.indexOf(banned.ban_member_id) === -1){
-        returnBanned.push(banned.ban_member_id);
-      };
-    };
-    for (const jailed of jailedTotal) {
-      if(returnJailed.indexOf(jailed.ban_member_id) === -1){
-        returnJailed.push(jailed.ban_member_id);
-      };
-    };
     return {
-      members: memberTotal, 
-      banned: returnBanned.length, 
-      jailed: returnJailed.length
-    };
+      activity: {
+        totalDaily: usersDaily, 
+        totalWeekly: usersWeekly, 
+        totalMonthly: usersMonthly,
+      },
+      security: {
+        recentBan: recentBan, 
+        recentJail: recentJail, 
+        banEnding: banEnding, 
+        totalBanned: totalBanned, 
+        totalJailed: totalJailed,
+      },
+      place: {
+        totalColonies: colonies,
+        totalHoods: hoods,
+        totalBlocks: blocks,
+        totalFreeSpots: freeSpots,
+        totalHomes: homes,
+        totalStorages: storages,
+        totalClubs: clubs,
+        totalPrivate: privatePlaces,
+      },
+      member: {
+        totalMembers: members,
+      },
+      money: {
+        wealthiestUsers: walletData,
+        averageBalance: averageBalance,
+        totalBalance: totalBalance,
+        topBalance: topBalance,
+        latestTransactions: latestTransactions,
+      },
+      object: {
+        instances: {
+          totalUserObjects: totalUserObjects,
+          totalForSale: totalForSale,
+          averageUserPrice: averagePrice,
+          highestUserPrice: highestPrice,
+        },
+        mall: {
+          averagePrice: mallAveragePrice,
+          highestPrice: mallHighestPrice,
+          totalMallObjects: totalMallObjects,
+          totalPending: totalPending,
+          totalApproved: totalApproved,
+          totalRejected: totalRejected,
+          totalStocked: totalStocked,
+          totalDestocked: totalDestocked,
+          totalUploaded: totalUploaded,
+        },
+      },
+      messages: {
+        chat: latestChat,
+        messageboard: latestMB,
+      }
+    }
   }
 
   public async searchTransactions(

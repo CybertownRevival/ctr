@@ -56,6 +56,13 @@ export class MemberRepository {
       .from('member');
   }
 
+  public async countByDuration(time: Date): Promise<any> {
+    return this.db.knex
+      .count('id as count')
+      .from('member')
+      .where('last_activity','>=', time);
+  }
+
   public async check3d(username: string): Promise<any> {
     return this.db.knex
       .select('is_3d')

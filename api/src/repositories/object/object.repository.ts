@@ -98,6 +98,39 @@ export class ObjectRepository {
     return objects;
   }
 
+  public async getMallObjectData(): Promise<any> {
+    return await this.db.object.where('status', 1);
+  }
+
+  public async getUploadTotal(): Promise<any> {
+    return await this.db.object.count('id as count');
+  }
+
+  public async getTotalByStatus(status: number): Promise<any> {
+    return await this.db.object
+      .count('id as count')
+      .where('status', status);
+  }
+
+  public async getAcceptedTotal(): Promise<any> {
+    return await this.db.object
+      .count('id as count')
+      .where('status', '!=', '0')
+      .where('status', '!=', '2');
+  }
+
+  public async getAverageMallPrice(): Promise<any> {
+    return await this.db.object
+      .avg({price: 'price'})
+      .where('status', 1);
+  }
+
+  public async getHighestMallPrice(): Promise<any> {
+    return await this.db.object
+      .max({price: 'price'})
+      .where('status', 1);
+  }
+
   public async searchMallObjects(search: string, limit: number, offset: number): Promise<any> {
     return await this.db.object
       .where('status','!=', '0')
