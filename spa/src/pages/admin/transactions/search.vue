@@ -53,11 +53,13 @@
           <td class="p-5">
             <table>
               <tr>
-                <td class="italic pb-2">Buyer: </td>
+                <td class="italic pb-2" v-if="transaction.sender[0].username !== 'System'">Buyer: </td>
+                <td class="italic pb-2" v-else>Sender: </td>
                 <td class="text-center text-green font-bold px-2 pb-2">{{ transaction.sender[0].username }}</td>
               </tr>
               <tr>
-                <td class="italic">Seller: </td>
+                <td class="italic" v-if="transaction.sender[0].username !== 'System'">Seller: </td>
+                <td class="italic" v-else>Receiver: </td>
                 <td class="text-center text-green font-bold px-2">{{ transaction.receiver[0].username }}</td>
               </tr>
             </table>
@@ -150,7 +152,7 @@ export default Vue.extend({
       }
     },
     accessCheck() {
-      if (!this.accessLevel.includes('admin')){
+      if (!this.accessLevel.includes('security')){
         this.$router.push({name: "restrictedaccess"});
       }
     },

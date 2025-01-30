@@ -22,4 +22,8 @@ export class WalletRepository {
   public async addMoney(walletId: number, newAmount: number): Promise<void> {
   
   }
+
+  public async getMoneyData(): Promise<any> {
+    return this.db.wallet.select('balance');
+  }
 }

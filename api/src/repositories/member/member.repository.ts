@@ -50,6 +50,12 @@ export class MemberRepository {
       .where('username', username);
   }
 
+  public async getMemberTotal(): Promise<any> {
+    return this.db.knex
+      .count('id as count')
+      .from('member');
+  }
+
   public async check3d(username: string): Promise<any> {
     return this.db.knex
       .select('is_3d')

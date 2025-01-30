@@ -112,6 +112,33 @@ export class AdminService {
     };
   }
 
+  public async getMoneyData(): Promise<any> {
+    return await this.walletRepository.getMoneyData();
+  }
+
+  public async getMemberData(): Promise<any> {
+    const returnBanned = [];
+    const returnJailed = [];
+    const memberTotal = await this.memberRepository.getMemberTotal();
+    const bannedTotal = await this.banRepository.getBannedTotal();
+    const jailedTotal = await this.banRepository.getJailedTotal();
+    for (const banned of bannedTotal) {
+      if(returnBanned.indexOf(banned.ban_member_id) === -1){
+        returnBanned.push(banned.ban_member_id);
+      };
+    };
+    for (const jailed of jailedTotal) {
+      if(returnJailed.indexOf(jailed.ban_member_id) === -1){
+        returnJailed.push(jailed.ban_member_id);
+      };
+    };
+    return {
+      members: memberTotal, 
+      banned: returnBanned.length, 
+      jailed: returnJailed.length
+    };
+  }
+
   public async searchTransactions(
     username: string, type: string, limit: number, offset: number): Promise<any> {
     const user = await this.memberRepository.find({username:username});

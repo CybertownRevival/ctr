@@ -40,5 +40,9 @@ adminRoutes.get('/transactions', (request, response) =>
   adminController.getTransactions(request, response));
 adminRoutes.get('/object-instances', (request, response) =>
   adminController.getObjectInstances(request, response));
+adminRoutes.get('/money-data/', (request, response) =>
+  adminController.getMoneyData(request, response));
+adminRoutes.get('/member-data/', (request, response) =>
+  adminController.getMemberData(request, response));
 
 export {adminRoutes};

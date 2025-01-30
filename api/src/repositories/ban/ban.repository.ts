@@ -59,4 +59,18 @@ export class BanRepository {
       .first();
   }
 
+  public async getBannedTotal(): Promise<any> {
+    return this.db.knex
+      .from('ban')
+      .where({status: 1, type: 'full'})
+      .andWhere('end_date', '>=', new Date());
+  }
+
+  public async getJailedTotal(): Promise<any> {
+    return this.db.knex
+      .from('ban')
+      .where({status: 1, type: 'jail'})
+      .andWhere('end_date', '>=', new Date());
+  }
+
 }

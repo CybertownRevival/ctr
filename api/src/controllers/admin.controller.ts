@@ -254,7 +254,7 @@ class AdminController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
-    if (admin.includes('admin')) {
+    if (admin.includes('security')) {
       try {
         const search = request.query.search.toString();
         let returnResults = [];
@@ -296,6 +296,40 @@ class AdminController {
           Number.parseInt(request.query.limit.toString()),
           Number.parseInt(request.query.offset.toString()),
         );
+        response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async getMoneyData(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin.includes('admin')) {
+      try {
+        const results = await this.adminService.getMoneyData();
+        response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async getMemberData(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin.includes('admin')) {
+      try {
+        const results = await this.adminService.getMemberData();
         response.status(200).json({results});
       } catch (error) {
         console.log(error);

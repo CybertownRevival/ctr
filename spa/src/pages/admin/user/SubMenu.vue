@@ -2,12 +2,14 @@
 <div class="grid grid-cols-1 w-full place-content-center">
   <div class="flex w-full min-w-min justify-center my-2"
        v-if="isUserDetailRoute">
-    <div class="flex" v-if="accessLevel.includes('council')">   
+    <div class="flex">   
       <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserView'" :to="{name: 'UserView'}">VIEW</router-link>
       <button class="btn-ui-inline mx-1 w-20" v-else>VIEW</button>
-      <div v-if="accessLevel.includes('admin')">
+      <div v-if="accessLevel.includes('security')">
         <router-link class="btn-ui-inline mx-1 w-32" v-if="this.$route.name !== 'TransactionHistory'" :to="{name: 'TransactionHistory'}">Transactions</router-link>
         <router-link class="btn-ui-inline mx-1 w-32" v-else>Transactions</router-link>
+      </div>
+      <div v-if="accessLevel.includes('admin')">
         <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'OwnedObjects'" :to="{name: 'OwnedObjects'}">Objects</router-link>
         <router-link class="btn-ui-inline mx-1 w-20" v-else>Objects</router-link>
         <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserMallUploads'" :to="{name: 'UserMallUploads'}">Uploads</router-link>
@@ -30,7 +32,7 @@
           v-if="accessLevel.includes('security')">ADD</router-link>
     </div>
     <div class="w-full min-w-min text-center my-2"
-     v-else-if="isUserRoleRoute && accessLevel.includes('council')">
+     v-else-if="isUserRoleRoute && (accessLevel.includes('council') || accessLevel.includes('security'))">
       <router-link class="btn-ui-inline mx-1 w-24"
        :to="{name: 'UserCurrentRoles'}">CURRENT</router-link>
       <router-link

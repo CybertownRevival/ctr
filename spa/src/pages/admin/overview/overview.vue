@@ -1,26 +1,26 @@
 <template>
-  <div class="flex-1 text-center" v-if="accessLevel">
+  <div class="flex-1 text-center text-lg" v-if="accessLevel">
     <div class="text-5xl p-5">Community Overview</div>
-    <div class="flex-1 justify-self-center">
+    <div class="flex-1">
       <div class="m-5" v-if="accessLevel.includes('admin')">
-        <div class="flex p-2 font-bold text-xl">Economy</div>
+        <div class="flex p-2 font-bold text-3xl">Economy</div>
         <hr />
-        <economic :accessLevel="accessLevel"></economic>
+        <economic class="text-left p-2" :accessLevel="accessLevel"></economic>
       </div>
-      <div class="m-5" v-if="accessLevel.includes('mayor')">
-        <div class="flex p-2 font-bold text-xl">Activity</div>
+      <div class="m-5" v-if="accessLevel.includes('security') || accessLevel.includes('mayor')">
+        <div class="flex p-2 font-bold text-3xl">Activity</div>
         <hr />
-        <users :accessLevel="accessLevel"></users>
+        <users class="text-left p-2"  :accessLevel="accessLevel"></users>
       </div>
       <div class="m-5" v-if="accessLevel.includes('admin')">
-        <div class="flex p-2 font-bold text-xl">Objects</div>
+        <div class="flex p-2 font-bold text-3xl">Objects</div>
         <hr />
-        <objects :accessLevel="accessLevel"></objects>
+        <objects class="text-left p-2"  :accessLevel="accessLevel"></objects>
       </div>
-      <div class="m-5" v-if="accessLevel.includes('council')">
-        <div class="flex p-2 font-bold text-xl">Places</div>
+      <div class="m-5">
+        <div class="flex p-2 font-bold text-3xl">Places</div>
         <hr />
-        <places :accessLevel="accessLevel"></places>
+        <places class="text-left p-2"  :accessLevel="accessLevel"></places>
       </div>
     </div>
   </div>

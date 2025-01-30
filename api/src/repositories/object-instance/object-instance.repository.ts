@@ -43,7 +43,7 @@ export class ObjectInstanceRepository {
       .join('member', 'member.id', 'object_instance.member_id' )
       .limit(limit)
       .offset(offset)
-      .orderBy('object_id', 'asc');
+      .orderBy('id', 'desc');
   }
 
   public async searchAllObjectInstances(
@@ -58,7 +58,7 @@ export class ObjectInstanceRepository {
       .join('member', 'member.id', 'object_instance.member_id' )
       .limit(limit)
       .offset(offset)
-      .orderBy('object_id', 'asc');
+      .orderBy('id', 'desc');
   }
 
   public async getObjectInstanceWithObject(objectInstanceId: number): Promise<ObjectInstance[]> {
