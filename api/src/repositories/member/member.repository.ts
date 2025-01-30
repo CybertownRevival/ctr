@@ -65,6 +65,13 @@ export class MemberRepository {
       .orderBy('username', 'ASC');
   }
 
+  public async findByWalletId(walletID: number): Promise<any> {
+    return this.db.knex
+      .select('username')
+      .from('member')
+      .where('wallet_id', walletID);
+  }
+
   public async getActivePlaces(current: Date): Promise<any> {
     return this.db.knex
       .select('place_id')

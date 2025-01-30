@@ -333,7 +333,7 @@ export class PlaceService {
     type: string, 
     limit: number, 
     offset: number): Promise<any> {
-    const ownerRequired = ['home', 'club'];
+    const ownerRequired = ['home', 'club', 'storage'];
     let returnPlaces = [];
     const places = await this.placeRepository.searchAllPlaces(
       search, compare, type, limit, offset);

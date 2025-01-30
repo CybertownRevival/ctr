@@ -1,7 +1,12 @@
 import {Request, Response} from 'express';
 import { Container } from 'typedi';
 
-import { AdminService, MemberService, AvatarService, PlaceService } from '../services';
+import { 
+  AdminService, 
+  MemberService, 
+  AvatarService, 
+  PlaceService, 
+  ObjectInstanceService, } from '../services';
 
 class AdminController {
   constructor(
@@ -9,6 +14,7 @@ class AdminController {
     private memberService: MemberService, 
     private avatarService: AvatarService,
     private placeService: PlaceService,
+    private objectInstanceService: ObjectInstanceService,
   ) {}
   
   public async addBan(request: Request, response: Response): Promise<any> {
@@ -181,6 +187,94 @@ class AdminController {
           Number.parseInt(request.query.offset.toString()),
         );
         response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async getTransactions(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    const returnResults = [];
+    const rebuild = [];
+    if (admin) {
+      try {
+        let results = null;
+        let findUsername = null;
+        if(request.query.search) {
+          results = await this.adminService.searchTransactions(
+            request.query.search.toString(),
+            request.query.type.toString(),
+            Number.parseInt(request.query.limit.toString()),
+            Number.parseInt(request.query.offset.toString()),
+          );
+        } else {
+          results = await this.adminService.getTransactions(
+            request.query.type.toString(),
+            Number.parseInt(request.query.limit.toString()),
+            Number.parseInt(request.query.offset.toString()),
+          );
+        }
+        findUsername = results.transactions
+        for(const res of findUsername) {
+          let sender = [{username: 'System'}];
+          let receiver = [{username: 'System'}];
+          if(res.sender_wallet_id){
+            sender = await this.memberService
+              .getMemberByWalletId(res.sender_wallet_id);
+          }
+          if(res.recipient_wallet_id){
+            receiver = await this.memberService
+              .getMemberByWalletId(res.recipient_wallet_id);
+          }
+          res.sender = sender;
+          res.receiver = receiver;
+          res.sender_wallet_id = null;
+          res.recipient_wallet_id = null;
+          rebuild.push(res);
+        }
+        returnResults.push(rebuild);
+        returnResults.push(results.total);
+        response.status(200).json({returnResults});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async getObjectInstances(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin.includes('admin')) {
+      try {
+        const search = request.query.search.toString();
+        let returnResults = [];
+        let results = null;
+        if(search){
+          results = await this.objectInstanceService.searchAllObjectInstances(
+            search.toString(),
+            Number.parseInt(request.query.limit.toString()),
+            Number.parseInt(request.query.offset.toString()),
+          );
+        } else {
+          results = await this.objectInstanceService.findAllObjectInstances(
+            Number.parseInt(request.query.limit.toString()),
+            Number.parseInt(request.query.offset.toString()),
+          );
+        }
+
+        returnResults = results;
+
+        response.status(200).json({returnResults});
       } catch (error) {
         console.log(error);
         response.status(400).json({error});
@@ -397,5 +491,6 @@ const adminService = Container.get(AdminService);
 const memberService = Container.get(MemberService);
 const avatarService = Container.get(AvatarService);
 const placeService = Container.get(PlaceService);
+const objectInstanceService = Container.get(ObjectInstanceService);
 export const adminController = new AdminController(
-  adminService, memberService, avatarService, placeService);
+  adminService, memberService, avatarService, placeService, objectInstanceService);

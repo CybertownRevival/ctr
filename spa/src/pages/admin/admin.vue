@@ -4,16 +4,25 @@
     <div class="pt-3">Admin Panel</div>
     <div class="p-3"><hr></div>
     <div class="mb-2">
+      <router-link class="btn-ui" :to="{name: 'CommunityOverview'}">Overview</router-link>
+    </div>
+    <div class="mb-2">
       <router-link class="btn-ui" :to="{name: 'UserSearch'}">Members</router-link>
+    </div>
+    <div class="mb-2" v-if="accessLevel.includes('admin')">
+      <router-link class="btn-ui" :to="{name: 'CityRoles'}">Roles</router-link>
     </div>
     <div class="mb-2">
       <router-link class="btn-ui" :to="{name: 'PlaceSearch'}">Places</router-link>
     </div>
-    <div class="mb-2" v-if="accessLevel.includes('admin')">
-      <router-link class="btn-ui" :to="{name: 'AvatarSearch'}">Avatars</router-link>
+    <div class="mb-2" v-if="accessLevel.includes('security')">
+      <router-link class="btn-ui" :to="{name: 'Transactions'}">Transactions</router-link>
     </div>
     <div class="mb-2" v-if="accessLevel.includes('admin')">
-      <router-link class="btn-ui" :to="{name: 'ObjectSearch'}">Objects</router-link>
+      <router-link class="btn-ui" :to="{name: 'ObjectSearch'}">Mall Objects</router-link>
+    </div>
+    <div class="mb-2" v-if="accessLevel.includes('security')">
+      <router-link class="btn-ui" :to="{name: 'UserObjectSearch'}">User Objects</router-link>
     </div>
   </div>
   <div class="w-11/12 h-full p-1 overflow-y-scroll"><router-view :accessLevel="accessLevel" /></div>

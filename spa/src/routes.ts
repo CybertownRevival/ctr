@@ -40,6 +40,11 @@ import admin from "@/pages/admin/admin.vue";
 import UserMain from "@/pages/admin/user/MainMenu.vue";
 import UserSubMenu from "@/pages/admin/user/SubMenu.vue";
 import InfoView from "@/pages/admin/user/infoview.vue";
+import TransactionHistory from './pages/admin/user/TransactionHistory.vue';
+import OwnedObjects from './pages/admin/user/OwnedObjects.vue';
+import UserStorageAreas from './pages/admin/user/StorageAreas.vue';
+import UserClubs from './pages/admin/user/UserClubs.vue';
+import UserMallUploads from './pages/admin/user/UserMallUploads.vue';
 import UserSearch from "@/pages/admin/user/search.vue";
 import UserChat from "@/pages/admin/user/ChatMessages.vue";
 import UserBanHistory from "@/pages/admin/user/BanHistory.vue";
@@ -52,6 +57,10 @@ import AvatarSearch from "@/pages/admin/avatar/search.vue";
 import PlaceSearch from "@/pages/admin/place/search.vue";
 import ObjectSearch from "@/pages/admin/objects/search.vue";
 import AdminObjectUpdate from "@/pages/admin/objects/update.vue";
+import CommunityOverview from "@/pages/admin/overview/overview.vue";
+import CityRoles from "@/pages/admin/roles/roles.vue";
+import Transactions from "@/pages/admin/transactions/search.vue";
+import UserObjectSearch from "@/pages/admin/objects/instances/search.vue";
 
 import MallRulesPage from "@/pages/mall/MallRulesPage.vue";
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
@@ -318,6 +327,38 @@ export default [
         },
         children: [
             {
+                path: "/admin/overview/",
+                component: CommunityOverview,
+                name: "CommunityOverview",
+                meta: {
+                    title: "Community Overview - Admin Panel",
+                },
+            },
+            {
+                path: "/admin/roles/",
+                component: CityRoles,
+                name: "CityRoles",
+                meta: {
+                    title: "City Roles - Admin Panel",
+                },
+            },
+            {
+                path: "/admin/transactions/",
+                component: Transactions,
+                name: "Transactions",
+                meta: {
+                    title: "Transactions Search - Admin Panel",
+                },
+            },
+            {
+                path: "/admin/instances/",
+                component: UserObjectSearch,
+                name: "UserObjectSearch",
+                meta: {
+                    title: "User Object Search - Admin Panel",
+                },
+            },
+            {
                 path: "/admin/member/",
                 component: UserSearch,
                 name: "UserSearch",
@@ -344,11 +385,51 @@ export default [
                         },
                         children: [
                             {
-                                path: "",
+                                path: "/admin/member/user/:id",
                                 component: InfoView,
                                 name: "UserView",
                                 meta: {
                                     title: "Member Details - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/transactions",
+                                component: TransactionHistory,
+                                name: "TransactionHistory",
+                                meta: {
+                                    title: "Transaction History - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/objects",
+                                component: OwnedObjects,
+                                name: "OwnedObjects",
+                                meta: {
+                                    title: "Owned Objects - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/storage",
+                                component: UserStorageAreas,
+                                name: "UserStorageAreas",
+                                meta: {
+                                    title: "User Storage Areas - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/clubs",
+                                component: UserClubs,
+                                name: "UserClubs",
+                                meta: {
+                                    title: "Clubs - Admin Panel",
+                                },
+                            },
+                            {
+                                path: "/admin/member/user/:id/uploads",
+                                component: UserMallUploads,
+                                name: "UserMallUploads",
+                                meta: {
+                                    title: "User Mall Uploads - Admin Panel",
                                 },
                             },
                             {

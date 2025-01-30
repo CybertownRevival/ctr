@@ -1,8 +1,23 @@
 <template>
 <div class="grid grid-cols-1 w-full place-content-center">
-  <div class="w-full min-w-min text-center my-2"
+  <div class="flex w-full min-w-min justify-center my-2"
        v-if="isUserDetailRoute">
-    <router-link class="btn-ui-inline mx-1 w-20" to="">VIEW</router-link>
+    <div class="flex" v-if="accessLevel.includes('council')">   
+      <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserView'" :to="{name: 'UserView'}">VIEW</router-link>
+      <button class="btn-ui-inline mx-1 w-20" v-else>VIEW</button>
+      <div v-if="accessLevel.includes('admin')">
+        <router-link class="btn-ui-inline mx-1 w-32" v-if="this.$route.name !== 'TransactionHistory'" :to="{name: 'TransactionHistory'}">Transactions</router-link>
+        <router-link class="btn-ui-inline mx-1 w-32" v-else>Transactions</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'OwnedObjects'" :to="{name: 'OwnedObjects'}">Objects</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" v-else>Objects</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserMallUploads'" :to="{name: 'UserMallUploads'}">Uploads</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" v-else>Uploads</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserStorageAreas'" :to="{name: 'UserStorageAreas'}">Storage</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" v-else>Storage</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserClubs'" :to="{name: 'UserClubs'}">Clubs</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" v-else>Clubs</router-link>
+      </div>
+    </div>
   </div>
     <div class="w-full min-w-min text-center my-2"
          v-else-if="isUserBanRoute">
@@ -41,7 +56,8 @@ export default Vue.extend({
   props: ["accessLevel"],
   computed: {
     isUserDetailRoute(): boolean {
-      return this.$route.name === "UserView" || this.$route.name === "UserEdit";
+      const memberView = ['UserView', 'UserEdit', 'TransactionHistory', 'OwnedObjects', 'UserStorageAreas', 'UserClubs', 'UserMallUploads']
+      return memberView.includes(this.$route.name);
     },
     isUserBanRoute(): boolean {
       return this.$route.name === "UserBanHistory" || this.$route.name === "UserBanAdd";

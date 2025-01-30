@@ -37,7 +37,8 @@ router.beforeEach((to, from, next) => {
         const place = {...Data.place};
         appStore.methods.setPlace(place);
       });
-  } else {
+    }
+  if (to.fullPath.includes("/home/")) {
     api.get<any>(`/home/${ to.params.username }`)
       .then(response => {
         const Data = response.data;

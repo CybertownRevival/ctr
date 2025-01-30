@@ -33,6 +33,34 @@ export class ObjectInstanceRepository {
       .orderBy('object_instance.object_name', 'asc');
   }
 
+  public async getAllObjectInstances(limit: number, offset: number): Promise<ObjectInstance[]> {
+    return this.db.objectInstance
+      .select('object_instance.*',
+        'object.name',
+        'member.username',
+      )
+      .join('object', 'object.id', 'object_instance.object_id')
+      .join('member', 'member.id', 'object_instance.member_id' )
+      .limit(limit)
+      .offset(offset)
+      .orderBy('object_id', 'asc');
+  }
+
+  public async searchAllObjectInstances(
+    id: number, limit: number, offset: number): Promise<ObjectInstance[]> {
+    return this.db.objectInstance
+      .select('object_instance.*',
+        'object.name',
+        'member.username',
+      )
+      .where('object_instance.member_id', id)
+      .join('object', 'object.id', 'object_instance.object_id')
+      .join('member', 'member.id', 'object_instance.member_id' )
+      .limit(limit)
+      .offset(offset)
+      .orderBy('object_id', 'asc');
+  }
+
   public async getObjectInstanceWithObject(objectInstanceId: number): Promise<ObjectInstance[]> {
     return this.db.objectInstance
       .select(
@@ -108,6 +136,19 @@ export class ObjectInstanceRepository {
     const count = await this.db.objectInstance
       .count('object_id as total')
       .where('object_id', objectId);
+    return parseInt(Object.values(count[0])[0]);
+  }
+
+  public async totalCount(): Promise<number> {
+    const count = await this.db.objectInstance
+      .count('object_id as total')
+    return parseInt(Object.values(count[0])[0]);
+  }
+
+  public async totalSearchCount(id: number): Promise<number> {
+    const count = await this.db.objectInstance
+      .count('object_id as total')
+      .where('member_id', id)
     return parseInt(Object.values(count[0])[0]);
   }
 

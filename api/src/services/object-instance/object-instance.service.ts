@@ -76,6 +76,21 @@ export class ObjectInstanceService {
     return await this.objectInstanceRepository.getObjectInstanceWithObject(objectInstanceId);
   }
 
+  public async findAllObjectInstances(limit: number, offset: number): Promise<any> {
+    const objects = await this.objectInstanceRepository.getAllObjectInstances(limit, offset);
+    const total = await this.objectInstanceRepository.totalCount();
+    return [{object: objects, total:total}]
+  }
+
+  public async searchAllObjectInstances(
+    username: string, limit: number, offset: number): Promise<any> {
+    const user = await this.memberRepository.findIdByUsername(username);
+    const objects = await this.objectInstanceRepository
+      .searchAllObjectInstances(parseInt(user[0].id), limit, offset);
+    const total = await this.objectInstanceRepository.totalSearchCount(parseInt(user[0].id));
+    return [{object: objects, total:total}]
+  }
+
   public async buyObjectInstance(objectId: number, buyerId: number): Promise<any> {
     const object = await this.objectInstanceRepository.getObjectInstanceWithObject(objectId);
     const buyer = await this.memberRepository.findById(buyerId);

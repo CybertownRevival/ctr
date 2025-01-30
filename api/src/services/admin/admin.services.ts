@@ -9,6 +9,8 @@ import {
   AvatarRepository,
   PlaceRepository,
   ObjectRepository,
+  TransactionRepository,
+  WalletRepository,
 } from '../../repositories';
 
 @Service()
@@ -22,6 +24,8 @@ export class AdminService {
    private avatarRespository: AvatarRepository,
    private placeRepository: PlaceRepository,
    private objectRepository: ObjectRepository,
+   private transactionRepository: TransactionRepository,
+   private walletRepository: WalletRepository,
   ) {}
   
   public async addBan(ban_member_id, time_frame, type, assigner_member_id, reason): Promise<void> {
@@ -96,6 +100,33 @@ export class AdminService {
       users: users,
       total: total,
     };
+  }
+
+  public async getTransactions(type: string, limit: number, offset: number): Promise<any> {
+    const transactions = await this.transactionRepository
+      .getTransactions(type, limit, offset);
+    const total = await this.transactionRepository.getTotal(type);
+    return {
+      transactions: transactions,
+      total: total,
+    };
+  }
+
+  public async searchTransactions(
+    username: string, type: string, limit: number, offset: number): Promise<any> {
+    const user = await this.memberRepository.find({username:username});
+    if(user){
+      const walletId = user.wallet_id;
+      const transactions = await this.transactionRepository
+        .searchTransactions(walletId, type, limit, offset);
+      const total = await this.transactionRepository.getSearchTotal(walletId, type);
+      return {
+        transactions: transactions,
+        total: total,
+      };
+    } else {
+      return;
+    }
   }
   
   public async searchUserChat(
