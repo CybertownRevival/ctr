@@ -108,11 +108,9 @@ export default Vue.extend({
       inline.url = new X3D.MFString(obj.url);
       sharedObject.children[0] = inline;
       browser.currentScene.addRootNode(sharedObject);
-
       sharedObject.addFieldCallback("newPosition", {}, (pos) => {
         this.saveObjectLocation(obj.id);
       });
-
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
         this.saveObjectLocation(obj.id);
       });
@@ -227,7 +225,7 @@ export default Vue.extend({
         }
       });
       this.sharedObjects.push(request.data.object_instance);
-      this.addSharedObject(request.data.object_instance, browser);
+      this.addSharedObject(request.data.object_instance, browser)
       this.$socket.emit('SO', {
         event: 'add',
         objectId: objectId
