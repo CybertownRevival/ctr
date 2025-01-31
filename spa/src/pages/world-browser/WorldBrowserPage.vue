@@ -225,7 +225,7 @@ export default Vue.extend({
         }
       });
       this.sharedObjects.push(request.data.object_instance);
-      this.addSharedObject(request.data.object_instance, browser)
+      this.addSharedObject(request.data.object_instance, browser);
       this.$socket.emit('SO', {
         event: 'add',
         objectId: objectId
