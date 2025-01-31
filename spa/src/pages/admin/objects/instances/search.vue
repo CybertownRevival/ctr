@@ -75,9 +75,16 @@
                 <td class="font-bold px-2 text-green">{{ object.username }}</td>
               </tr>
               <tr>
-                <td class="italic">Location: </td>
-                <td class="p-4 font-bold px-2" v-if="object.place_id >= 1">{{ object.place_id }}</td>
-                <td class="p-4 font-bold px-2" v-else>Owners Backpack</td>
+                <td class="font-bold">Located in 
+                  <span v-if="['home', 'club', 'storage', 'backpack'].includes(object.place_type)">the owners </span> 
+                  <span v-else>a public </span> 
+                </td>
+                <td class="p-4 font-bold px-2" v-if="['home', 'club', 'storage', 'backpack'].includes(object.place_type)">{{ object.place_type }}</td>
+                <td class="p-4 font-bold px-2" v-else>area.</td>
+              </tr>
+              <tr v-if="object.place_name !== 'backpack'">
+                <td class="italic">Place Name: </td>
+                <td class="p-4 font-bold px-2 text-green capitalize">{{ object.place_name }}</td>
               </tr>
             </table>
           </td>
@@ -144,6 +151,7 @@ export default Vue.extend({
             this.offset = 0;
             setTimeout(this.searchObjects, 1000);
           }
+          console.log(this.objects)
       } catch (error) {
         console.log(error);
       }

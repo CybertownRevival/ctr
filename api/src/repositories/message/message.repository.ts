@@ -45,11 +45,14 @@ export class MessageRepository {
 
   public async getActiveChats(time: Date): Promise<any> {
     return knex
-      .select('place.name')
+      .select(
+        'place.name',
+      )
       .from('message')
-      .where('message.created_at', '>=', time)
+      .where('message.status', 1)
       .innerJoin('place', 'message.place_id', 'place.id')
-      .orderBy('message.id', 'DESC');
+      .where('message.created_at', '>=', time)
+      .orderBy('message.created_at', 'desc');
   }
 
   public async getResults(

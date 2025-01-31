@@ -271,9 +271,7 @@ class AdminController {
             Number.parseInt(request.query.offset.toString()),
           );
         }
-
         returnResults = results;
-
         response.status(200).json({returnResults});
       } catch (error) {
         console.log(error);

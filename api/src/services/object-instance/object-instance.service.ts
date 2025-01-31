@@ -4,6 +4,7 @@ import {
   ObjectInstanceRepository, 
   WalletRepository, 
   TransactionRepository,
+  PlaceRepository,
   MemberRepository } from '../../repositories';
 import { ObjectInstancePosition, ObjectInstanceRotation } from 'models';
 import { Object } from 'models';
@@ -15,6 +16,7 @@ export class ObjectInstanceService {
     private objectInstanceRepository: ObjectInstanceRepository,
     private walletRepository: WalletRepository,
     private transactionRepository: TransactionRepository,
+    private placeRepository: PlaceRepository,
     private memberRepository: MemberRepository) {}
 
   public async find(objectInstanceId: number): Promise<any> {
@@ -78,8 +80,20 @@ export class ObjectInstanceService {
 
   public async findAllObjectInstances(limit: number, offset: number): Promise<any> {
     const objects = await this.objectInstanceRepository.getAllObjectInstances(limit, offset);
+    const returnObjects = [];
+    for(const result of objects) {
+      if(result.place_id !== 0){
+        const placeName = await this.placeRepository.findById(result.place_id);
+        result.place_name = placeName.name;
+        result.place_type = placeName.type;
+      } else {
+        result.place_name = 'backpack';
+        result.place_type = 'backpack';
+      }
+      returnObjects.push(result);
+    }
     const total = await this.objectInstanceRepository.totalCount();
-    return [{object: objects, total:total}]
+    return [{object: returnObjects, total:total}]
   }
 
   public async searchAllObjectInstances(
@@ -87,8 +101,20 @@ export class ObjectInstanceService {
     const user = await this.memberRepository.findIdByUsername(username);
     const objects = await this.objectInstanceRepository
       .searchAllObjectInstances(parseInt(user[0].id), limit, offset);
+    const returnObjects = [];
+    for(const result of objects) {
+      if(result.place_id !== 0){
+        const placeName = await this.placeRepository.findById(result.place_id);
+        result.place_name = placeName.name;
+        result.place_type = placeName.type;
+      } else {
+        result.place_name = 'backpack';
+        result.place_type = 'backpack';
+      }
+      returnObjects.push(result);
+    }
     const total = await this.objectInstanceRepository.totalSearchCount(parseInt(user[0].id));
-    return [{object: objects, total:total}]
+    return [{object: returnObjects, total:total}]
   }
 
   public async buyObjectInstance(objectId: number, buyerId: number): Promise<any> {

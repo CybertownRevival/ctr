@@ -36,11 +36,11 @@
             <td>{{ Number(bansEndingSoon.length).toLocaleString() }}</td>
           </tr>
           <tr>
-            <td>Total Jailed Members: </td>
+            <td>Total Jail Records: </td>
             <td>{{ Number(totalJailedUsers).toLocaleString() }}</td>
           </tr>
           <tr>
-            <td>Total Banned Members: </td>
+            <td>Total Ban Records: </td>
             <td>{{ Number(totalBannedUsers).toLocaleString() }}</td>
           </tr>
         </table>
@@ -251,11 +251,19 @@
         <table class="w-full">
           <tr>
             <td v-if="bansEndingSoon.length !== 0">
-              <ul>
-                <li v-for="unbanned in bansEndingSoon" :key="unbanned.id">
-                  {{ unbanned.username }}
-                </li>
-              </ul>
+              <table>
+                <tr v-for="unbanned in bansEndingSoon" :key="unbanned.id">
+                  <td>
+                    <div class="grid grid-cols-2 w-96 pb-2">
+                      <div>Username:</div>
+                      <div class="text-green">{{ unbanned.username }}</div>
+                      <div>Ending:</div>
+                      <div>{{ new Date(unbanned.end_date).toDateString() }}</div>
+                      <hr /><hr />
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </td>
             <td class="py-5 px-10" v-else>There are no bans ending soon</td>
           </tr>
@@ -263,16 +271,24 @@
       </div>
     </div>
     <div class="px-5 pt-2 border rounded-lg w-full">
-      <div class="text-2xl font-bold text-green">Recently Jailed Users</div>
+      <div class="text-2xl font-bold text-green">Recent Jail Ban Issued</div>
       <div class="p-2">
         <table class="w-full">
           <tr>
             <td v-if="recentlyJailed.length !== 0">
-              <ul>
-                <li v-for="jailed in recentlyJailed" :key="jailed.id">
-                  {{ jailed.username }}
-                </li>
-              </ul>
+              <table>
+                <tr v-for="jailed in recentlyJailed" :key="jailed.id">
+                  <td>
+                    <div class="grid grid-cols-2 w-96 pb-2">
+                      <div>Username:</div>
+                      <div class="text-green">{{ jailed.username }}</div>
+                      <div>Until:</div>
+                      <div>{{ new Date(jailed.end_date).toDateString() }}</div>
+                      <hr /><hr />
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </td>
             <td class="py-5 px-10" v-else>No recently jailed users found</td>
           </tr>
@@ -280,7 +296,7 @@
       </div>
     </div>
     <div class="px-5 pt-2 border rounded-lg w-full">
-      <div class="text-2xl font-bold text-green">Recently Banned Users</div>
+      <div class="text-2xl font-bold text-green">Recent Full Ban Issued</div>
       <div class="p-2">
         <table class="w-full">
           <tr>
@@ -291,8 +307,6 @@
                     <div class="grid grid-cols-2 w-96 pb-2">
                       <div>Username:</div>
                       <div class="text-green">{{ banned.username }}</div>
-                      <div>Type:</div>
-                      <div>{{ banned.type }}</div>
                       <div>Until:</div>
                       <div>{{ new Date(banned.end_date).toDateString() }}</div>
                       <hr /><hr />
@@ -307,7 +321,7 @@
       </div>
     </div>
     <div class="px-5 pt-2 border rounded-lg w-full">
-      <div class="text-2xl font-bold text-green">Recent Transactions</div>
+      <div class="text-2xl font-bold text-green">Transactions in the Last Hour</div>
       <div class="p-2">
         <table class="w-full">
           <tr>
@@ -317,10 +331,11 @@
                   <td>
                     <div class="flex ">
                       <div class="p-2">{{ Number(transaction.amount).toLocaleString() }} cc was sent from 
-                        <span v-if="transaction.sender_wallet_id">{{ transaction.username }}</span>
-                        <span v-else>System</span> to
-                        <span v-if="transaction.recipient_wallet_id">{{ transaction.username }}</span>
-                        <span v-else>System</span> for {{ transaction.reason }} on
+                        <span class="text-green">{{ transaction.sender_username[0].username }}</span>
+                         to
+                        <span class="text-green">{{ transaction.recipient_username[0].username }}</span>
+                         for {{ transaction.reason }} 
+                         on
                         {{ new Date(transaction.created_at).toDateString() }}
                       </div>
                     </div>
@@ -492,6 +507,11 @@ export default Vue.extend({
       if(!Number.isNaN(path.object.mall.totalUploaded)){
         this.totalUploads = Math.round(path.object.mall.totalUploaded[0].count);
       }
+
+      // Active places
+      this.activePlaces = path.messages.chat;
+      this.activeMB = path.messages.messageboard;
+      console.log(path)
     },
   },
   created() {

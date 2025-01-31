@@ -125,6 +125,7 @@ export class AdminService {
     const hour = 60 * minute;
     const day = 24 * hour;
     const past30Min = new Date(Date.now() - .5 * hour);
+    const pastHour = new Date(Date.now() - hour);
     const pastDay = new Date(Date.now() - day);
     const pastWeek = new Date(Date.now() - 7 * day);
     const pastMonth = new Date(Date.now() - 30 * day);
@@ -159,7 +160,21 @@ export class AdminService {
     const averageBalance = await this.walletRepository.getAverageBalance();
     const totalBalance = await this.walletRepository.getTotalBalance();
     const topBalance = walletData[0].balance;
-    const latestTransactions = await this.transactionRepository.getLatestTransactions();
+    const latestTransactions = await this.transactionRepository.getLatestTransactions(pastHour);
+    const addUsernameToTransactions = [];
+    for(const user of latestTransactions){
+      let recipient_username = [{username: 'System'}];
+      let sender_username = [{username: 'System'}];
+      if(user.recipient_wallet_id){
+        recipient_username = await this.memberRepository.findByWalletId(user.recipient_wallet_id);
+      }
+      if(user.sender_wallet_id){
+        sender_username = await this.memberRepository.findByWalletId(user.sender_wallet_id);
+      }
+      user.recipient_username = recipient_username;
+      user.sender_username = sender_username;
+      addUsernameToTransactions.push(user);
+    };
     
     // Object Data
     //// Object Instances
@@ -170,17 +185,17 @@ export class AdminService {
     //// Mall Objects
     const mallAveragePrice = await this.objectRepository.getAverageMallPrice();
     const mallHighestPrice = await this.objectRepository.getHighestMallPrice();
-    const totalMallObjects= await this.objectRepository.getAcceptedTotal();
+    const totalMallObjects = await this.objectRepository.getAcceptedTotal();
     const totalPending = await this.objectRepository.getTotalByStatus(2);
     const totalApproved = await this.objectRepository.getTotalByStatus(3);
     const totalRejected = await this.objectRepository.getTotalByStatus(0);
     const totalStocked = await this.objectRepository.getTotalByStatus(1);
     const totalDestocked = await this.objectRepository.getTotalByStatus(4);
-    const totalUploaded= await this.objectRepository.getUploadTotal();
+    const totalUploaded = await this.objectRepository.getUploadTotal();
     
     // Message Data
     const latestChat = await this.messageRepository.getActiveChats(past30Min);
-    const latestMB = await this.messageboardRepository.getActiveMB(past30Min)
+    const latestMB = await this.messageboardRepository.getActiveMB(past30Min);
 
     return {
       activity: {
@@ -213,7 +228,7 @@ export class AdminService {
         averageBalance: averageBalance,
         totalBalance: totalBalance,
         topBalance: topBalance,
-        latestTransactions: latestTransactions,
+        latestTransactions: addUsernameToTransactions,
       },
       object: {
         instances: {
