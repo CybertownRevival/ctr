@@ -190,7 +190,7 @@ function set_vec3f (value, time) { vec3fToServer = value; }
 }
 
 PROTO SharedObject [
-exposedField SFVec3f translation 0 0 0
+exposedField SFVec3f translation 0 1.75 0
 exposedField SFRotation rotation 0 1 0 0
 exposedField SFString name ""
 exposedField SFString id ""
