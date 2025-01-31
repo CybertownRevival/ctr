@@ -238,11 +238,13 @@ export default Vue.extend({
       await this.$http.post(`/object_instance/${  objectId  }/pickup`);
 
       // remove to the scene 
-      const browser = X3D.getBrowser();
-      const object = this.sharedObjectsMap.get(objectId);
-      browser.currentScene.removeRootNode(object);
-
-      this.sharedObjectsMap.delete(objectId);
+      if(this.$store.data.view3d) {
+        const browser = X3D.getBrowser();
+        const object = this.sharedObjectsMap.get(objectId);
+        browser.currentScene.removeRootNode(object);
+        this.sharedObjectsMap.delete(objectId);
+      }
+    
       this.sharedObjects = this.sharedObjects.filter(obj => obj.id != objectId);
       this.$socket.emit('SO', {
         event: 'remove',
