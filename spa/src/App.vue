@@ -320,6 +320,9 @@ export default Vue.extend({
         this.jumpGate = "";
       }
     },
+    reloadWindow(): void {
+      window.location.reload();
+    },
     openInfoModal(): void {
       ModalService.open(InfoModal);
     },
@@ -341,6 +344,13 @@ export default Vue.extend({
     securityListener(): void {
       this.$socket.on("new-security-alert", data => {
         this.openNotificationModal(data);
+      });
+    },
+    moderationListener(): void {
+      this.$socket.on("moderation_event", data => {
+        if(parseInt(data.data.member_id) === this.$store.data.user.id) {
+          this.reloadWindow();
+        }
       });
     },
     instantMessagingListener(): void {
@@ -365,6 +375,7 @@ export default Vue.extend({
   mounted() {
     this.checkAccessLevel();
     this.instantMessagingListener();
+    this.moderationListener();
     //todo populate jumpgate with worlds
     X3D(
       () => {

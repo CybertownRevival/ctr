@@ -160,6 +160,13 @@ io.on("connection", async function(socket) {
         });
     });
 
+    //handle community moderation
+    socket.on('moderation', function(data) {
+        socket.broadcast.emit('moderation_event', {
+            data:data,
+        });
+    });
+
     //handle chat messages
     socket.on("CHAT", (chatData) => {
         console.log("chat message...");

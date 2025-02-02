@@ -93,11 +93,17 @@ export default Vue.extend({
         })
           .then(() => {
             this.success = "Ban Added";
+            this.emitModerationEvent();
           });
       } catch (e) {
         this.error = e.response.data.message;
       }
     },
+    emitModerationEvent(){
+    this.$socket.emit('moderation', {
+      member_id: this.$route.params.id,
+    });
+  },
   },
   created() {
     if (!this.accessLevel.includes("security")) {
