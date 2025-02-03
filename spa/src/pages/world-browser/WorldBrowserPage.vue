@@ -108,11 +108,9 @@ export default Vue.extend({
       inline.url = new X3D.MFString(obj.url);
       sharedObject.children[0] = inline;
       browser.currentScene.addRootNode(sharedObject);
-
       sharedObject.addFieldCallback("newPosition", {}, (pos) => {
         this.saveObjectLocation(obj.id);
       });
-
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
         this.saveObjectLocation(obj.id);
       });
@@ -238,11 +236,13 @@ export default Vue.extend({
       await this.$http.post(`/object_instance/${  objectId  }/pickup`);
 
       // remove to the scene 
-      const browser = X3D.getBrowser();
-      const object = this.sharedObjectsMap.get(objectId);
-      browser.currentScene.removeRootNode(object);
-
-      this.sharedObjectsMap.delete(objectId);
+      if(this.$store.data.view3d) {
+        const browser = X3D.getBrowser();
+        const object = this.sharedObjectsMap.get(objectId);
+        browser.currentScene.removeRootNode(object);
+        this.sharedObjectsMap.delete(objectId);
+      }
+    
       this.sharedObjects = this.sharedObjects.filter(obj => obj.id != objectId);
       this.$socket.emit('SO', {
         event: 'remove',
