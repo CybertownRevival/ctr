@@ -77,6 +77,25 @@ export class MallService {
     return {objects: returnObjects};
   }
 
+  public async getObjectsCatalog(limit: number, offset: number): Promise<any> {
+    const returnObjects = [];
+    const fleamarket = await this.placeRepository.findBySlug('fleamarket');
+    const blackmarket = await this.placeRepository.findBySlug('blackmarket');
+    const objects = await this.objectRepository.getObjectsCatalog(limit, offset);
+    for (const obj of objects) {
+      obj.forSale = await this.objectInstanceRepository.countForSaleById(obj.id);
+      obj.publicPlaces = await this.objectInstanceRepository
+        .countByPublicPlaces(obj.id, fleamarket.id, blackmarket.id)
+      obj.instances = await this.objectInstanceRepository.countByObjectId(obj.id);
+      returnObjects.push(obj);
+    }
+    const total = await this.objectRepository.catalogTotal();
+    return {
+      objects: returnObjects,
+      total: total,
+    };
+  }
+
   public async searchMallObjects(search: string, limit: number, offset: number): Promise<any> {
     const returnObjects = [];
     const objects = await this.objectRepository.searchMallObjects(search, limit, offset);

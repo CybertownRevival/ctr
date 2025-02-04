@@ -120,6 +120,24 @@ export class ObjectRepository {
       .offset(offset);
   }
 
+  public async getObjectsCatalog(limit: number, offset: number): Promise<any> {
+    return await this.db.object
+      .select('object.*', 'member.username')
+      .where('object.status','!=', '0')
+      .where('object.status','!=', '2')
+      .join('member', 'object.member_id', 'member.id')
+      .orderBy('id', 'desc')
+      .limit(limit)
+      .offset(offset);
+  }
+
+  public async catalogTotal(): Promise<any> {
+    return await this.db.object
+      .count('id as count')
+      .where('status','!=', '0')
+      .where('status','!=', '2');
+  }
+
   public async getTotal(search: string): Promise<any> {
     return await this.db.object
       .count('id as count')

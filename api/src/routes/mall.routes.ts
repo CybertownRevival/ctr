@@ -48,5 +48,7 @@ mallRoutes.post('/user', (request, response) =>
 mallRoutes.post('/:id/position', (request, response) => 
   mallController.updateObjectPosition(request, response));
 mallRoutes.post('/buy', (request, response) => mallController.buyObject(request, response));
+mallRoutes.get('/object-catalog', (request, response) => 
+  mallController.getObjectsCatalog(request, response));
 
 export { mallRoutes };

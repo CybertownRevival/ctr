@@ -28,6 +28,8 @@
     </span>
     <br />
     <div v-if="$store.data.place.slug === 'mall'">
+      <button class="btn-ui" v-on:click="opener('#/mall/catalog')">Mall Catalog</button>
+      <br />
       <router-link 
       :to="{ name: 'mall-upload' }"
       class="btn-ui">Upload</router-link>

@@ -67,6 +67,7 @@ import MallStocked from "@/pages/mall/staff/stocked.vue";
 import MallSoldOut from "@/pages/mall/staff/soldout.vue";
 import MallObjectSearch from "@/pages/mall/staff/search.vue";
 import MallChecker from "@/pages/mall/checker.vue";
+import ObjectCatalog from "@/pages/mall/ObjectCatalog.vue";
 
 import ObjectProperties from "./pages/ObjectProperties.vue";
 
@@ -459,6 +460,15 @@ export default [
         meta: {
             title: "Mall Upload",
             wrapper: true,
+        },
+    },
+    {
+        path: "/mall/catalog",
+        component: ObjectCatalog,
+        name: "ObjectCatalog",
+        meta: {
+            title: "Mall Object Catalog",
+            wrapper: false,
         },
     },
     {
