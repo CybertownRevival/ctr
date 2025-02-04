@@ -44,18 +44,22 @@ memberRoutes.post('/reset_password', (request, response) =>
   memberController.resetPassword(request, response),
 );
 memberRoutes.get('/info', (request, response) => memberController.getInfo(request, response));
-memberRoutes.get('/storage', (request, response) => memberController.getStorage(request, response));
+memberRoutes.post('/storage', (request, response) => 
+  memberController.getStorage(request, response));
 memberRoutes.post('/storage/update', (request, response) => 
   memberController.updateStorage(request, response));
 memberRoutes.post('/ping', (request, response) => 
   memberController.updateLatestActivity(request, response));
 memberRoutes.get('/info/:id', (request, response) => memberController.getInfo(request, response));
-memberRoutes.get('/roles/:id?', (request, response) => memberController.getRoles(request, response));
-memberRoutes.post('/check3d', (request, response) => memberController.check3d(request, response));
+memberRoutes.get('/roles/:id?', (request, response) => 
+  memberController.getRoles(request, response));
+memberRoutes.get('/check3d/:username', (request, response) => 
+  memberController.check3d(request, response));
 memberRoutes.get('/places', (request, response) => 
   memberController.getActivePlaces(request, response));
 memberRoutes.get('/backpack/:username', (request, response) =>
-  memberController.getBackpack(request, response),
-);
+  memberController.getBackpack(request, response));
+memberRoutes.get('/online_users', (request, response) =>
+  memberController.getOnlineUsers(request, response));
 
 export { memberRoutes };

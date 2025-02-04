@@ -1,17 +1,17 @@
 <template>
   <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="my-modal">
-    <div class="absolute
+    <div class="
+      absolute
+      border-2
+      border-gray-300
+      shadow-lg
+      bg-black
+      overflow-y-hidden
       top-10
-      bottom-10
       left-1/2
       transform
       -translate-x-1/2
-      border-2
-      border-gray-300
-      max-w-full
-      shadow-lg
-      bg-black
-      overflow-y-hidden" style="width:1024px;">
+      ">
       <div class="flex
         flex-row-reverse
         bg-gradient-to-r
@@ -38,7 +38,6 @@ import Vue from "vue";
 export default Vue.extend({
   name: "Modal",
   components: {},
-  data: () => ({}),
   methods: {
     closeModal() : void {
       this.$emit("close");

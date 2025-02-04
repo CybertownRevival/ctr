@@ -102,7 +102,7 @@ class MemberController {
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;
     try {
-      const user3d = await this.memberService.check3d(request.body.username);
+      const user3d = await this.memberService.check3d(request.params.username);
       response.status(200).json({ user3d });
     } catch (error) {
       console.error(error);
@@ -445,11 +445,41 @@ class MemberController {
     }
   }
 
-  public async getStorage(request: Request, response: Response): Promise<any> {
+  public async getOnlineUsers(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
-      const storage = await this.memberService.getStorage(session.id);
+      const returnUsers = [];
+      const users = await this.memberService.getOnlineUsers();
+      for (const user of users) {
+        const hasHome = await this.homeService.getHome(user.id);
+        const accessLevel = await this.memberService.getAccessLevel(user.id);
+        if(hasHome){
+          user.hasHome = true;
+        } else {
+          user.hasHome = false;
+        }
+        if(accessLevel && accessLevel === 'security'){
+          user.security = true;
+        } else {
+          user.security = false;
+        }
+        user.id = null;
+        returnUsers.push(user);
+      }
+      response.status(200).json({ returnUsers });
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({ error });
+    }
+  }
+
+  public async getStorage(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const member_id = parseInt(request.body.member_id);
+    try {
+      const storage = await this.memberService.getStorage(member_id);
       response.status(200).json({ storage });
     } catch (error) {
       console.log(error);

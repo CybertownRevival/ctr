@@ -57,6 +57,14 @@ export class MemberRepository {
       .where('username', username);
   }
 
+  public async findOnlineUsers(current: Date): Promise<any> {
+    return this.db.knex
+      .select('id','username')
+      .from('member')
+      .where('last_activity','>=', current)
+      .orderBy('username', 'ASC');
+  }
+
   public async getActivePlaces(current: Date): Promise<any> {
     return this.db.knex
       .select('place_id')

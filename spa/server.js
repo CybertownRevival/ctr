@@ -153,6 +153,20 @@ io.on("connection", async function(socket) {
         }
     });
 
+    //handle notifications
+    socket.on('security-alert', function(data) {
+        socket.broadcast.emit('new-security-alert', {
+            data:data,
+        });
+    });
+
+    //handle community moderation
+    socket.on('moderation', function(data) {
+        socket.broadcast.emit('moderation_event', {
+            data:data,
+        });
+    });
+
     //handle chat messages
     socket.on("CHAT", (chatData) => {
         console.log("chat message...");

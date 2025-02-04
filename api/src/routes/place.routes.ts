@@ -13,12 +13,14 @@ placeRoutes.get('/getSecurityInfo',
   (request, response) => placeController.getSecurityInfo(request, response));
 placeRoutes.get('/:placeId/object_instance',
   (request, response) => placeController.getPlaceObjects(request, response));
-placeRoutes.get('/getPlaceBySlug/:slug',
+placeRoutes.get('/:slug',
   (request, response) => placeController.getPlace(request, response));
-placeRoutes.get('/getPlaceById/:id',
+placeRoutes.get('/by_id/:id',
   (request, response) => placeController.getPlaceById(request, response));
 placeRoutes.post('/add_storage', (request, response) => 
   placeController.addStorage(request, response));
+placeRoutes.post('/delete_storage', (request, response) =>
+  placeController.deleteStorage(request, response));
 placeRoutes.post('/postAccessInfo/:slug/:id?',
   (request, response) => placeController.postAccessInfo(request, response));
 

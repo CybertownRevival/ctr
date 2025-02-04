@@ -2,7 +2,7 @@
   <div class="flex flex-row chat space-x-1 p-1 text-chat w-full">
     <div class="messages-pane flex flex-col flex-1">
       <div class="flex-grow p-1 overflow-y-auto h-full" ref="chatArea">
-        <ul>
+        <ul class="text-base">
           <li v-for="(msg, key) in messages" :key="key">
             <i v-if="msg.new !== true && msg.type !== 'system'" class="text-white">
               {{ msg.username }}: {{ msg.msg }}
@@ -34,10 +34,7 @@
           </li>
         </ul>
       </div>
-      <div
-        class="flex flex-none flex-row space-x-0.5 bg-black"
-        v-show="connected"
-      >
+      <div class="flex flex-none flex-row space-x-0.5 bg-black" v-show="chatEnabled">
         <input
           type="text"
           v-model="message"
@@ -62,7 +59,7 @@
         </button>
       </div>
     </div>
-    <div class="flex flex-none flex-col w-60 space-0.5 bg-black">
+    <div class="flex flex-none flex-col w-60 space-0.5 bg-black text-base">
       <div
         class="
           flex flex-none
@@ -101,6 +98,7 @@
             active:bg-gray-400
           "
           @click="changeActivePanel"
+          v-show="chatEnabled"
         >
           Next
         </button>
@@ -113,7 +111,7 @@
           </li>
           <li class="cursor-default" v-for="(user, key) in users" :key="key" @click="handler($event)" @contextmenu="handler($event)" @mouseup="menu(user.id, user.username)">
             <img src="/assets/img/av_mute.gif" class="inline" v-if="blockedMembers.includes(user.username) === true" />
-            <img src="/assets/img/av_def.gif" class="inline" v-else-if="user.is3d === 1" />
+            <img src="/assets/img/av_def.gif" class="inline" v-else-if="worldMembers.includes(user.username) === true" />
             <img src="/assets/img/av_invis.gif" class="inline" v-else />
             {{ user.username }}
           </li>
@@ -235,6 +233,18 @@
           >
           <input type="checkbox" id="XP" v-model="showXP" />
           <label for="XP"> Users XP</label>
+        </li>
+        <li v-show="menuToggleSpeech" 
+          class="
+            p-1
+            pl-3.5
+            hover:text-white 
+            hover:bg-gray-500
+            active:bg-gray-400
+          "
+          >
+          <input type="checkbox" id="speech" v-model="tts" />
+          <label for="speech"> Text To Speech</label>
         </li>
         <li v-show="menuBeamTo" 
           class="
@@ -423,6 +433,7 @@ export default Vue.extend({
       menuGoTo: false,
       menuToggleRole: false,
       menuToggleXP: false,
+      menuToggleSpeech: false,
       mallObject: false,
       activePlaces: [],
       placeList: [],
@@ -432,8 +443,11 @@ export default Vue.extend({
       placeId: null,
       chatIntervalId: null,
       pingIntervalId: null,
+      worldMembers: [],
+      chatEnabled: false,
       showRole: true,
       showXP: true,
+      tts: false,
     };
   },
   directives: {
@@ -575,6 +589,7 @@ export default Vue.extend({
       this.menuGoTo = false;
       this.menuToggleRole = false;
       this.menuToggleXP = false;
+      this.menuToggleSpeech = false;
       this.mallObject = false;
       this.placeType = null;
       this.placeUsername = null;
@@ -618,6 +633,7 @@ export default Vue.extend({
         if(target[0] === this.$store.data.user.id){
           this.menuToggleRole = true;
           this.menuToggleXP = true;
+          this.menuToggleSpeech = true;
         } else {
           this.menuIgnore = true;
           this.menuInviteChat = true;
@@ -793,12 +809,12 @@ export default Vue.extend({
       }
       this.closeMenu();
     },
-    async isMember3D(username){
-      const check3d = await this.$http.post('/member/check3d', {
-        username: username,
-      });
-      return check3d.data.user3d[0].is_3d
-    },
+    async isMember3D(user){
+      const check3D = await this.$http.get(`/member/check3d/${user.username}`);
+        if(check3D.data.user3d[0].is_3d === 1){
+          this.worldMembers.push(user.username);
+        }
+      },
     async updateObjectLists(object){
       let alteredBackpack = [];
       if(['backpack', 'userBackpack'].includes(this.activePanel)){
@@ -851,28 +867,39 @@ export default Vue.extend({
         }
       }
     },
+    textToSpeech(data){
+      const message = data.msg;
+      let speech = new SpeechSynthesisUtterance();
+      speech.text = message;
+      window.speechSynthesis.speak(speech);
+    },
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {
         this.debugMsg("chat message received...", data);
         if(this.blockedMembers.includes(data.username) === false){
           this.messages.push(data);
+          if(this.tts){
+            this.textToSpeech(data);
+          }
         } 
       });
       this.$socket.on("AV:del", event => {
         this.systemMessage(event.username + " has left.");
         this.users = this.users.filter((u) => u.id !== event.id);
+        let index = this.worldMembers.indexOf(event.username);
+        if(index > -1){
+          this.worldMembers.splice(index, 1);
+        }
       });
       this.$socket.on("AV:new", event => {
         this.systemMessage(event.username + " has entered.");
-        this.isMember3D(event.username)
-          .then((response) => {
-            event.is3d = response;
-            this.users.push(event);
-          });
+        this.users.push(event);
+        this.isMember3D(event);
       });
       this.$socket.on("disconnect", () => {
         this.systemMessage("Chat server disconnected. Please refresh to reconnect.");
         this.setTimers(false);
+        this.chatEnabled = false;
       });
       this.$socket.on("update-object", (object) => {
         if([object.member_username, object.buyer_username].includes(this.$store.data.user.username) || 
@@ -967,7 +994,8 @@ export default Vue.extend({
   mounted() {
     this.debugMsg("starting chat page...");
     this.startSocketListeners();
-    if (this.$store.data.place) {
+    if (this.$store.data.place && this.connected) {
+      this.chatEnabled = true;
       this.startNewChat();
       this.canAdmin();
       this.getRole();

@@ -162,6 +162,10 @@ export class PlaceService {
     await this.placeRepository.create({name: name, type: 'storage', member_id: memberId});
   }
   
+  public async deleteStorage(id: number): Promise<any> {
+    await this.placeRepository.deleteStorageArea(id);
+  }
+
   public async postAccessInfo(
     slug: string,
     placeId: number,
@@ -353,11 +357,22 @@ export class PlaceService {
     type: string, 
     limit: number, 
     offset: number): Promise<any> {
+    const ownerRequired = ['home', 'club'];
+    let returnPlaces = [];
     const places = await this.placeRepository.searchAllPlaces(
       search, compare, type, limit, offset);
+    if(ownerRequired.includes(type)){
+      for(const place of places) {
+        const user = await this.memberRepository.findById(place.member_id);
+        place.username = user.username;
+        returnPlaces.push(place);
+      }
+    } else {
+      returnPlaces = places;
+    }
     const total = await this.placeRepository.getSearchTotal(search, compare, type);
     return {
-      places: places,
+      places: returnPlaces,
       total: total,
     };
   }

@@ -94,6 +94,29 @@ export class MallService {
     };
   }
 
+  public async searchAllObjects(
+    search: string, 
+    compare: string, 
+    status: number, 
+    limit: number, 
+    offset: number): Promise<any> {
+    const returnObjects = [];
+    const objects = await this.objectRepository.searchAllObjects(
+      search, compare, status, limit, offset);
+    for (const obj of objects) {
+      const user = await this.memberRepository.findById(obj.member_id);
+      const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
+      obj.username = user.username;
+      obj.instances = instances;
+      returnObjects.push(obj);
+    }
+    const total = await this.objectRepository.getSearchTotal(search, compare, status);
+    return {
+      objects: returnObjects,
+      total: total,
+    };
+  }
+
   public async getAllObjects(
     column: string, 
     compare: string, 
