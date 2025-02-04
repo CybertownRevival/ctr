@@ -68,6 +68,21 @@ class MallController {
     }
   }
 
+  public async getObjectsCatalog(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const results = await this.mallService.getObjectsCatalog(
+        Number.parseInt(request.query.limit.toString()),
+        Number.parseInt(request.query.offset.toString()),
+      );
+      response.status(200).json({results});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({error});
+    }
+  }
+
   public async searchMallObjects(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
