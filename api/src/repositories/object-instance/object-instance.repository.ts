@@ -51,6 +51,8 @@ export class ObjectInstanceRepository {
     return this.db.objectInstance
       .select('object_instance.*',
         'object.name',
+        'object.directory',
+        'object.image',
         'member.username',
       )
       .where('object_instance.member_id', id)

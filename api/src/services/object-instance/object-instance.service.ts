@@ -96,11 +96,10 @@ export class ObjectInstanceService {
     return [{object: returnObjects, total:total}]
   }
 
-  public async searchAllObjectInstances(
-    username: string, limit: number, offset: number): Promise<any> {
-    const user = await this.memberRepository.findIdByUsername(username);
+  public async getOwnedObjects(
+    memberId: number, limit: number, offset: number): Promise<any> {
     const objects = await this.objectInstanceRepository
-      .searchAllObjectInstances(parseInt(user[0].id), limit, offset);
+      .searchAllObjectInstances(memberId, limit, offset);
     const returnObjects = [];
     for(const result of objects) {
       if(result.place_id !== 0){
@@ -113,7 +112,7 @@ export class ObjectInstanceService {
       }
       returnObjects.push(result);
     }
-    const total = await this.objectInstanceRepository.totalSearchCount(parseInt(user[0].id));
+    const total = await this.objectInstanceRepository.totalSearchCount(memberId);
     return [{object: returnObjects, total:total}]
   }
 

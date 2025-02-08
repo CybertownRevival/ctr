@@ -191,6 +191,9 @@ export class AdminService {
       user.sender_username = sender_username;
       addUsernameToTransactions.push(user);
     };
+
+    // Role Data
+    const latestHiring = await this.roleAssignmentRepository.getLatest();
     
     // Object Data
     //// Object Instances
@@ -272,7 +275,10 @@ export class AdminService {
       messages: {
         chat: latestChat,
         messageboard: latestMB,
-      }
+      },
+      hiring: {
+        latestRoleHire: latestHiring,
+      },
     }
   }
 

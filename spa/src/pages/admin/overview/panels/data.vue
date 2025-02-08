@@ -28,15 +28,15 @@
             <td>{{ Number(totalUsers).toLocaleString() }}</td>
           </tr>
           <tr>
-            <td>New Users Past Week: </td>
+            <td>New Members Past Week: </td>
             <td>{{ Number(newMembersLastWeek).toLocaleString() }}</td>
           </tr>
           <tr>
-            <td>New Users Past Month: </td>
+            <td>New Members Past Month: </td>
             <td>{{ Number(newMembersLastMonth).toLocaleString() }}</td>
           </tr>
           <tr>
-            <td>New Users Past Year: </td>
+            <td>New Members Past Year: </td>
             <td>{{ Number(newMembersLastYear).toLocaleString() }}</td>
           </tr>
         </table>
@@ -63,8 +63,27 @@
         </table>
       </div>
     </div>
-    
-    
+    <div class="px-5 pt-2 border rounded-lg w-96">
+      <div class="text-2xl font-bold text-green">Recently Hired</div>
+      <div class="p-2">
+        <table class="w-full">
+          <tr>
+            <td v-if="latestHires.length !== 0">
+              <table class="w-full">
+                <tr v-for="user in latestHires" :key="user.id">
+                  <td>
+                    <div class="flex">
+                      <div>{{ user.username }} as {{ user.roleName }}</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td class="py-5 px-10" v-else>No users found</td>
+          </tr>
+        </table>
+      </div>
+    </div>
     <div class="px-5 pt-2 border rounded-lg w-96">
       <div class="text-2xl font-bold text-green">Money Data</div>
       <div class="p-2">
@@ -431,6 +450,7 @@ export default Vue.extend({
       latestTransactions: [],
       wealthiestUsers: [],
       newestUsers: [],
+      latestHires: [],
       dailyUsers: 0,
       weeklyUsers: 0,
       monthlyUsers: 0,
@@ -560,6 +580,9 @@ export default Vue.extend({
       // Active places
       this.activePlaces = path.messages.chat;
       this.activeMB = path.messages.messageboard;
+
+      // New Hires
+      this.latestHires = path.hiring.latestRoleHire
     },
   },
   created() {

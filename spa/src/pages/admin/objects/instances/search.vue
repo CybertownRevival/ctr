@@ -2,14 +2,10 @@
   <div class="grid grid-cols-1 w-full place-items-center">
     <div class="text-center w-full text-5xl mb-1"></div>
     <div class="grid grid-cols-3 w-4/6 justify-items-center">
-      <div class="p-5">
-        Search by Username: <input type="text" style="color:black;" v-model="search">
-        <button class="btn-ui-inline mx-2" @click="searchObjects">Search</button>
-        <button class="btn-ui-inline" @click="clearInput">Clear</button>
-      </div>
       <div></div>
+      <div class="text-2xl">User Objects</div>
       <div>
-        <h3>View Amount</h3>
+        View Amount: 
         <select v-model.number="limit" @change="setLimit">
           <option value="10">10</option>
           <option value="20">20</option>
@@ -138,7 +134,6 @@ export default Vue.extend({
         const searched =  await this.$http.get("/admin/object-instances/", {
             limit: this.limit,
             offset: this.offset,
-            search: this.search,
           });
           this.objects = searched.data.returnResults[0].object;
           this.totalCount = searched.data.returnResults[0].total;
@@ -151,7 +146,6 @@ export default Vue.extend({
             this.offset = 0;
             setTimeout(this.searchObjects, 1000);
           }
-          console.log(this.objects)
       } catch (error) {
         console.log(error);
       }

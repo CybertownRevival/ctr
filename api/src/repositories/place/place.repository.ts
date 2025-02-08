@@ -113,11 +113,24 @@ export class PlaceRepository {
       .offset(offset);
   }
 
+  public async findUserPlaces(id: number, type: string): Promise<any> {
+    return await this.db.place
+      .where('type', type)
+      .andWhere('member_id', id);
+  }
+
   public async getSearchTotal(search: string, compare: string, type: string): Promise<any> {
     return await this.db.place
       .count('id as count')
       .where('type',compare, type)
       .where(this.like('place.name', search));
+  }
+
+  public async getUserPlaceTotal(id:number,type: string): Promise<any> {
+    return await this.db.place
+      .count('id as count')
+      .where('type', type)
+      .andWhere('member_id', id);
   }
 
   private like(field: string, value: string) {

@@ -32,6 +32,8 @@ adminRoutes.get('/places', (request, response) =>
   adminController.places(request, response));
 adminRoutes.get('/allplacessearch', (request, response) =>
   adminController.searchAllPlaces(request, response));
+adminRoutes.get('/userplacessearch', (request, response) =>
+  adminController.findUserPlaces(request, response));
 adminRoutes.post('/places/update', (request, response) =>
   adminController.placesUpdate(request, response));
 adminRoutes.post('/objects/update', (request, response) =>
@@ -42,6 +44,8 @@ adminRoutes.get('/transactions/:id', (request, response) =>
   adminController.getTransactionsByWalletId(request, response));
 adminRoutes.get('/object-instances', (request, response) =>
   adminController.getObjectInstances(request, response));
+adminRoutes.get('/object-instances/:id', (request, response) =>
+  adminController.getOwnedObjects(request, response));
 adminRoutes.get('/get-community-data/', (request, response) =>
   adminController.getCommunityData(request, response));
 

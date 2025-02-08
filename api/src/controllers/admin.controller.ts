@@ -311,23 +311,36 @@ class AdminController {
     const admin = await this.memberService.getAccessLevel(session.id);
     if (admin.includes('security')) {
       try {
-        const search = request.query.search.toString();
         let returnResults = [];
         let results = null;
-        if(search){
-          results = await this.objectInstanceService.searchAllObjectInstances(
-            search.toString(),
-            Number.parseInt(request.query.limit.toString()),
-            Number.parseInt(request.query.offset.toString()),
-          );
-        } else {
-          results = await this.objectInstanceService.findAllObjectInstances(
-            Number.parseInt(request.query.limit.toString()),
-            Number.parseInt(request.query.offset.toString()),
-          );
-        }
+        results = await this.objectInstanceService.findAllObjectInstances(
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
+        );
         returnResults = results;
         response.status(200).json({returnResults});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async getOwnedObjects(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin.includes('admin')) {
+      try {
+        const id = request.params.id;
+        const results = await this.objectInstanceService.getOwnedObjects(
+          Number.parseInt(id),
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
+        );
+        response.status(200).json({results});
       } catch (error) {
         console.log(error);
         response.status(400).json({error});
@@ -477,6 +490,28 @@ class AdminController {
           );
           response.status(200).json({results});
         }
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async findUserPlaces(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin) {
+      const types = ['club', 'storage'];
+      const type = request.query.type.toString();
+      const id = request.query.id.toString();
+      try {
+        if(types.includes(type)) {
+          const results = await this.placeService.findUserPlaces(parseInt(id), type);
+          response.status(200).json({results});
+        } 
       } catch (error) {
         console.log(error);
         response.status(400).json({error});

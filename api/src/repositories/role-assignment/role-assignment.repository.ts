@@ -100,6 +100,15 @@ export class RoleAssignmentRepository {
       .where('role_assignment.role_id', '=', roleId)
       .leftJoin('member', 'role_assignment.member_id', 'member.id');
   }
+
+  public async getLatest(): Promise<any> {
+    return this.db.knex('role_assignment')
+      .select('member.username', 'role.name as roleName')
+      .leftJoin('member', 'role_assignment.member_id', 'member.id')
+      .join('role', 'role_assignment.role_id', 'role.id')
+      .limit(5)
+      .orderBy('role_assignment.id', 'desc');
+  }
   
   public async getDonor(memberId: number, roleId: any): Promise<string> {
     return this.db.knex

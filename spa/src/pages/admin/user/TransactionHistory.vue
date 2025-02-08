@@ -1,24 +1,31 @@
 <template>
   <div>
-    <div class="grid grid-cols-3">
-      <div class="flex w-full justify-center">
-      </div>
+    <div v-if="transactions.length >= 1" class="grid grid-cols-3 w-full">
+      <div></div>
       <div></div>
       <div>
         View Amount:
-        <select v-model.number="limit" @change="getTransactions">
+        <select v-model.number="limit" @change="setLimit">
           <option value=10>10</option>
           <option value=20>20</option>
           <option value=50>50</option>
           <option value=100>100</option>
         </select>
       </div>
-      <div></div>
-      <div class="text-2xl">Transaction History</div>
-      <div></div>
     </div>
-    
-    <div>
+    <div v-if="transactions.length >= 1" class="mt-5 grid-cols-1 w-full justify-items-center text-center ">
+      Total Count: {{ totalCount }}
+    </div>
+    <span v-if="pages.length > 1" class="flex w-full justify-center font-bold">Pages</span>
+    <div v-if="pages.length > 1" class="flex w-full justify-center font-bold">
+      <span class="flex justify-center" v-for="page in pages" :value="page">
+        <span class="p-2" v-if="pageNum === page">{{ page }}</span>
+        <span class="p-2 cursor-pointer" style="color:lime;" v-else-if="page > (pageNum - 5) && page < (pageNum + 5)" @click="setPageNumber(page)">{{ page }}</span>
+      </span>
+      <span class="p-2 font-bold" style="color:lime;" v-if="(pageNum + 5) <= pages.length">. . .</span>
+    </div>
+    <div class="text-2xl p-5">Transaction History</div>
+    <div v-if="transactions.length >= 1">
       <table>
         <tr>
           <th></th>
@@ -55,6 +62,7 @@
         </tr>
       </table>
     </div>
+    <div v-else>No Transactions Found</div>
     <div class="grid grid-cols-2 w-full justify-items-center">
       <div class="p-1 text-right w-full">
         <button
@@ -68,7 +76,7 @@
         <button
             class="bg-gray-300 text-black p-2"
             @click="next"
-            v-show="offset + limit <= totalCount">
+            v-show="offset + limit < totalCount">
           NEXT
         </button>
       </div>
@@ -85,6 +93,8 @@ export default Vue.extend({
       transactions: [],
       limit: 10,
       offset: 0,
+      pageNum: 1,
+      pages: [],
       showNext: false,
       totalCount: 0,
       reasonDisplay: [
@@ -115,13 +125,25 @@ export default Vue.extend({
   },
   methods: {
     async getTransactions() {
+      this.transactions = [];
+      this.pages = [];
+      this.totalCount = 0;
       const results = await this.$http.get(`/admin/transactions/${this.$route.params.id}`, {
         limit: this.limit,
         offset: this.offset,
       })
-      console.log(results.data.results);
       this.transactions = results.data.results.transactions;
-      this.totalCount = results.data.results.total[0].count
+      this.totalCount = results.data.results.total[0].count;
+
+      let pages = Math.ceil(this.totalCount/this.limit);
+        for(let i = 1; pages >= i; i++){
+          this.pages.push(i);
+        }
+        if(this.pageNum > pages && this.totalCount > 0){
+          this.pageNum = 1;
+          this.offset = 0;
+          setTimeout(this.getTransactions, 1000);
+        }
     },
     formatReason(data) {
       const index = this.reasons.indexOf(data);
@@ -131,12 +153,24 @@ export default Vue.extend({
         return this.reasonDisplay[index];
       }
     },
+    setLimit(){
+      this.offset = 0;
+      this.pageNum = 1;
+      this.getTransactions();
+    },
+    setPageNumber(value){
+      this.pageNum = value;
+      this.offset = this.pageNum * this.limit - this.limit;
+      this.getTransactions();
+    },
     async next() {
-      this.offset = this.offset + this.limit;
+      this.offset = this.pageNum * this.limit;
+      this.pageNum++
       await this.getTransactions();
     },
     async back() {
-      this.offset = this.offset - this.limit;
+      this.pageNum--
+      this.offset = this.pageNum * this.limit - this.limit;
       await this.getTransactions();
       this.showNext = true;
     },

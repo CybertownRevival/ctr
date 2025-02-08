@@ -6,18 +6,13 @@
       <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserView'" :to="{name: 'UserView'}">VIEW</router-link>
       <button class="btn-ui-inline mx-1 w-20" v-else>VIEW</button>
       <div v-if="accessLevel.includes('security')">
-        <router-link class="btn-ui-inline mx-1 w-32" v-if="this.$route.name !== 'TransactionHistory'" :to="{name: 'TransactionHistory'}">Transactions</router-link>
-        <router-link class="btn-ui-inline mx-1 w-32" v-else>Transactions</router-link>
+        <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'TransactionHistory'}">Transactions</router-link>
       </div>
       <div v-if="accessLevel.includes('admin')">
-        <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'OwnedObjects'" :to="{name: 'OwnedObjects'}">Objects</router-link>
-        <router-link class="btn-ui-inline mx-1 w-20" v-else>Objects</router-link>
-        <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserMallUploads'" :to="{name: 'UserMallUploads'}">Uploads</router-link>
-        <router-link class="btn-ui-inline mx-1 w-20" v-else>Uploads</router-link>
-        <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserStorageAreas'" :to="{name: 'UserStorageAreas'}">Storage</router-link>
-        <router-link class="btn-ui-inline mx-1 w-20" v-else>Storage</router-link>
-        <router-link class="btn-ui-inline mx-1 w-20" v-if="this.$route.name !== 'UserClubs'" :to="{name: 'UserClubs'}">Clubs</router-link>
-        <router-link class="btn-ui-inline mx-1 w-20" v-else>Clubs</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'OwnedObjects'}">Objects</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserMallUploads'}">Uploads</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserStorageAreas'}">Storage</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserClubs'}">Clubs</router-link>
       </div>
     </div>
   </div>
