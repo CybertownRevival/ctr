@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-wrap gap-10 p-5" v-if="accessLevel && accessLevel.includes('admin')">
-    <div class="px-5 pt-2 border rounded-lg w-96">
+  <div class="flex flex-wrap gap-10 p-5" v-if="accessLevel && accessLevel.includes('security')">
+    <div class="px-5 pt-2 border rounded-lg w-96" v-if="accessLevel.includes('admin')">
       <div class="text-2xl font-bold text-green">Activity Data</div>
       <div class="p-2">
         <table class="w-full">
@@ -19,7 +19,7 @@
         </table>
       </div>
     </div>
-    <div class="px-5 py-2 border rounded-lg w-96">
+    <div class="px-5 py-2 border rounded-lg w-96" v-if="accessLevel.includes('admin')">
       <div class="text-2xl font-bold text-green">Member Data</div>
       <div class="p-2">
         <table class="w-full">
@@ -63,7 +63,7 @@
         </table>
       </div>
     </div>
-    <div class="px-5 pt-2 border rounded-lg w-96">
+    <div class="px-5 pt-2 border rounded-lg w-96" v-if="accessLevel.includes('admin')">
       <div class="text-2xl font-bold text-green">Recently Hired</div>
       <div class="p-2">
         <table class="w-full">
@@ -84,7 +84,7 @@
         </table>
       </div>
     </div>
-    <div class="px-5 pt-2 border rounded-lg w-96">
+    <div class="px-5 pt-2 border rounded-lg w-96" v-if="accessLevel.includes('admin')">
       <div class="text-2xl font-bold text-green">Money Data</div>
       <div class="p-2">
         <table class="w-full">
@@ -103,7 +103,7 @@
         </table>
       </div>
     </div>
-    <div class="px-5 pt-2 border rounded-lg w-96">
+    <div class="px-5 pt-2 border rounded-lg w-96" v-if="accessLevel.includes('admin')">
       <div class="text-2xl font-bold text-green">Wealthiest Members</div>
       <div class="p-2">
         <table class="w-full">
@@ -152,7 +152,7 @@
         </table>
       </div>
     </div>
-    <div class="px-5 pt-2 border rounded-lg w-96">
+    <div class="px-5 pt-2 border rounded-lg w-96" v-if="accessLevel.includes('admin')">
       <div class="text-2xl font-bold text-green">Place Data</div>
       <div class="p-2">
         <table class="w-full">
@@ -191,7 +191,7 @@
         </table>
       </div>
     </div>
-    <div class="px-5 pt-2 border rounded-lg w-96">
+    <div class="px-5 pt-2 border rounded-lg w-96" v-if="accessLevel.includes('admin')">
       <div class="text-2xl font-bold text-green">Object Data</div>
       <div class="p-2">
         <table class="w-full">
@@ -218,7 +218,7 @@
         </table>
       </div>
     </div>
-    <div class="px-5 pt-2 border rounded-lg w-96">
+    <div class="px-5 pt-2 border rounded-lg w-96" v-if="accessLevel.includes('admin')">
       <div class="text-2xl font-bold text-green">Mall Object Data</div>
       <div class="p-2">
         <table class="w-full">

@@ -376,7 +376,7 @@ class AdminController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
-    if (admin.includes('admin')) {
+    if (admin.includes('security')) {
       try {
         const results = await this.adminService.getCommunityData();
         response.status(200).json({results});

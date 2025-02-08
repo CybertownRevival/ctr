@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 text-center text-lg" v-if="accessLevel">
     <div class="flex-1">
-      <div class="m-5" v-if="accessLevel.includes('admin')">
+      <div class="m-5" v-if="accessLevel.includes('security')">
         <div class="flex p-2 font-bold text-3xl">Overview</div>
         <hr />
         <CommunityData class="text-left p-2" :accessLevel="accessLevel"></CommunityData>

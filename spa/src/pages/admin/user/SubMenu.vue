@@ -7,12 +7,12 @@
       <button class="btn-ui-inline mx-1 w-20" v-else>VIEW</button>
       <div v-if="accessLevel.includes('security')">
         <router-link class="btn-ui-inline mx-1 w-32" :to="{name: 'TransactionHistory'}">Transactions</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserStorageAreas'}">Storage</router-link>
+        <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserClubs'}">Clubs</router-link>
       </div>
       <div v-if="accessLevel.includes('admin')">
         <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'OwnedObjects'}">Objects</router-link>
         <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserMallUploads'}">Uploads</router-link>
-        <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserStorageAreas'}">Storage</router-link>
-        <router-link class="btn-ui-inline mx-1 w-20" :to="{name: 'UserClubs'}">Clubs</router-link>
       </div>
     </div>
   </div>

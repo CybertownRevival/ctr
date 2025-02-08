@@ -4,7 +4,7 @@
     <div class="pt-3">Admin Panel</div>
     <div class="p-3"><hr></div>
     <div class="mb-2">
-      <router-link class="btn-ui" v-if="accessLevel.includes('admin')" :to="{name: 'CommunityOverview'}">Overview</router-link>
+      <router-link class="btn-ui" v-if="accessLevel.includes('security')" :to="{name: 'CommunityOverview'}">Overview</router-link>
     </div>
     <div class="mb-2">
       <router-link class="btn-ui" :to="{name: 'UserSearch'}">Members</router-link>
