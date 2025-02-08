@@ -90,8 +90,63 @@
       <div class="p-2">
         <table class="w-full">
           <tr>
-            <td>Members: </td>
+            <td>Total Members: </td>
             <td>{{ Number(totalUsers).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>New Users Past Week: </td>
+            <td>{{ Number(newMembersLastWeek).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>New Users Past Month: </td>
+            <td>{{ Number(newMembersLastMonth).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>New Users Past Year: </td>
+            <td>{{ Number(newMembersLastYear).toLocaleString() }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="px-5 pt-2 border rounded-lg w-96">
+      <div class="text-2xl font-bold text-green">Newest Members</div>
+      <div class="p-2">
+        <table class="w-full">
+          <tr>
+            <td v-if="wealthiestUsers.length !== 0">
+              <table class="w-full">
+                <tr v-for="user in newestUsers" :key="user.id">
+                  <td>
+                    <div class="grid grid-cols-2">
+                      <div>{{ user.username }}</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td class="py-5 px-10" v-else>No users found</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="px-5 pt-2 border rounded-lg w-96">
+      <div class="text-2xl font-bold text-green">Wealthiest Members</div>
+      <div class="p-2">
+        <table class="w-full">
+          <tr>
+            <td v-if="wealthiestUsers.length !== 0">
+              <table class="w-full">
+                <tr v-for="user in wealthiestUsers" :key="user.id">
+                  <td>
+                    <div class="grid grid-cols-2">
+                      <div>{{ user.username }} </div>
+                      <div>{{ Number(user.balance).toLocaleString() }} cc</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td class="py-5 px-10" v-else>No users found</td>
           </tr>
         </table>
       </div>
@@ -186,7 +241,7 @@
       </div>
     </div>
     <div class="w-full">
-      <div class="text-3xl p-2 font-bold">Data Lists</div>
+      <div class="text-3xl p-2 font-bold">Activity</div>
       <hr />
     </div>
     <div class="px-5 pt-2 border rounded-lg w-96">
@@ -219,28 +274,6 @@
               </ul>
             </td>
             <td class="py-5 px-10" v-else>No recent activity found</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <div class="px-5 pt-2 border rounded-lg w-96">
-      <div class="text-2xl font-bold text-green">Wealthiest Users</div>
-      <div class="p-2">
-        <table class="w-full">
-          <tr>
-            <td v-if="wealthiestUsers.length !== 0">
-              <table class="w-full">
-                <tr v-for="user in wealthiestUsers" :key="user.id">
-                  <td>
-                    <div class="grid grid-cols-2">
-                      <div>{{ user.username }} </div>
-                      <div>{{ Number(user.balance).toLocaleString() }} cc</div>
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </td>
-            <td class="py-5 px-10" v-else>No users found</td>
           </tr>
         </table>
       </div>
@@ -395,9 +428,13 @@ export default Vue.extend({
       bansEndingSoon: [],
       latestTransactions: [],
       wealthiestUsers: [],
+      newestUsers: [],
       dailyUsers: 0,
       weeklyUsers: 0,
       monthlyUsers: 0,
+      newMembersLastWeek: 0,
+      newMembersLastMonth: 0,
+      newMembersLastYear: 0,
     };
   },
   props: [
@@ -416,6 +453,15 @@ export default Vue.extend({
       }
       if(!Number.isNaN(path.activity.totalMonthly)){
         this.monthlyUsers = path.activity.totalMonthly[0].count;
+      }
+      if(!Number.isNaN(path.activity.newWeekly)){
+        this.newMembersLastWeek = path.activity.newWeekly[0].count;
+      }
+      if(!Number.isNaN(path.activity.newMonthly)){
+        this.newMembersLastMonth = path.activity.newMonthly[0].count;
+      }
+      if(!Number.isNaN(path.activity.newYearly)){
+        this.newMembersLastYear = path.activity.newYearly[0].count;
       }
       
       // Security Data
@@ -460,6 +506,7 @@ export default Vue.extend({
       if(!Number.isNaN(path.member.totalMembers)){
         this.totalUsers = path.member.totalMembers[0].count;
       }
+      this.newestUsers = path.member.newestMembers;
 
       // Money Data
       this.averageMoney = path.money.averageBalance[0].balance;
@@ -511,7 +558,6 @@ export default Vue.extend({
       // Active places
       this.activePlaces = path.messages.chat;
       this.activeMB = path.messages.messageboard;
-      console.log(path)
     },
   },
   created() {

@@ -63,6 +63,20 @@ export class MemberRepository {
       .where('last_activity','>=', time);
   }
 
+  public async getNewestMembers(): Promise<any> {
+    return this.db.knex
+      .from('member')
+      .limit(5)
+      .orderBy('id', 'desc');
+  }
+
+  public async countNewUsers(time: Date): Promise<any> {
+    return this.db.knex
+      .count('id as count')
+      .from('member')
+      .where('created_at','>=', time);
+  }
+
   public async check3d(username: string): Promise<any> {
     return this.db.knex
       .select('is_3d')

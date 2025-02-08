@@ -129,11 +129,15 @@ export class AdminService {
     const pastDay = new Date(Date.now() - day);
     const pastWeek = new Date(Date.now() - 7 * day);
     const pastMonth = new Date(Date.now() - 30 * day);
+    const pastYear = new Date(Date.now() - 365 * day);
     
     // User Activity
     const usersDaily = await this.memberRepository.countByDuration(pastDay);
     const usersWeekly = await this.memberRepository.countByDuration(pastWeek);
     const usersMonthly = await this.memberRepository.countByDuration(pastMonth);
+    const newWeekly = await this.memberRepository.countNewUsers(pastWeek);
+    const newMonthly = await this.memberRepository.countNewUsers(pastMonth);
+    const newYearly = await this.memberRepository.countNewUsers(pastYear);
     
     // Security Data
     const recentBan = await this.banRepository.getRecentBan(pastWeek);
@@ -154,6 +158,7 @@ export class AdminService {
     
     // Member Data
     const members = await this.memberRepository.getMemberTotal();
+    const newestMembers = await this.memberRepository.getNewestMembers();
     
     // Money Data
     const walletData = await this.walletRepository.getWalletData();
@@ -202,6 +207,9 @@ export class AdminService {
         totalDaily: usersDaily, 
         totalWeekly: usersWeekly, 
         totalMonthly: usersMonthly,
+        newWeekly: newWeekly,
+        newMonthly: newMonthly,
+        newYearly: newYearly,
       },
       security: {
         recentBan: recentBan, 
@@ -222,6 +230,7 @@ export class AdminService {
       },
       member: {
         totalMembers: members,
+        newestMembers: newestMembers,
       },
       money: {
         wealthiestUsers: walletData,

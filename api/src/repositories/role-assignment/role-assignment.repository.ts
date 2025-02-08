@@ -193,4 +193,10 @@ export class RoleAssignmentRepository {
       .where('role_id', roleId)
       .del();
   }
+
+  public async countByAssigned(id: number): Promise<any> {
+    return this.db.knex('role_assignment')
+      .count('id as count')
+      .where('role_id', id);
+  }
 }

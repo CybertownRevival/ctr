@@ -12,7 +12,7 @@
           <th class="text-left" style="min-width: 200px;">Role Title</th>
           <th style="min-width: 100px;"></th>
           <th style="min-width: 100px;">Status</th>
-          <th></th>
+          <th>Users in Role</th>
         </tr>
         <tr class="border" v-for="role in cityRoles" :key="role.id">
           <td class="p-5 text-center">{{ role.id }}</td>
@@ -35,7 +35,8 @@
           </td>
           <td class="text-center font-bold text-green" v-if="role.active === 1">{{ status[role.active] }}</td>
           <td class="text-center italic" v-else>{{ status[role.active] }}</td>
-          <td><button class="btn-ui" v-if="accessLevel.includes('admin')">Update</button></td>
+          <td class="text-center font-bold text-black" style="background-color: lime;" v-if="role.total[0].count >= 1">{{ role.total[0].count }}</td>
+          <td class="text-center" v-else>0</td>
         </tr>
       </table>
     </div>

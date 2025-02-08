@@ -89,7 +89,7 @@
             </table>
           </td>
 
-          <td class="p-4"><button class="btn-ui">Update</button></td>
+          <td class="p-4"></td>
       </tr>
     </table>
     <div class="flex w-full justify-center">

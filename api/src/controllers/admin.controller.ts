@@ -6,6 +6,7 @@ import {
   MemberService, 
   AvatarService, 
   PlaceService, 
+  RoleAssignmentService,
   ObjectInstanceService, } from '../services';
 
 class AdminController {
@@ -14,6 +15,7 @@ class AdminController {
     private memberService: MemberService, 
     private avatarService: AvatarService,
     private placeService: PlaceService,
+    private roleAssignmentService: RoleAssignmentService,
     private objectInstanceService: ObjectInstanceService,
   ) {}
   
@@ -145,8 +147,14 @@ class AdminController {
     const admin = await this.memberService.getAccessLevel(session.id);
     if (admin) {
       try {
+        const returnRoles = [];
         const roleList = await this.adminService.getRoleList();
-        response.status(200).json({roles: roleList});
+        for(const role of roleList) {
+          const count = await this.roleAssignmentService.countByAssigned(role.id);
+          role.total = count;
+          returnRoles.push(role);
+        }
+        response.status(200).json({roles: returnRoles});
       } catch (e) {
         console.log(e);
         response.status(500).json({error: 'Internal Server Error'});
@@ -506,6 +514,7 @@ const adminService = Container.get(AdminService);
 const memberService = Container.get(MemberService);
 const avatarService = Container.get(AvatarService);
 const placeService = Container.get(PlaceService);
+const roleAssignmentService = Container.get(RoleAssignmentService);
 const objectInstanceService = Container.get(ObjectInstanceService);
 export const adminController = new AdminController(
-  adminService, memberService, avatarService, placeService, objectInstanceService);
+  adminService, memberService, avatarService, placeService, roleAssignmentService, objectInstanceService);
