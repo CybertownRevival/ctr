@@ -63,7 +63,7 @@
         </table>
       </div>
     </div>
-    <div class="px-5 pt-2 border rounded-lg w-96" v-if="accessLevel.includes('admin')">
+    <div class="px-5 pt-2 border rounded-lg w-96" v-if="accessLevel.includes('security')">
       <div class="text-2xl font-bold text-green">Recently Hired</div>
       <div class="p-2">
         <table class="w-full">
