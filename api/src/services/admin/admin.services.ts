@@ -119,6 +119,17 @@ export class AdminService {
     };
   }
 
+  public async getTransactionsByWalletId(
+    id: number, limit: number, offset: number): Promise<any> {
+    const transactions = await this.transactionRepository
+      .getTransactionsByWalletId(id, limit, offset);
+    const total = await this.transactionRepository.getWalletTotal(id);
+    return {
+      transactions: transactions,
+      total: total,
+    };
+  }
+
   public async getCommunityData(): Promise<any> {
     const second = 1000;
     const minute = 60 * second;

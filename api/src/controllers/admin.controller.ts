@@ -258,6 +258,53 @@ class AdminController {
     }
   }
 
+  public async getTransactionsByWalletId(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    const returnResults = [];
+    const rebuild = [];
+    if (admin) {
+      try {
+        let results = null;
+        let findUsername = null;
+        const memberId = request.params.id;
+        const user = await this.memberService.find({ id: Number.parseInt(memberId) });
+        results = await this.adminService.getTransactionsByWalletId(
+          user.wallet_id,
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
+        );
+        findUsername = results.transactions
+        for(const res of findUsername) {
+          let sender = [{username: 'System'}];
+          let receiver = [{username: 'System'}];
+          if(res.sender_wallet_id){
+            sender = await this.memberService
+              .getMemberByWalletId(res.sender_wallet_id);
+          }
+          if(res.recipient_wallet_id){
+            receiver = await this.memberService
+              .getMemberByWalletId(res.recipient_wallet_id);
+          }
+          res.sender = sender;
+          res.receiver = receiver;
+          res.sender_wallet_id = null;
+          res.recipient_wallet_id = null;
+          rebuild.push(res);
+        }
+        returnResults.push(rebuild);
+        returnResults.push(results.total);
+        response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
   public async getObjectInstances(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;

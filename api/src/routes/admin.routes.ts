@@ -38,6 +38,8 @@ adminRoutes.post('/objects/update', (request, response) =>
   adminController.objectssUpdate(request, response));
 adminRoutes.get('/transactions', (request, response) =>
   adminController.getTransactions(request, response));
+adminRoutes.get('/transactions/:id', (request, response) =>
+  adminController.getTransactionsByWalletId(request, response));
 adminRoutes.get('/object-instances', (request, response) =>
   adminController.getObjectInstances(request, response));
 adminRoutes.get('/get-community-data/', (request, response) =>

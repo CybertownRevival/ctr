@@ -275,6 +275,25 @@ export class TransactionRepository {
     ;
   }
 
+  public async getTransactionsByWalletId(id: number, limit: number, offset: number): Promise<any> {
+    return this.db.knex
+      .select(
+        'id',
+        'created_at',
+        'amount',
+        'recipient_wallet_id',
+        'sender_wallet_id',
+        'reason',
+      )
+      .from('transaction')
+      .where('recipient_wallet_id', id)
+      .orWhere('sender_wallet_id', id)
+      .limit(limit)
+      .offset(offset)
+      .orderBy('id', 'DESC');
+    ;
+  }
+
   public async getLatestTransactions(time: Date): Promise<any> {
     return this.db.knex
       .select('transaction.*')
@@ -322,5 +341,13 @@ export class TransactionRepository {
       .andWhere('recipient_wallet_id', userWallet)
       .orWhere('reason', type)
       .andWhere('sender_wallet_id', userWallet)
+  }
+
+  public async getWalletTotal( id: number): Promise<any> {
+    return this.db.knex
+      .count('id as count')
+      .from('transaction')
+      .where('recipient_wallet_id', id)
+      .orWhere('sender_wallet_id', id);
   }
 }

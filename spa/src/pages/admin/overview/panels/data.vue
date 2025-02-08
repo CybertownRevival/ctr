@@ -19,72 +19,6 @@
         </table>
       </div>
     </div>
-    <div class="px-5 pt-2 border rounded-lg w-96">
-      <div class="text-2xl font-bold text-green">Security Data</div>
-      <div class="p-2">
-        <table class="w-full">
-          <tr>
-            <td>Banned Last 7 Days: </td>
-            <td>{{ Number(recentlyBanned.length).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Jailed Last 7 Days: </td>
-            <td>{{ Number(recentlyJailed.length).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Bans Ending Soon: </td>
-            <td>{{ Number(bansEndingSoon.length).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Total Jail Records: </td>
-            <td>{{ Number(totalJailedUsers).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Total Ban Records: </td>
-            <td>{{ Number(totalBannedUsers).toLocaleString() }}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <div class="px-5 pt-2 border rounded-lg w-96">
-      <div class="text-2xl font-bold text-green">Place Data</div>
-      <div class="p-2">
-        <table class="w-full">
-          <tr>
-            <td>Total Colonies: </td>
-            <td>{{ Number(totalColonies).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Total Neighborhoods: </td>
-            <td>{{ Number(totalNeighborhoods).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Total Blocks: </td>
-            <td>{{ Number(totalBlocks).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Total Free Spots: </td>
-            <td>{{ Number(totalFreeSpots - totalHomes).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Total Homes: </td>
-            <td>{{ Number(totalHomes).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Total Storage Areas: </td>
-            <td>{{ Number(totalStorageAreas).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Total Clubs: </td>
-            <td>{{ Number(totalClubs).toLocaleString() }}</td>
-          </tr>
-          <tr>
-            <td>Total Private: </td>
-            <td>{{ Number(totalPrivate).toLocaleString() }}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
     <div class="px-5 py-2 border rounded-lg w-96">
       <div class="text-2xl font-bold text-green">Member Data</div>
       <div class="p-2">
@@ -129,6 +63,27 @@
         </table>
       </div>
     </div>
+    
+    
+    <div class="px-5 pt-2 border rounded-lg w-96">
+      <div class="text-2xl font-bold text-green">Money Data</div>
+      <div class="p-2">
+        <table class="w-full">
+          <tr>
+            <td>Average Balance: </td>
+            <td>{{ Number(averageMoney).toLocaleString() }} cc</td>
+          </tr>
+          <tr>
+            <td>Highest Balance: </td>
+            <td>{{ Number(highestMoney).toLocaleString() }} cc</td>
+          </tr>
+          <tr>
+            <td>Community Balance: </td>
+            <td>{{ Number(totalMoney).toLocaleString() }} cc</td>
+          </tr>
+        </table>
+      </div>
+    </div>
     <div class="px-5 pt-2 border rounded-lg w-96">
       <div class="text-2xl font-bold text-green">Wealthiest Members</div>
       <div class="p-2">
@@ -152,20 +107,67 @@
       </div>
     </div>
     <div class="px-5 pt-2 border rounded-lg w-96">
-      <div class="text-2xl font-bold text-green">Money Data</div>
+      <div class="text-2xl font-bold text-green">Security Data</div>
       <div class="p-2">
         <table class="w-full">
           <tr>
-            <td>Average Balance: </td>
-            <td>{{ Number(averageMoney).toLocaleString() }} cc</td>
+            <td>Banned Last 7 Days: </td>
+            <td>{{ Number(recentlyBanned.length).toLocaleString() }}</td>
           </tr>
           <tr>
-            <td>Highest Balance: </td>
-            <td>{{ Number(highestMoney).toLocaleString() }} cc</td>
+            <td>Jailed Last 7 Days: </td>
+            <td>{{ Number(recentlyJailed.length).toLocaleString() }}</td>
           </tr>
           <tr>
-            <td>Community Balance: </td>
-            <td>{{ Number(totalMoney).toLocaleString() }} cc</td>
+            <td>Bans Ending Soon: </td>
+            <td>{{ Number(bansEndingSoon.length).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Jailed Members: </td>
+            <td>{{ Number(totalJailedUsers).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Banned Members: </td>
+            <td>{{ Number(totalBannedUsers).toLocaleString() }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="px-5 pt-2 border rounded-lg w-96">
+      <div class="text-2xl font-bold text-green">Place Data</div>
+      <div class="p-2">
+        <table class="w-full">
+          <tr>
+            <td>Total Colonies: </td>
+            <td>{{ Number(totalColonies).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Neighborhoods: </td>
+            <td>{{ Number(totalNeighborhoods).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Blocks: </td>
+            <td>{{ Number(totalBlocks).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Free Spots: </td>
+            <td>{{ Number(totalFreeSpots - totalHomes).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Homes: </td>
+            <td>{{ Number(totalHomes).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Storage Areas: </td>
+            <td>{{ Number(totalStorageAreas).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Clubs: </td>
+            <td>{{ Number(totalClubs).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Private: </td>
+            <td>{{ Number(totalPrivate).toLocaleString() }}</td>
           </tr>
         </table>
       </div>

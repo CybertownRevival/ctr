@@ -61,7 +61,7 @@ export class BanRepository {
 
   public async getBannedTotal(): Promise<any> {
     return this.db.knex
-      .count('id as count')
+      .countDistinct('ban_member_id as count')
       .from('ban')
       .where({status: 1, type: 'full'})
       .andWhere('end_date', '>=', new Date());
@@ -69,7 +69,7 @@ export class BanRepository {
 
   public async getJailedTotal(): Promise<any> {
     return this.db.knex
-      .count('id as count')  
+      .countDistinct('ban_member_id as count')
       .from('ban')
       .where({status: 1, type: 'jail'})
       .andWhere('end_date', '>=', new Date());
