@@ -31,6 +31,13 @@ body, html {
       border-style: inset;
     }
   }
+  .btn-disabled {
+    @apply border-2 p-1 bg-gray-300 text-gray-400 hover:bg-gray-300 active:bg-gray-300;
+    border-style: outset;
+    &:active {
+      border-style: outset;
+    }
+  }
   .input-text {
     @apply text-black p-0.5;
   }
