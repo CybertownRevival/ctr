@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
 import { knex } from '../../db';
-import {Home, Place, Store} from '../../types/models';
+import {Place, Store} from '../../types/models';
 
 /** Repository for fetching/interacting with place data in the database. */
 @Service()
