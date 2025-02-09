@@ -145,6 +145,33 @@ export class PlaceRepository {
       .limit(limit)
       .offset(offset);
   }
+  
+  public searchClubs(
+    search: string, 
+    limit: number, 
+    offset: number, 
+    orderBy: string,
+    order: string,
+  ): Promise<any> {
+    return this.db.place
+      .select(
+        'place.id as id',
+        'place.name as name',
+        'place.description as description',
+        'member.username as owner',
+        'place.private as private',
+      )
+      .count('club_member.member_id as member_count')
+      .leftJoin('club_member', 'place.id', 'club_member.club_id')
+      .innerJoin('member', 'place.member_id', 'member.id')
+      .where('place.type', 'club')
+      .where('place.status', 1)
+      .where(this.like('name', search))
+      .groupBy('place.id')
+      .orderBy(orderBy, order)
+      .limit(limit)
+      .offset(offset);
+  }
 
   public async getSearchTotal(search: string, compare: string, type: string): Promise<any> {
     return this.db.place

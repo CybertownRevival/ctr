@@ -36,7 +36,8 @@
           required></textarea><br>
       <br>
       <!-- rules update potentially later
-      <textarea v-model="club.rules" rows="4" cols="60" placeholder="Enter here the rules for your club."></textarea><br>
+      <textarea v-model="club.rules" rows="4" cols="60"
+      placeholder="Enter here the rules for your club."></textarea><br>
       -->
       <br>
       <span class="text-red-500" v-show="error">{{ error }}</span>
@@ -98,7 +99,7 @@ export default Vue.extend({
       }
     },
     cancel() {
-      // Handle cancel action (e.g., redirect to another page)
+      this.$router.go(-1);
     },
   },
 });
