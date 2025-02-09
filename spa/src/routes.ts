@@ -72,6 +72,7 @@ import ObjectProperties from "./pages/ObjectProperties.vue";
 
 import CreateClubPage from "./pages/club/create.vue";
 import ClubTools from "@/pages/club/ClubTools.vue";
+import ClubDirPage from "./pages/club/ClubDir.vue";
 
 export default [
     {
@@ -1104,11 +1105,19 @@ export default [
     ],
   },
   {
-    path: "/club/create",
+    path: "/clublist/create",
     components: {
       default: CreateClubPage,
     },
     name: "create-club",
+    meta: { wrapper: true },
+  },
+  {
+    path: "/clublist/directory",
+    components: {
+      default: ClubDirPage,
+    },
+    name: "club-directory",
     meta: { wrapper: true },
   },
 ];
