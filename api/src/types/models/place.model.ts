@@ -11,5 +11,6 @@ export interface Place extends Model {
   type: string;
   map_background_icon?: number;
   map_icon_index?: number;
+  private?: boolean;
   member_id: number;
 }
