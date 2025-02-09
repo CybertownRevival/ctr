@@ -179,12 +179,9 @@ io.on("connection", async function(socket) {
             return;
         } else {
             if (user?.room) {
-                webhookMessage(
-                    `${user.username} in ${user.room}`,
-                    chatData.msg
-                );
                 io.to(user.room).emit("CHAT", {
                     username: user.username,
+                    id: chatData.msg_id,
                     msg: chatData.msg,
                     role: chatData.role,
                     new: true,
