@@ -7,6 +7,8 @@ clubRoutes.post('/create', (request, response) =>
   clubController.createClub(request, response));
 clubRoutes.post('/delete', (request, response) =>
   clubController.deleteClub(request, response));
+clubRoutes.get('/ismember', (request, response) =>
+  clubController.checkMembership(request, response));
 clubRoutes.get('/membercount', (request, response) =>
   clubController.getClubMemberCount(request, response));
 clubRoutes.get('/members', (request, response) =>
