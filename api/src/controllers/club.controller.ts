@@ -35,8 +35,9 @@ class ClubController {
       response.status(401).send();
       return;
     }
-    const clubId = Number.parseInt(request.query.clubId.toString());
+    const clubId = Number.parseInt(request.body.clubId);
     const canAdmin = await this.placeService.canAdmin('clubs', clubId, session.id);
+    console.log(`canAdmin: ${canAdmin}`);
     
     if (canAdmin) {
       try {
@@ -103,6 +104,8 @@ class ClubController {
         request.query.search.toString(),
         Number.parseInt(request.query.limit.toString()),
         Number.parseInt(request.query.offset.toString()),
+        request.query.orderBy.toString(),
+        request.query.order.toString(),
       );
       response.status(200).json({results});
     } catch (error) {
