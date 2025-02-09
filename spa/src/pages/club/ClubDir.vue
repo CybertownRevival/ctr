@@ -15,6 +15,24 @@
       </span>
       <button class="btn" @click="fetchClubs">Search</button>
     </div>
+    <div class="flex justify-center w-full mb-5">
+      <button
+        class="btn mr-4"
+        :class="{ 'btn-disabled': offset === 0 }"
+        :disabled="offset === 0"
+        @click="prev"
+      >
+        Prev
+      </button>
+      <button
+        class="btn ml-4"
+        :class="{ 'btn-disabled': offset + limit >= clubsCount }"
+        :disabled="offset + limit >= clubsCount"
+        @click="next"
+      >
+        Next
+      </button>
+    </div>
     <div class="flex justify-center text-center w-full">
       <table class="w-2/3 border-double border-4 border-gray-400">
             <tr>
@@ -53,6 +71,7 @@ export default Vue.extend({
   data: () => {
     return {
       clubs: [],
+      clubsCount: 0,
       limit: 10,
       offset: 0,
       search: "",
@@ -69,7 +88,17 @@ export default Vue.extend({
         orderBy: this.orderBy,
         order: this.order,
       });
-      this.clubs = clubs.data.results;
+      this.clubs = clubs.data.results.clubs;
+      this.clubsCount = clubs.data.results.clubsCount[0].count;
+      console.log("Offset:", this.offset, "Limit:", this.limit, "ClubsCount:", this.clubsCount);
+    },
+    next() {
+      this.offset += this.limit;
+      this.fetchClubs();
+    },
+    prev() {
+      this.offset -= this.limit;
+      this.fetchClubs();
     },
   },
   mounted() {
