@@ -30,7 +30,7 @@ function initialize(){
 ]}
 ROUTE TS.isOver TO link_script.set_over
 ROUTE TS.touchTime TO link_script.set_click
-ROUTE link_script.enabled_changed TO TS.set_enabled
+ROUTE link_script.enabled_changed TO TS.set_disabled
 }#END Link PROTO
 
 
