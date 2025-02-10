@@ -35,13 +35,6 @@ export class ClubMemberRepository {
     return;
   }
   
-  public async getMemberCount(clubId: number): Promise<number> {
-    const count = await knex('club_member')
-      .count('member_id as member_count')
-      .where({club_id: clubId});
-    return Number(count[0].member_count);
-  }
-  
   public async getMembers(clubId: number): Promise<any> {
     return knex('club_member')
       .select('member_id', 'status')

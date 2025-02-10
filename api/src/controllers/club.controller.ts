@@ -51,22 +51,6 @@ class ClubController {
     }
   }
   
-  public async getClubMemberCount(request: Request, response: Response): Promise<void> {
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) {
-      response.status(401).send();
-      return;
-    }
-    const clubId = Number.parseInt(request.query.clubId.toString());
-    try {
-      const count = await this.clubService.getMemberCount(clubId);
-      response.status(200).json({count});
-    } catch (error) {
-      console.log(error);
-      response.status(400).json({message: error.message});
-    }
-  }
-  
   //get members of a club
   public async getClubMembers(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
