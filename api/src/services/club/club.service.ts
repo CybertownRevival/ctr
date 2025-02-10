@@ -86,14 +86,19 @@ export class ClubService {
     await this.roleAssignmentRepository.addIdToAssignment(placeId, memberId, roleId);
     
     //add the user to the club members list as owner
-    await this.clubMemberRepository.addMember(placeId, memberId, 'owner');
+    await this.clubMemberRepository.addMember(placeId, memberId, 'member');
     
     //return the place id for redirection
     return placeId;
   }
 
   public async checkClubMembership(memberId: number, placeId: number): Promise<boolean> {
-    return await this.clubMemberRepository.isMember(memberId, placeId);
+    try {
+      const member = await this.clubMemberRepository.isMember(placeId, memberId);
+      return !!member[0];
+    } catch (error) {
+      throw new Error('Error checking membership');
+    }
   }
 
   public async deleteClub(place_id: number): Promise<void> {
@@ -123,12 +128,19 @@ export class ClubService {
     return;
   }
   
-  public async getMembers(place_id: number): Promise<any> {
-    return this.clubMemberRepository.getMembers(place_id);
+  public async getMembers(
+    place_id: number,
+    status: string,
+    limit: number,
+    offset: number,
+  ): Promise<any> {
+    const members = await this.clubMemberRepository.getMembers(place_id, status, limit, offset);
+    const membersCount = await this.clubMemberRepository.getMembersCount(place_id, status);
+    return {members, membersCount};
   }
   
   public async getMemberCount(place_id: number): Promise<number> {
-    return this.clubMemberRepository.getMemberCount(place_id);
+    return await this.clubMemberRepository.getMembersCount(place_id, 'member') + 1;
   }
   
   public async joinClub(clubId: number, memberId: number): Promise<void> {
