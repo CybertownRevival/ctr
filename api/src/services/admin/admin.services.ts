@@ -126,15 +126,15 @@ export class AdminService {
   }
 
   public async updateObjects(
-    id: number,
-    name: string,
+    id: number, 
+    name: string, 
     directory: string,
     filename: string,
     image: string,
     price: number,
     limit: number,
     quantity: number,
-    status: number,
+    status: number
   ): Promise<any> {
     await this.objectRepository
       .update(id, {
@@ -145,11 +145,11 @@ export class AdminService {
         price: price,
         limit: limit,
         quantity: quantity,
-        status: status,
+        status: status
       });
   }
 
-  public async searchPlaces(type: string[], limit: number, offset: number): Promise<any> {
+  public async searchPlaces(type: string, limit: number, offset: number): Promise<any> {
     const places = await this.placeRepository.findByType(type, limit, offset);
     const total = await this.placeRepository.totalByType(type);
     return {

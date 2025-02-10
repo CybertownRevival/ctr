@@ -1,7 +1,6 @@
 import { Service } from 'typedi';
 
 import {
-  ClubMemberRepository,
   PlaceRepository,
   MemberRepository,
   RoleAssignmentRepository,
@@ -11,7 +10,6 @@ import {
 @Service()
 export class ClubService {
   constructor(
-    private clubMemberRepository: ClubMemberRepository,
     private placeRepository: PlaceRepository,
     private memberRepository: MemberRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
@@ -35,6 +33,7 @@ export class ClubService {
     //if user has equal to or more than 3 clubs throw error
     if (clubCount >= 3) {
       throw new Error('You can only have upto 3 clubs');
+      return;
     }
     //if club is private, type is private_club
     if (type === 'private') {
@@ -47,6 +46,7 @@ export class ClubService {
     //else throw error
     else {
       throw new Error('Invalid club type');
+      return;
     }
     //information to make the place
     const params = {
@@ -55,20 +55,17 @@ export class ClubService {
       description: description,
       type: type,
     };
-    //create the club and capture place id
-    const placeId = await this.placeRepository.create(params);
+    //create the club
+    const place = await this.placeRepository.create(params);
     //find the role id for club owner
     const roleId = this.roleRepository.roleMap.ClubOwner;
     //hire the user as the owner of the club
-    await this.roleAssignmentRepository.addIdToAssignment(placeId, memberId, roleId);
-    //add the user to the club members list as owner
-    await this.clubMemberRepository.addMember(placeId, memberId, 'owner');
-    return placeId;
+    await this.roleAssignmentRepository.addIdToAssignment(place, memberId, roleId);
+    return place;
   }
 
   public async deleteClub(place_id: number): Promise<void> {
-    //delete the club
-    await this.placeRepository.updatePlaces(place_id, 'status', '0');
+    
   }
 
   public async updateClub(
@@ -80,16 +77,7 @@ export class ClubService {
     
   }
 
-  public async searchClubs(search: string, limit: number, offset: number): Promise<any> {
-    const clubs = await this.placeRepository.findByType(
-      ['public_club', 'private_club'], 
-      limit, 
-      offset,
-    );
-    const total = await this.placeRepository.totalByType(['public_club', 'private_club']);
-    return {
-      clubs: clubs,
-      total: total,
-    };
+  public async searchClubs(search: string): Promise<void> {
+  
   }
 }
