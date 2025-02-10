@@ -34,7 +34,6 @@ export class ClubService {
     
     //get the user's xp if less than 500 throw error
     const userInfo = await this.memberRepository.find({id: memberId});
-    console.log(userInfo.xp);
     if (userInfo.xp < 500) {
       throw new Error('You need at least 500 xp to create a club');
     }
@@ -92,10 +91,10 @@ export class ClubService {
     return placeId;
   }
 
-  public async checkClubMembership(memberId: number, placeId: number): Promise<boolean> {
+  public async checkClubMembership(): Promise<any> {
     try {
-      const member = await this.clubMemberRepository.isMember(placeId, memberId);
-      return !!member[0];
+      const member = await this.clubMemberRepository.isMember();
+      return member;
     } catch (error) {
       throw new Error('Error checking membership');
     }
