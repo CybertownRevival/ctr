@@ -12,27 +12,6 @@ class ClubController {
     private memberService: MemberService,
     private placeService: PlaceService,
   ) {}
-  
-  public async checkMembership(request: Request, response: Response): Promise<void> {
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) {
-      response.status(401).json({message: 'Session not found or invalid'});
-      return;
-    }
-    const clubId = Number.parseInt(request.query.clubId.toString());
-    const canAdmin = await this.placeService.canAdmin('personalclub', clubId, session.id);
-    if (canAdmin) {
-      response.status(200).json({isMember: true});
-      return;
-    }
-    try {
-      const isMember = await this.clubService.checkClubMembership(clubId, session.id);
-      response.status(200).json({isMember});
-    } catch (error) {
-      console.log(error);
-      response.status(400).json({message: error.message});
-    }
-  }
 
   public async createClub(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
@@ -100,22 +79,6 @@ class ClubController {
     try {
       const members = await this.clubService.getMembers(clubId);
       response.status(200).json({members});
-    } catch (error) {
-      console.log(error);
-      response.status(400).json({message: error.message});
-    }
-  }
-  
-  public async joinClub(request: Request, response: Response): Promise<void> {
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) {
-      response.status(401).json({message: 'Session not found or invalid'});
-      return;
-    }
-    const clubId = Number.parseInt(request.body.clubId);
-    try {
-      await this.clubService.joinClub(clubId, session.id);
-      response.status(200).json({success: true});
     } catch (error) {
       console.log(error);
       response.status(400).json({message: error.message});

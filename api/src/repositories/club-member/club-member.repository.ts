@@ -54,7 +54,7 @@ export class ClubMemberRepository {
       .where({
         club_id: clubId, 
         member_id: memberId,
-        status: 'member',
+        status: 'active',
       });
     return member.length > 0;
   }
