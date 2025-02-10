@@ -11,7 +11,7 @@
         {{ $store.data.place.description }}
       </div>
       <div class="flex justify-center w-full mt-5">
-        <span v-if="status === 'none'" class="w-1/8">
+        <span v-if="showButton" class="w-1/8">
           <img src="../../../assets/img/club/join.gif" alt="Join Club" class="w-full cursor-pointer" @click="join">
         </span>
         <span v-else-if="status === 'pending'" class="text-yellow-300">
@@ -29,18 +29,24 @@ export default Vue.extend({
   data: () => {
     return {
       loaded: false,
+      showButton: false,
       status: "none",
     };
   },
   methods: {
-    join() {
-      this.$http.post("/club/join", { clubId: this.$route.params.id });
+    async join() {
+      await this.$http.post("/club/join", { clubId: this.$route.params.id });
+      this.showButton = false;
       this.getMembership();
       return;
     },
     async getMembership(): Promise<void> {
       await this.$http.get("/club/status", { clubId: this.$route.params.id }).then((response) => {
+        console.log(response)
         this.status = response.data.status;
+        if(this.status === 'none'){
+          this.showButton = true;
+        }
       });
     },
   },
@@ -48,7 +54,6 @@ export default Vue.extend({
     this.getMembership();
   },
   mounted() {
-    //this.getData();
     this.loaded = true;
   },
 });
