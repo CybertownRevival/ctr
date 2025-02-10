@@ -18,15 +18,13 @@ export class ClubMemberRepository {
     return;
   }
   
-  public async changeMember(clubId: number, memberId: number, status: string): Promise<void> {
+  public async removeMember(clubId: number, memberId: number): Promise<void> {
     await knex('club_member')
-      .update({
-        status: status,
-      })
       .where({
         club_id: clubId, 
         member_id: memberId,
-      });
+      })
+      .del();
     return;
   }
   
@@ -37,39 +35,27 @@ export class ClubMemberRepository {
     return;
   }
   
-  public async getMembers(
-    clubId: number, 
-    status: string, 
-    limit: number, 
-    offset: number,
-  ): Promise<any> {
-    return knex('club_member')
-      .select('club_member.member_id', 'club_member.status', 'member.username')
-      .where('club_member.club_id', clubId)
-      .where('club_member.status', status)
-      .innerJoin('member', 'club_member.member_id', 'member.id')
-      .orderBy('member.username')
-      .limit(limit)
-      .offset(offset);
-  }
-  
-  public async getMembersCount(clubId: number, status: string): Promise<number> {
+  public async getMemberCount(clubId: number): Promise<number> {
     const count = await knex('club_member')
       .count('member_id as member_count')
-      .where({club_id: clubId, status: status});
+      .where({club_id: clubId});
     return Number(count[0].member_count);
   }
   
+  public async getMembers(clubId: number): Promise<any> {
+    return knex('club_member')
+      .select('member_id', 'status')
+      .where({club_id: clubId});
+  }
+  
   //check if member is in club
-  public async isMember(clubId: number, memberId: number): Promise<any> {
+  public async isMember(clubId: number, memberId: number): Promise<boolean> {
     const member = await knex('club_member')
-      .select('id')
       .where({
         club_id: clubId, 
         member_id: memberId,
         status: 'member',
       });
-    console.log(member);
-    return member;
+    return member.length > 0;
   }
 }
