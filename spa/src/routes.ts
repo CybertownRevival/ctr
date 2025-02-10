@@ -71,7 +71,6 @@ import MallChecker from "@/pages/mall/checker.vue";
 import ObjectProperties from "./pages/ObjectProperties.vue";
 
 import CreateClubPage from "./pages/club/create.vue";
-import ClubTools from "@/pages/club/ClubTools.vue";
 
 export default [
     {
@@ -1081,34 +1080,10 @@ export default [
     meta: { wrapper: false },
   },
   {
-    path: "/club/:id",
-    components: {
-      default: WorldPage,
-      tools: ClubTools,
-    },
-    name: "world-page",
-    meta: { wrapper: true },
-    children: [
-      {
-        path: "",
-        component: WorldBrowserPage,
-        name: "world-browser",
-        meta: { wrapper: true },
-      },
-      {
-        path: "",
-        component: AccessRights,
-        name: "clubAccessRights",
-        meta: { wrapper: true },
-      },
-    ],
-  },
-  {
     path: "/club/create",
     components: {
       default: CreateClubPage,
     },
     name: "create-club",
-    meta: { wrapper: true },
   },
 ];
