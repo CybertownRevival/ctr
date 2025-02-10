@@ -484,7 +484,7 @@ export class MemberService {
     await this.transactionRepository.createHomeRefundTransaction(member.wallet_id, amount);
   }
 
-  public async getMemberId(username: string): Promise<void> {
+  public async getMemberId(username: string): Promise<number> {
     const userId = await this.memberRepository.findIdByUsername(username);
     return userId;
   }
