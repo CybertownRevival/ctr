@@ -26,9 +26,9 @@ export class ClubService {
   ): Promise<number> {
     //get the user's xp if less than 500 throw error
     const userInfo = await this.memberRepository.find({id: memberId});
-    console.log(userInfo.xp);
-    if (userInfo.xp < 500) {
+    if (userInfo[0].xp < 500) {
       throw new Error('You need at least 500 xp to create a club');
+      return;
     }
     //get the number of clubs the user has
     const clubCount = await this.placeRepository.countClubs(memberId);
@@ -85,7 +85,6 @@ export class ClubService {
       ['public_club', 'private_club'], 
       limit, 
       offset,
-     [1],
     );
     const total = await this.placeRepository.totalByType(['public_club', 'private_club']);
     return {
