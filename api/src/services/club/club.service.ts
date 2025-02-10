@@ -8,8 +8,6 @@ import {
   RoleRepository,
 } from '../../repositories';
 
-import { PlaceService} from '..';
-
 @Service()
 export class ClubService {
   constructor(
@@ -17,7 +15,6 @@ export class ClubService {
     private placeRepository: PlaceRepository,
     private memberRepository: MemberRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
-    private placeService: PlaceService,
     private roleRepository: RoleRepository,
   ) {}
 
@@ -31,20 +28,17 @@ export class ClubService {
     if (name.length < 3) {
       throw new Error('Club name must be at least 3 characters');
     }
-    
     //get the user's xp if less than 500 throw error
     const userInfo = await this.memberRepository.find({id: memberId});
     console.log(userInfo.xp);
     if (userInfo.xp < 500) {
       throw new Error('You need at least 500 xp to create a club');
     }
-    
     //check if club name already exists
     const clubExists = await this.placeRepository.findByName(name);
     if (clubExists) {
       throw new Error('Club name already exists');
     }
-    
     //get the number of clubs the user has
     const clubCount = await this.placeRepository.countClubs(memberId);
     //if user has equal to or more than 3 clubs throw error
@@ -65,7 +59,6 @@ export class ClubService {
     } else {
       throw new Error('Invalid club type');
     }
-    
     //information to make the place
     const params = {
       member_id: memberId,
@@ -74,36 +67,20 @@ export class ClubService {
       private: isPrivate,
       type: 'club',
     };
-    
     //create the club and capture place id
     const placeId = await this.placeRepository.create(params);
-    
     //find the role id for club owner
     const roleId = this.roleRepository.roleMap.ClubOwner;
-    
     //hire the user as the owner of the club
     await this.roleAssignmentRepository.addIdToAssignment(placeId, memberId, roleId);
-    
     //add the user to the club members list as owner
     await this.clubMemberRepository.addMember(placeId, memberId, 'owner');
-    
-    //return the place id for redirection
     return placeId;
   }
 
   public async deleteClub(place_id: number): Promise<void> {
-    //delete all members of the club
-    await this.clubMemberRepository.removeAllMembers(place_id);
-    
-    //delete all role assignments of the club
-    await this.placeService.postAccessInfo('', place_id, [], '');
-    
     //delete the club
     await this.placeRepository.updatePlaces(place_id, 'status', '0');
-  }
-  
-  public async getMembers(place_id: number): Promise<any> {
-    return this.clubMemberRepository.getMembers(place_id);
   }
 
   public async updateClub(
