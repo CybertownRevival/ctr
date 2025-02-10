@@ -31,14 +31,14 @@ router.beforeEach((to, from, next) => {
     document.title = "Cybertown";
   }
   if (to.fullPath.includes("/place/")) {
-    api.get<any>(`/place/${to.params.id}`)
+    api.get<any>(`/place/getPlaceBySlug/${to.params.id}`)
       .then(response => {
         const Data = response.data;
         const place = {...Data.place};
         appStore.methods.setPlace(place);
       });
   } else if (to.fullPath.includes("/club/")) {
-    api.get<any>(`/place/by_id/${to.params.id}`)
+    api.get<any>(`/place/getPlaceById/${to.params.id}`)
       .then(response => {
         const Data = response.data;
         const place = {
@@ -89,7 +89,7 @@ router.beforeEach((to, from, next) => {
             next();
           } else if (to.fullPath !== "/place/jail" && banInfo.type === "jail") {
             next("/place/jail");
-            api.get<any>("/place/jail")
+            api.get<any>("/place/getPlaceBySlug/jail")
               .then(response => {
                 const Data = response.data;
                 const place = {...Data.place};
