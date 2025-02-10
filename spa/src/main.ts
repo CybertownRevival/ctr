@@ -41,26 +41,22 @@ router.beforeEach((to, from, next) => {
     api.get<any>(`/place/by_id/${to.params.id}`)
       .then(response => {
         const Data = response.data;
-        //check if user is a member of the club
-        api.get<any>(`/club/ismember?clubId=${Data.place.id}`)
-          .then(response => {
-            const member = response.data.isMember;
-            if (!member) {
-              next(`/clubdoor/${Data.place.id}`);
-            }
-          });
+        //if (Data.place.private) then check if user is a member of the club
+        if (Data.place.private) {
+          api.get<any>(`/club/ismember?clubId=${Data.place.id}`)
+            .then(response => {
+              const member = response.data.isMember;
+              if (!member) {
+                next("/place/clubdir");
+              }
+            });
+        }
         const place = {
           ...Data.place,
           assets_dir: "club/vrml/",
           world_filename: "vrml.wrl",
         };
         appStore.methods.setPlace(place);
-      });
-  } else if (to.fullPath.includes("/clubdoor/")) {
-    api.get<any>(`/place/by_id/${to.params.id}`)
-      .then(response => {
-        const Data = response.data;
-        appStore.methods.setPlace(Data.place);
       });
   } else {
     api.get<any>(`/home/${ to.params.username }`)

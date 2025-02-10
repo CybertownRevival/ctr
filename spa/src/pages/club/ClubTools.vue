@@ -13,8 +13,6 @@
             v-on:click="opener('#/inbox/' + $store.data.place.id)">Inbox</button>
     <button class="btn-ui"
             v-on:click="opener('#/messageboard/' + $store.data.place.id)">Messages</button>
-    <button class="btn-ui"
-            v-on:click="opener('#/memberlist/' + $store.data.place.id)">Members</button>
     </span>
     <br />
     <div v-if="canAdmin">
@@ -46,8 +44,7 @@ export default Vue.extend({
   methods: {
     async checkAdmin() {
       try {
-        const adminCheck = await this.$http
-          .get(`/place/can_admin/${this.$store.data.place.slug}/${this.$store.data.place.id}`);
+        const adminCheck = await this.$http.get(`/place/can_admin/${this.$store.data.place.slug}`);
         this.canAdmin = adminCheck.data.result;
       } catch (error) {
         this.canAdmin = false;

@@ -73,8 +73,6 @@ import ObjectProperties from "./pages/ObjectProperties.vue";
 import CreateClubPage from "./pages/club/create.vue";
 import ClubTools from "@/pages/club/ClubTools.vue";
 import ClubDirPage from "./pages/club/ClubDir.vue";
-import ClubMemberList from "./pages/club/Members.vue";
-import ClubDoor from "@/pages/club/ClubDoor.vue";
 
 export default [
     {
@@ -1121,27 +1119,5 @@ export default [
     },
     name: "club-directory",
     meta: { wrapper: true },
-  },
-  {
-    path: "/memberlist/:id",
-    components: {
-      default: ClubMemberList,
-    },
-    name: "club-member-list",
-    meta: {
-      title: "Member List",
-      wrapper: false,
-    },
-  },
-  {
-    path: "/clubdoor/:id",
-    components: {
-      default: ClubDoor,
-    },
-    name: "club-door",
-    meta: {
-      title: "Club Door",
-      wrapper: true,
-    },
   },
 ];

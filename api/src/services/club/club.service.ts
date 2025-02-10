@@ -100,11 +100,6 @@ export class ClubService {
       throw new Error('Error checking membership');
     }
   }
-  
-  public async changeMemberStatus(clubId: number, memberId: number, status: string): Promise<void> {
-    await this.clubMemberRepository.changeMember(clubId, memberId, status);
-    return;
-  }
 
   public async deleteClub(place_id: number): Promise<void> {
     //delete all members of the club
@@ -142,14 +137,6 @@ export class ClubService {
     const members = await this.clubMemberRepository.getMembers(place_id, status, limit, offset);
     const membersCount = await this.clubMemberRepository.getMembersCount(place_id, status);
     return {members, membersCount};
-  }
-  
-  public async getMemberStatus(memberId: number, clubId: number): Promise<string> {
-    try {
-      return await this.clubMemberRepository.getMemberStatus(memberId, clubId);
-    } catch (e) {
-      return 'none';
-    }
   }
   
   public async getMemberCount(place_id: number): Promise<number> {

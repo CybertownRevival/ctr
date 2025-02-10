@@ -19,10 +19,14 @@ export class ClubMemberRepository {
   }
   
   public async changeMember(clubId: number, memberId: number, status: string): Promise<void> {
-    await this.db.knex('club_member')
-      .update('status', status)
-      .where('club_id', clubId)
-      .where('member_id', memberId);
+    await knex('club_member')
+      .update({
+        status: status,
+      })
+      .where({
+        club_id: clubId, 
+        member_id: memberId,
+      });
     return;
   }
   
@@ -47,16 +51,6 @@ export class ClubMemberRepository {
       .orderBy('member.username')
       .limit(limit)
       .offset(offset);
-  }
-  
-  public async getMemberStatus(memberId: number, clubId: number): Promise<string> {
-    const status = await knex('club_member')
-      .select('status')
-      .where({
-        club_id: clubId,
-        member_id: memberId,
-      });
-    return status[0].status;
   }
   
   public async getMembersCount(clubId: number, status: string): Promise<number> {

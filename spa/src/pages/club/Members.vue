@@ -7,7 +7,7 @@
       <select
           v-model="status"
           class="border border-gray-400 p-2 rounded"
-          @change="fetchMembers"
+          @change="filterByStatus"
       >
         <option value="member">Member</option>
         <option value="pending">Pending</option>
@@ -50,22 +50,14 @@
               </td>
               <td class="border-double border-4 border-gray-400" v-if="isAdmin">
                 <span v-if="member.status === 'member'">
-                  <button class="btn-ui-inline py-0.5" @click="reject(member.username)">
-                    Ban
-                  </button>
+                  <button class="btn-ui-inline py-0.5">Ban</button>
                 </span>
                 <span v-if="member.status === 'pending'">
-                  <button class="btn-ui-inline py-0.5" @click="approve(member.username)">
-                    Accept
-                  </button>
-                  <button class="btn-ui-inline py-0.5" @click="reject(member.username)">
-                    Reject
-                  </button>
+                  <button class="btn-ui-inline py-0.5">Accept</button>
+                  <button class="btn-ui-inline py-0.5">Reject</button>
                 </span>
                 <span v-if="member.status === 'banned'">
-                  <button class="btn-ui-inline py-0.5" @click="approve(member.username)">
-                    Unban
-                  </button>
+                  <button class="btn-ui-inline py-0.5">Unban</button>
                 </span>
               </td>
             </tr>
@@ -78,47 +70,31 @@
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "ClubMemberList",
+  name: "ClubDirPage",
   data: () => {
     return {
       membersCount: 0,
       limit: 10,
       members: [],
-      isAdmin: true,
+      isAdmin: false,
       offset: 0,
       status: "member",
-      orderBy: "username",
+      orderBy: "name",
       order: "asc",
     };
   },
   methods: {
     async fetchMembers() {
-      const memberResults = await this.$http.get(("/club/members"), {
-        clubId: this.$route.params.id,
+      const clubs = await this.$http.get(("/club/search"), {
         limit: this.limit,
         offset: this.offset,
         status: this.status,
         orderBy: this.orderBy,
         order: this.order,
       });
-      this.members = memberResults.data.results.members;
-      this.membersCount = memberResults.data.results.membersCount;
-    },
-    async approve(username) {
-      await this.$http.post("/club/changememberstatus", {
-        clubId: this.$route.params.id,
-        username: username,
-        status: "member",
-      });
-      await this.fetchMembers();
-    },
-    async reject(username) {
-      await this.$http.post("/club/changememberstatus", {
-        clubId: this.$route.params.id,
-        username: username,
-        status: "banned",
-      });
-      await this.fetchMembers();
+      this.members = clubs.data.results.members;
+      this.membersCount = clubs.data.results.membersCount[0].count;
+      console.log("Offset:", this.offset, "Limit:", this.limit, "ClubsCount:", this.membersCount);
     },
     next() {
       this.offset += this.limit;
