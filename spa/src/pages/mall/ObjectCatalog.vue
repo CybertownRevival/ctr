@@ -31,10 +31,10 @@
         <li v-for="object in objects" :key="object.id" 
         @click="showDetails(object)" 
         class="flex-1 border-2 rounded-lg overflow-hidden" 
-        style="min-width: 240px; max-width: 240px; border-color: #222;">
+        style="min-width: 240px; max-width: 240px; height: 280px; border-color: #222;">
           <span class="flex w-full p-2 font-bold text-lg" style="background-color: #111;">
-            <span class="w-full text-left">{{ formatName(object.name) }}</span>
-            <span v-if="object.instances === 0 && object.status === 3" class="relative text-sm text-green right-auto">Coming<br />Soon!</span>
+            <span>{{ formatName(object.name) }}</span>
+            <span v-if="object.instances === 0" class="text-lg w-full text-green text-right">New</span>
           </span>
           <div class="flex w-full items-center justify-center" style="height: 210px;">
             <img :src="`/assets/object/${object.directory}/${object.image}`"
