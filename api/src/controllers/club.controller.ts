@@ -30,8 +30,14 @@ class ClubController {
       console.log(error);
     }
     try {
-      const isMember = await this.clubService.checkClubMembership(clubId, session.id);
-      response.status(200).json({isMember: isMember});
+      const isMember = await this.clubService.checkClubMembership();
+      let currentMember = false;
+      for (const member of isMember) {
+        if(member.member_id === session.id && member.club_id === clubId){
+          currentMember = true;
+        }
+      }
+      response.status(200).json({isMember: currentMember});
     } catch (error) {
       console.log(error);
       response.status(400).json({message: error.message});

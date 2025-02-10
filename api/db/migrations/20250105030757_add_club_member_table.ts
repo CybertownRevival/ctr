@@ -27,7 +27,7 @@ export async function up(knex: Knex): Promise<void> {
       table.foreign('member_id')
         .references('member.id');
 
-      table.enum('status', ['pending', 'accepted', 'rejected'])
+      table.enum('status', ['member', 'pending', 'banned'])
         .notNullable()
         .defaultTo('pending');
     });

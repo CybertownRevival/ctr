@@ -12,7 +12,7 @@
       </div>
       <div class="flex justify-center w-full mt-5">
         <span v-if="status === 'none'" class="w-1/8">
-          <img src="../../../assets/img/club/join.gif" alt="Join Club" class="w-full" @click="join">
+          <img src="../../../assets/img/club/join.gif" alt="Join Club" class="w-full cursor-pointer" @click="join">
         </span>
         <span v-else-if="status === 'pending'" class="text-yellow-300">
           Membership Request is Pending
@@ -40,14 +40,15 @@ export default Vue.extend({
     },
     async getMembership(): Promise<void> {
       await this.$http.get("/club/status", { clubId: this.$route.params.id }).then((response) => {
-        console.log(response.data);
         this.status = response.data.status;
       });
     },
   },
+  created() {
+    this.getMembership();
+  },
   mounted() {
     //this.getData();
-    this.getMembership();
     this.loaded = true;
   },
 });

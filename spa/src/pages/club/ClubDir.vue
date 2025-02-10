@@ -90,7 +90,6 @@ export default Vue.extend({
       });
       this.clubs = clubs.data.results.clubs;
       this.clubsCount = clubs.data.results.clubsCount[0].count;
-      console.log("Offset:", this.offset, "Limit:", this.limit, "ClubsCount:", this.clubsCount);
     },
     next() {
       this.offset += this.limit;

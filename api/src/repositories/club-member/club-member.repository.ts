@@ -67,15 +67,11 @@ export class ClubMemberRepository {
   }
   
   //check if member is in club
-  public async isMember(clubId: number, memberId: number): Promise<any> {
+  public async isMember(): Promise<any> {
     const member = await knex('club_member')
-      .select('id')
-      .where({
-        club_id: clubId, 
-        member_id: memberId,
-        status: 'member',
-      });
-    console.log(member);
+      .select('club_id', 'member_id',)
+      .where('status', 'member');
     return member;
   }
+
 }
