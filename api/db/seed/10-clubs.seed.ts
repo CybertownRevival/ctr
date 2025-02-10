@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 export async function seed(knex: Knex): Promise<void> {
   console.log('Seeding Club Directory Place data');
   
-  await knex('role').insert({
+  await knex('place').insert({
     assets_dir: null,
     description: 'Welcome to Clubs Directory',
     name: 'Clubs Directory',
@@ -19,7 +19,7 @@ export async function seed(knex: Knex): Promise<void> {
     private: 0,
   });
   
-  await knex('role').insert({
+  await knex('place').insert({
     assets_dir: null,
     description: 'Welcome to Newcomers Club',
     name: 'Newcomers Club',
