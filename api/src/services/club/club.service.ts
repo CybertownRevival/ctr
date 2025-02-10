@@ -92,10 +92,6 @@ export class ClubService {
     return placeId;
   }
 
-  public async checkClubMembership(memberId: number, placeId: number): Promise<boolean> {
-    return await this.clubMemberRepository.isMember(memberId, placeId);
-  }
-
   public async deleteClub(place_id: number): Promise<void> {
     //delete all members of the club
     await this.clubMemberRepository.removeAllMembers(place_id);
@@ -129,20 +125,6 @@ export class ClubService {
   
   public async getMemberCount(place_id: number): Promise<number> {
     return this.clubMemberRepository.getMemberCount(place_id);
-  }
-  
-  public async joinClub(clubId: number, memberId: number): Promise<void> {
-    const information = await this.placeRepository.findById(clubId);
-    if (!information) {
-      throw new Error('Club not found');
-    }
-    if (information.private) {
-      await this.clubMemberRepository.addMember(clubId, memberId, 'pending');
-      return;
-    } else {
-      await this.clubMemberRepository.addMember(clubId, memberId, 'active');
-      return;
-    }
   }
 
   public async updateClub(

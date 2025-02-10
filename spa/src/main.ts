@@ -41,16 +41,6 @@ router.beforeEach((to, from, next) => {
     api.get<any>(`/place/by_id/${to.params.id}`)
       .then(response => {
         const Data = response.data;
-        //if (Data.place.private) then check if user is a member of the club
-        if (Data.place.private) {
-          api.get<any>(`/club/ismember?clubId=${Data.place.id}`)
-            .then(response => {
-              const member = response.data.members;
-              if (!member) {
-                next("/place/clubdir");
-              }
-            });
-        }
         const place = {
           ...Data.place,
           assets_dir: "club/vrml/",
