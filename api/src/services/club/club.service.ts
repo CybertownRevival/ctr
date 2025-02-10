@@ -3,8 +3,6 @@ import { Service } from 'typedi';
 import {
   PlaceRepository,
   MemberRepository,
-  RoleAssignmentRepository,
-  RoleRepository,
 } from '../../repositories';
 
 @Service()
@@ -12,8 +10,6 @@ export class ClubService {
   constructor(
     private placeRepository: PlaceRepository,
     private memberRepository: MemberRepository,
-    private roleAssignmentRepository: RoleAssignmentRepository,
-    private roleRepository: RoleRepository,
   ) {}
 
   public async createClub(
@@ -23,7 +19,7 @@ export class ClubService {
     type: string,
   ): Promise<number> {
     //get the user's xp if less than 500 throw error
-    const userInfo = await this.memberRepository.find({id: memberId});
+    const userInfo = this.memberRepository.find({id: memberId});
     if (userInfo[0].xp < 500) {
       throw new Error('You need at least 500 xp to create a club');
       return;
@@ -48,19 +44,13 @@ export class ClubService {
       throw new Error('Invalid club type');
       return;
     }
-    //information to make the place
     const params = {
       member_id: memberId,
       name: name,
       description: description,
       type: type,
     };
-    //create the club
     const place = await this.placeRepository.create(params);
-    //find the role id for club owner
-    const roleId = await this.roleRepository.roleMap.ClubOwner;
-    //hire the user as the owner of the club
-    await this.roleAssignmentRepository.addIdToAssignment(place, memberId, roleId);
     return place;
   }
 
