@@ -172,14 +172,6 @@ export class PlaceRepository {
       .limit(limit)
       .offset(offset);
   }
-  
-  public async searchClubsTotal(search: string): Promise<any> {
-    return this.db.place
-      .count('id as count')
-      .where('type', 'club')
-      .where('status', 1)
-      .where(this.like('name', search));
-  }
 
   public async getSearchTotal(search: string, compare: string, type: string): Promise<any> {
     return this.db.place

@@ -143,14 +143,12 @@ export class ClubService {
     orderBy: string,
     order: string,
   ): Promise<any> {
-    const clubs = await this.placeRepository.searchClubs(
+    return await this.placeRepository.searchClubs(
       search,
       limit,
       offset,
       orderBy,
       order,
     );
-    const clubsCount = await this.placeRepository.searchClubsTotal(search);
-    return {clubs, clubsCount};
   }
 }
