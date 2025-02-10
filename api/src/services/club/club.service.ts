@@ -8,7 +8,7 @@ import {
   RoleRepository,
 } from '../../repositories';
 
-import { PlaceService } from '../place/place.service';
+import { PlaceService } from '..';
 
 @Service()
 export class ClubService {
@@ -97,26 +97,10 @@ export class ClubService {
     await this.clubMemberRepository.removeAllMembers(place_id);
     
     //delete all role assignments of the club
-    await this.placeService.postAccessInfo(
-      'personalclub', 
-      place_id, 
-      [
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null},
-        {username: null},
-      ],
-      '',
-    );
+    await this.placeService.postAccessInfo('', place_id, [], '');
     
     //delete the club
     await this.placeRepository.updatePlaces(place_id, 'status', '0');
-    
-    return;
   }
   
   public async getMembers(place_id: number): Promise<any> {
@@ -136,19 +120,23 @@ export class ClubService {
   
   }
 
-  public async searchClubs(
-    search: string,
-    limit: number,
-    offset: number,
-    orderBy: string,
-    order: string,
-  ): Promise<any> {
-    return await this.placeRepository.searchClubs(
-      search,
+  public async searchClubs(search: string, limit: number, offset: number): Promise<any> {
+    const clubs = await this.placeRepository.findByType(
+      ['club'],
       limit,
       offset,
-      orderBy,
-      order,
+      [1],
+      'name',
     );
+    const clubsResults = clubs.map((club) => ({
+      id: club.id,
+      description: club.description,
+      name: club.name,
+    }));
+    const total = await this.placeRepository.totalByType(['club']);
+    return {
+      clubs: clubsResults,
+      total: total,
+    };
   }
 }
