@@ -45,7 +45,7 @@ router.beforeEach((to, from, next) => {
         if (Data.place.private) {
           api.get<any>(`/club/ismember?clubId=${Data.place.id}`)
             .then(response => {
-              const member = response.data.isMember;
+              const member = response.data.members;
               if (!member) {
                 next("/place/clubdir");
               }

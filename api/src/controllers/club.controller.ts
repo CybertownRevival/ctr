@@ -19,25 +19,15 @@ class ClubController {
       response.status(401).json({message: 'Session not found or invalid'});
       return;
     }
-    console.log(`Checking membership session found`);
     const clubId = Number.parseInt(request.query.clubId.toString());
-    console.log(`Checking admin of clubId: ${clubId}`);
-    try {
-      const canAdmin = await this.placeService.canAdmin('personalclub', clubId, session.id);
-      console.log(`canAdmin: ${canAdmin}`);
-      if (canAdmin) {
-        response.status(200).json({isMember: true});
-        return;
-      }
-    } catch (error) {
-      console.log(error);
+    const canAdmin = await this.placeService.canAdmin('personalclub', clubId, session.id);
+    if (canAdmin) {
+      response.status(200).json({isMember: true});
+      return;
     }
-    console.log(`Admin check done`);
     try {
-      console.log(`Checking is member of clubId: ${clubId}`);
       const isMember = await this.clubService.checkClubMembership(clubId, session.id);
-      console.log(`isMember: ${isMember}`);
-      response.status(200).json({isMember: isMember});
+      response.status(200).json({isMember});
     } catch (error) {
       console.log(error);
       response.status(400).json({message: error.message});
@@ -107,11 +97,8 @@ class ClubController {
       return;
     }
     const clubId = Number.parseInt(request.query.clubId.toString());
-    const status = request.query.status.toString();
-    const limit = Number.parseInt(request.query.limit.toString());
-    const offset = Number.parseInt(request.query.offset.toString());
     try {
-      const members = await this.clubService.getMembers(clubId, status, limit, offset);
+      const members = await this.clubService.getMembers(clubId);
       response.status(200).json({members});
     } catch (error) {
       console.log(error);
