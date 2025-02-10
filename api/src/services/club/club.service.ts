@@ -164,7 +164,7 @@ export class ClubService {
       await this.clubMemberRepository.addMember(clubId, memberId, 'pending');
       return;
     } else {
-      await this.clubMemberRepository.addMember(clubId, memberId, 'active');
+      await this.clubMemberRepository.addMember(clubId, memberId, 'member');
       return;
     }
   }
