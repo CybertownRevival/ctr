@@ -3,6 +3,8 @@ import {clubController} from '../controllers';
 
 const clubRoutes = Router();
 
+clubRoutes.get('/all', (request, response) =>
+  clubController.getAllClubs(request, response));
 clubRoutes.post('/create', (request, response) =>
   clubController.createClub(request, response));
 clubRoutes.post('/delete', (request, response) =>
