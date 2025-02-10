@@ -33,8 +33,8 @@
         class="flex-1 border-2 rounded-lg overflow-hidden" 
         style="min-width: 240px; max-width: 240px; height: 280px; border-color: #222;">
           <span class="flex w-full p-2 font-bold text-lg" style="background-color: #111;">
-            <span>{{ formatName(object.name) }}</span>
-            <span v-if="object.instances === 0" class="text-lg w-full text-green text-right">New</span>
+            <span class="w-full text-left">{{ formatName(object.name) }}</span>
+            <span v-if="object.instances === 0" class="text-sm w-full text-green text-right pr-2">Coming Soon</span>
           </span>
           <div class="flex w-full items-center justify-center" style="height: 210px;">
             <img :src="`/assets/object/${object.directory}/${object.image}`"
