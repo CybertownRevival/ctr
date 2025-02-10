@@ -29,10 +29,13 @@
       </div>
       <ul class="flex flex-wrap w-full gap-5 px-5 cursor-pointer">
         <li v-for="object in objects" :key="object.id" 
-        @click="showDetails(object.id, object.forSale, object.publicPlaces)" 
+        @click="showDetails(object)" 
         class="flex-1 border-2 rounded-lg overflow-hidden" 
         style="min-width: 240px; max-width: 240px; height: 280px; border-color: #222;">
-          <span class="flex w-full p-2 font-bold text-lg" style="background-color: #111;">{{ formatName(object.name) }}</span>
+          <span class="flex w-full p-2 font-bold text-lg" style="background-color: #111;">
+            <span>{{ formatName(object.name) }}</span>
+            <span v-if="object.instances === 0" class="text-lg w-full text-green text-right">New</span>
+          </span>
           <div class="flex w-full items-center justify-center" style="height: 210px;">
             <img :src="`/assets/object/${object.directory}/${object.image}`"
             style="max-width: 190px; max-height: 190px; width:auto; height:auto;">
@@ -184,27 +187,26 @@ export default Vue.extend({
           year: 'numeric'
         })
     },
-    async showDetails(id, qty, places) {
-      this.object_id = id;
-      this.forSale = qty;
-      this.publicPlaces = places;
-      await this.$http.get(`/mall/object/${this.object_id}`)
-        .then((res) => {
-          this.objectName = this.formatName(res.data.object[0].name);
-          this.objectDirectory = res.data.object[0].directory;
-          this.objectImage = res.data.object[0].image;
-          this.name = res.data.object[0].name;
-          this.price = res.data.object[0].price;
-          this.creator = res.data.object[0].username;
-          if(res.data.object[0].limit && res.data.object[0].limit >= 1){
-            this.objectLimit ="1/"+res.data.object[0].limit;
-          } else {
-            this.objectLimit = 'Unlimited';
-          }
-          this.qtySold = res.data.object[0].instances;
-          this.uploadDate = this.formatDate(res.data.object[0].created_at);
-          this.page = 'details';
-        })
+    async showDetails(object) {
+      const index = this.objects.indexOf(object);
+      const details = this.objects[index];
+      this.object_id = details.id;
+      this.forSale = details.forSale;
+      this.publicPlaces = details.publicPlaces;
+      this.objectName = details.name;
+      this.objectDirectory = details.directory;
+      this.objectImage = details.image;
+      this.name = details.name;
+      this.price = details.price;
+      this.creator = details.username;
+      if(details.limit && details.limit >= 1){
+        this.objectLimit ="1/"+details.limit;
+      } else {
+        this.objectLimit = 'Unlimited';
+      }
+      this.qtySold = details.instances;
+      this.uploadDate = this.formatDate(details.created_at);
+      this.page = 'details';
     },
     backToSearch() {
       this.object_id = 0;
