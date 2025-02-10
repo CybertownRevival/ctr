@@ -1,7 +1,6 @@
 import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
-import { knex } from '../../db';
 import {Home, Place, Store} from '../../types/models';
 
 /** Repository for fetching/interacting with place data in the database. */
@@ -9,22 +8,7 @@ import {Home, Place, Store} from '../../types/models';
 export class PlaceRepository {
 
   constructor(private db: Db) {}
-  
-  /**
-   * Count number of clubs where type is Public or Private
-   * and where member_id is equal to the member_id
-   * @param memberId id of member to search for
-   * @returns promise number of clubs counted
-   */
-  public async countClubs(memberId: number): Promise<number> {
-    const count = await knex
-      .from('place')
-      .count('id as count')
-      .where({member_id: memberId})
-      .whereIn('type', ['public_club', 'private_club']);
-    return count[0].count;
-  }
-  
+
   /**
    * Finds a place record with the given id.
    * @param id id of place to look for
