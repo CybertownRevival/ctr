@@ -34,7 +34,8 @@ export class PlaceService {
               this.roleRepository.roleMap.Admin,
             ].includes(assignment.role_id) ||
            ([
-             placeRoleId.owner,
+             this.roleRepository.roleMap.ClubOwner,
+             this.roleRepository.roleMap.ClubAssistant,
              placeRoleId.deputy,
            ].includes(assignment.role_id) &&
             assignment.place_id === placeId)
