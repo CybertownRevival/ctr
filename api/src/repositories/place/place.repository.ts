@@ -21,7 +21,7 @@ export class PlaceRepository {
       .from('place')
       .count('id as count')
       .where({member_id: memberId})
-      .whereIn('type', ['club']);
+      .whereIn('type', ['public_club', 'private_club']);
     return count[0].count;
   }
   
@@ -42,16 +42,6 @@ export class PlaceRepository {
   public async findAllStores(): Promise<Store[]> {
     return this.db.place.where({type: 'shop', status: 1});
   }
-  
-  /**
-   * Finds a place record with the given name
-   * @param name name of place to look for
-   * @returns promise resolving in the found place object, or rejecting on error
-   */
-  public async findByName(name: string): Promise<Place> {
-    const [place] = await this.db.place.where({ name });
-    return place;
-  }
 
   /**
    * Finds a place record which is a home for a given member id
@@ -63,7 +53,7 @@ export class PlaceRepository {
   }
 
   public async findStorageByUserID(memberId: number): Promise<any> {
-    return this.db.place
+    return await this.db.place
       .select('place.name', 'place.id')
       .where({type: 'storage', member_id: memberId, status: 1})
       .orderBy('place.name', 'asc');
@@ -117,29 +107,23 @@ export class PlaceRepository {
    * @param offset
    * @returns
    */
-  public async findByType(
-    type: string[],
-    limit: number,
-    offset: number,
-    status: number[],
-    orderBy: string,
-  ): Promise<any> {
+  public async findByType(type: string[], limit: number, offset: number, status: number[]): Promise<any> {
     return this.db.place
       .select(['place.*'])
       .whereIn('place.type', type)
       .whereIn('place.status', status)
-      .orderBy(orderBy)
+      .orderBy('place.id')
       .limit(limit)
       .offset(offset);
   }
 
   public async searchAllPlaces(
-    search: string,
-    compare: string,
-    type: string,
-    limit: number,
+    search: string, 
+    compare: string, 
+    type: string, 
+    limit: number, 
     offset: number): Promise<any> {
-    return this.db.place
+    return await this.db.place
       .where('type',compare, type)
       .where(this.like('name', search))
       .limit(limit)
@@ -147,7 +131,7 @@ export class PlaceRepository {
   }
 
   public async getSearchTotal(search: string, compare: string, type: string): Promise<any> {
-    return this.db.place
+    return await this.db.place
       .count('id as count')
       .where('type',compare, type)
       .where(this.like('place.name', search));
