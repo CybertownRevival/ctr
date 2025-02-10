@@ -24,27 +24,7 @@ export class PlaceService {
    Promise<boolean> {
     const placeRoleId = await this.findRoleIdsBySlug(slug);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-    
-    //check club admin ability
-    if (slug === 'personalclub') {
-      if (
-        roleAssignments.find(assignment => {
-          return (
-            [
-              this.roleRepository.roleMap.Admin,
-            ].includes(assignment.role_id) ||
-           ([
-             placeRoleId.owner,
-             placeRoleId.deputy,
-           ].includes(assignment.role_id) &&
-            assignment.place_id === placeId)
-          );
-        })
-      ) {
-        return true;
-      }
-    }
-    
+
     //check if admin even if there is no assigned roles for the place
     if (!placeRoleId) {
       if (
@@ -331,10 +311,6 @@ export class PlaceService {
       },
       jail: {
         owner: this.roleRepository.roleMap.SecurityChief,
-      },
-      personalclub: {
-        owner: this.roleRepository.roleMap.ClubOwner,
-        deputy: this.roleRepository.roleMap.ClubAssistant,
       },
     };
     return roleId[slug];

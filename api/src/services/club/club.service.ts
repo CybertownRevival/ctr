@@ -8,7 +8,7 @@ import {
   RoleRepository,
 } from '../../repositories';
 
-import { PlaceService } from '..';
+import { PlaceService} from '..';
 
 @Service()
 export class ClubService {
@@ -23,8 +23,8 @@ export class ClubService {
 
   public async createClub(
     memberId: number,
-    name: string,
-    description: string,
+    name: string, 
+    description: string, 
     type: string,
   ): Promise<number> {
     //if club name is less than 3 characters throw error
@@ -107,18 +107,18 @@ export class ClubService {
   }
 
   public async updateClub(
-    place_id: number,
-    name: string,
-    description: string,
+    place_id: number, 
+    name: string, 
+    description: string, 
     type: string,
   ): Promise<void> {
-  
+    
   }
 
   public async searchClubs(search: string, limit: number, offset: number): Promise<any> {
     const clubs = await this.placeRepository.findByType(
       ['club'],
-      limit,
+      limit, 
       offset,
       [1],
       'name',
