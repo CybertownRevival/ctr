@@ -10,14 +10,6 @@ class ClubController {
     private clubService: ClubService,
     private memberService: MemberService,
   ) {}
-  
-  public async getAllClubs(request: Request, response: Response): Promise<void> {
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) {
-      response.status(401).send();
-      return;
-    }
-  }
 
   public async createClub(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
@@ -55,6 +47,17 @@ class ClubController {
     if (!session) {
       response.status(401).send();
       return;
+    }
+    try {
+      const results = await this.clubService.searchClubs(
+        request.query.search.toString(),
+        Number.parseInt(request.query.limit.toString()),
+        Number.parseInt(request.query.offset.toString()),
+      );
+      response.status(200).json({results});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({error});
     }
   }
 }

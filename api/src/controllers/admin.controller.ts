@@ -277,7 +277,7 @@ class AdminController {
     if (admin) {
       try {
         const results = await this.adminService.searchPlaces(
-          request.query.type.toString(),
+          [request.query.type.toString()],
           parseInt(request.query.limit.toString()),
           parseInt(request.query.offset.toString()),
         );
