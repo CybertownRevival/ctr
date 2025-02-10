@@ -146,10 +146,6 @@ export default Vue.extend({
       if (this.$store.data.place) this.$socket.leaveRoom(this.$store.data.place.id);
       await this.getPlace();
 
-      if(this.$store.data.place.slug === "clubdir"){
-        this.force2d = true;
-      }
-
       if(this.$route.params.username){
         if(this.$store.data.place.assets_dir === null) {
           this.force2d = true;
