@@ -11,7 +11,7 @@
         {{ $store.data.place.description }}
       </div>
       <div class="flex justify-center w-full mt-5">
-        <span v-if="showButton" class="w-1/8">
+        <span v-if="status === 'none'" class="w-1/8">
           <img src="../../../assets/img/club/join.gif" alt="Join Club" class="w-full cursor-pointer" @click="join">
         </span>
         <span v-else-if="status === 'pending'" class="text-yellow-300">
