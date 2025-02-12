@@ -577,6 +577,9 @@ export default Vue.extend({
       if(this.placeType === 'hood'){
         window.location.assign(`#/neighborhood/${this.placeId}`);
       }
+      if(this.placeType === 'club'){
+        window.location.assign(`#/club/${this.placeId}`);
+      }
     },
     async menu(...target){
       this.menuBeamTo = false;
@@ -618,7 +621,9 @@ export default Vue.extend({
         ){
           this.placeSlug = target[2];
         }   
-        if(this.placeType === 'hood'){
+        if(this.placeType === 'hood' ||
+          this.placeType === 'club'
+        ){
           this.placeId = target[3];
         }    
       }

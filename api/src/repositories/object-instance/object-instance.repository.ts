@@ -172,6 +172,23 @@ export class ObjectInstanceRepository {
     const count = await this.db.objectInstance
       .count('object_id as total')
       .where('member_id', id)
+  public async countForSaleById(objectId: number): Promise<number> {
+    const count = await this.db.objectInstance
+      .count('id as count')
+      .where('object_id', objectId)
+      .andWhere('object_price', '>=', 0)
+      .andWhere('object_buyer', null);
+    return parseInt(Object.values(count[0])[0]);
+  }
+
+  public async countByPublicPlaces(
+    objectId: number, fleamarket: number, blackmarket): Promise<number> {
+    const count = await this.db.objectInstance
+      .count('id as count')
+      .where('object_id', objectId)
+      .andWhere('place_id', fleamarket)
+      .orWhere('object_id', objectId)
+      .andWhere('place_id', blackmarket);
     return parseInt(Object.values(count[0])[0]);
   }
 

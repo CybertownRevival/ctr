@@ -210,6 +210,10 @@ export default Vue.extend({
           slug: "enter",
         },
         {
+          title: "Newcomers Club",
+          slug: "newcomers",
+        },
+        {
           title: "Employment Office",
           slug: "employment",
         },
@@ -220,6 +224,10 @@ export default Vue.extend({
         {
           title: "Mall",
           slug: "mall",
+        },
+        {
+          title: "The Clubs",
+          slug: "clubdir",
         },
         {
           title: "Bank",
