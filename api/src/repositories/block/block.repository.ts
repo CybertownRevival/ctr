@@ -29,4 +29,11 @@ export class BlockRepository {
 
     return locations;
   }
+
+  public async totalFreeSpots(): Promise<any> {
+    return await this.db.knex
+      .count('location as count')
+      .from('map_location')
+      .where('available', 1);
+  }
 }

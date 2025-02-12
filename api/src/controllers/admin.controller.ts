@@ -1,7 +1,13 @@
 import {Request, Response} from 'express';
 import { Container } from 'typedi';
 
-import { AdminService, MemberService, AvatarService, PlaceService } from '../services';
+import { 
+  AdminService, 
+  MemberService, 
+  AvatarService, 
+  PlaceService, 
+  RoleAssignmentService,
+  ObjectInstanceService, } from '../services';
 
 class AdminController {
   constructor(
@@ -9,6 +15,8 @@ class AdminController {
     private memberService: MemberService, 
     private avatarService: AvatarService,
     private placeService: PlaceService,
+    private roleAssignmentService: RoleAssignmentService,
+    private objectInstanceService: ObjectInstanceService,
   ) {}
   
   public async addBan(request: Request, response: Response): Promise<any> {
@@ -139,8 +147,14 @@ class AdminController {
     const admin = await this.memberService.getAccessLevel(session.id);
     if (admin) {
       try {
+        const returnRoles = [];
         const roleList = await this.adminService.getRoleList();
-        response.status(200).json({roles: roleList});
+        for(const role of roleList) {
+          const count = await this.roleAssignmentService.countByAssigned(role.id);
+          role.total = count;
+          returnRoles.push(role);
+        }
+        response.status(200).json({roles: returnRoles});
       } catch (e) {
         console.log(e);
         response.status(500).json({error: 'Internal Server Error'});
@@ -189,6 +203,143 @@ class AdminController {
       response.status(403).json({message: 'Access Denied'});
     }
   }
+
+  public async getTransactions(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    const returnResults = [];
+    const rebuild = [];
+    if (admin) {
+      try {
+        let results = null;
+        let findUsername = null;
+        results = await this.adminService.getTransactions(
+          request.query.type.toString(),
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
+        );
+        findUsername = results.transactions
+        for(const res of findUsername) {
+          let sender = [{username: 'System'}];
+          let receiver = [{username: 'System'}];
+          if(res.sender_wallet_id){
+            sender = await this.memberService
+              .getMemberByWalletId(res.sender_wallet_id);
+          }
+          if(res.recipient_wallet_id){
+            receiver = await this.memberService
+              .getMemberByWalletId(res.recipient_wallet_id);
+          }
+          res.sender = sender;
+          res.receiver = receiver;
+          res.sender_wallet_id = null;
+          res.recipient_wallet_id = null;
+          rebuild.push(res);
+        }
+        returnResults.push(rebuild);
+        returnResults.push(results.total);
+        response.status(200).json({returnResults});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async getTransactionsByWalletId(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    const returnResults = [];
+    const rebuild = [];
+    if (admin) {
+      try {
+        let results = null;
+        let findUsername = null;
+        const memberId = request.params.id;
+        const user = await this.memberService.find({ id: Number.parseInt(memberId) });
+        results = await this.adminService.getTransactionsByWalletId(
+          user.wallet_id,
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
+        );
+        findUsername = results.transactions
+        for(const res of findUsername) {
+          let sender = [{username: 'System'}];
+          let receiver = [{username: 'System'}];
+          if(res.sender_wallet_id){
+            sender = await this.memberService
+              .getMemberByWalletId(res.sender_wallet_id);
+          }
+          if(res.recipient_wallet_id){
+            receiver = await this.memberService
+              .getMemberByWalletId(res.recipient_wallet_id);
+          }
+          res.sender = sender;
+          res.receiver = receiver;
+          res.sender_wallet_id = null;
+          res.recipient_wallet_id = null;
+          rebuild.push(res);
+        }
+        returnResults.push(rebuild);
+        returnResults.push(results.total);
+        response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async getObjectInstances(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin.includes('security')) {
+      try {
+        let returnResults = [];
+        let results = null;
+        results = await this.objectInstanceService.findAllObjectInstances(
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
+        );
+        returnResults = results;
+        response.status(200).json({returnResults});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async getOwnedObjects(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin.includes('admin')) {
+      try {
+        const id = request.params.id;
+        const results = await this.objectInstanceService.getOwnedObjects(
+          Number.parseInt(id),
+          Number.parseInt(request.query.limit.toString()),
+          Number.parseInt(request.query.offset.toString()),
+        );
+        response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
   
   public async searchUserChat(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
@@ -202,6 +353,23 @@ class AdminController {
           Number.parseInt(request.query.limit.toString()),
           Number.parseInt(request.query.offset.toString()),
         );
+        response.status(200).json({results});
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
+  public async getCommunityData(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin.includes('security')) {
+      try {
+        const results = await this.adminService.getCommunityData();
         response.status(200).json({results});
       } catch (error) {
         console.log(error);
@@ -322,6 +490,28 @@ class AdminController {
     }
   }
 
+  public async findUserPlaces(request: Request, response: Response): Promise<any> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const admin = await this.memberService.getAccessLevel(session.id);
+    if (admin) {
+      const types = ['club', 'storage'];
+      const type = request.query.type.toString();
+      const id = request.query.id.toString();
+      try {
+        if(types.includes(type)) {
+          const results = await this.placeService.findUserPlaces(parseInt(id), type);
+          response.status(200).json({results});
+        } 
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({error});
+      }
+    } else {
+      response.status(403).json({message: 'Access Denied'});
+    }
+  }
+
   public async placesUpdate(request: Request, response: Response): Promise<any> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
@@ -397,5 +587,7 @@ const adminService = Container.get(AdminService);
 const memberService = Container.get(MemberService);
 const avatarService = Container.get(AvatarService);
 const placeService = Container.get(PlaceService);
+const roleAssignmentService = Container.get(RoleAssignmentService);
+const objectInstanceService = Container.get(ObjectInstanceService);
 export const adminController = new AdminController(
-  adminService, memberService, avatarService, placeService);
+  adminService, memberService, avatarService, placeService, roleAssignmentService, objectInstanceService);

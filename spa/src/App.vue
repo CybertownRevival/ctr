@@ -356,8 +356,17 @@ export default Vue.extend({
     },
     moderationListener(): void {
       this.$socket.on("moderation_event", data => {
-        if(parseInt(data.data.member_id) === this.$store.data.user.id) {
+        if(
+          data.data.event === 'add-ban' && 
+          Number.parseInt(data.data.member_id) === this.$store.data.user.id &&
+          data.data.duration >= 1) {
           this.reloadWindow();
+        } 
+        if(
+          data.data.event === 'add-ban' && 
+          Number.parseInt(data.data.member_id) === this.$store.data.user.id &&
+          data.data.duration === 0) {
+          alert("You have received a warning from security.\nPlease read and follow the rules & regulations of CTR.")
         }
       });
     },

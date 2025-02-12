@@ -33,6 +33,36 @@ export class ObjectInstanceRepository {
       .orderBy('object_instance.object_name', 'asc');
   }
 
+  public async getAllObjectInstances(limit: number, offset: number): Promise<ObjectInstance[]> {
+    return this.db.objectInstance
+      .select('object_instance.*',
+        'object.name',
+        'member.username',
+      )
+      .join('object', 'object.id', 'object_instance.object_id')
+      .join('member', 'member.id', 'object_instance.member_id' )
+      .limit(limit)
+      .offset(offset)
+      .orderBy('id', 'desc');
+  }
+
+  public async searchAllObjectInstances(
+    id: number, limit: number, offset: number): Promise<ObjectInstance[]> {
+    return this.db.objectInstance
+      .select('object_instance.*',
+        'object.name',
+        'object.directory',
+        'object.image',
+        'member.username',
+      )
+      .where('object_instance.member_id', id)
+      .join('object', 'object.id', 'object_instance.object_id')
+      .join('member', 'member.id', 'object_instance.member_id' )
+      .limit(limit)
+      .offset(offset)
+      .orderBy('id', 'desc');
+  }
+
   public async getObjectInstanceWithObject(objectInstanceId: number): Promise<ObjectInstance[]> {
     return this.db.objectInstance
       .select(
@@ -108,6 +138,40 @@ export class ObjectInstanceRepository {
     const count = await this.db.objectInstance
       .count('object_id as total')
       .where('object_id', objectId);
+    return parseInt(Object.values(count[0])[0]);
+  }
+
+  public async findForSale(): Promise<any> {
+    return this.db.objectInstance
+      .count('id as count')
+      .where('object_price', '!=', '')
+      .orWhere('object_price', '!=', null);
+  }
+
+  public async averageForSale(): Promise<any> {
+    return this.db.objectInstance
+      .avg({price: 'object_price'})
+      .where('object_price', '!=', '')
+      .orWhere('object_price', '!=', null);
+  }
+
+  public async highestForSale(): Promise<any> {
+    return this.db.objectInstance
+      .avg({price: 'object_price'})
+      .where('object_price', '!=', '')
+      .orWhere('object_price', '!=', null);
+  }
+
+  public async totalCount(): Promise<number> {
+    const count = await this.db.objectInstance
+      .count('object_id as total')
+    return parseInt(Object.values(count[0])[0]);
+  }
+
+  public async totalSearchCount(id: number): Promise<number> {
+    const count = await this.db.objectInstance
+      .count('object_id as total')
+      .where('member_id', id)
     return parseInt(Object.values(count[0])[0]);
   }
 

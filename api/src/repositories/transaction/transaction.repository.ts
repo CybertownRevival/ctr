@@ -62,7 +62,7 @@ export class TransactionRepository {
       const [transactionId] = await trx<Transaction>('transaction').insert({
         amount,
         reason: TransactionReason.HomePurchase,
-        recipient_wallet_id: walletId,
+        sender_wallet_id: walletId,
       });
       return this.find({ id: transactionId });
     });
@@ -137,7 +137,7 @@ export class TransactionRepository {
       const [transactionId] = await trx<Transaction>('transaction').insert({
         amount,
         reason: TransactionReason.ObjectUpload,
-        recipient_wallet_id: walletId,
+        sender_wallet_id: walletId,
       });
       return this.find({ id: transactionId });
     });
@@ -155,7 +155,7 @@ export class TransactionRepository {
       const [transactionId] = await trx<Transaction>('transaction').insert({
         amount,
         reason: TransactionReason.ObjectRestock,
-        recipient_wallet_id: walletId,
+        sender_wallet_id: walletId,
       });
       return this.find({ id: transactionId });
     });
@@ -209,7 +209,7 @@ export class TransactionRepository {
       const [transactionId] = await trx<Transaction>('transaction').insert({
         amount,
         reason: TransactionReason.ObjectPurchase,
-        recipient_wallet_id: walletId,
+        sender_wallet_id: walletId,
       });
       return this.find({ id: transactionId });
     });
@@ -255,5 +255,67 @@ export class TransactionRepository {
       });
       return this.find({ id: transactionId });
     });
+  }
+
+  public async getTransactions(type: string, limit: number, offset: number): Promise<any> {
+    return this.db.knex
+      .select(
+        'id',
+        'created_at',
+        'amount',
+        'recipient_wallet_id',
+        'sender_wallet_id',
+        'reason',
+      )
+      .from('transaction')
+      .where('reason', type)
+      .limit(limit)
+      .offset(offset)
+      .orderBy('id', 'DESC');
+    ;
+  }
+
+  public async getTransactionsByWalletId(id: number, limit: number, offset: number): Promise<any> {
+    return this.db.knex
+      .select(
+        'id',
+        'created_at',
+        'amount',
+        'recipient_wallet_id',
+        'sender_wallet_id',
+        'reason',
+      )
+      .from('transaction')
+      .where('recipient_wallet_id', id)
+      .orWhere('sender_wallet_id', id)
+      .limit(limit)
+      .offset(offset)
+      .orderBy('id', 'DESC');
+    ;
+  }
+
+  public async getLatestTransactions(time: Date): Promise<any> {
+    return this.db.knex
+      .select('transaction.*')
+      .from('transaction')
+      .where('created_at', '>=', time)
+      .limit(30)
+      .orderBy('transaction.id', 'DESC');
+    ;
+  }
+
+  public async getTotal( type: string): Promise<any> {
+    return this.db.knex
+      .count('id as count')
+      .from('transaction')
+      .where('reason', type);
+  }
+
+  public async getWalletTotal( id: number): Promise<any> {
+    return this.db.knex
+      .count('id as count')
+      .from('transaction')
+      .where('recipient_wallet_id', id)
+      .orWhere('sender_wallet_id', id);
   }
 }

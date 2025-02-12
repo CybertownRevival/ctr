@@ -727,6 +727,7 @@ export default Vue.extend({
   },
   computed: {
     worldUrl(): string {
+      console.log(this.$store.data.place)
       const { assets_dir, world_filename } = this.$store.data.place;
       return `/assets/worlds/${assets_dir}${world_filename}`;
     },

@@ -91,6 +91,15 @@ export class MessageboardRepository {
       .from<MessageBoard, MessageBoard[]>('messageboard')
       .where('id', messageId);
   }
+
+  public async getActiveMB(time: Date): Promise<any> {
+    return knex
+      .select('place.name')
+      .from('messageboard')
+      .where('messageboard.created_at', '>=', time)
+      .innerJoin('place', 'messageboard.place_id', 'place.id')
+      .orderBy('messageboard.id', 'DESC');
+  }
   
   public async postMessageboardMessage(
     memberId: number,

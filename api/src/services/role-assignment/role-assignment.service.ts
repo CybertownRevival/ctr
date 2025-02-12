@@ -50,4 +50,8 @@ export class RoleAssignmentService {
       
     });
   }
+
+  public async countByAssigned(id: number): Promise<RoleAssignment[]> {
+    return await this.roleAssignmentRepository.countByAssigned(id);
+  }
 }

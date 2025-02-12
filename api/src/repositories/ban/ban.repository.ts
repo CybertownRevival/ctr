@@ -59,4 +59,49 @@ export class BanRepository {
       .first();
   }
 
+  public async getBannedTotal(): Promise<any> {
+    return this.db.knex
+      .countDistinct('ban_member_id as count')
+      .from('ban')
+      .where({status: 1, type: 'full'})
+      .andWhere('end_date', '>=', new Date());
+  }
+
+  public async getJailedTotal(): Promise<any> {
+    return this.db.knex
+      .countDistinct('ban_member_id as count')
+      .from('ban')
+      .where({status: 1, type: 'jail'})
+      .andWhere('end_date', '>=', new Date());
+  }
+
+  public async getRecentBan(time: Date): Promise<any> {
+    return this.db.knex
+      .select('ban.*', 'member.username')
+      .from('ban')
+      .where('ban.status', 1)
+      .andWhere('ban.type', 'full')
+      .andWhere('ban.created_at', '>=', time)
+      .join('member', 'member.id', 'ban.ban_member_id');
+  }
+
+  public async getRecentJail(time: Date): Promise<any> {
+    return this.db.knex
+      .select('ban.*', 'member.username')
+      .from('ban')
+      .where('ban.status', 1)
+      .andWhere('ban.type', 'jail')
+      .andWhere('ban.created_at', '>=', time)
+      .join('member', 'member.id', 'ban.ban_member_id');
+  }
+
+  public async getUnbannedSoon(time: Date): Promise<any> {
+    return this.db.knex
+      .select('ban.*', 'member.username')
+      .from('ban')
+      .where('ban.status', 1)
+      .andWhere('ban.end_date', '>=', time)
+      .join('member', 'member.id', 'ban.ban_member_id');
+  }
+
 }

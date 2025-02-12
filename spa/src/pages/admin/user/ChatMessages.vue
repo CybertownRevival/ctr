@@ -128,7 +128,6 @@ export default Vue.extend({
           offset: this.offset,
         }).then((response) => {
           this.chat = response.data.results.messages;
-          console.log(this.chat);
           this.totalCount = response.data.results.total[0].count;
         });
       } catch (error) {
@@ -163,11 +162,18 @@ export default Vue.extend({
     async deletemessage(id: number): Promise<void> {
       try{
         this.$http.post(`/message/message/${id}`);
+        this.emitModerationEvent(id);
       } catch (e) {
         console.log(e);
       }
       this.showDelete = false;
       this.getUserChat();
+    },
+    emitModerationEvent(id){
+      this.$socket.emit('moderation', {
+        event: "delete-message",
+        messageID: id,
+      });
     },
   },
   async created() {

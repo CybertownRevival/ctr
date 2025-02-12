@@ -43,6 +43,18 @@ export class MessageRepository {
       .where(this.like('place.name', search));
   }
 
+  public async getActiveChats(time: Date): Promise<any> {
+    return knex
+      .select(
+        'place.name',
+      )
+      .from('message')
+      .where('message.status', 1)
+      .innerJoin('place', 'message.place_id', 'place.id')
+      .where('message.created_at', '>=', time)
+      .orderBy('message.created_at', 'desc');
+  }
+
   public async getResults(
     placeId: number,
     orderField: string,

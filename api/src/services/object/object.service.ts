@@ -73,6 +73,26 @@ export class ObjectService {
     return {objects: returnObjects, total: total};
   }
 
+  public async findByMemberId(
+    id: number, 
+    compare: string, 
+    content: string,
+    limit: number,
+    offset: number): Promise<any> {
+    const returnObjects = [];
+    const object = await this.objectRepository
+      .getUserUploadedObjects(id, compare, content, limit, offset);
+    const total = await this.objectRepository.totalCreator('status', compare, content, id);
+    for (const obj of object) {
+      const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
+      const store = await this.mallRepository.getStore(obj.id);
+      obj.instances = instances;
+      obj.store = store[0];
+      returnObjects.push(obj);
+    }
+    return {objects: returnObjects, total: total};
+  }
+
   public async getPendingObjects() {
     return await this.objectRepository.findByStatus(ObjectService.STATUS_PENDING);
   }

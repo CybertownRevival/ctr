@@ -10,8 +10,7 @@ import { mallController } from '../controllers';
 const mallRoutes = Router();
 mallRoutes.get('/can_admin', (request, response) => mallController.canAdmin(request, response));
 mallRoutes.get('/pending_approval', (request, response) =>
-  mallController.objectsPendingApproval(request, response),
-);
+  mallController.objectsPendingApproval(request, response));
 mallRoutes.get('/stores', (request, response)  => mallController.findStores(request,response));
 mallRoutes.get('/all_objects', (request, response)  => 
   mallController.findAllObjects(request,response));
@@ -35,8 +34,7 @@ mallRoutes.post('/remove', (request, response) =>
 mallRoutes.post('/delete', (request, response) => 
   mallController.deleteMallObject(request, response));
 mallRoutes.get('/objects/:id', (request, response) =>
-  mallController.objectsForSale(request, response),
-);
+  mallController.objectsForSale(request, response));
 mallRoutes.get('/object/:id', (request, response) => 
   mallController.findByObjectId(request, response));
 mallRoutes.get('/getObject/:id', (request, response) => 
@@ -45,6 +43,8 @@ mallRoutes.get('/store/:id', (request, response) =>
   mallController.findStore(request, response));
 mallRoutes.post('/user', (request, response) => 
   mallController.findByUsername(request, response));
+mallRoutes.get('/user/:id', (request, response) => 
+  mallController.findById(request, response));
 mallRoutes.post('/:id/position', (request, response) => 
   mallController.updateObjectPosition(request, response));
 mallRoutes.post('/buy', (request, response) => mallController.buyObject(request, response));

@@ -50,6 +50,33 @@ export class MemberRepository {
       .where('username', username);
   }
 
+  public async getMemberTotal(): Promise<any> {
+    return this.db.knex
+      .count('id as count')
+      .from('member');
+  }
+
+  public async countByDuration(time: Date): Promise<any> {
+    return this.db.knex
+      .count('id as count')
+      .from('member')
+      .where('last_activity','>=', time);
+  }
+
+  public async getNewestMembers(): Promise<any> {
+    return this.db.knex
+      .from('member')
+      .limit(5)
+      .orderBy('id', 'desc');
+  }
+
+  public async countNewUsers(time: Date): Promise<any> {
+    return this.db.knex
+      .count('id as count')
+      .from('member')
+      .where('created_at','>=', time);
+  }
+
   public async check3d(username: string): Promise<any> {
     return this.db.knex
       .select('is_3d')
@@ -63,6 +90,13 @@ export class MemberRepository {
       .from('member')
       .where('last_activity','>=', current)
       .orderBy('username', 'ASC');
+  }
+
+  public async findByWalletId(walletID: number): Promise<any> {
+    return this.db.knex
+      .select('username')
+      .from('member')
+      .where('wallet_id', walletID);
   }
 
   public async getActivePlaces(current: Date): Promise<any> {
@@ -124,7 +158,7 @@ export class MemberRepository {
       .from('member')
       .where(this.like('username', search))
       .orWhere(this.like('email', search))
-      .orderBy('id')
+      .orderBy('id', 'desc')
       .limit(limit)
       .offset(offset);
   }
