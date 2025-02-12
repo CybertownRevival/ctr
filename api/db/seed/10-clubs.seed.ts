@@ -20,12 +20,12 @@ export async function seed(knex: Knex): Promise<void> {
   });
   
   await knex('place').insert({
-    assets_dir: null,
+    assets_dir: 'club/vrml/',
     description: 'Welcome to Newcomers Club',
     name: 'Newcomers Club',
     slug: 'newcomers',
     status: 1,
-    world_filename: null,
+    world_filename: 'vrml.wrl',
     type: 'public',
     map_background_index: null,
     map_icon_index: null,
