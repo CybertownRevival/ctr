@@ -9,6 +9,8 @@ export interface ObjectInstance extends Model {
   object_buyer: string;
   member_id: number;
   place_id: number;
+  place_name: string;
+  place_type: string;
   position: string;
   rotation: string;
 }

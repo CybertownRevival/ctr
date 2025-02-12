@@ -597,4 +597,9 @@ export class MemberService {
     const unit = await this.placeRepository.findById(placeId);
     return unit;
   }
+
+  public async getMemberByWalletId(walletId: number): Promise<any> {
+    const user = await this.memberRepository.findByWalletId(walletId);
+    return user;
+  }
 }

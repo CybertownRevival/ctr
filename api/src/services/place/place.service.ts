@@ -352,13 +352,24 @@ export class PlaceService {
     return newDeputies;
   }
 
+  public async findUserPlaces(id: number,type: string): Promise<any> {
+    let returnPlaces = [];
+    const places = await this.placeRepository.findUserPlaces(id, type);
+    returnPlaces = places;
+    const total = await this.placeRepository.getUserPlaceTotal(id, type);
+    return {
+      places: returnPlaces,
+      total: total,
+    };
+  }
+
   public async searchAllPlaces(
     search: string, 
     compare: string, 
     type: string, 
     limit: number, 
     offset: number): Promise<any> {
-    const ownerRequired = ['home', 'club'];
+    const ownerRequired = ['home', 'club', 'storage'];
     let returnPlaces = [];
     const places = await this.placeRepository.searchAllPlaces(
       search, compare, type, limit, offset);

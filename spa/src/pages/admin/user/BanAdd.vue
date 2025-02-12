@@ -1,18 +1,18 @@
 <template>
-  <div class="grid grid-cols-1 w-8/12 items-center justify-center">
+  <div class="grid grid-cols-1 w-7/8 items-center justify-center">
     <div class="grid grid-cols-1 w-full items-center justify-center">
       <div class="grid grid-cols-12 border-2 border-white p-1 w-full content-center">
         <div class="text-center col-span-3 font-bold">
-          Banned On
+          Given On
         </div>
         <div class="text-center col-span-3 font-bold">
           Duration
         </div>
         <div class="text-center col-span-3 font-bold">
-          Ban Type
+          <span v-if="banDuration > 1">Ban Type</span>
         </div>
         <div class="text-center col-span-3 font-bold">
-          Banned By
+          Given By
         </div>
         <div class="text-center col-span-3">
           {{ new Date().toLocaleString("en-US", {
@@ -27,12 +27,13 @@
             <option value="0">Warning</option>
             <option value="3">3 days</option>
             <option value="7">7 days</option>
+            <option value="15">15 days</option>
             <option value="30">30 days</option>
             <option value="365242.5">Indefinite</option>
           </select>
         </div>
         <div class="text-center col-span-3">
-          <select v-model="banType">
+          <select v-model="banType" v-if="banDuration > 1">
             <option value="jail">Jail</option>
             <option value="full">Full</option>
           </select>
@@ -52,7 +53,8 @@
           </div>
         </div>
           <div class="text-center col-span-12 my-1">
-            <button class="btn" @click="addBan">Add Ban</button>
+            <button class="btn" @click="addBan" v-if="banDuration > 1">Add Ban</button>
+            <button class="btn" @click="addBan" v-else>Give Warning</button>
           </div>
         <div class="text-center col-span-12 text-chat" v-show="success">
           {{ success }}
@@ -100,10 +102,12 @@ export default Vue.extend({
       }
     },
     emitModerationEvent(){
-    this.$socket.emit('moderation', {
-      member_id: this.$route.params.id,
-    });
-  },
+      this.$socket.emit('moderation', {
+        event: "add-ban",
+        member_id: this.$route.params.id,
+        duration: this.banDuration
+      });
+    },
   },
   created() {
     if (!this.accessLevel.includes("security")) {

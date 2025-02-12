@@ -491,7 +491,7 @@ export default Vue.extend({
       this.xpAmount = info.data.memberInfo.xp;
     },
     debugMsg,
-    sendMessage(): void {
+    async sendMessage(): Promise <void> {
       this.debugMsg("sending message...");
 
       //Limits the length of a single word allowed
@@ -517,25 +517,29 @@ export default Vue.extend({
           }
         }
 
-      if (this.message !== "" && this.connected && this.numberOfPosts < maxPosts) {
-        if(this.displayRole){
-          this.$socket.emit("CHAT", {
-            msg: this.message,
-            role: this.primaryRole,
-            exp: this.xpAmount,
-          });
-        } else {
-          this.$socket.emit("CHAT", {
-            msg: this.message,
-            exp: this.xpAmount,
-          });
-        }
-        this.$http
+        if (this.message !== "" && this.connected && this.numberOfPosts < maxPosts) {
+        let msgID = null;
+        await this.$http
           .post("/message/place/" + this.$store.data.place.id, {
             body: this.message,
           })
           .then((response) => {
-            this.debugMsg(response.data);
+            //this.debugMsg(response.data);
+            msgID = response.data.messageId;
+            if(this.displayRole){
+              this.$socket.emit("CHAT", {
+                msg: this.message,
+                role: this.primaryRole,
+                exp: this.xpAmount,
+                msg_id: msgID,
+              });
+            } else {
+              this.$socket.emit("CHAT", {
+                msg: this.message,
+                exp: this.xpAmount,
+                msg_id: msgID,
+              });
+            }
           });
         this.numberOfPosts = ++this.numberOfPosts;
         this.message = "";
@@ -912,6 +916,11 @@ export default Vue.extend({
           this.updateObjectLists(object);
         }
       });
+      this.$socket.on("moderation_event", data => {
+        if(data.data.event === 'delete-message') {
+          this.deleteMessageFromLive(data.data.messageID);
+        }
+      });
     },
     dropObject() {
       this.$emit("drop-object", this.objectId);
@@ -960,7 +969,18 @@ export default Vue.extend({
         clearInterval(this.chatIntervalId);
         clearInterval(this.pingIntervalId);
       }
-    }
+    },
+    deleteMessageFromLive(message) {
+      let index = -1;
+      this.messages.forEach((res) => {
+        if(res.id === message) {
+          index = this.messages.indexOf(res);
+        }
+      });
+      if(index > -1) {
+        this.messages.splice(index, 1);
+      }
+    },
   },
   watch: {
     place() {

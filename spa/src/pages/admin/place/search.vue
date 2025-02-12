@@ -7,6 +7,7 @@
         <select v-model="type" @change="searchPlaces">
           <option v-if="accessLevel.includes('admin')" value="public">Public Places</option>
           <option v-if="accessLevel.includes('admin')" value="shop">Mall Stores</option>
+          <option v-if="accessLevel.includes('admin')" value="storage">Storage Areas</option>
           <option value="colony">Colonies</option>
           <option value="hood">Neighborhoods</option>
           <option value="block">Blocks</option>
@@ -46,7 +47,7 @@
         <th class="p-4">Name</th>
         <th class="p-4">Description</th>
         <th v-show="type !== 'home'" class="p-4">Slug</th>
-        <th v-show="type === 'home' || type === 'club'" class="p-4">Owner</th>
+        <th v-show="type === 'home' || type === 'club' || type === 'storage'" class="p-4">Owner</th>
         <th v-show="type === 'shop'" class="p-4">Status</th>
         <th class="p-4"></th>
       </tr>
@@ -56,7 +57,7 @@
         <td class="p-4">{{ place.name }}</td>
         <td class="p-4">{{ place.description }}</td>
         <td v-show="type !== 'home'" class="p-4">{{ place.slug }}</td>
-        <td v-show="type === 'home' || type === 'club'" class="p-4">{{ place.username }}</td>
+        <td v-show="type === 'home' || type === 'club' || type === 'storage'" class="p-4">{{ place.username }}</td>
         <td v-show="type === 'shop' && place.status === 1" class="p-4" style="color: limegreen; font-weight: bold;">{{ status[place.status] }}</td>
         <td v-show="type === 'shop' && place.status === 0" class="p-4" style="color: gray;"><i>{{ status[place.status] }}</i></td>
         <td class="p-4" v-if="accessLevel.includes('security') && ['home'].includes(type) || accessLevel.includes('admin')">
