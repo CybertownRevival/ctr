@@ -98,8 +98,7 @@ export class MessageboardRepository {
       .from('messageboard')
       .where('messageboard.created_at', '>=', time)
       .innerJoin('place', 'messageboard.place_id', 'place.id')
-      .orderBy('messageboard.id', 'DESC')
-      .limit(5);
+      .orderBy('messageboard.id', 'DESC');
   }
   
   public async postMessageboardMessage(
