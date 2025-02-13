@@ -47,6 +47,9 @@ export default Vue.extend({
         if(this.status === 'none'){
           this.showButton = true;
         }
+        if(this.status === 'member'){
+          this.$router.push(`/club/${this.$route.params.id}`);
+        }
       });
     },
   },
