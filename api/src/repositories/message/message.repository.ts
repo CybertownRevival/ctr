@@ -52,7 +52,8 @@ export class MessageRepository {
       .where('message.status', 1)
       .innerJoin('place', 'message.place_id', 'place.id')
       .where('message.created_at', '>=', time)
-      .orderBy('message.created_at', 'desc');
+      .orderBy('message.created_at', 'desc')
+      .limit(5);
   }
 
   public async getResults(
