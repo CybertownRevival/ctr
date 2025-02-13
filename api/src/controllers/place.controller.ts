@@ -208,6 +208,53 @@ class PlaceController {
       response.status(400).json({ error: error.message });
     }
   }
+
+  public async addVirtualPet(request: Request, response: Response): Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    try {
+      const placeId = Number.parseInt(request.params.place_id);
+      const petAdded = await this.placeService.addVirtualPet(placeId);
+      response.status(200).json({ success: petAdded });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error});
+    }
+  }
+
+  public async updateVirtualPet(request: Request, response: Response): Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    const placeId = Number.parseInt(request.params.place_id);
+    const name = request.body.name.toLocaleString();
+    const avatar = request.body.avatar.toLocaleString();
+    const active = Boolean(request.body.active);
+    const voice = Number.parseInt(request.body.voice.toLocaleString());
+    const behaviours = request.body.behaviours.toLocaleString();
+    const admin = placeService.canAdmin(null, placeId, session.id)
+    if(!admin) return;
+    try {
+      await this.placeService
+        .updateVirtualPet(placeId, name, avatar, active, voice, behaviours);
+      response.status(200).json({ success: 'success' });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error});
+    }
+  }
+
+  public async getVirtualPet(request: Request, response: Response): Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if(!session) return;
+    try {
+      const placeId = Number.parseInt(request.params.place_id);
+      const virtualPet = await this.placeService.getVirtualPet(placeId);
+      response.status(200).json({ data: virtualPet });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: error});
+    }
+  }
 }
 
 const placeService = Container.get(PlaceService);

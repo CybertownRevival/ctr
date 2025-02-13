@@ -43,6 +43,7 @@ export default Vue.extend({
     return {
       loaded: false,
       hasHome: false,
+      place_id: null,
       links: [
         {
           "img": "/assets/img/homes/updhome.jpg",
@@ -72,7 +73,7 @@ export default Vue.extend({
         {
           "img": "/assets/img/homes/updpet.jpg",
           "label": "Configure Virtual Pet",
-          "link": "",
+          "link": `/home/virtualpet`,
         },
         {
           blank: true,
@@ -90,7 +91,6 @@ export default Vue.extend({
     async getHome() {
       try {
         const homeResponse = await this.$http.get("/home");
-
         this.hasHome = !!homeResponse.data.homeData;
         this.loaded = true;
 
