@@ -6,6 +6,7 @@ import {
   ObjectInstanceRepository,
   RoleRepository,
   RoleAssignmentRepository,
+  VirtualPetRepository,
 } from '../../repositories';
 import { Place, ObjectInstance } from '../../types/models';
 
@@ -18,6 +19,7 @@ export class PlaceService {
     private objectInstanceRepository: ObjectInstanceRepository,
     private roleRepository: RoleRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
+    private virtualPetRepository: VirtualPetRepository,
   ) {}
 
   public async canAdmin(slug: string, placeId: number, memberId: number):
@@ -387,5 +389,53 @@ export class PlaceService {
       places: returnPlaces,
       total: total,
     };
+  }
+
+  public async addVirtualPet(placeId: number): Promise<any>{
+    const behaviours = [
+      {id: 0, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+      {id: 1, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+      {id: 2, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+      {id: 3, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+      {id: 4, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+      {id: 5, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+      {id: 6, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+      {id: 7, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+      {id: 8, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+      {id: 9, match: 'exact', directly: false, input: '', 
+        whisper: false, beam: false, output: '',},
+    ];
+    return await this.virtualPetRepository
+      .addVirtualPet(placeId, JSON.stringify(behaviours));
+  } 
+
+  public async getVirtualPet(placeId: number): Promise<any> {
+    const virtualPet = await this.virtualPetRepository.getVirtualPet(placeId);
+    return virtualPet;
+  }
+
+  public async updateVirtualPet(
+    placeId: number, 
+    name: string, 
+    avatar: string, 
+    active: boolean, 
+    voice: number,
+    behaviours: string): Promise<any> {
+    await this.virtualPetRepository.updateVirtualPet(
+      placeId, 
+      name,
+      avatar,
+      active,
+      voice,
+      behaviours);
   }
 }
