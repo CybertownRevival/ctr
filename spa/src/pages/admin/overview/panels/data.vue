@@ -90,7 +90,7 @@
         <table class="w-full">
           <tr>
             <td>Average Balance: </td>
-            <td>{{ Number(averageMoney).toLocaleString() }} cc</td>
+            <td>{{ Math.round(Number(averageMoney)).toLocaleString() }} cc</td>
           </tr>
           <tr>
             <td>Highest Balance: </td>
@@ -197,7 +197,7 @@
         <table class="w-full">
           <tr>
             <td>Average Objects Owned: </td>
-            <td>{{ Number(averageObjects).toLocaleString() }}</td>
+            <td>{{ Math.round(Number(averageObjects)).toLocaleString() }}</td>
           </tr>
           <tr>
             <td>Total Owned Objects: </td>
@@ -209,7 +209,7 @@
           </tr>
           <tr>
             <td>Average Price: </td>
-            <td>{{ Number(averagePriceForSale).toLocaleString() }} cc</td>
+            <td>{{ Math.round(Number(averagePriceForSale)).toLocaleString() }} cc</td>
           </tr>
           <tr>
             <td>Highest Price: </td>
@@ -224,7 +224,7 @@
         <table class="w-full">
           <tr>
             <td>Average Mall Object Price: </td>
-            <td>{{ Number(averageMallPrice).toLocaleString() }} cc</td>
+            <td>{{ Math.round(Number(averageMallPrice)).toLocaleString() }} cc</td>
           </tr>
           <tr>
             <td>Highest Mall Object Price: </td>
@@ -247,12 +247,8 @@
             <td>{{ Number(totalStocked).toLocaleString() }}</td>
           </tr>
           <tr>
-            <td>Total Destocked Objects: </td>
-            <td>{{ Number(totalDestocked).toLocaleString() }}</td>
-          </tr>
-          <tr>
             <td>Total Mall Objects: </td>
-            <td>{{ Number(totalDestocked).toLocaleString() }}</td>
+            <td>{{ Number(totalMallObjects).toLocaleString() }}</td>
           </tr>
           <tr>
             <td>Total Uploads: </td>

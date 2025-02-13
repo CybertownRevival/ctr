@@ -100,7 +100,8 @@ export class BanRepository {
       .select('ban.*', 'member.username')
       .from('ban')
       .where('ban.status', 1)
-      .andWhere('ban.end_date', '>=', time)
+      .andWhere('ban.end_date', '<=', time)
+      .andWhere('ban.end_date', '>', new Date())
       .join('member', 'member.id', 'ban.ban_member_id');
   }
 
