@@ -50,7 +50,7 @@
               </td>
               <td class="border-double border-4 border-gray-400" v-if="canAdmin">
                 <span v-if="member.status === 'member'">
-                  <button class="btn-ui-inline py-0.5" @click="reject(member.username)">
+                  <button v-if="member.username !== $store.data.user.username" class="btn-ui-inline py-0.5" @click="reject(member.username)">
                     Ban
                   </button>
                 </span>
