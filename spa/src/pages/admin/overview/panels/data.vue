@@ -508,17 +508,20 @@ export default Vue.extend({
       if(!Number.isNaN(path.place.totalPrivate)){
         this.totalPrivate = path.place.totalPrivate[0].count;
       }
+
       // Member Data
       if(!Number.isNaN(path.member.totalMembers)){
         this.totalUsers = path.member.totalMembers[0].count;
       }
       this.newestUsers = path.member.newestMembers;
+
       // Money Data
       this.averageMoney = path.money.averageBalance[0].balance;
       this.highestMoney = path.money.topBalance;
       this.totalMoney = path.money.totalBalance[0].balance;
       this.wealthiestUsers = path.money.wealthiestUsers;
       this.latestTransactions = path.money.latestTransactions;
+
       // Object Data
       this.totalObjects = path.object.instances.totalUserObjects;
       this.averageObjects = Math.round(this.totalObjects / this.totalUsers);
@@ -537,20 +540,8 @@ export default Vue.extend({
       if(!Number.isNaN(path.object.mall.highestPrice)){
         this.highestMallPrice = Math.round(path.object.mall.highestPrice[0].price);
       }
-      if(!Number.isNaN(path.object.mall.totalApproved)){
-        this.totalAccepted = Math.round(path.object.mall.totalApproved[0].count);
-      }
-      if(!Number.isNaN(path.object.mall.totalDestocked)){
-        this.totalDestocked = Math.round(path.object.mall.totalDestocked[0].count);
-      }
       if(!Number.isNaN(path.object.mall.totalMallObjects)){
         this.totalMallObjects = Math.round(path.object.mall.totalMallObjects[0].count);
-      }
-      if(!Number.isNaN(path.object.mall.totalPendinig)){
-        this.totalPending = Math.round(path.object.mall.totalPending[0].count);
-      }
-      if(!Number.isNaN(path.object.mall.totalRejected)){
-        this.totalRejected = Math.round(path.object.mall.totalRejected[0].count);
       }
       if(!Number.isNaN(path.object.mall.totalStocked)){
         this.totalStocked = Math.round(path.object.mall.totalStocked[0].count);
@@ -558,6 +549,7 @@ export default Vue.extend({
       if(!Number.isNaN(path.object.mall.totalUploaded)){
         this.totalUploads = Math.round(path.object.mall.totalUploaded[0].count);
       }
+
       // Active places
       this.activePlaces = path.messages.chat;
       this.activeMB = path.messages.messageboard;
