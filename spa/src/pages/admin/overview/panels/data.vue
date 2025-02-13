@@ -231,6 +231,18 @@
             <td>{{ Number(highestMallPrice).toLocaleString() }} cc</td>
           </tr>
           <tr>
+            <td>Total Pending Objects: </td>
+            <td>{{ Number(totalPending).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Accepted Objects: </td>
+            <td>{{ Number(totalAccepted).toLocaleString() }}</td>
+          </tr>
+          <tr>
+            <td>Total Rejected Objects: </td>
+            <td>{{ Number(totalRejected).toLocaleString() }}</td>
+          </tr>
+          <tr>
             <td>Total Stocked Objects: </td>
             <td>{{ Number(totalStocked).toLocaleString() }}</td>
           </tr>
