@@ -84,7 +84,7 @@ export default Vue.extend({
       membersCount: 0,
       limit: 10,
       members: [],
-      isAdmin: false,
+      canAdmin: false,
       offset: 0,
       status: "member",
       orderBy: "username",
@@ -94,8 +94,7 @@ export default Vue.extend({
   methods: {
     async checkAdmin() {
       try {
-        const adminCheck = await this.$http
-          .get(`/place/can_admin/${this.$store.data.place.slug}/${this.$store.data.place.id}`);
+        const adminCheck = await this.$http.get(`/place/can_admin/${this.$store.data.place.slug}/${this.$store.data.place.id}`);
         this.canAdmin = adminCheck.data.result;
       } catch (error) {
         this.canAdmin = false;
@@ -137,6 +136,9 @@ export default Vue.extend({
       this.offset -= this.limit;
       this.fetchMembers();
     },
+  },
+  created(){
+    this.checkAdmin();
   },
   mounted() {
     this.fetchMembers();
