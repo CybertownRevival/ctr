@@ -205,11 +205,7 @@ export class AdminService {
     const mallAveragePrice = await this.objectRepository.getAverageMallPrice();
     const mallHighestPrice = await this.objectRepository.getHighestMallPrice();
     const totalMallObjects = await this.objectRepository.getAcceptedTotal();
-    const totalPending = await this.objectRepository.getTotalByStatus(2);
-    const totalApproved = await this.objectRepository.getTotalByStatus(3);
-    const totalRejected = await this.objectRepository.getTotalByStatus(0);
     const totalStocked = await this.objectRepository.getTotalByStatus(1);
-    const totalDestocked = await this.objectRepository.getTotalByStatus(4);
     const totalUploaded = await this.objectRepository.getUploadTotal();
 
     // Message Data
