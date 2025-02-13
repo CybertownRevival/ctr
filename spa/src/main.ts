@@ -75,7 +75,7 @@ router.beforeEach((to, from, next) => {
                 })
               }
               if(!member && to.fullPath.includes("/inbox/")){
-                api.post<any>(`/inbox/getadmininfo/`, {
+                api.post<any>(`/messageboard/getadmininfo/`, {
                   place_id: Data.place.id,
                   type: Data.place.type
                 }).then(response => {
