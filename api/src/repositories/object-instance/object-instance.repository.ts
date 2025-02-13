@@ -157,7 +157,7 @@ export class ObjectInstanceRepository {
 
   public async highestForSale(): Promise<any> {
     return this.db.objectInstance
-      .max({price: 'object_price'})
+      .avg({price: 'object_price'})
       .where('object_price', '!=', '')
       .orWhere('object_price', '!=', null);
   }
