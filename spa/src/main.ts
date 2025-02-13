@@ -70,7 +70,7 @@ router.beforeEach((to, from, next) => {
                   type: Data.place.type
                 }).then(response => {
                   if(!response.data.admin){
-                    next(`/clubdoor/${Data.place.id}`)
+                    next('/restricted')
                   }
                 })
               }
@@ -80,7 +80,7 @@ router.beforeEach((to, from, next) => {
                   type: Data.place.type
                 }).then(response => {
                   if(!response.data.admin){
-                    next('/clubdoor/${Data.place.id}')
+                    next('/restricted')
                   }
                 })
               }
