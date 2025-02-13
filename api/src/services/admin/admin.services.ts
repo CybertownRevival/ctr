@@ -138,6 +138,7 @@ export class AdminService {
     const pastHour = new Date(Date.now() - hour);
     const pastDay = new Date(Date.now() - day);
     const pastWeek = new Date(Date.now() - 7 * day);
+    const thisWeek = new Date(Date.now() + 7 * day);
     const pastMonth = new Date(Date.now() - 30 * day);
     const pastYear = new Date(Date.now() - 365 * day);
 
@@ -152,7 +153,7 @@ export class AdminService {
     // Security Data
     const recentBan = await this.banRepository.getRecentBan(pastWeek);
     const recentJail = await this.banRepository.getRecentJail(pastWeek);
-    const banEnding = await this.banRepository.getUnbannedSoon(pastWeek);
+    const banEnding = await this.banRepository.getUnbannedSoon(thisWeek);
     const totalBanned = await this.banRepository.getBannedTotal();
     const totalJailed = await this.banRepository.getJailedTotal() ;
 
