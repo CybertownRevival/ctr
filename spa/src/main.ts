@@ -56,36 +56,6 @@ router.beforeEach((to, from, next) => {
         };
         appStore.methods.setPlace(place);
       });
-    } else if (to.fullPath.includes("/inbox/") || to.fullPath.includes("/messageboard/")) {
-      api.get<any>(`/place/by_id/${to.params.place_id}`)
-        .then(response => {
-          const Data = response.data;
-          if(Data.place.type === 'club' && Data.place.private){
-            api.get<any>(`/club/ismember?clubId=${Data.place.id}`)
-            .then(response => {
-              const member = response.data.isMember;
-              if(!member && to.fullPath.includes("/messageboard/")){
-                api.post<any>(`/messageboard/getadmininfo/`, {
-                  place_id: Data.place.id,
-                  type: Data.place.type
-                }).then(response => {
-                  if(!response.data.admin){
-                    next('/restricted')
-                  }
-                })
-              }
-              if(!member && to.fullPath.includes("/inbox/")){
-                api.post<any>(`/messageboard/getadmininfo/`, {
-                  place_id: Data.place.id,
-                  type: Data.place.type
-                }).then(response => {
-                  if(!response.data.admin){
-                    next('/restricted')
-                  }
-                })
-              }
-            });
-          }});
   } else if (to.fullPath.includes("/clubdoor/")) {
     api.get<any>(`/place/by_id/${to.params.id}`)
       .then(response => {
