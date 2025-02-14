@@ -984,7 +984,8 @@ export default Vue.extend({
           setTimeout(() => {
             this.messages.push({msg: response + username, username: data.msg.username, from: this.virtualPet.pet_name, whisper: true, new: true,})
           }, 1500);
-        } else {
+        } 
+        if(!whisper) {
           setTimeout(() => {
             this.messages.push({msg: response + username, username: this.virtualPet.pet_name, new: true,})
           }, 1500);
