@@ -228,7 +228,7 @@ class PlaceController {
     const placeId = Number.parseInt(request.params.place_id);
     const name = request.body.name.toLocaleString();
     const avatar = request.body.avatar.toLocaleString();
-    const active = Boolean(request.body.active);
+    const active = request.body.active;
     const voice = Number.parseInt(request.body.voice.toLocaleString());
     const behaviours = request.body.behaviours.toLocaleString();
     const admin = placeService.canAdmin(null, placeId, session.id)

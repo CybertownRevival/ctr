@@ -105,6 +105,10 @@
       </div>
       <div class="flex-grow overflow-y-auto p-1 messages-pane">
         <ul v-if="activePanel === 'users'">
+          <li class="text-white" v-if="virtualPet">
+            <img src="/assets/img/av_bot.gif" class="inline" />
+            {{ virtualPet.pet_name }}
+          </li>
           <li class="text-white" @click="handler($event)" @contextmenu="handler($event)" @mouseup="menu($store.data.user.id)">
             <img src="/assets/img/av_me.gif" class="inline" />
             {{ this.$store.data.user.username }}
@@ -448,6 +452,10 @@ export default Vue.extend({
       showRole: true,
       showXP: true,
       tts: false,
+      virtualPet: null,
+      virtualPetExact: [],
+      virtualPetAnd: [],
+      virutalPetOr: [],
     };
   },
   directives: {
@@ -767,7 +775,29 @@ export default Vue.extend({
         .then((response) => {
           this.messages = response.data.messages.reverse();
           this.systemMessage("Welcome to " + this.$store.data.place.name);
+          this.getVirtualPet();
         });
+    },
+    async getVirtualPet(){
+      const checkPet = await this.$http.get(`/place/virtual-pet/${this.$store.data.place.id}`);
+      if(checkPet.data.data.length === 1 &&
+        checkPet.data.data[0].active
+      ){
+        this.virtualPet = checkPet.data.data[0];
+        JSON.parse(this.virtualPet.pet_behaviours).forEach((response) => {
+          if(response.match === 'exact'){
+            this.virtualPetExact.push(response);
+          }
+          if(response.match === 'and'){
+            this.virtualPetAnd.push(response);
+          }
+          if(response.match === 'or'){
+            this.virutalPetOr.push(response);
+          }
+        })
+      } else {
+        this.virtualPet = null;
+      }
     },
     changeActivePanel(): void {
       this.backpackObjects = [];
@@ -882,15 +912,51 @@ export default Vue.extend({
       speech.text = message;
       window.speechSynthesis.speak(speech);
     },
+    petResponse(data){
+      let exactRespond = false;
+      let andRespond = false;
+      let orRespond = false;
+      let direct = false;
+      let whisper = false;
+      let beamTo = false;
+      let inputMatches = 0;
+      const inputCheck = []
+
+      const petDataCheck = this.virtualPetExact.concat(this.virtualPetAnd, this.virutalPetOr);
+      petDataCheck.forEach((res) => {
+        inputCheck.push(res.input);
+      })
+
+      const exactCheck = inputCheck.includes(data.msg);
+      inputCheck.forEach((response) => {
+        if(data.msg.includes(response) && inputMatches <= 1){
+          ++inputMatches
+        }
+      })
+      const orCheck = String(inputCheck).replace(/,/g, ' ').includes(data.msg);
+
+      if(exactCheck){
+        exactRespond = true;
+      }
+      if(orCheck && !exactCheck){
+        orRespond = true;
+      }
+      if(inputMatches >= 2){
+        andRespond = true;
+      }
+    },
     startSocketListeners(): void {
       this.$socket.on("CHAT", data => {
         this.debugMsg("chat message received...", data);
+        if(this.virtualPet){
+          this.petResponse(data);
+        }
         if(this.blockedMembers.includes(data.username) === false){
           this.messages.push(data);
           if(this.tts){
             this.textToSpeech(data);
           }
-        } 
+        }
       });
       this.$socket.on("AV:del", event => {
         this.systemMessage(event.username + " has left.");

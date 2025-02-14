@@ -392,6 +392,8 @@ export class PlaceService {
   }
 
   public async addVirtualPet(placeId: number): Promise<any>{
+    const name = 'VirtualPet';
+    const avatar = '/assets/avatars/1/default.wrl'
     const behaviours = [
       {id: 0, match: 'exact', directly: false, input: '', 
         whisper: false, beam: false, output: '',},
@@ -415,7 +417,7 @@ export class PlaceService {
         whisper: false, beam: false, output: '',},
     ];
     return await this.virtualPetRepository
-      .addVirtualPet(placeId, JSON.stringify(behaviours));
+      .addVirtualPet(placeId, name, avatar, JSON.stringify(behaviours));
   } 
 
   public async getVirtualPet(placeId: number): Promise<any> {

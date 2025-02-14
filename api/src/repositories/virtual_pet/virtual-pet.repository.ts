@@ -7,9 +7,17 @@ import { Db } from '../../db/db.class';
 export class VirtualPetRepository {
   constructor(private db: Db) {}
 
-  public async addVirtualPet(placeId: number, behaviours: string): Promise<any> {
+  public async addVirtualPet(
+    placeId: number, 
+    name: string, 
+    avatar: string, 
+    behaviours: string): Promise<any> {
     return await this.db.knex('virtual_pet')
-      .insert({place_id: placeId, pet_behaviours: behaviours});
+      .insert({
+        place_id: placeId, 
+        pet_name: name, 
+        pet_avatar_url: avatar, 
+        pet_behaviours: behaviours});
   }
   
   public async getVirtualPet(placeId: number): Promise<any> {
