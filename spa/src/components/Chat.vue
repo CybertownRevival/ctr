@@ -18,13 +18,29 @@
               {{ msg.time }}
             </strong>
             <span 
-              v-else-if="msg.username === $store.data.user.username && msg.new === true"
-              class="text-yellow-200 font-bold">
+              v-else-if="msg.username === $store.data.user.username && msg.new === true && !msg.whisper"
+              style="color:#FFFF00;">
               <sup class="inline" v-if="showRole" v-show="msg.role">{{ msg.role }}</sup>
               {{ msg.username }}
               <sub class="inline" v-if="showXP">{{ msg.exp }}</sub> : 
               <span class="font-normal">{{ msg.msg }}</span>
-              </span>
+            </span>
+            <span 
+              v-else-if="(msg.username === $store.data.user.username ||
+                msg.from !== $store.data.user.username
+              ) && msg.whisper"
+              class="italic" style="color: #00C3FF;">
+              {{ msg.from }} whispered you
+              <span style="font-style: normal;">{{ msg.msg }}</span>
+            </span>
+            <span 
+              v-else-if="
+              msg.username !== $store.data.user.username && 
+              msg.from === $store.data.user.username && msg.whisper"
+              class="italic" style="color: #00C3FF;">
+              You whispered {{ msg.username }} 
+              <span style="font-style: normal;">{{ msg.msg }}</span>
+            </span>
             <span class="font-bold"  v-else-if="msg.new === true">
               <sup class="inline" v-if="showRole" v-show="msg.role">{{ msg.role }}</sup>
               {{ msg.username }}
@@ -913,14 +929,14 @@ export default Vue.extend({
       window.speechSynthesis.speak(speech);
     },
     petResponse(data){
-      let exactRespond = false;
-      let andRespond = false;
-      let orRespond = false;
       let direct = false;
       let whisper = false;
       let beamTo = false;
       let inputMatches = 0;
       const inputCheck = []
+      let index = null;
+      let response = null;
+      let username = "";
 
       const petDataCheck = this.virtualPetExact.concat(this.virtualPetAnd, this.virutalPetOr);
       petDataCheck.forEach((res) => {
@@ -935,14 +951,44 @@ export default Vue.extend({
       })
       const orCheck = String(inputCheck).replace(/,/g, ' ').includes(data.msg);
 
-      if(exactCheck){
-        exactRespond = true;
+      if(exactCheck && inputMatches === 1){
+        petDataCheck.forEach((response) => {
+          if(response.input === data.msg){
+            index = petDataCheck.indexOf(response);
+          }
+        })
+        if((index || index === 0) && index !== -1){
+          if(petDataCheck[index].directly){
+              direct = true;
+            }
+            if(petDataCheck[index].whisper){
+              whisper = true;
+            }
+            if(petDataCheck[index].beam){
+              beamTo = true;
+            }
+          response = petDataCheck[index].output;
+        }
       }
       if(orCheck && !exactCheck){
-        orRespond = true;
+        //orRespond = true;
       }
       if(inputMatches >= 2){
-        andRespond = true;
+        //andRespond = true;
+      }
+      if(direct) {
+        username = " " + data.username;
+      }
+      if(response){
+        if(whisper && data.username === this.$store.data.user.username){
+          setTimeout(() => {
+            this.messages.push({msg: response + username, username: data.msg.username, from: this.virtualPet.pet_name, whisper: true, new: true,})
+          }, 1500);
+        } else {
+          setTimeout(() => {
+            this.messages.push({msg: response + username, username: this.virtualPet.pet_name, new: true,})
+          }, 1500);
+        }
       }
     },
     startSocketListeners(): void {
