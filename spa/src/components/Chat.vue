@@ -948,122 +948,101 @@ export default Vue.extend({
     },
     exactCompare(inputs, outputs, message){
       let reply = "";
-      let replyFound = false;
-      let inputLength = inputs.length;
-      for(let x = 0; x < inputLength; x++) {
-        let inputDepth = inputs[x].length;
-        for(let y = 0; y < inputDepth; y++) {
-          if (inputs[x][y] === message){
-            reply = reply + outputs[x][y];
-            replyFound = true;
-            break;
-          }
-        } 
-        if(replyFound){
+      for(let x = 0; x < inputs[0].length; x++) {
+        if (inputs[0][x] === message){
+          reply = outputs[0][x];
           break;
         }
       }
       return reply;
     },
-    compare(a, b, x){
-      const returnArray = [];
-      const responses = [];
-      const comparedTo = b.split(',');
-      const messagePrep = a.replace(', ', ',')
-      .replace(' ,', ',')
-      .replace('. ', ',')
-      .replace(' .', ',')
-      .replace('.', ',')
-      .replace('? ', ',')
-      .replace(' ?', ',')
-      .replace('?', ',')
-      .replace('! ', ',')
-      .replace(' !', ',')
-      .replace('!', ',')
-      .replace(': ', ',')
-      .replace(' :', ',')
-      .replace(':', ',')
-      const comparedFrom = messagePrep.split(",");
-      for(var i = 0; i < comparedTo.length; i += 1) {
-        if(comparedFrom.indexOf(comparedTo[i].trim()) > -1){
-          returnArray.push(comparedTo[i]);
+    andCompare(inputs, outputs, message){
+      let reply = "";
+      let compareMsg = message.replace(/[^a-zA-Z0-9 ]/g, '');
+      let compareInputs = inputs[1];
+      compareMsg = message.split(" ");
+
+      for(let i = 0; i < compareInputs.length; i++){
+        let compare = compareInputs[i].split(" ");
+        let matches = [];
+        for(let x = 0; x < compare.length; x++){
+          if(compareMsg.includes(compare[x])){
+            matches.push(compare[x]);
+          }
         }
-      };
-      returnArray.forEach((response) => {
-        let index = this.virtualPetInputs[x].indexOf(response);
-        responses.push(this.virtualPetOutputs[x][index]);
-      })
-      return responses;
+        if(matches.length === compare.length){
+          reply = outputs[1][i];
+          break;
+        }
+      }
+      return reply;
+    },
+    orCompare(inputs, outputs, message){
+      let reply = "";
+      let compareMsg = message.replace(/[^a-zA-Z0-9 ]/g, '');
+      let compareInputs = inputs[2];
+      compareMsg = message.split(" ");
+
+      for(let i = 0; i < compareInputs.length; i++){
+        let compare = compareInputs[i].split(" ");
+        for(let x = 0; x < compare.length; x++){
+          if(compareMsg.includes(compare[x])){
+            reply = outputs[2][i];
+            break;
+          }
+        }
+      }
+      return reply;
     },
     petResponse(data){
       let response = null;
-      let exactResponse = null;
-      let andResponse = null;
-      let orResponse = null;
       let whisper = null;
+      let directly = false;
       let message = data.msg.toLowerCase().trim();
+
+      // Check if directed at pet
+      // Name mentioned, Whispered to, or in a private chat
+      if(message.search(this.virtualPet.pet_name.toLowerCase()) > -1){
+        message = message.replace(this.virtualPet.pet_name.toLowerCase(), '').trim();
+        directly = true;
+      }
       
-      // Exact Check
-      if(this.exactCompare(this.virtualPetInputs, this.virtualPetOutputs, message)){
-        exactResponse = this.exactCompare(this.virtualPetInputs, this.virtualPetOutputs, message);
-      };
-
-      // And Check
-      if(this.compare(message, String(this.virtualPetInputs[1]), 1)){
-        andResponse = this.compare(message, String(this.virtualPetInputs[1]), 1);
-      };
-
       // Or Check
-      if(this.compare(message, String(this.virtualPetInputs[2]), 2)){
-        orResponse = this.compare(message, String(this.virtualPetInputs[2]), 2);
+      // Only response when message includes any of the keywords
+      if(this.orCompare(this.virtualPetInputs, this.virtualPetOutputs, message)){
+        response = this.orCompare(this.virtualPetInputs, this.virtualPetOutputs, message);
+      }
+      
+      // And Check
+      // Only responds when message includes ALL keywords listed
+      if(this.andCompare(this.virtualPetInputs, this.virtualPetOutputs, message)){
+        response = this.andCompare(this.virtualPetInputs, this.virtualPetOutputs, message);
+      }
+
+      // Exact Check
+      // Only responds when input matches phrase exactly
+      if(this.exactCompare(this.virtualPetInputs, this.virtualPetOutputs, message)){
+        response = this.exactCompare(this.virtualPetInputs, this.virtualPetOutputs, message);
       };
 
-      // Directly Check
-      const directly = message.search(this.virtualPet.pet_name.toLowerCase());
-      if(response === null && directly > -1){
+      // If no messages match but message is directed at the pet
+      if(!response && directly){
         let random = Math.floor(Math.random() * this.virtualPetDefault.length);
         response = this.virtualPetDefault[random];
       }
 
-      if(exactResponse){
-        let index = this.virtualPetMessageData.indexOf(exactResponse);
+      // Check if whisper or directly is required
+      if(response){
+        let index = this.virtualPetMessageData.indexOf(response);
         if(this.virtualPetWhisper[index] === true){
           whisper = true;
         }
-        response = exactResponse;
-      }
-
-      if(andResponse.length > 1){
-        let newResponse = response;
-        whisper = false;
-        andResponse.forEach((res) => {
-          let index = this.virtualPetMessageData.indexOf(res);
-          if(this.virtualPetWhisper[index]) {
-            whisper = true;
+        if(this.virtualPetDirectly[index] === true){
+          console.log(this.virtualPetDirectly[index], directly)
+          if(!directly){
+            response = null;
           }
-          if(newResponse){
-            newResponse = newResponse + " and " + res;
-          } else {
-            newResponse = res;
-          }
-        })
-        response = newResponse;
-      }
-      
-      if(orResponse.length > 1){
-        let newResponse = response;
-        orResponse.forEach((res) => {
-          let index = this.virtualPetMessageData.indexOf(res);
-          if(this.virtualPetWhisper[index]) {
-            whisper = true;
-          }
-          if(newResponse){
-            newResponse = newResponse + " or " + res;
-          } else {
-            newResponse = res;
-          }
-        })
-        response = newResponse;
+        }
       }
           
       if(response){
