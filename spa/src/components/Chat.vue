@@ -1038,7 +1038,6 @@ export default Vue.extend({
           whisper = true;
         }
         if(this.virtualPetDirectly[index] === true){
-          console.log(this.virtualPetDirectly[index], directly)
           if(!directly){
             response = null;
           }
