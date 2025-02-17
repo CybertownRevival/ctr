@@ -476,6 +476,7 @@ export default Vue.extend({
       virtualPetInputs: [[],[],[],],
       virtualPetOutputs: [[],[],[],],
       virtualPetDefault: [],
+      entryMessageCode: new Date().getTime(),
     };
   },
   directives: {
@@ -827,7 +828,8 @@ export default Vue.extend({
             this.virtualPetInputs[2].push(response.input)
             this.virtualPetOutputs[2].push(response.output)
           }
-        })
+        });
+        this.checkForEntryMessage();
       } else {
         this.virtualPet = null;
       }
@@ -948,7 +950,7 @@ export default Vue.extend({
     exactCompare(inputs, outputs, message){
       let reply = "";
       for(let x = 0; x < inputs[0].length; x++) {
-        if (inputs[0][x] === message){
+        if (inputs[0][x] === message && message !== ''){
           reply = outputs[0][x];
           break;
         }
@@ -993,6 +995,14 @@ export default Vue.extend({
       }
       return reply;
     },
+    checkForEntryMessage(){
+      if(
+        this.virtualPetInputs[0][0] === '' && 
+        this.virtualPetOutputs[0][0] !== ''
+      ){
+        this.petResponse({msg: `sendEntryMessage${this.entryMessageCode}`, username: this.$store.data.user.username});
+      }
+    },
     petResponse(data){
       let response = null;
       let whisper = null;
@@ -1028,6 +1038,10 @@ export default Vue.extend({
       if(!response && directly){
         let random = Math.floor(Math.random() * this.virtualPetDefault.length);
         response = this.virtualPetDefault[random];
+      }
+
+      if(data.msg === `sendEntryMessage${this.entryMessageCode}`){
+        response = this.virtualPetOutputs[0][0];
       }
 
       // Check if whisper or directly is required
