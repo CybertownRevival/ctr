@@ -1040,6 +1040,7 @@ export default Vue.extend({
         response = this.virtualPetDefault[random];
       }
 
+      // Send a message on entry
       if(data.msg === `sendEntryMessage${this.entryMessageCode}`){
         response = this.virtualPetOutputs[0][0];
       }
