@@ -830,6 +830,9 @@ export default Vue.extend({
           }
         });
         this.checkForEntryMessage();
+        if(this.$store.data.view3d){
+          this.$emit('add-pet', this.virtualPet.pet_avatar_url);
+        }
       } else {
         this.virtualPet = null;
       }

@@ -24,6 +24,7 @@
         @beam-to="beamTo"
         @drop-object="dropObject"
         @pickup-object="pickupObject"
+        @add-pet="addPet"
       ></chat>
     </div>
   </div>
@@ -67,6 +68,42 @@ export default Vue.extend({
     };
   },
   methods: {
+    addPet(data){
+      let userPosition = this.position;
+      let userRotation = this.rotation;
+      let distance = 5;
+      const pos = new X3D.SFVec3f(...userPosition);
+      const rot = new X3D.SFRotation(...userRotation);
+      const pos_offset = rot.multVec(new X3D.SFVec3f(0-1.5, 0, -distance));
+      pos_offset.y = 0;
+      const newPosition = pos.add(pos_offset);
+      const newOrientation = new X3D.SFRotation(0, 1, 0, Math.atan2(pos_offset.x, pos_offset.z));
+      let petData = {
+        url: data,
+        position: newPosition,
+        rotation: newOrientation,
+      };
+      const browser = X3D.getBrowser(this.browser);
+      const loadPetData = () => {
+        const pet = browser.currentScene.createProto("SharedObject");
+        pet.translation = new X3D.SFVec3f(
+          petData.position.x,
+          petData.position.y,
+          petData.position.z,
+        );
+        pet.rotation = new X3D.SFRotation(
+          petData.rotation.x,
+          petData.rotation.y,
+          petData.rotation.z,
+          petData.rotation.angle + 3.15,
+        );
+        const inline = browser.currentScene.createNode("Inline");
+        inline.url = new X3D.MFString(petData.url);
+        pet.children[0] = inline;
+        browser.currentScene.addRootNode(pet);
+      }
+      setTimeout(loadPetData, 3000)
+    },
     addSharedObject(obj, browser): void {
       obj.url = `/assets/object/${obj.directory}/${obj.filename}`;
       if (obj.position == null) {
@@ -727,7 +764,6 @@ export default Vue.extend({
   },
   computed: {
     worldUrl(): string {
-      console.log(this.$store.data.place)
       const { assets_dir, world_filename } = this.$store.data.place;
       return `/assets/worlds/${assets_dir}${world_filename}`;
     },
