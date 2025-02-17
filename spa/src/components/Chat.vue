@@ -764,7 +764,6 @@ export default Vue.extend({
       } else {
         window.open("/#/object/"+this.objectId, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
       }
-      
     },
     async joinedChat() {
       let userIs3D = 0;

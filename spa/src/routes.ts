@@ -28,6 +28,7 @@ import HomeTools from "@/pages/home/HomeTools.vue";
 import HomeUpdatePage from "@/pages/home/HomeUpdatePage.vue";
 import HomeUpdateHomePage from "@/pages/home/HomeUpdateHomePage.vue";
 import HomeVirtualPet from './pages/home/HomeVirtualPet.vue';
+import HomeVirtualPetHelp from './pages/home/HomeVirtualPetHelp.vue';
 
 import UpdateStorageArea from "@/components/storage/Update.vue";
 import StorageUnit from "@/components/storage/Unit.vue";
@@ -290,6 +291,14 @@ export default [
         },
         name: "home-virtual-pet",
         meta: { wrapper: true },
+    },
+    {
+        path: "/home/virtualpethelp",
+        components: {
+            default: HomeVirtualPetHelp,
+        },
+        name: "HomeVirtualPetHelp",
+        meta: { wrapper: false },
     },
     {
         path: "/home/:username",

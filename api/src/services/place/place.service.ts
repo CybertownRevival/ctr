@@ -393,7 +393,7 @@ export class PlaceService {
 
   public async addVirtualPet(placeId: number): Promise<any>{
     const name = 'VirtualPet';
-    const avatar = '/assets/avatars/1/default.wrl'
+    const avatar = '/assets/pets/dog/dog.wrl';
     const behaviours = [
       {id: 0, match: 'exact', directly: false, input: '', 
         whisper: false, beam: false, output: '',},
