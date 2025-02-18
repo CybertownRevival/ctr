@@ -3,7 +3,7 @@
     <div v-if="page === 'update'">
       <div class="text-3xl font-bold">Virtual Pet Behaviour</div>
       <div v-if="error" class="font-bold" style="color:red;">
-        <span v-if="!petName">Please enter Pet's Nickname.</span>
+        <span>{{ errorMessage }}</span>
       </div>
       <div v-if="success" class="font-bold" style="color:lime;">
         <span>Pet Updated</span>
@@ -118,6 +118,7 @@ export default Vue.extend({
     return {
       loaded: false,
       error: false,
+      errorMessage: "",
       success: false,
       placeId: null,
       slug: null,
@@ -161,21 +162,27 @@ export default Vue.extend({
       try{
         if(!this.petName){
           this.success = false;
+          this.errorMessage = "Please enter Pet's Nickname."
           return this.error = true;
         }
-        await this.$http.post(`/place/virtual-pet/update/${this.placeId}`, {
+        const updatePet = await this.$http.post(`/place/virtual-pet/update/${this.placeId}`, {
           name: this.petName,
           avatar: this.petURL,
           active: this.activatePet,
           voice: this.petVoice,
           behaviours: JSON.stringify(this.behaviours),
-        }).then((res) => {
-          if(res){
-            this.error = false;
-            this.success = true;
-            this.getPet();
-          }
-        })
+        });
+        if(updatePet.data.success){
+          this.error = false;
+          this.errorMessage = '';
+          this.success = true;
+          this.getPet();
+        } else {
+          this.error = true;
+          this.errorMessage = updatePet.data.error;
+          this.success = false;
+          this.getPet();
+        }
       } catch(e) {
         console.log(e);
       }

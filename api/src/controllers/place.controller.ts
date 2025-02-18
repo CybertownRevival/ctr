@@ -231,15 +231,31 @@ class PlaceController {
     const active = request.body.active;
     const voice = Number.parseInt(request.body.voice.toLocaleString());
     const behaviours = request.body.behaviours.toLocaleString();
-    const admin = placeService.canAdmin(null, placeId, session.id)
+    const admin = placeService.canAdmin(null, placeId, session.id);
+    const bannedwords = badwords.regex;
+    const testBehaviours = JSON.parse(behaviours);
+
     if(!admin) return;
-    try {
-      await this.placeService
-        .updateVirtualPet(placeId, name, avatar, active, voice, behaviours);
-      response.status(200).json({ success: 'success' });
-    } catch (error) {
-      console.error(error);
-      response.status(400).json({ error: error});
+    if(name.match(bannedwords)){
+      response.status(200).json({ error: 'Pet name cannot contain a banned word.' });
+    } else {
+      for(let i = 0; i < testBehaviours.length; i++){
+        if(
+          testBehaviours[i].input.match(bannedwords) ||
+          testBehaviours[i].output.match(bannedwords)
+        ){
+          response.status(200).json({ error: 'Pet input/output cannot contain a banned word.' });
+        } else {
+          try {
+            await this.placeService
+              .updateVirtualPet(placeId, name, avatar, active, voice, behaviours);
+            response.status(200).json({ success: 'success' });
+          } catch (error) {
+            console.error(error);
+            response.status(400).json({ error: error});
+          }
+        }
+      }
     }
   }
 

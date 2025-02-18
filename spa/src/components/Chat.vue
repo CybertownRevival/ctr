@@ -808,8 +808,6 @@ export default Vue.extend({
           "Go on...",
           "I'm listening...",
           "What?",
-          "Hello!",
-          "Hi!"
         ];
         JSON.parse(this.virtualPet.pet_behaviours).forEach((response) => {
           this.virtualPetDirectly.push(response.directly);
@@ -953,7 +951,7 @@ export default Vue.extend({
     exactCompare(inputs, outputs, message){
       let reply = "";
       for(let x = 0; x < inputs[0].length; x++) {
-        if (inputs[0][x] === message && message !== ''){
+        if (inputs[0][x].toLowerCase() === message && message !== ''){
           reply = outputs[0][x];
           break;
         }
@@ -970,7 +968,7 @@ export default Vue.extend({
         let compare = compareInputs[i].split(" ");
         let matches = [];
         for(let x = 0; x < compare.length; x++){
-          if(compareMsg.includes(compare[x])){
+          if(compareMsg.includes(compare[x].toLowerCase())){
             matches.push(compare[x]);
           }
         }
@@ -990,7 +988,7 @@ export default Vue.extend({
       for(let i = 0; i < compareInputs.length; i++){
         let compare = compareInputs[i].split(" ");
         for(let x = 0; x < compare.length; x++){
-          if(compareMsg.includes(compare[x])){
+          if(compareMsg.includes(compare[x].toLowerCase())){
             reply = outputs[2][i];
             break;
           }
@@ -1010,6 +1008,7 @@ export default Vue.extend({
       let response = null;
       let whisper = null;
       let directly = false;
+      let beam = false;
       let message = data.msg.toLowerCase().trim();
 
       // Check if directed at pet
@@ -1041,6 +1040,7 @@ export default Vue.extend({
       if(!response && directly){
         let random = Math.floor(Math.random() * this.virtualPetDefault.length);
         response = this.virtualPetDefault[random];
+        beam = true;
       }
 
       // Send a message on entry
@@ -1048,7 +1048,7 @@ export default Vue.extend({
         response = this.virtualPetOutputs[0][0];
       }
 
-      // Check if whisper or directly is required
+      // Check if whisper, beaming, or directly is required
       if(response){
         let index = this.virtualPetMessageData.indexOf(response);
         if(this.virtualPetWhisper[index] === true){
@@ -1059,8 +1059,13 @@ export default Vue.extend({
             response = null;
           }
         }
-      }
-          
+        if(this.virtualPetBeam[index] === true || beam === true){
+          this.$emit('pet-beam', {
+            url: this.virtualPet.pet_avatar_url,
+          });
+        }
+      } 
+      
       if(response){
         if(whisper && data.username === this.$store.data.user.username){
           setTimeout(() => {
