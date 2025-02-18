@@ -1064,7 +1064,7 @@ export default Vue.extend({
           }
         }
         if(this.virtualPetBeam[index] === true || beam === true){
-          if(this.$store.data.view3d){
+          if(this.$store.data.view3d && data.username === this.$store.data.user.username){
             this.$emit('pet-beam', {
             url: this.virtualPet.pet_avatar_url,
             name: this.virtualPet.pet_name,
