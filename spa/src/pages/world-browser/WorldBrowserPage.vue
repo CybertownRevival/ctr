@@ -25,6 +25,7 @@
         @drop-object="dropObject"
         @pickup-object="pickupObject"
         @add-pet="addPet"
+        @pet-beam="beamPet"
       ></chat>
     </div>
   </div>
@@ -65,10 +66,11 @@ export default Vue.extend({
       showUpdateWarning: false,
       mainComponent: null,
       force2d: false,
+      pet: null,
     };
   },
   methods: {
-    addPet(data){
+    addPet(data): void {
       let userPosition = this.position;
       let userRotation = this.rotation;
       let distance = 5;
@@ -79,30 +81,57 @@ export default Vue.extend({
       const newPosition = pos.add(pos_offset);
       const newOrientation = new X3D.SFRotation(0, 1, 0, Math.atan2(pos_offset.x, pos_offset.z));
       let petData = {
-        url: data,
+        url: data.url,
+        name: data.name,
+        id: data.id,
         position: newPosition,
         rotation: newOrientation,
       };
+      setTimeout(() => {
+        this.loadPetData(petData);
+      }, 2000)
+    },
+    loadPetData(data) {
       const browser = X3D.getBrowser(this.browser);
-      const loadPetData = () => {
-        const pet = browser.currentScene.createProto("SharedObject");
-        pet.translation = new X3D.SFVec3f(
-          petData.position.x,
-          petData.position.y,
-          petData.position.z,
-        );
-        pet.rotation = new X3D.SFRotation(
-          petData.rotation.x,
-          petData.rotation.y,
-          petData.rotation.z,
-          petData.rotation.angle + 3.15,
-        );
-        const inline = browser.currentScene.createNode("Inline");
-        inline.url = new X3D.MFString(petData.url);
-        pet.children[0] = inline;
-        browser.currentScene.addRootNode(pet);
-      }
-      setTimeout(loadPetData, 3000)
+      const pet = browser.currentScene.createProto("SharedObject");
+      pet.name = data.name;
+      pet.id = data.id;
+      pet.translation = new X3D.SFVec3f(
+        data.position.x,
+        data.position.y,
+        data.position.z,
+      );
+      pet.rotation = new X3D.SFRotation(
+        data.rotation.x,
+        data.rotation.y,
+        data.rotation.z,
+        data.rotation.angle + 3.15,
+      );
+      const inline = browser.currentScene.createNode("Inline");
+      inline.url = new X3D.MFString(data.url);
+      pet.children[0] = inline;
+      browser.currentScene.addRootNode(pet);
+      this.pet = pet;
+    },
+    beamPet(data){
+      X3D.getBrowser(this.browser).currentScene.removeRootNode(this.pet);
+      let userPosition = this.position;
+      let userRotation = this.rotation;
+      let distance = 4;
+      const pos = new X3D.SFVec3f(...userPosition);
+      const rot = new X3D.SFRotation(...userRotation);
+      const pos_offset = rot.multVec(new X3D.SFVec3f(0, 0, -distance));
+      pos_offset.y = 0;
+      const newPosition = pos.add(pos_offset);
+      const newOrientation = new X3D.SFRotation(0, 1, 0, Math.atan2(pos_offset.x, pos_offset.z));
+      let petData = {
+        url: data.url,
+        name: data.name,
+        id: data.id,
+        position: newPosition,
+        rotation: newOrientation,
+      };
+      this.loadPetData(petData);
     },
     addSharedObject(obj, browser): void {
       obj.url = `/assets/object/${obj.directory}/${obj.filename}`;
@@ -749,9 +778,9 @@ export default Vue.extend({
         });
       }
       browserProto.getTime = browserProto.getCurrentTime;
-
+      this.sharedObjectsMap = new Map();
       setTimeout(() => {
-        this.sharedObjectsMap = new Map();
+        //this.sharedObjectsMap = new Map();
         this.sharedObjects.forEach((object) => {
           this.addSharedObject(object, browser);
         });
