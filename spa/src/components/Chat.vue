@@ -829,7 +829,11 @@ export default Vue.extend({
         });
         this.checkForEntryMessage();
         if(this.$store.data.view3d){
-          this.$emit('add-pet', this.virtualPet.pet_avatar_url);
+          this.$emit('add-pet', {
+            url: this.virtualPet.pet_avatar_url,
+            name: this.virtualPet.pet_name,
+            id: this.virtualPet.id,
+          });
         }
       } else {
         this.virtualPet = null;
@@ -1060,9 +1064,13 @@ export default Vue.extend({
           }
         }
         if(this.virtualPetBeam[index] === true || beam === true){
-          this.$emit('pet-beam', {
+          if(this.$store.data.view3d){
+            this.$emit('pet-beam', {
             url: this.virtualPet.pet_avatar_url,
+            name: this.virtualPet.pet_name,
+            id: this.virtualPet.id,
           });
+          }
         }
       } 
       

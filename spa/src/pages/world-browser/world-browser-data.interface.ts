@@ -23,4 +23,5 @@ export interface WorldBrowserData {
     showUpdateWarning: boolean;
     mainComponent: any;
     force2d: boolean;
+    pet: any;
 }
