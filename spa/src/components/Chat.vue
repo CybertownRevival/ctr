@@ -1078,11 +1078,18 @@ export default Vue.extend({
         if(whisper && data.username === this.$store.data.user.username){
           setTimeout(() => {
             this.messages.push({msg: response, username: data.msg.username, from: this.virtualPet.pet_name, whisper: true, new: true,})
+            if(this.tts){
+              this.textToSpeech({msg: response});
+              console.log(response);
+            }
           }, 1500);
         } 
         if(!whisper) {
           setTimeout(() => {
             this.messages.push({msg: response, username: this.virtualPet.pet_name, new: true,})
+            if(this.tts){
+              this.textToSpeech({msg: response});
+            }
           }, 1500);
         }
       }
