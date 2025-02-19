@@ -1,11 +1,15 @@
 import {Request, response, Response} from 'express';
-import { PlaceService, MemberService } from '../services';
+import { PlaceService, MemberService, HomeService } from '../services';
 import { Container } from 'typedi';
 
 import * as badwords from 'badwords-list';
 
 class PlaceController {
-  constructor(private placeService: PlaceService, private memberService: MemberService) {}
+  constructor(
+    private placeService: PlaceService, 
+    private memberService: MemberService,
+    private homeService: HomeService,
+  ) {}
 
   /** Get Admin status for the specific place's slug */
   public async canAdmin(request: Request, response: Response): Promise<void> {
@@ -234,8 +238,8 @@ class PlaceController {
     const admin = placeService.canAdmin(null, placeId, session.id);
     const bannedwords = badwords.regex;
     const testBehaviours = JSON.parse(behaviours);
-
-    if(!admin) return;
+    const owner = await this.homeService.getHome(session.id);
+    if(!admin || owner.id !== placeId) return;
     if(name.match(bannedwords)){
       response.status(200).json({ error: 'Pet name cannot contain a banned word.' });
     } else {
@@ -275,4 +279,5 @@ class PlaceController {
 
 const placeService = Container.get(PlaceService);
 const memberService = Container.get(MemberService);
-export const placeController = new PlaceController(placeService, memberService);
+const homeService = Container.get(HomeService);
+export const placeController = new PlaceController(placeService, memberService, homeService);

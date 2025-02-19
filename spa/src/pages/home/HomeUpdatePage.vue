@@ -44,61 +44,64 @@ export default Vue.extend({
       loaded: false,
       hasHome: false,
       place_id: null,
-      links: [
+      links: [],
+    };
+  },
+  methods: {
+    async getHome() {
+      console.log("get home")
+      try {
+        const homeResponse = await this.$http.get("/home");
+        this.place_id = homeResponse.data.homeData.id;
+        this.hasHome = !!homeResponse.data.homeData;
+        this.loaded = true;
+        this.getLinks();
+      } catch(e) {
+        console.error(e);
+      }
+    },
+    getLinks() {
+      const links  = [
         {
-          "img": "/assets/img/homes/updhome.jpg",
-          "label": "Home",
-          "link": "/home/update/home",
+          img: '/assets/img/homes/updhome.jpg',
+          label: 'Home',
+          link: '/home/update/home',
         },
         {
-          "img": "/assets/img/homes/updinfo.jpg",
-          "label": "Information",
-          "link": "",
+          img: '/assets/img/homes/updinfo.jpg',
+          label: 'Information',
+          link: '',
         },
         {
-          "img": "/assets/img/homes/updimage.jpg",
-          "label": "Image",
-          "link": "",
+          img: '/assets/img/homes/updimage.jpg',
+          label: 'Image',
+          link: '',
         },
         {
-          "img": "/assets/img/homes/updinfo.jpg",
-          "label": "Reset",
-          "link": "",
+          img: '/assets/img/homes/updinfo.jpg',
+          label: 'Reset',
+          link: '',
+        },{
+          img: '/assets/img/homes/updright.jpg',
+          label: 'Chat Access Rights',
+          link: '',
         },
         {
-          "img": "/assets/img/homes/updright.jpg",
-          "label": "Chat Access Rights",
-          "link": "",
-        },
-        {
-          "img": "/assets/img/homes/updpet.jpg",
-          "label": "Configure Virtual Pet",
-          "link": `/home/virtualpet`,
+          img: '/assets/img/homes/updpet.jpg',
+          label: 'Configure Virtual Pet',
+          link: `/home/virtualpet/${this.place_id}`,
         },
         {
           blank: true,
         },
         {
-          "img": "/assets/img/homes/updright.jpg",
-          "label": "Blocked From Chat",
-          "link": "",
+          img: '',
+          label: '',
+          link: '',
         },
-
-      ],
-    };
-  },
-  methods: {
-    async getHome() {
-      try {
-        const homeResponse = await this.$http.get("/home");
-        this.hasHome = !!homeResponse.data.homeData;
-        this.loaded = true;
-
-      } catch(e) {
-        console.error(e);
-      }
-
-    },
+      ];
+      this.links = links;
+    }
   },
   mounted() {
     this.getHome();

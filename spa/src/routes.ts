@@ -285,7 +285,7 @@ export default [
         meta: { wrapper: true },
     },
     {
-        path: "/home/virtualpet",
+        path: "/home/virtualpet/:place_id",
         components: {
             default: HomeVirtualPet,
         },
