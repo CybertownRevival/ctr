@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 w-full p-5 text-center" v-if="placeId && petFound">
+  <div class="flex-1 w-full p-5 text-center" v-if="owner && petFound">
     <div v-if="page === 'update'">
       <div class="text-3xl font-bold">Virtual Pet Behaviour</div>
       <div v-if="error" class="font-bold" style="color:red;">
@@ -101,7 +101,7 @@
     </div>
   </div>
   <div class="flex w-full justify-center" v-else>
-    <span class="text-2xl font-bold text-center pt-24">Unable to locate place.<br />Please use the navigation panel instead of refreshing.</span>
+    <span class="text-2xl font-bold text-center pt-24">Access Denied</span>
   </div>
 </template>
 
@@ -118,6 +118,7 @@ export default Vue.extend({
     return {
       loaded: false,
       error: false,
+      owner: false,
       errorMessage: "",
       success: false,
       placeId: null,
@@ -205,11 +206,20 @@ export default Vue.extend({
       this.petURL = String(this.petsURLS[this.pets.indexOf(data)]);
       this.page = 'update';
     },
+    async checkOwner() {
+      const homeResponse = await this.$http.get("/home");
+      if(homeResponse.data.homeData.id !== this.placeId){
+        this.owner = true;
+      }
+    },
   },
   created() {
-    this.placeId = this.$store.data.place.id;
+    this.placeId = this.$route.params.place_id;
     this.slug = this.$store.data.place.slug;
     this.getPet()
   },
+  mounted(){
+    this.checkOwner();
+  }
 });
 </script>
