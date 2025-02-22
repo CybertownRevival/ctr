@@ -285,15 +285,23 @@ export default [
         meta: { wrapper: true },
     },
     {
-        path: "/home/virtualpet/:place_id",
+        path: "/virtualpet/:place_id",
         components: {
             default: HomeVirtualPet,
         },
-        name: "home-virtual-pet",
+        name: "virtual-pet",
         meta: { wrapper: true },
     },
     {
-        path: "/home/virtualpethelp",
+        path: "/admin/virtualpet/:place_id",
+        components: {
+            default: HomeVirtualPet,
+        },
+        name: "admin-virtual-pet",
+        meta: { wrapper: false },
+    },
+    {
+        path: "/virtualpethelp",
         components: {
             default: HomeVirtualPetHelp,
         },

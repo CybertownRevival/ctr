@@ -235,11 +235,11 @@ class PlaceController {
     const active = request.body.active;
     const voice = Number.parseInt(request.body.voice.toLocaleString());
     const behaviours = request.body.behaviours.toLocaleString();
-    const admin = placeService.canAdmin(null, placeId, session.id);
+    const admin = await this.memberService.getAccessLevel(session.id);
     const bannedwords = badwords.regex;
     const testBehaviours = JSON.parse(behaviours);
     const owner = await this.homeService.getHome(session.id);
-    if(!admin || owner.id !== placeId) return;
+    //if(!admin.includes('security') || owner.id !== placeId) return;
     if(name.match(bannedwords)){
       response.status(200).json({ error: 'Pet name cannot contain a banned word.' });
     } else {
@@ -250,13 +250,17 @@ class PlaceController {
         ){
           response.status(200).json({ error: 'Pet input/output cannot contain a banned word.' });
         } else {
-          try {
-            await this.placeService
-              .updateVirtualPet(placeId, name, avatar, active, voice, behaviours);
-            response.status(200).json({ success: 'success' });
-          } catch (error) {
-            console.error(error);
-            response.status(400).json({ error: error});
+          if(admin.includes('security') || owner.id === placeId){
+            try {
+              await this.placeService
+                .updateVirtualPet(placeId, name, avatar, active, voice, behaviours);
+              response.status(200).json({ success: 'success' });
+            } catch (error) {
+              console.error(error);
+              response.status(400).json({ error: error});
+            }
+          } else {
+            response.status(200).json({ error: 'You do not have access to update this.'})
           }
         }
       }
