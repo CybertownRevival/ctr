@@ -94,7 +94,8 @@ export default Vue.extend({
   methods: {
     async checkAdmin() {
       try {
-        const adminCheck = await this.$http.get(`/place/can_admin/${this.$store.data.place.slug}/${this.$store.data.place.id}`);
+        const adminCheck = await this.$http
+          .get(`/place/can_admin/personalclub/${this.$route.params.id}`);
         this.canAdmin = adminCheck.data.result;
       } catch (error) {
         this.canAdmin = false;

@@ -89,7 +89,7 @@ export default Vue.extend({
         {
           img: '/assets/img/homes/updpet.jpg',
           label: 'Configure Virtual Pet',
-          link: `/home/virtualpet/${this.place_id}`,
+          link: `/virtualpet/${this.place_id}`,
         },
         {
           blank: true,

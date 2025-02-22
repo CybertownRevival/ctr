@@ -197,7 +197,7 @@ export default Vue.extend({
       })
     },
     petHelp() {
-      window.open("/#/home/virtualpethelp/", "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
+      window.open("/#/virtualpethelp/", "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
     selectPet(){
       this.page = 'select';
