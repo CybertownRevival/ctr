@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 w-full p-5 text-center" v-if="owner && petFound">
+  <div class="flex-1 p-5 text-center" style="min-width: 700px;" v-if="owner && petFound">
     <div v-if="page === 'update'">
       <div class="text-3xl font-bold">Virtual Pet Behaviour</div>
       <div v-if="error" class="font-bold" style="color:red;">
