@@ -63,7 +63,7 @@
               <td></td>
             </tr>
           </table>
-          <div class="w-full text-2xl p-5">Behaviour</div>      
+          <div class="w-full text-2xl p-5">Behaviour</div>
           <table class="border w-full" v-if="owner || admin">
             <tr>
               <td class="border">
