@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 p-5 text-center" style="min-width: 700px;" v-if="owner && petFound">
+  <div class="flex-1 p-5 text-center" style="min-width: 700px;" v-if="(owner || admin) && petFound">
     <div v-if="page === 'update'">
       <div class="text-3xl font-bold">Virtual Pet Behaviour</div>
       <div v-if="error" class="font-bold" style="color:red;">
@@ -13,13 +13,22 @@
           <table>
             <tr>
               <td>Pet's Nickname: </td>
-              <td><input type="text" size="40" maxlength="32" class="text-black" v-model="petName" /></td>
+              <td>
+                <input disabled type="text" size="40" maxlength="32" class="text-black" v-model="petName" v-if="!owner" />
+                <input type="text" size="40" maxlength="32" class="text-black" v-model="petName" v-else />
+              </td>
               <td><a href="#" class="flex font-normal" @click.prevent="petHelp">Help</a></td>
             </tr>
             <tr>
               <td>Pet's Avatar URL: </td>
-              <td><div class="flex w-full font-normal bg-white text-black"> {{ petURL }}</div></td>
-              <td><a href="#" class="font-normal" @set-pet="setPet($event)" @click.prevent="selectPet">Select Avatar URL</a></td>
+              <td>
+                <div class="flex w-full font-normal text-black" style="background-color: #444;" v-if="!owner"> {{ petURL }}</div>
+                <div class="flex w-full font-normal bg-white text-black" v-else> {{ petURL }}</div>
+              </td>
+              <td>
+                <a href="#" class="font-normal" v-if="!owner">Select Avatar URL</a>
+                <a href="#" class="font-normal" @set-pet="setPet($event)" @click.prevent="selectPet" v-else>Select Avatar URL</a>
+              </td>
             </tr>
             <tr>
               <td>Activate Pet: </td>
@@ -27,7 +36,18 @@
                 <input class="pl-2" type="checkbox" v-model="activatePet" />
                 <div class="w-full text-right">
                   Pet's Voice Type: 
-                  <select v-model.number="petVoice">
+                  <select disabled v-model.number="petVoice" v-if="!owner">
+                    <option value="0">Default Male</option>
+                    <option value="4">Male</option>
+                    <option value="2">Full Male</option>
+                    <option value="3">Aged Male</option>
+                    <option value="7">Female</option>
+                    <option value="1">Full Female</option>
+                    <option value="6">Aged Female</option>
+                    <option value="8">Whispering Female</option>
+                    <option value="5">Child</option>
+                  </select>
+                  <select v-model.number="petVoice" v-else>
                     <option value="0">Default Male</option>
                     <option value="4">Male</option>
                     <option value="2">Full Male</option>
@@ -44,7 +64,35 @@
             </tr>
           </table>
           <div class="w-full text-2xl p-5">Behaviour</div>
-          <table class="border w-full">
+          <table class="border w-full" v-if="!owner">
+            <tr>
+              <td class="border">
+                Input Text
+              </td>
+              <td class="border">
+                Say/Action
+              </td>
+            </tr>
+            <tr v-for="behaviour in behaviours" :key="behaviour.id">
+              <td class="flex-1 align-top border p-1">
+                <input disabled type="text" size="30" maxlength="44" class="text-black" v-model="behaviours[behaviour.id].input" />
+                <div class="flex justify-self-start py-2 gap-1 text-sm font-normal">
+                  <div>Exact: <input disabled :name="behaviour.id" type="radio" value="exact" v-model="behaviours[behaviour.id].match" /></div>
+                  <div>And: <input disabled :name="behaviour.id" type="radio" value="and" v-model="behaviours[behaviour.id].match" /></div>
+                  <div>Or: <input disabled :name="behaviour.id" type="radio" value="or" v-model="behaviours[behaviour.id].match" /></div>
+                  <div>Directly: <input disabled type="checkbox" v-model="behaviours[behaviour.id].directly" /></div>
+                </div>
+              </td>
+              <td class="flex-1 border p-1">
+                <textarea disabled cols="40" rows="3" class="text-black" v-model="behaviours[behaviour.id].output"></textarea>
+                <div class="flex justify-self-start py-2 gap-1 text-sm font-normal">
+                  <div>Whisper <input disabled type="checkbox" v-model="behaviours[behaviour.id].whisper" /></div>
+                  <div>Beam to <input disabled type="checkbox" v-model="behaviours[behaviour.id].beam" /></div>
+                </div>
+              </td>
+            </tr>
+          </table>
+          <table class="border w-full" v-else>
             <tr>
               <td class="border">
                 Input Text
@@ -119,6 +167,7 @@ export default Vue.extend({
       loaded: false,
       error: false,
       owner: false,
+      admin: false,
       errorMessage: "",
       success: false,
       placeId: null,
@@ -206,9 +255,15 @@ export default Vue.extend({
       this.petURL = String(this.petsURLS[this.pets.indexOf(data)]);
       this.page = 'update';
     },
+    async getAccessLevel() {
+      const access = await this.$http.get("/member/getadminlevel");
+      if(access.data.accessLevel.includes("security")){
+        this.admin = true;
+      }
+    },
     async checkOwner() {
       const homeResponse = await this.$http.get("/home");
-      if(homeResponse.data.homeData.id !== this.placeId){
+      if(homeResponse.data.homeData.id === parseInt(this.placeId)){
         this.owner = true;
       }
     },
@@ -219,6 +274,7 @@ export default Vue.extend({
     this.getPet()
   },
   mounted(){
+    this.getAccessLevel();
     this.checkOwner();
   }
 });
