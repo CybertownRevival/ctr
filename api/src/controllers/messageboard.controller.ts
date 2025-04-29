@@ -227,7 +227,8 @@ class MessageboardController {
     let locationService;
     if (type === 'block') {
       locationService = (await this.blockService.getMapLocationAndPlaces(placeId))
-        .map((home => home.id));
+        .map((home) => home.id)
+        .filter((id) => id !== null);
     } else if (type === 'hood') {
       locationService = (await this.hoodService.getBlocks(placeId)).map((block => block.id));
     } else if (type === 'colony') {
