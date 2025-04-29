@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import { InboxRepository, ColonyRepository } from '../../repositories';
 import sanitizeHtml from 'sanitize-html';
 import { stringify } from 'ts-jest';
+import {forEach} from 'lodash';
 
 /** Service for dealing with messages on message boards */
 @Service()
@@ -39,6 +40,20 @@ export class InboxService {
     message: string,
   ): Promise<any> {
     return await this.inboxRepository.postInboxMessage(memberId, placeId, subject, message);
+  }
+  
+  public async postInboxAllMessage(
+    memberId: number,
+    locations: object,
+    subject: string,
+    message: string,
+  ): Promise<any> {
+    forEach(locations, async (id) => {
+      await this
+        .inboxRepository
+        .postInboxMessage(memberId, id, subject, message);
+    });
+    return;
   }
 
   public async postInboxReply(

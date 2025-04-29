@@ -191,6 +191,65 @@ class MessageboardController {
     }
   }
   
+  public async postMessageAllMessage(request: Request, response: Response): Promise<void> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    const { id } = session;
+    const type = request.body.type;
+    const subject = request.body.subject;
+    const uncleanBody = request.body.body;
+    const cleanBody = await this.messageboardService.sanitize(uncleanBody);
+    const placeId = request.body.place_Id;
+    if (!await this.adminCheck(placeId, id, type)) {
+      response.status(403).json({
+        error: 'Access Denied',
+      });
+      return;
+    }
+    if (subject === '') {
+      response.status(400).json({
+        error: 'A subject is required',
+      });
+      return;
+    }
+    if (cleanBody === '') {
+      response.status(400).json({
+        error: 'A message is required',
+      });
+      return;
+    }
+    let locationService;
+    if (type === 'block') {
+      locationService = (await this.blockService.getMapLocationAndPlaces(placeId))
+        .map((home => home.id));
+    } else if (type === 'hood') {
+      locationService = (await this.hoodService.getBlocks(placeId)).map((block => block.id));
+    } else if (type === 'colony') {
+      locationService = (await this.colonyService.getHoods(placeId)).map((hood) => hood.id);
+    } else {
+      response.status(400).json({
+        error: 'An error with the type',
+      });
+    }
+    try {
+      await this
+        .messageboardService
+        .postMessageAllMessage(id, locationService, subject, cleanBody);
+      response.status(200).json({success: 'Message posted to all places'});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({
+        error: 'An error occurred when trying to post message',
+      });
+    }
+  }
+  
   public async postMessageboardReply(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);

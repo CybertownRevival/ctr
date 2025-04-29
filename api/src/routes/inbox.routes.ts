@@ -18,6 +18,8 @@ inboxRoutes.post('/messages/',
   (request, response) => inboxController.getInboxMessages(request, response));
 inboxRoutes.post('/postmessage/',
   (request, response) => inboxController.postInboxMessage(request, response));
+inboxRoutes.post('/postinboxall/',
+  (request, response) => inboxController.postInboxAllMessage(request, response));
 inboxRoutes.post('/postreply/',
   (request, response) => inboxController.postInboxReply(request, response));
 

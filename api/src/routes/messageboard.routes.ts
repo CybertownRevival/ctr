@@ -18,6 +18,8 @@ messageboardRoutes.post('/messages/',
   (request, response) => messageboardController.getMessageboardMessages(request, response));
 messageboardRoutes.post('/postmessage/',
   (request, response) => messageboardController.postMessageboardMessage(request, response));
+messageboardRoutes.post('/postmessageall/',
+  (request, response) => messageboardController.postMessageAllMessage(request, response));
 messageboardRoutes.post('/postreply/',
   (request, response) => messageboardController.postMessageboardReply(request, response));
 

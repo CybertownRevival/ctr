@@ -5,6 +5,7 @@ import {
   ColonyRepository,
 } from '../../repositories';
 import sanitizeHtml from 'sanitize-html';
+import {forEach} from "lodash";
 
 /** Service for dealing with messages on message boards */
 @Service()
@@ -59,6 +60,20 @@ export class MessageboardService {
     return await this
       .messageboardRepository
       .postMessageboardMessage(memberId, placeId, subject, message);
+  }
+  
+  public async postMessageAllMessage(
+    memberId: number,
+    locations: object,
+    subject: string,
+    message: string,
+  ): Promise<any> {
+    forEach(locations, async (id) => {
+      await this
+        .messageboardRepository
+        .postMessageboardMessage(memberId, id, subject, message);
+    });
+    return;
   }
   
   public async postMessageboardReply(

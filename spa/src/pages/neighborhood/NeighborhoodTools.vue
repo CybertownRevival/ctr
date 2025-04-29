@@ -21,8 +21,10 @@
 		<br />
 		<br />
 		<div v-if="canAdmin && this.$store.data.place.hood">
-			<span href="" class="btn-ui">Message to All</span>
-			<span href="" class="btn-ui">Inbox to All</span>
+      <router-link :to="{ name: 'neighborhoodMessageToAll' }" class="btn-ui">
+        Message to All</router-link>
+      <router-link :to="{ name: 'neighborhoodInboxToAll'}" class="btn-ui">
+        Inbox to All</router-link>
 			<span href="" class="btn-ui">Update</span>
       <router-link :to="{ name: 'neighborhoodAccessRights' }" class="btn-ui">Access Rights</router-link>
 		</div>
