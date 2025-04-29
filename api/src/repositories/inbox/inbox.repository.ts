@@ -118,7 +118,6 @@ export class InboxRepository {
           message: message,
           parent_id: 0,
         },
-        ['id'],
       );
     return knex('inbox')
       .where('id', '=', parentId)

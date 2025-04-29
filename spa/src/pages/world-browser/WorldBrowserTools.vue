@@ -38,10 +38,10 @@
     </div>
     <div v-if="canAdmin">
       <span v-if="this.$store.data.place.type === 'colony'">
-        <span href=""
-              class="btn-ui">Message to All</span>
-        <span href=""
-              class="btn-ui">Inbox to All</span>
+        <router-link :to="{ name: 'colonyMessageToAll' }"
+                     class="btn-ui">Message to All</router-link>
+        <router-link :to="{ name: 'colonyInboxToAll'}"
+              class="btn-ui">Inbox to All</router-link>
       </span>
       <span href=""
             class="btn-ui">Update</span>

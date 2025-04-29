@@ -20,7 +20,10 @@
 		<br />
 		<br />
 		<div v-if="canAdmin && this.$store.data.place.block">
-			<span class="btn-ui">Message to All</span>
+			<router-link :to="{ name: 'blockMessageToAll' }" class="btn-ui">
+        Message to All</router-link>
+      <router-link :to="{ name: 'blockInboxToAll'}"
+         class="btn-ui">Inbox to All</router-link>
 			<router-link
 				:to="'/block/' + this.$store.data.place.block.id + '/wizard'"
 				class="btn-ui"

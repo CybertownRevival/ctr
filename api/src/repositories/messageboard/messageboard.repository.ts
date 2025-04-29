@@ -117,7 +117,6 @@ export class MessageboardRepository {
           message: message,
           parent_id: 0,
         },
-        ['id'],
       );
     return knex('messageboard')
       .where('id', '=', parentId)
