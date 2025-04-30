@@ -186,7 +186,7 @@
         this.price !== '' && 
         (
           this.buyer === '' || 
-          this.buyer === this.$store.data.user.username
+          this.buyer.toLocaleLowerCase() === this.$store.data.user.username.toLocaleLowerCase()
         ) &&
          this.walletBalance >= this.price && 
          showBuyButton" 
