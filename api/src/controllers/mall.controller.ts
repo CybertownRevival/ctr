@@ -8,6 +8,8 @@ import {
   WalletService,
   ObjectInstanceService,
 } from '../services';
+import {orderBy} from 'lodash';
+import {stringify} from 'ts-jest';
 
 class MallController {
   constructor(
@@ -39,9 +41,10 @@ class MallController {
   public async findStores(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-
+    const orderBy = request.query.orderBy;
+    console.log('controller', orderBy);
     try{
-      const stores = await this.mallService.getMallStores();
+      const stores = await this.mallService.getMallStores(<string>orderBy);
       response.status(200).json({ status: 'success', stores: stores });
     } catch (error) {
       console.error(error);
