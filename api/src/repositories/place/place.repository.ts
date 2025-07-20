@@ -39,8 +39,11 @@ export class PlaceRepository {
     return this.db.place.where({ slug: slug }).first();
   }
 
-  public async findAllStores(): Promise<Store[]> {
-    return this.db.place.where({type: 'shop', status: 1});
+  public async findAllStores(orderBy: string): Promise<Store[]> {
+    return this.db.knex
+      .table('place')
+      .where({type: 'shop', status: 1})
+      .orderBy(orderBy,'asc');
   }
   
   /**

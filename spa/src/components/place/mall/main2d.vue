@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from "vue";
 
 export default Vue.extend({
   name: "MallMain2d",
@@ -39,18 +39,20 @@ export default Vue.extend({
       }
     },
     async getStores(){
-      const stores = await this.$http.get(`/mall/stores`);
+      const stores = await this.$http.get("/mall/stores", {
+        orderBy: "name",
+      });
       stores.data.stores.forEach(store => {
         this.mallStoreData.push({
           title: store.name,
-          slug: store.slug
-        })
-      })
-    }
+          slug: store.slug,
+        });
+      });
+    },
   },
   mounted() {
     this.getStores();
-  }
+  },
 });
 </script>
 

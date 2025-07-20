@@ -10,6 +10,7 @@ import {
   MemberRepository,
 } from '../../repositories';
 import { MallObjectPosition, MallObjectRotation } from 'models';
+import {orderBy} from 'lodash';
 
 /** Service for dealing with the mall */
 @Service()
@@ -57,9 +58,12 @@ export class MallService {
     return true;
   }
 
-  public async getMallStores(){
-    const stores = await this.placeRepository.findAllStores();
-    return stores;
+  public async getMallStores(orderBy?: string){
+    if(!orderBy){
+      orderBy = 'id';
+    }
+    console.log('service', orderBy);
+    return await this.placeRepository.findAllStores(orderBy);
   }
 
   public async findSoldOut(){
