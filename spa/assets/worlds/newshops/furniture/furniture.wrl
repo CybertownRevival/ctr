@@ -1,0 +1,448 @@
+#VRML V2.0 utf8
+WorldInfo {
+ title "Fine Arts Store"
+ info ["Sept 2024"]
+}
+Background{
+skyColor[.4 .4 .8,0 0 .5,.4 0 .6]
+skyAngle [.9,1.3]
+groundColor[.4 .4 .8,0 0 .5,.4 0 .6]
+groundAngle [1.309,1.571]
+}
+
+EXTERNPROTO BlaxxunZone [
+eventIn         MFNode   addEvents
+eventIn         MFNode   removeEvents
+eventIn         MFNode   addAvatars
+eventIn         MFNode   removeAvatars
+exposedField    MFNode   events
+exposedField    MFNode   avatars
+eventOut        MFNode   events_added
+eventOut        MFNode   events_removed
+eventOut        MFNode   avatars_added
+eventOut        MFNode   avatars_removed
+eventIn         SFInt32  set_myAvatarGesture
+eventIn         SFInt32  myAvatarGestureFromServer
+eventOut        SFInt32  myAvatarGesture_changed
+eventOut        SFInt32  myAvatarGestureToServer
+exposedField    MFString sendToChat
+exposedField    SFFloat  beamToDistance
+exposedField    MFString groupChatName
+exposedField    MFString groupChat
+] "/externprotos/shared_xite.wrl#BlaxxunZone"
+
+EXTERNPROTO SharedObject [
+exposedField SFVec3f translation
+exposedField SFRotation rotation
+exposedField MFNode children
+exposedField SFString name
+exposedField SFString id
+eventIn SFBool startMove
+eventOut SFBool isOver
+eventOut SFTime touchTime
+eventOut SFVec3f newPosition
+eventOut SFRotation newRotation
+] "/externprotos/shared_xite.wrl#SharedObject"
+
+DEF l1 DirectionalLight {direction -1 -1 0}
+DEF l2 DirectionalLight {direction 1 1 0}
+DEF l3 DirectionalLight {direction 0 1 1}
+DEF l4 DirectionalLight {direction 0 -.371 -.929}
+
+Viewpoint { position 0 1.75 2 fieldOfView .785 description "Enter"}
+NavigationInfo {
+	avatarSize [ .25 1.75 .75 ] headlight FALSE speed 10
+	type [ "WALK" "SLIDE" ]
+}
+
+#-------------------put object directory here
+#Transform{translation 0 0 -58.8051
+#children[
+#DEF Dir ObjectDirectory{}
+#]}
+#-------------------end object directory
+
+DEF dad_Group1 Transform {
+ translation 0 0 -9.17541
+ scale .252 .252 .252
+ children [
+  DEF dad_floor Transform {
+   translation 0 -.05312 0
+   children [
+    DEF floor Shape {
+     appearance Appearance {
+      texture ImageTexture {
+       url [
+        "floor2.jpg"
+       ]
+      }
+      textureTransform TextureTransform {
+       scale 20 10
+      }
+      material DEF White Material {
+       ambientIntensity 0.200
+       shininess 0.200
+       diffuseColor 1 1 1
+      }
+     }
+     geometry DEF GeoBox1 Box {
+      size 220 .1 140
+     }
+    }
+   ]
+  }
+  DEF dad_side_Wall_Group Transform {
+   rotation 0 1 0 1.571
+   children [
+    DEF side_Wall_Group Group {
+     children [
+      DEF dad_Upper_Wall Transform {
+       translation 0 22.6644 -88.3717
+       rotation 1 0 0 .785
+       children [
+        DEF Upper_Wall Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "block.jpg"
+           ]
+          }
+          material USE White
+         }
+         geometry DEF GeoBox3 Box {
+          size 110.5 20 .1
+         }
+        }
+       ]
+      }
+      DEF dad_Wall Transform {
+       translation 0 7.45 -109.512
+       children [
+        DEF Wall Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "wall_9e.jpg"
+           ]
+          }
+          textureTransform TextureTransform {
+           scale 6 1
+          }
+          material USE White
+         }
+         geometry DEF GeoBox2 Box {
+          size 140 15 .1
+         }
+        }
+       ]
+      }
+      DEF dad_Group5 Transform {
+       translation 0 .42356 0
+       children [
+        DEF dad_ceiling Transform {
+         translation 0 15.1736 -102.881
+         rotation 1 0 0 1.571
+         children [
+          DEF ceiling Shape {
+           appearance Appearance {
+            texture ImageTexture {
+             url [
+              "block.jpg"
+             ]
+            }
+            textureTransform TextureTransform {
+             scale 1 .25
+             translation 0 2
+            }
+            material USE White
+           }
+           geometry DEF GeoBox4 Box {
+            size 110.8 15 .1
+           }
+          }
+         ]
+        }
+        DEF dad_ceiling1 Transform {
+         translation 62.9169 15.1736 -102.917
+         rotation 1 0 0 1.571
+         children [
+          DEF ceiling1 Shape {
+           appearance Appearance {
+            texture ImageTexture {
+             url [
+              "bluefade.jpg"
+             ]
+            }
+            textureTransform TextureTransform {
+             translation 0 2
+            }
+            material USE White
+           }
+           geometry DEF GeoBox9 Box {
+            size 15 15 .1
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+  DEF dad_door_wall Transform {
+   translation 0 0 10
+   rotation 0 1 0 3.142
+   children [
+    DEF dad_Wall0 Transform {
+     translation 60.5743 7.45 -59.512
+     children [
+      DEF Wall0 Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "wall_9e.jpg"
+         ]
+        }
+        textureTransform TextureTransform {
+         scale 3 1
+        }
+        material USE White
+       }
+       geometry DEF GeoBox6 Box {
+        size 100 15 .1
+       }
+      }
+     ]
+    }
+    DEF dad_Reference5 Transform {
+     translation -60.5743 7.45 -59.512
+     rotation 0 1 0 3.142
+     children [
+      USE Wall0
+     ]
+    }
+    DEF dad_Door Transform {
+     translation 0 7.45 -59.512
+     children [
+      DEF Door Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "door.jpg"
+         ]
+        }
+        material USE White
+       }
+       geometry DEF GeoBox8 Box {
+        size 21 15 .1
+       }
+      }
+     ]
+    }
+    DEF dad_Group4 Transform {
+     translation 0 .42356 0
+     rotation 0 1 0 3.142
+     children [
+      DEF dad_ceiling2 Transform {
+       translation -102.917 15.1736 52.9169
+       rotation 1 0 0 1.571
+       children [
+        DEF ceiling2 Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "bluefade.jpg"
+           ]
+          }
+          textureTransform TextureTransform {
+           translation 0 2
+          }
+          material USE White
+         }
+         geometry DEF GeoBox11 Box {
+          size 15 15 .1
+         }
+        }
+       ]
+      }
+      DEF dad_ceiling0 Transform {
+       translation 0 15.1736 52.8809
+       rotation 0 -.707 .707 3.142
+       children [
+        DEF ceiling0 Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "block.jpg"
+           ]
+          }
+          textureTransform TextureTransform {
+           scale 1 .25
+           translation 0 2
+          }
+          material USE White
+         }
+         geometry DEF GeoBox7 Box {
+          size 190.8 15 .1
+         }
+        }
+       ]
+      }
+     ]
+    }
+    DEF dad_Upper_Wall0 Transform {
+     translation 0 22.6644 -38.3943
+     rotation 1 0 0 .785
+     children [
+      DEF Upper_Wall0 Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "block.jpg"
+         ]
+        }
+        material USE White
+       }
+       geometry DEF GeoBox5 Box {
+        size 190.5 20 .1
+       }
+      }
+     ]
+    }
+    DEF dad_directorylocation Transform {
+     translation -15.4286 0 -57.2505
+     scale 3.96825 3.96825 3.96825
+     children [
+     ]
+    }
+   ]
+  }
+  DEF dad_Reference3 Transform {
+   rotation 0 -1 0 1.571
+   children [
+    USE side_Wall_Group
+   ]
+  }
+  DEF dad_roof Transform {
+   translation 0 30.103 0
+   children [
+    DEF roof Shape {
+     appearance Appearance {
+      texture ImageTexture {
+       url [
+        "bluefade.jpg"
+       ]
+      }
+      material USE White
+     }
+     geometry DEF GeoBox10 Box {
+      size 166 .1 90
+     }
+    }
+   ]
+  }
+  DEF dad_Back_Wall Transform {
+   translation 0 0 -10
+   children [
+    DEF dad_Upper_Wall1 Transform {
+     translation 0 22.6644 -38.3943
+     rotation 1 0 0 .785
+     children [
+      DEF Upper_Wall1 Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "block.jpg"
+         ]
+        }
+        material USE White
+       }
+       geometry DEF GeoBox13 Box {
+        size 190.5 20 .1
+       }
+      }
+     ]
+    }
+    DEF dad_Wall2 Transform {
+     translation 0 7.45 -59.512
+     children [
+      DEF Wall2 Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "wall_9e.jpg"
+         ]
+        }
+        textureTransform TextureTransform {
+         scale 8 1
+        }
+        material USE White
+       }
+       geometry DEF GeoBox14 Box {
+        size 220 15 .1
+       }
+      }
+     ]
+    }
+    DEF dad_Group7 Transform {
+     translation 0 .42356 0
+     children [
+      DEF dad_ceiling3 Transform {
+       translation 0 15.1736 -52.8809
+       rotation 1 0 0 1.571
+       children [
+        DEF ceiling3 Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "block.jpg"
+           ]
+          }
+          textureTransform TextureTransform {
+           scale 1 .25
+           translation 0 2
+          }
+          material USE White
+         }
+         geometry DEF GeoBox15 Box {
+          size 190.8 15 .1
+         }
+        }
+       ]
+      }
+      DEF dad_ceiling4 Transform {
+       translation 102.917 15.1736 -52.9169
+       rotation 1 0 0 1.571
+       children [
+        DEF ceiling4 Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "bluefade.jpg"
+           ]
+          }
+          textureTransform TextureTransform {
+           translation 0 2
+          }
+          material USE White
+         }
+         geometry DEF GeoBox16 Box {
+          size 15 15 .1
+         }
+        }
+       ]
+      }
+     ]
+    }
+    DEF Entrance Viewpoint {
+     description "Entrance"
+     jump TRUE
+     fieldOfView 0.785
+     position 0 3.47222 -43
+     orientation 0 0 1 0
+    }
+   ]
+  }
+ ]
+}
