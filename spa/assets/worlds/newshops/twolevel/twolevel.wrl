@@ -1,0 +1,1617 @@
+#VRML V2.0 utf8
+WorldInfo {
+ title "Misc Store"
+ info ["Sept 2024"]
+}
+Background{
+skyColor[.4 .4 .8,0 0 .5,.4 0 .6]
+skyAngle [.9,1.3]
+groundColor[.4 .4 .8,0 0 .5,.4 0 .6]
+groundAngle [1.309,1.571]
+}
+
+EXTERNPROTO BlaxxunZone [
+eventIn         MFNode   addEvents
+eventIn         MFNode   removeEvents
+eventIn         MFNode   addAvatars
+eventIn         MFNode   removeAvatars
+exposedField    MFNode   events
+exposedField    MFNode   avatars
+eventOut        MFNode   events_added
+eventOut        MFNode   events_removed
+eventOut        MFNode   avatars_added
+eventOut        MFNode   avatars_removed
+eventIn         SFInt32  set_myAvatarGesture
+eventIn         SFInt32  myAvatarGestureFromServer
+eventOut        SFInt32  myAvatarGesture_changed
+eventOut        SFInt32  myAvatarGestureToServer
+exposedField    MFString sendToChat
+exposedField    SFFloat  beamToDistance
+exposedField    MFString groupChatName
+exposedField    MFString groupChat
+] "/externprotos/shared_xite.wrl#BlaxxunZone"
+
+EXTERNPROTO SharedObject [
+exposedField SFVec3f translation
+exposedField SFRotation rotation
+exposedField MFNode children
+exposedField SFString name
+exposedField SFString id
+eventIn SFBool startMove
+eventOut SFBool isOver
+eventOut SFTime touchTime
+eventOut SFVec3f newPosition
+eventOut SFRotation newRotation
+] "/externprotos/shared_xite.wrl#SharedObject"
+
+DEF l1 DirectionalLight {direction -1 -1 0}
+DEF l2 DirectionalLight {direction 1 1 0}
+DEF l3 DirectionalLight {direction 0 1 1}
+DEF l4 DirectionalLight {direction 0 -.371 -.929}
+
+Viewpoint { position 0 1.75 2 fieldOfView .785 description "Enter"}
+NavigationInfo {
+	avatarSize [ .25 1.75 .75 ]
+	headlight FALSE
+	speed 10
+	type [ "WALK" "SLIDE" ]
+}
+
+#-------------------put object directory here
+#Transform{translation 0 0 -58.8051
+#children[
+#DEF Dir ObjectDirectory{}
+#]}
+#-------------------end object directory
+
+DEF dad_Group1 Transform {
+ translation 0 0 -9.17541
+ scale .252 .252 .252
+ children [
+  DEF dad_SECOND_FLOOR Transform {
+   scale 3.96825 3.96825 3.96825
+   children [
+    DEF dad_roof Transform {
+     translation 0 11.36597 0
+     scale .252 .252 .252
+     children [
+      DEF roof Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "bluefade.jpg"
+         ]
+        }
+        material DEF White Material {
+         ambientIntensity 0.200
+         shininess 0.200
+         diffuseColor 1 1 1
+        }
+       }
+       geometry DEF GeoBox10 Box {
+        size 166 .1 90
+       }
+      }
+     ]
+    }
+    DEF dad_side_Wall_Group Transform {
+     rotation 0 1 0 1.571
+     scale .252 .252 .252
+     children [
+      DEF side_Wall_Group Group {
+       children [
+        DEF dad_Upper_Wall Transform {
+         translation 0 37.6644 -88.3717
+         rotation 1 0 0 .785
+         children [
+          DEF Upper_Wall Shape {
+           appearance Appearance {
+            texture ImageTexture {
+             url [
+              "block.jpg"
+             ]
+            }
+            material USE White
+           }
+           geometry DEF GeoBox3 Box {
+            size 110.5 20 .1
+           }
+          }
+         ]
+        }
+        DEF dad_Wall Transform {
+         translation 0 22.6451 -109.512
+         children [
+          DEF Wall Shape {
+           appearance Appearance {
+            texture ImageTexture {
+             url [
+              "wall_9e.jpg"
+             ]
+            }
+            textureTransform TextureTransform {
+             scale 6 1
+            }
+            material USE White
+           }
+           geometry DEF GeoBox2 Box {
+            size 140 15 .1
+           }
+          }
+         ]
+        }
+        DEF dad_Group5 Transform {
+         translation 0 15.4236 0
+         children [
+          DEF dad_ceiling Transform {
+           translation 0 15.1736 -102.881
+           rotation 1 0 0 1.571
+           children [
+            DEF ceiling Shape {
+             appearance Appearance {
+              texture ImageTexture {
+               url [
+                "block.jpg"
+               ]
+              }
+              textureTransform TextureTransform {
+               scale 1 .25
+               translation 0 2
+              }
+              material USE White
+             }
+             geometry DEF GeoBox4 Box {
+              size 110.8 15 .1
+             }
+            }
+           ]
+          }
+          DEF dad_ceiling1 Transform {
+           translation 62.9169 15.1736 -102.917
+           rotation 1 0 0 1.571
+           children [
+            DEF ceiling1 Shape {
+             appearance Appearance {
+              texture ImageTexture {
+               url [
+                "bluefade.jpg"
+               ]
+              }
+              textureTransform TextureTransform {
+               translation 0 2
+              }
+              material USE White
+             }
+             geometry DEF GeoBox9 Box {
+              size 15 15 .1
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF dad_upper_floor Transform {
+     translation -2.52 3.84971 0
+     scale .252 .252 .252
+     children [
+      DEF upper_floor Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "floor2.jpg"
+         ]
+        }
+        textureTransform TextureTransform {
+         scale 20 10
+        }
+        material USE White
+       }
+       geometry DEF GeoBox12 Box {
+        size 200 .1 140
+       }
+      }
+     ]
+    }
+    DEF dad_Back_Wall Transform {
+     translation 0 3.78 -2.52
+     scale .252 .252 .252
+     children [
+      DEF dad_Upper_Wall1 Transform {
+       translation 0 22.6644 -38.3943
+       rotation 1 0 0 .785
+       children [
+        DEF Upper_Wall1 Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "block.jpg"
+           ]
+          }
+          material USE White
+         }
+         geometry DEF GeoBox13 Box {
+          size 190.5 20 .1
+         }
+        }
+       ]
+      }
+      DEF dad_Wall2 Transform {
+       translation 0 7.45 -59.512
+       children [
+        DEF Wall2 Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "wall_9e.jpg"
+           ]
+          }
+          textureTransform TextureTransform {
+           scale 8 1
+          }
+          material USE White
+         }
+         geometry DEF GeoBox14 Box {
+          size 220 15 .1
+         }
+        }
+       ]
+      }
+      DEF dad_Group7 Transform {
+       translation 0 .42356 0
+       children [
+        DEF dad_ceiling3 Transform {
+         translation 0 15.1736 -52.8809
+         rotation 1 0 0 1.571
+         children [
+          DEF ceiling3 Shape {
+           appearance Appearance {
+            texture ImageTexture {
+             url [
+              "block.jpg"
+             ]
+            }
+            textureTransform TextureTransform {
+             scale 1 .25
+             translation 0 2
+            }
+            material USE White
+           }
+           geometry DEF GeoBox15 Box {
+            size 190.8 15 .1
+           }
+          }
+         ]
+        }
+        DEF dad_ceiling4 Transform {
+         translation 102.917 15.1736 -52.9169
+         rotation 1 0 0 1.571
+         children [
+          DEF ceiling4 Shape {
+           appearance Appearance {
+            texture ImageTexture {
+             url [
+              "bluefade.jpg"
+             ]
+            }
+            textureTransform TextureTransform {
+             translation 0 2
+            }
+            material USE White
+           }
+           geometry DEF GeoBox16 Box {
+            size 15 15 .1
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF dad_Reference3 Transform {
+     rotation -0 -1 0 1.571
+     scale .252 .252 .252
+     children [
+      USE side_Wall_Group
+     ]
+    }
+    DEF dad_upper_floor4 Transform {
+     translation 22.54674 4.71356 1.91141
+     scale .252 .252 .252
+     children [
+      DEF upper_floor4 Shape {
+       appearance Appearance {
+        material DEF Rust Material {
+         ambientIntensity 0.003
+         shininess 0.110
+         diffuseColor .52 .26 .01
+        }
+       }
+       geometry DEF GeoBox25 Box {
+        size .75 1 125
+       }
+      }
+     ]
+    }
+    DEF dad_door_wall Transform {
+     translation 0 3.78 2.52
+     rotation 0 1 0 3.142
+     scale .252 .252 .252
+     children [
+      DEF dad_Group4 Transform {
+       translation 0 .42356 0
+       rotation 0 1 0 3.142
+       children [
+        DEF dad_ceiling2 Transform {
+         translation -102.917 15.1736 52.9169
+         rotation 1 0 0 1.571
+         children [
+          DEF ceiling2 Shape {
+           appearance Appearance {
+            texture ImageTexture {
+             url [
+              "bluefade.jpg"
+             ]
+            }
+            textureTransform TextureTransform {
+             translation 0 2
+            }
+            material USE White
+           }
+           geometry DEF GeoBox11 Box {
+            size 15 15 .1
+           }
+          }
+         ]
+        }
+        DEF dad_ceiling0 Transform {
+         translation 0 15.1736 52.8809
+         rotation 0 -.707 .707 3.142
+         children [
+          DEF ceiling0 Shape {
+           appearance Appearance {
+            texture ImageTexture {
+             url [
+              "block.jpg"
+             ]
+            }
+            textureTransform TextureTransform {
+             scale 1 .25
+             translation 0 2
+            }
+            material USE White
+           }
+           geometry DEF GeoBox7 Box {
+            size 190.8 15 .1
+           }
+          }
+         ]
+        }
+       ]
+      }
+      DEF dad_Upper_Wall0 Transform {
+       translation 0 22.6644 -38.3943
+       rotation 1 0 0 .785
+       children [
+        DEF Upper_Wall0 Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "block.jpg"
+           ]
+          }
+          material USE White
+         }
+         geometry DEF GeoBox5 Box {
+          size 190.5 20 .1
+         }
+        }
+       ]
+      }
+      DEF dad_Wall3 Transform {
+       translation 0 7.45 -59.5141
+       rotation 0 1 0 3.142
+       children [
+        DEF Wall3 Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "wall_9e.jpg"
+           ]
+          }
+          textureTransform TextureTransform {
+           scale 8 1
+          }
+          material USE White
+         }
+         geometry DEF GeoBox18 Box {
+          size 220 15 .1
+         }
+        }
+       ]
+      }
+     ]
+    }
+    DEF dad_upper_floor1 Transform {
+     translation 25.17483 3.84971 -16.38002
+     scale .252 .252 .252
+     children [
+      DEF upper_floor1 Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "floor2.jpg"
+         ]
+        }
+        material USE White
+       }
+       geometry DEF GeoBox22 Box {
+        size 20 .1 20
+       }
+      }
+     ]
+    }
+    DEF dad_Cylinder1 Transform {
+     translation 22.54674 4.35063 -13.78845
+     children [
+      DEF Cylinder1 Shape {
+       appearance Appearance {
+        material USE Rust
+       }
+       geometry DEF GeoCylinder1 Cylinder {
+        height 1.000
+        radius 0.150
+       }
+      }
+     ]
+    }
+    DEF dad_Cylinder2 Transform {
+     translation 22.80602 4.35063 -13.78845
+     children [
+      DEF Cylinder2 Shape {
+       appearance Appearance {
+        material USE Rust
+       }
+       geometry DEF GeoCylinder2 Cylinder {
+        height 1.000
+        radius 0.150
+       }
+      }
+     ]
+    }
+   ]
+  }
+  DEF dad_FIRST_FLOOR Transform {
+   scale 3.96825 3.96825 3.96825
+   children [
+    DEF dad_Reference1 Transform {
+     rotation -0 -1 0 1.571
+     scale .252 .252 .252
+     children [
+      DEF side_Wall_lower Group {
+       children [
+        DEF dad_Wall1 Transform {
+         translation 0 7.45 -109.512
+         children [
+          DEF Wall1 Shape {
+           appearance Appearance {
+            texture ImageTexture {
+             url [
+              "wall_9e.jpg"
+             ]
+            }
+            textureTransform TextureTransform {
+             scale 6 1
+            }
+            material USE White
+           }
+           geometry DEF GeoBox17 Box {
+            size 140 15 .1
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+    DEF Entrance Viewpoint {
+     description "Entrance"
+     jump TRUE
+     fieldOfView 0.785
+     position 0 .875 -13.35601
+     orientation 0 0 1 0
+    }
+    DEF dad_first_ceiling Transform {
+     translation -2.52 3.8076 0
+     scale .252 .252 .252
+     children [
+      DEF first_ceiling Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "block.jpg"
+         ]
+        }
+        textureTransform TextureTransform {
+         scale .39834 .48637
+         translation .43908 .85645
+        }
+        material USE White
+       }
+       geometry DEF GeoBox20 Box {
+        size 200 .1 140
+       }
+      }
+     ]
+    }
+    DEF dad_floor Transform {
+     translation 0 -.01339 0
+     scale .252 .252 .252
+     children [
+      DEF floor Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "floor2.jpg"
+         ]
+        }
+        textureTransform TextureTransform {
+         scale 20 10
+        }
+        material USE White
+       }
+       geometry DEF GeoBox1 Box {
+        size 220 .1 140
+       }
+      }
+     ]
+    }
+    DEF dad_upper_floor2 Transform {
+     translation 25.17483 3.8076 -16.38002
+     scale .252 .252 .252
+     children [
+      DEF upper_floor2 Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "bluefade.jpg"
+         ]
+        }
+        material USE White
+       }
+       geometry DEF GeoBox23 Box {
+        size 20 .1 20
+       }
+      }
+     ]
+    }
+    DEF dad_upper_floor5 Transform {
+     translation 22.80602 2.64976 -6.72349
+     rotation 1 0 0 .279
+     scale .252 .252 .252
+     children [
+      DEF upper_floor5 Shape {
+       appearance Appearance {
+        material USE Rust
+       }
+       geometry DEF GeoBox26 Box {
+        size .75 1 58
+       }
+      }
+     ]
+    }
+    DEF dad_Reference19 Transform {
+     translation 22.80602 .378 .32012
+     children [
+      USE Cylinder2
+     ]
+    }
+    DEF dad_Group3 Transform {
+     scale .252 .252 .252
+     children [
+      DEF dad_Wall0 Transform {
+       translation -60.5743 7.45 69.512
+       rotation 0 1 0 3.142
+       children [
+        DEF Wall0 Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "wall_9e.jpg"
+           ]
+          }
+          textureTransform TextureTransform {
+           scale 3 1
+          }
+          material USE White
+         }
+         geometry DEF GeoBox6 Box {
+          size 100 15 .1
+         }
+        }
+       ]
+      }
+      DEF dad_Reference5 Transform {
+       translation 60.5743 7.45 69.512
+       children [
+        USE Wall0
+       ]
+      }
+      DEF dad_Door Transform {
+       translation 0 7.45 69.512
+       rotation 0 1 0 3.142
+       children [
+        DEF Door Shape {
+         appearance Appearance {
+          texture ImageTexture {
+           url [
+            "door.jpg"
+           ]
+          }
+          material USE White
+         }
+         geometry DEF GeoBox8 Box {
+          size 21 15 .1
+         }
+        }
+       ]
+      }
+      DEF dad_directorylocation Transform {
+       translation 15.4286 0 67.2505
+       rotation 0 1 0 3.142
+       scale 3.96825 3.96825 3.96825
+       children [
+       ]
+      }
+     ]
+    }
+    DEF dad_ramp Transform {
+     translation 25.20003 .51388 -1.72394
+     rotation 1 0 0 .262
+     scale .252 .252 .252
+     children [
+      DEF ramp Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "floor2.jpg"
+         ]
+        }
+        textureTransform TextureTransform {
+         scale 1 7
+        }
+        material USE White
+       }
+       geometry DEF GeoBox21 Box {
+        size 20 .4 100
+       }
+      }
+     ]
+    }
+    DEF dad_Wall4 Transform {
+     translation 0 1.8774 -17.51757
+     scale .252 .252 .252
+     children [
+      DEF Wall4 Shape {
+       appearance Appearance {
+        texture ImageTexture {
+         url [
+          "wall_9e.jpg"
+         ]
+        }
+        textureTransform TextureTransform {
+         scale 8 1
+        }
+        material USE White
+       }
+       geometry DEF GeoBox19 Box {
+        size 220 15 .1
+       }
+      }
+     ]
+    }
+    DEF dad_side_Wall_lower Transform {
+     rotation 0 1 0 1.571
+     scale .252 .252 .252
+     children [
+      USE side_Wall_lower
+     ]
+    }
+   ]
+  }
+ ]
+}
+DEF large_display_32 Transform {
+ translation 24 0 5
+ children [
+  DEF short_display Group {
+   children [
+    Transform {
+     translation 0 .25 0
+     children [
+      Shape {
+       appearance Appearance {
+        texture DEF blockTex1 ImageTexture {
+         url [
+          "block.jpg"
+         ]
+        }
+        material USE White
+       }
+       geometry IndexedFaceSet {
+        solid FALSE
+        creaseAngle 3.140
+        coordIndex [
+          0 1 2 -1 
+          0 2 3 -1 
+          0 3 4 -1 
+          0 4 5 -1 
+          0 5 6 -1 
+          0 6 7 -1 
+          0 7 8 -1 
+          0 8 9 -1 
+          0 9 10 -1 
+          0 10 11 -1 
+          0 11 12 -1 
+          0 12 13 -1 
+          0 13 14 -1 
+          0 14 15 -1 
+        ]
+        texCoordIndex [
+          0 1 2 -1 
+          0 2 3 -1 
+          0 3 4 -1 
+          0 4 5 -1 
+          0 5 6 -1 
+          0 6 7 -1 
+          0 7 8 -1 
+          0 8 9 -1 
+          0 9 10 -1 
+          0 10 11 -1 
+          0 11 12 -1 
+          0 12 13 -1 
+          0 13 14 -1 
+          0 14 15 -1 
+        ]
+        coord Coordinate {
+         point [
+          -.441 .189 -1.06
+          -.815 .189 -.815
+          -1.06 .189 -.441
+          -1.15 .189 0
+          -1.06 .189 .441
+          -.815 .189 .815
+          -.441 .189 1.06
+          0 .189 1.15
+          .441 .189 1.06
+          .815 .189 .815
+          1.06 .189 .441
+          1.15 .189 0
+          1.06 .189 -.441
+          .815 .189 -.815
+          .441 .189 -1.06
+          0 .189 -1.15
+         ]
+        }
+        texCoord TextureCoordinate {
+         point [
+          .375 .893
+          .292 .84
+          .237 .759
+          .217 .664
+          .237 .569
+          .292 .488
+          .375 .434
+          .473 .415
+          .571 .434
+          .654 .488
+          .71 .569
+          .729 .664
+          .71 .759
+          .654 .84
+          .571 .893
+          .473 .912
+         ]
+        }
+       }
+      }
+     ]
+    }
+    Transform {
+     translation 0 .25 0
+     rotation 0 0 1 3.14
+     children [
+      Shape {
+       appearance Appearance {
+        texture DEF blockTex2 ImageTexture {
+         url [
+          "block.jpg"
+         ]
+        }
+        material USE White
+       }
+       geometry IndexedFaceSet {
+        solid FALSE
+        creaseAngle 0.524
+        coordIndex [
+          0 1 3 -1 
+          0 3 2 -1 
+          2 3 5 -1 
+          2 5 4 -1 
+          4 5 7 -1 
+          4 7 6 -1 
+          6 7 9 -1 
+          6 9 8 -1 
+          8 9 11 -1 
+          8 11 10 -1 
+          10 11 13 -1 
+          10 13 12 -1 
+          12 13 15 -1 
+          12 15 14 -1 
+          14 15 17 -1 
+          14 17 16 -1 
+          16 17 19 -1 
+          16 19 18 -1 
+          18 19 21 -1 
+          18 21 20 -1 
+          20 21 23 -1 
+          20 23 22 -1 
+          22 23 25 -1 
+          22 25 24 -1 
+          24 25 27 -1 
+          24 27 26 -1 
+          26 27 29 -1 
+          26 29 28 -1 
+          28 29 31 -1 
+          28 31 30 -1 
+          30 31 1 -1 
+          30 1 0 -1 
+        ]
+        texCoordIndex [
+          0 1 3 -1 
+          0 3 2 -1 
+          2 3 5 -1 
+          2 5 4 -1 
+          4 5 7 -1 
+          4 7 6 -1 
+          6 7 9 -1 
+          6 9 8 -1 
+          8 9 11 -1 
+          8 11 10 -1 
+          10 11 13 -1 
+          10 13 12 -1 
+          12 13 15 -1 
+          12 15 14 -1 
+          14 15 17 -1 
+          14 17 16 -1 
+          16 17 19 -1 
+          16 19 18 -1 
+          18 19 21 -1 
+          18 21 20 -1 
+          20 21 23 -1 
+          20 23 22 -1 
+          22 23 25 -1 
+          22 25 24 -1 
+          24 25 27 -1 
+          24 27 26 -1 
+          26 27 29 -1 
+          26 29 28 -1 
+          28 29 31 -1 
+          28 31 30 -1 
+          30 31 33 -1 
+          30 33 32 -1 
+        ]
+        coord Coordinate {
+         point [
+          0 0 -1
+          0 .25 -1
+          .383 0 -.924
+          .383 .25 -.924
+          .707 0 -.707
+          .707 .25 -.707
+          .924 0 -.383
+          .924 .25 -.383
+          1 0 0
+          1 .25 0
+          .924 0 .383
+          .924 .25 .383
+          .707 0 .707
+          .707 .25 .707
+          .383 0 .924
+          .383 .25 .924
+          0 0 1
+          0 .25 1
+          -.383 0 .924
+          -.383 .25 .924
+          -.707 0 .707
+          -.707 .25 .707
+          -.924 0 .383
+          -.924 .25 .383
+          -1 0 0
+          -1 .25 0
+          -.924 0 -.383
+          -.924 .25 -.383
+          -.707 0 -.707
+          -.707 .25 -.707
+          -.383 0 -.924
+          -.383 .25 -.924
+         ]
+        }
+        texCoord TextureCoordinate {
+         point [
+          1 0
+          .999 .375
+          .938 0
+          .937 .375
+          .875 0
+          .874 .375
+          .813 0
+          .812 .375
+          .75 0
+          .749 .375
+          .688 0
+          .687 .375
+          .625 0
+          .624 .375
+          .563 0
+          .562 .375
+          .5 0
+          .499 .375
+          .438 0
+          .437 .375
+          .375 0
+          .374 .375
+          .313 0
+          .312 .375
+          .25 0
+          .249 .375
+          .188 0
+          .187 .375
+          .125 0
+          .124 .375
+          .063 0
+          .061 .375
+          0 0
+          -.001 .375
+         ]
+        }
+       }
+      }
+     ]
+    }
+    Transform {
+     translation 0 .25 0
+     children [
+      Shape {
+       appearance Appearance {
+        material DEF material455 Material {
+         ambientIntensity 0.200
+         shininess 0.120
+         diffuseColor .44 .15 0
+         specularColor .78 .69 .4
+        }
+       }
+       geometry IndexedFaceSet {
+        solid FALSE
+        creaseAngle 3.140
+        coordIndex [
+          0 1 3 -1 
+          0 3 2 -1 
+          2 3 5 -1 
+          2 5 4 -1 
+          4 5 7 -1 
+          4 7 6 -1 
+          6 7 9 -1 
+          6 9 8 -1 
+          8 9 11 -1 
+          8 11 10 -1 
+          10 11 13 -1 
+          10 13 12 -1 
+          12 13 15 -1 
+          12 15 14 -1 
+          14 15 17 -1 
+          14 17 16 -1 
+          16 17 19 -1 
+          16 19 18 -1 
+          18 19 21 -1 
+          18 21 20 -1 
+          20 21 23 -1 
+          20 23 22 -1 
+          22 23 25 -1 
+          22 25 24 -1 
+          24 25 27 -1 
+          24 27 26 -1 
+          26 27 29 -1 
+          26 29 28 -1 
+          28 29 31 -1 
+          28 31 30 -1 
+          30 31 1 -1 
+          30 1 0 -1 
+        ]
+        coord Coordinate {
+         point [
+          0 -.019 -1.15
+          0 .189 -1.15
+          .441 -.019 -1.06
+          .441 .189 -1.06
+          .815 -.019 -.815
+          .815 .189 -.815
+          1.06 -.019 -.441
+          1.06 .189 -.441
+          1.15 -.019 0
+          1.15 .189 0
+          1.06 -.019 .441
+          1.06 .189 .441
+          .815 -.019 .815
+          .815 .189 .815
+          .441 -.019 1.06
+          .441 .189 1.06
+          0 -.019 1.15
+          0 .189 1.15
+          -.441 -.019 1.06
+          -.441 .189 1.06
+          -.815 -.019 .815
+          -.815 .189 .815
+          -1.06 -.019 .441
+          -1.06 .189 .441
+          -1.15 -.019 0
+          -1.15 .189 0
+          -1.06 -.019 -.441
+          -1.06 .189 -.441
+          -.815 -.019 -.815
+          -.815 .189 -.815
+          -.441 -.019 -1.06
+          -.441 .189 -1.06
+         ]
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
+DEF dad_Reference20 Transform {
+ translation -24 0 5
+ children [
+  USE short_display
+ ]
+}
+DEF dad_Reference4 Transform {
+ translation -24 0 -23.5
+ children [
+  USE short_display
+ ]
+}
+DEF dad_Reference2 Transform {
+ translation 9 0 5
+ children [
+  USE short_display
+ ]
+}
+DEF dad_Reference21 Transform {
+ translation -9 0 5
+ children [
+  USE short_display
+ ]
+}
+DEF dad_Reference22 Transform {
+ translation -9 0 -23.5
+ children [
+  USE short_display
+ ]
+}
+DEF dad_Reference6 Transform {
+ translation 9 0 -23.5
+ children [
+  USE short_display
+ ]
+}
+DEF dad_Reference16 Transform {
+ translation 16.5 0 -23.5
+ scale 2 1 1
+ children [
+  DEF big_table_with_top Group {
+   children [
+    Shape {
+     appearance Appearance {
+      texture DEF blockTex ImageTexture {
+       url [
+        "block.jpg"
+       ]
+      }
+      material USE White
+     }
+     geometry IndexedFaceSet {
+      solid FALSE
+      creaseAngle 0.524
+      coordIndex [
+        0 1 2 -1 
+        0 2 3 -1 
+        4 5 6 -1 
+        4 6 7 -1 
+      ]
+      texCoordIndex [
+        0 1 2 -1 
+        0 2 3 -1 
+        4 5 6 -1 
+        4 6 7 -1 
+      ]
+      coord Coordinate {
+       point [
+        1 1 .5
+        1 1 -.5
+        -1 1 -.5
+        -1 1 .5
+        1 2 .5
+        -1 2 .5
+        -1 2 -.5
+        1 2 -.5
+       ]
+      }
+      texCoord TextureCoordinate {
+       point [
+        .824 .427
+        .824 .91
+        .147 .91
+        .147 .427
+        .824 .427
+        .147 .427
+        .147 .91
+        .824 .91
+       ]
+      }
+     }
+    }
+    Shape {
+     appearance Appearance {
+      texture DEF blockTex0 ImageTexture {
+       url [
+        "block.jpg"
+       ]
+      }
+      material USE White
+     }
+     geometry IndexedFaceSet {
+      solid FALSE
+      creaseAngle 0.524
+      coordIndex [
+        0 1 2 -1 
+        1 3 2 -1 
+        3 4 2 -1 
+        4 0 2 -1 
+      ]
+      texCoordIndex [
+        4 1 0 -1 
+        1 2 0 -1 
+        2 3 0 -1 
+        3 4 0 -1 
+      ]
+      coord Coordinate {
+       point [
+        1 2 -.5
+        -1 2 -.5
+        0 2.5 0
+        -1 2 .5
+        1 2 .5
+       ]
+      }
+      texCoord TextureCoordinate {
+       point [
+        .479 .317
+        .115 .003
+        .266 .006
+        .708 .006
+        .901 .006
+       ]
+      }
+     }
+    }
+    Shape {
+     appearance Appearance {
+      material DEF material555 Material {
+       ambientIntensity 0.200
+       shininess 0.200
+       diffuseColor .44 .1 0
+       emissiveColor .15 .13 .06
+       specularColor 1 .68 .51
+      }
+     }
+     geometry IndexedFaceSet {
+      solid FALSE
+      creaseAngle 3.140
+      coordIndex [
+        0 1 2 -1 
+        0 2 3 -1 
+        4 0 3 -1 
+        4 3 5 -1 
+        6 4 5 -1 
+        6 5 7 -1 
+        1 6 7 -1 
+        1 7 2 -1 
+        8 9 10 -1 
+        8 10 11 -1 
+        12 8 11 -1 
+        12 11 13 -1 
+        14 12 13 -1 
+        14 13 15 -1 
+        9 14 15 -1 
+        9 15 10 -1 
+        16 17 18 -1 
+        16 18 19 -1 
+        20 16 19 -1 
+        20 19 21 -1 
+        22 20 21 -1 
+        22 21 23 -1 
+        17 22 23 -1 
+        17 23 18 -1 
+      ]
+      coord Coordinate {
+       point [
+        .639 .625 .319
+        -.639 .625 .319
+        -.526 .5 .27
+        .553 .5 .27
+        .639 .625 -.319
+        .553 .5 -.27
+        -.639 .625 -.319
+        -.526 .5 -.27
+        .474 .375 .231
+        -.449 .375 .231
+        -.409 .25 .209
+        .426 .25 .209
+        .474 .375 -.231
+        .426 .25 -.209
+        -.449 .375 -.231
+        -.409 .25 -.209
+        .446 .125 .219
+        -.429 .125 .219
+        -.519 0 .258
+        .536 0 .258
+        .446 .125 -.219
+        .536 0 -.27
+        -.429 .125 -.219
+        -.519 0 -.27
+       ]
+      }
+     }
+    }
+    Shape {
+     appearance Appearance {
+      texture DEF blockTex4 ImageTexture {
+       url [
+        "block.jpg"
+       ]
+      }
+      material USE White
+     }
+     geometry IndexedFaceSet {
+      solid FALSE
+      creaseAngle 0.524
+      coordIndex [
+        0 1 3 -1 
+        0 3 2 -1 
+        4 5 7 -1 
+        4 7 6 -1 
+        6 7 1 -1 
+        6 1 0 -1 
+        2 3 5 -1 
+        2 5 4 -1 
+      ]
+      texCoordIndex [
+        0 1 3 -1 
+        0 3 2 -1 
+        4 5 7 -1 
+        4 7 6 -1 
+        8 9 11 -1 
+        8 11 10 -1 
+        12 13 15 -1 
+        12 15 14 -1 
+      ]
+      coord Coordinate {
+       point [
+        -1 1 .5
+        -.75 .75 .375
+        1 1 .5
+        .75 .75 .375
+        1 1 -.5
+        .75 .75 -.375
+        -1 1 -.5
+        -.75 .75 -.375
+       ]
+      }
+      texCoord TextureCoordinate {
+       point [
+        -.001 .353
+        0 0
+        .999 .353
+        1 0
+        -.001 .353
+        0 0
+        .999 .353
+        1 0
+        -.001 .353
+        0 0
+        .999 .353
+        1 0
+        -.001 .353
+        0 0
+        .999 .353
+        1 0
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
+DEF dad_Reference17 Transform {
+ translation -16.5 0 5
+ scale 2 1 1
+ children [
+  USE big_table_with_top
+ ]
+}
+DEF dad_Reference7 Transform {
+ translation -25 0 -5
+ rotation 0 1 0 1.57
+ scale 2 1 1
+ children [
+  USE big_table_with_top
+ ]
+}
+DEF dad_Reference18 Transform {
+ translation 16.5 0 5
+ scale 2 1 1
+ children [
+  USE big_table_with_top
+ ]
+}
+DEF dad_Reference15 Transform {
+ translation -16.5 0 -23.5
+ scale 2 1 1
+ children [
+  USE big_table_with_top
+ ]
+}
+DEF big_case_38 Transform {
+ translation -25 0 -14.5
+ rotation 0 1 0 1.57
+ scale 2 1 1
+ children [
+  USE big_table_with_top
+ ]
+}
+DEF big_case_no_lid_26 Transform {
+ translation -15 0 -15
+ children [
+  DEF small_table Group {
+   children [
+    Shape {
+     appearance Appearance {
+      texture DEF blockTex5 ImageTexture {
+       url [
+        "block.jpg"
+       ]
+      }
+      material USE White
+     }
+     geometry IndexedFaceSet {
+      solid FALSE
+      creaseAngle 0.524
+      coordIndex [
+        0 1 3 -1 
+        0 3 2 -1 
+        4 5 7 -1 
+        4 7 6 -1 
+        6 7 1 -1 
+        6 1 0 -1 
+        2 3 5 -1 
+        2 5 4 -1 
+      ]
+      texCoordIndex [
+        0 1 3 -1 
+        0 3 2 -1 
+        4 5 7 -1 
+        4 7 6 -1 
+        8 9 11 -1 
+        8 11 10 -1 
+        12 13 15 -1 
+        12 15 14 -1 
+      ]
+      coord Coordinate {
+       point [
+        -1 1 .5
+        -.75 .75 .375
+        1 1 .5
+        .75 .75 .375
+        1 1 -.5
+        .75 .75 -.375
+        -1 1 -.5
+        -.75 .75 -.375
+       ]
+      }
+      texCoord TextureCoordinate {
+       point [
+        -.001 .353
+        0 0
+        .999 .353
+        1 0
+        -.001 .353
+        0 0
+        .999 .353
+        1 0
+        -.001 .353
+        0 0
+        .999 .353
+        1 0
+        -.001 .353
+        0 0
+        .999 .353
+        1 0
+       ]
+      }
+     }
+    }
+    Shape {
+     appearance Appearance {
+      texture DEF blockTex3 ImageTexture {
+       url [
+        "block.jpg"
+       ]
+      }
+      material USE White
+     }
+     geometry IndexedFaceSet {
+      solid FALSE
+      creaseAngle 0.524
+      coordIndex [
+        0 1 2 -1 
+        0 2 3 -1 
+      ]
+      texCoordIndex [
+        0 1 2 -1 
+        0 2 3 -1 
+      ]
+      coord Coordinate {
+       point [
+        1 1 .5
+        1 1 -.5
+        -1 1 -.5
+        -1 1 .5
+        1 1.63 .5
+        -1 1.63 .5
+        -1 1.63 -.5
+        1 1.63 -.5
+       ]
+      }
+      texCoord TextureCoordinate {
+       point [
+        .857 .605
+        .86 .921
+        .162 .921
+        .16 .605
+        1 0
+        0 0
+        0 .5
+        1 .5
+       ]
+      }
+     }
+    }
+    Shape {
+     appearance Appearance {
+      material USE material455
+     }
+     geometry IndexedFaceSet {
+      solid FALSE
+      creaseAngle 3.140
+      coordIndex [
+        0 1 2 -1 
+        0 2 3 -1 
+        4 0 3 -1 
+        4 3 5 -1 
+        6 4 5 -1 
+        6 5 7 -1 
+        1 6 7 -1 
+        1 7 2 -1 
+        8 9 10 -1 
+        8 10 11 -1 
+        12 8 11 -1 
+        12 11 13 -1 
+        14 12 13 -1 
+        14 13 15 -1 
+        9 14 15 -1 
+        9 15 10 -1 
+        16 17 18 -1 
+        16 18 19 -1 
+        20 16 19 -1 
+        20 19 21 -1 
+        22 20 21 -1 
+        22 21 23 -1 
+        17 22 23 -1 
+        17 23 18 -1 
+      ]
+      coord Coordinate {
+       point [
+        .639 .625 .319
+        -.639 .625 .319
+        -.526 .5 .27
+        .553 .5 .27
+        .639 .625 -.319
+        .553 .5 -.27
+        -.639 .625 -.319
+        -.526 .5 -.27
+        .474 .375 .231
+        -.449 .375 .231
+        -.409 .25 .209
+        .426 .25 .209
+        .474 .375 -.231
+        .426 .25 -.209
+        -.449 .375 -.231
+        -.409 .25 -.209
+        .446 .125 .219
+        -.429 .125 .219
+        -.519 0 .258
+        .536 0 .258
+        .446 .125 -.219
+        .536 0 -.27
+        -.429 .125 -.219
+        -.519 0 -.27
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
+DEF dad_Reference12 Transform {
+ translation -5 0 -15
+ children [
+  USE small_table
+ ]
+}
+DEF dad_Reference11 Transform {
+ translation 5 0 -15
+ children [
+  USE small_table
+ ]
+}
+DEF dad_Reference10 Transform {
+ translation 15 0 -5
+ children [
+  USE small_table
+ ]
+}
+DEF dad_Reference13 Transform {
+ translation -5 0 -5
+ children [
+  USE small_table
+ ]
+}
+DEF dad_Reference9 Transform {
+ translation 15 0 -15
+ children [
+  USE small_table
+ ]
+}
+DEF dad_Reference8 Transform {
+ translation -15 0 -5
+ children [
+  USE small_table
+ ]
+}
+DEF dad_Reference14 Transform {
+ translation 5 0 -5
+ children [
+  USE small_table
+ ]
+}
