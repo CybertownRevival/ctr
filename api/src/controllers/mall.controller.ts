@@ -40,7 +40,6 @@ class MallController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const orderBy = request.query.orderBy;
-    console.log('controller', orderBy);
     try{
       const stores = await this.mallService.getMallStores(<string>orderBy);
       response.status(200).json({ status: 'success', stores: stores });
