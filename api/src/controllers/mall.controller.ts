@@ -9,8 +9,6 @@ import {
   ObjectInstanceService,
 } from '../services';
 // Removed unused import
-import {stringify} from 'ts-jest';
-
 class MallController {
   constructor(
     private memberService: MemberService,
