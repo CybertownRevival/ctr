@@ -506,9 +506,10 @@ class MemberController {
       }
       if(storage && storage.member_id === session.id){
         this.placeService.updatePlaces(
-          parseInt(request.body.id.toString()),
-          'name',
-          storageName,
+          {
+            'id': parseInt(request.body.id.toString()),
+            'name': storageName,
+          },
         );
         response.status(200).json({status: 'success'});
       }

@@ -59,6 +59,7 @@ import UserFireRoles from "@/pages/admin/user/FireRoles.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
 import AvatarSearch from "@/pages/admin/avatar/search.vue";
 import PlaceSearch from "@/pages/admin/place/search.vue";
+import AdminPlaceUpdate from "@/pages/admin/place/update.vue";
 import ObjectSearch from "@/pages/admin/objects/search.vue";
 import AdminObjectUpdate from "@/pages/admin/objects/update.vue";
 import CommunityOverview from "@/pages/admin/overview/overview.vue";
@@ -386,6 +387,14 @@ export default [
     name: "AdminObjectUpdate",
     meta: {
       title: "Update Object - Admin Panel",
+    },
+  },
+  {
+    path: "/admin/update-place/:id",
+    component: AdminPlaceUpdate,
+    name: "AdminPlaceUpdate",
+    meta: {
+      title: "Update Place - Admin Panel",
     },
   },
   {

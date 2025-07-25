@@ -98,10 +98,13 @@ export class PlaceRepository {
       : undefined;
   }
 
-  public async updatePlaces(id: number, column: string, content: string): Promise<any> {
-    await this.db.place
-      .where({id: id})
-      .update(column, content);
+  public async updatePlaces(placeinfo: any): Promise<void> {
+    const { id, created_at, updated_at, ...updateData } = placeinfo;
+
+    await this.db.knex('place')
+      .where('id', id)
+      .update(updateData);
+    return;
   }
 
   /**

@@ -297,10 +297,6 @@ export class AdminService {
     };
   }
 
-  public async updatePlaces(id: number, column: string, content: string): Promise<any> {
-    await this.placeRepository.updatePlaces(id, column, content);
-  }
-
   public async updateObjects(
     id: number,
     name: string,

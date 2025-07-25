@@ -8,6 +8,7 @@ import {
   PlaceService, 
   RoleAssignmentService,
   ObjectInstanceService, } from '../services';
+import { Place } from 'models/place.model';
 
 class AdminController {
   constructor(
@@ -512,24 +513,22 @@ class AdminController {
     }
   }
 
-  public async placesUpdate(request: Request, response: Response): Promise<any> {
+  public async placesUpdate(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
-    if (admin) {
-      try {
-        this.adminService.updatePlaces(
-          parseInt(request.body.id.toString()),
-          request.body.column.toString(),
-          request.body.content.toString(),
-        );
-        response.status(200).json({status: 'success'});
-      } catch (error) {
-        console.log(error);
-        response.status(400).json({error});
-      }
-    } else {
+    if (!admin) {
       response.status(403).json({message: 'Access Denied'});
+      return;
+    }
+    const  placeinfo = request.body;
+    try {
+      this.placeService.updatePlaces(placeinfo);
+      response.status(200).json({status: 'success'});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({error: 'An error occurred while updating the place'});
+      return;
     }
   }
 

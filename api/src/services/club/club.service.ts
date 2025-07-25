@@ -127,8 +127,8 @@ export class ClubService {
     );
     
     //delete the club
-    await this.placeRepository.updatePlaces(place_id, 'status', '0');
-    
+    await this.placeRepository.updatePlaces({'id': place_id, 'status': '0'});
+
     return;
   }
   

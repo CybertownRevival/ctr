@@ -270,8 +270,8 @@ export class PlaceService {
     });
   }
 
-  public async updatePlaces(id: number, column: string, content: string): Promise<any> {
-    await this.placeRepository.updatePlaces(id, column, content);
+  public async updatePlaces(placeinfo: any): Promise<void> {
+    return await this.placeRepository.updatePlaces(placeinfo);
   }
 
   private async findRoleIdsBySlug(slug: string): Promise<{owner: number, deputy: number}> {

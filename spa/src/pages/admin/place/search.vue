@@ -61,12 +61,8 @@
         <td v-show="type === 'shop' && place.status === 1" class="p-4" style="color: limegreen; font-weight: bold;">{{ status[place.status] }}</td>
         <td v-show="type === 'shop' && place.status === 0" class="p-4" style="color: gray;"><i>{{ status[place.status] }}</i></td>
         <td class="p-4" v-if="accessLevel.includes('security') && ['club', 'home'].includes(type) || accessLevel.includes('admin')">
-          <button class="btn-ui" @click="updateName(place.id, place.name)">Edit Name</button>
-          <button class="btn-ui" @click="updateDesc(place.id, place.description)">Edit Desc</button>
+          <button class="btn-ui" @click="updatePlace(place.id)">Edit Place</button>
           <button class="btn-ui" @click="updatePet(place.id)">Edit Pet</button>
-          <br v-show="type === 'shop'" />
-          <button v-show="type === 'shop' && place.status === 1" class="btn-ui" @click="updateStatus(place.id, place.status)">Disable</button>
-          <button v-show="type === 'shop' && place.status === 0" class="btn-ui" @click="updateStatus(place.id, place.status)">Enable</button>
         </td>
         <td v-else></td>
       </tr>
@@ -139,62 +135,8 @@ export default Vue.extend({
         console.log(error);
       }
     },
-    async updateStatus(id, state){
-      let updateStatus;
-      if(state === 0){
-        updateStatus = 1;
-      } else {
-        updateStatus = 0;
-      }
-      try{
-        await this.$http.post("/admin/places/update/", {
-          id: id,
-          column: 'status',
-          content: updateStatus
-        }).then(response => {
-          if(response.data.status === 'success'){
-            this.searchPlaces();
-          }
-        })
-      } catch(error){
-        console.log(error);
-      }
-    },
-    async updateName(id, name){
-      let newName = prompt("Current Name:\n " + name + "\n\nNew Name:", name);
-      if(newName !== null && newName !==''){
-        try{
-        await this.$http.post("/admin/places/update/", {
-          id: id,
-          column: 'name',
-          content: newName
-        }).then(response => {
-          if(response.data.status === 'success'){
-            this.searchPlaces();
-          }
-        })
-      } catch(error){
-        console.log(error);
-      }
-      }
-    },
-    async updateDesc(id, desc){
-      let newDesc = prompt("Current Description:\n " + desc + "\n\nNew Description:", desc);
-      if(newDesc !== null && newDesc !==''){
-        try{
-        await this.$http.post("/admin/places/update/", {
-          id: id,
-          column: 'description',
-          content: newDesc
-        }).then(response => {
-          if(response.data.status === 'success'){
-            this.searchPlaces();
-          }
-        })
-      } catch(error){
-        console.log(error);
-      }
-      }
+    async updatePlace(id){
+      window.open(`#/admin/update-place/${id}`, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
     async updatePet(id){
       window.open(`#/admin/virtualpet/${id}`, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
