@@ -2,6 +2,7 @@ import { Model } from './model';
 
 /** Defines a Place object as stored in the db */
 export interface Place extends Model {
+  id: number;
   assets_dir?: string;
   description?: string;
   name: string;

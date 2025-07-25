@@ -62,7 +62,6 @@ export class MallService {
     if(!orderBy){
       orderBy = 'id';
     }
-    console.log('service', orderBy);
     return await this.placeRepository.findAllStores(orderBy);
   }
 

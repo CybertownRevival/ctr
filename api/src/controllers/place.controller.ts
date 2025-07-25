@@ -1,8 +1,9 @@
-import {Request, response, Response} from 'express';
+import {Request, Response} from 'express';
 import { PlaceService, MemberService, HomeService } from '../services';
 import { Container } from 'typedi';
 
 import * as badwords from 'badwords-list';
+import { Place } from 'models';
 
 class PlaceController {
   constructor(
@@ -124,7 +125,7 @@ class PlaceController {
     }
   }
 
-  public async getPlaceById(request: Request, response: Response): Promise<void> {
+  public async getPlaceById(request: Request, response: Response): Promise<Place[]> {
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;
     try {
@@ -175,7 +176,7 @@ class PlaceController {
       if(place.member_id === session.id){
         await this.placeService.deleteStorage(unitID);
         response.status(200).json({status: 'success'});
-      }; 
+      }
     } catch (error) {
       console.error(error);
       response.status(400).json({ error: error.message });
@@ -260,7 +261,7 @@ class PlaceController {
               response.status(400).json({ error: error});
             }
           } else {
-            response.status(200).json({ error: 'You do not have access to update this.'})
+            response.status(200).json({ error: 'You do not have access to update this.' });
           }
         }
       }
