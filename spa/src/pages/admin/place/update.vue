@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col w-screen items-center">
     <h1 class="mb-5">Admin Update Place</h1>
-    <div>Orginal Name: {{ oldName }}</div>
+    <div>Original Name: {{ oldName }}</div>
     <div class="grid justify-items-center">
       <table class="my-5">
         <tr>
