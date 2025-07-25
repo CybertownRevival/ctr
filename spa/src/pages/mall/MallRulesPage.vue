@@ -99,7 +99,7 @@
       <br><ul class="list-disc ml-5">
       <li>Objects shall not contain any inflammatory content. <i>(For information on what is
         considered inflammatory content, please see section 2 &amp; 5 of the
-        <router-link to="/rulesandregulations">Rules &amp; Regulations</router-link>.)</i></li>
+        <router-link :name="'rulesAndRegulations'">Rules &amp; Regulations</router-link>.)</i></li>
       <li>Objects shall not contain any potentially offensive material.</li>
       <li>Objects that depict or contain imagery of bodily harm are not allowed.</li>
       <li>Weapons or bombs that show gore are not allowed.</li>
