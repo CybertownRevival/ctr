@@ -8,7 +8,7 @@ import {
   WalletService,
   ObjectInstanceService,
 } from '../services';
-import {orderBy} from 'lodash';
+// Removed unused import
 import {stringify} from 'ts-jest';
 
 class MallController {
