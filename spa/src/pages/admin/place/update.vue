@@ -28,6 +28,15 @@
           <td class="text-right p-2">World Filename: </td>
           <td class="w-96 p-2"><input class="text-black w-full" v-model="place.world_filename" type="text" /></td>
         </tr>
+        <tr v-if="isTypeIncluded(['club'])">
+          <td class="text-right p-2">Private: </td>
+          <td class="w-96 p-2">
+            <select class="text-black w-full" v-model="place.private">
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </td>
+        </tr>
         <tr>
           <td class="text-right p-2">Status: </td>
           <td class="w-96 p-2">
@@ -88,7 +97,7 @@ export default Vue.extend({
     },
     isTypeIncluded(types: string[]): boolean {
       return types.includes(this.place.type);
-    }
+    },
     async updatePlace() {
       this.error = "";
       this.success = "";
