@@ -671,6 +671,13 @@ NavigationInfo {
   avatarSize	[ 0.25, 1.75, 0.75 ]
   headlight	FALSE
 }
+########################
+# Start of world group #
+########################
+DEF dad_Group3 Transform {
+ translation 0 -.4 0
+ children [
+
 Transform {
   children	[
     Shape {
@@ -960,6 +967,8 @@ Transform {
   ]
   translation	-0.07481 0.3988 -0.03547
   scale	1 0.369 1
+}
+]
 }
 Transform {
   children	Shape {
