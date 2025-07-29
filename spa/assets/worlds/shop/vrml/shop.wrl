@@ -158,6 +158,7 @@ eventOut SFBool isActive
 Transform{translation IS position rotation IS rotation bboxSize 4 6 4
 children[
 
+Viewpoint { position 0 1.75 25 fieldOfView .785 description "Enter"}
 Viewpoint{position 0 1.75 6 description"Object Catalog"}
 
 DEF sense ProximitySensor{size 14 14 14}
@@ -547,7 +548,7 @@ DEF dad_Global_4 Transform {
   }
  ]
 }
-Viewpoint { position 0 1.75 10 fieldOfView .785 description "Enter"}
+
 NavigationInfo {
 	avatarSize [ .25 1.75 .75 ] headlight FALSE speed 2.25
 	type [ "WALK" "SLIDE" ]
