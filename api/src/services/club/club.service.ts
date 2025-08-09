@@ -21,6 +21,27 @@ export class ClubService {
     private roleRepository: RoleRepository,
   ) {}
 
+  public async isOwner(placeId: number, memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    
+    if (
+      roleAssignments.find(assignment => {
+        return (
+          [
+            this.roleRepository.roleMap.Admin,
+          ].includes(assignment.role_id) ||
+          ([
+            this.roleRepository.roleMap.ClubOwner,
+          ].includes(assignment.role_id) &&
+          assignment.place_id === placeId)
+        );
+      })
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   public async createClub(
     memberId: number,
     name: string,
@@ -167,15 +188,6 @@ export class ClubService {
       await this.clubMemberRepository.addMember(clubId, memberId, 'member');
       return;
     }
-  }
-
-  public async updateClub(
-    place_id: number,
-    name: string,
-    description: string,
-    type: string,
-  ): Promise<void> {
-  
   }
 
   public async searchClubs(

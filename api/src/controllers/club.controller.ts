@@ -5,6 +5,7 @@ import {
   MemberService,
   PlaceService,
 } from '../services/';
+import * as badwords from 'badwords-list';
 
 class ClubController {
   constructor(
@@ -21,7 +22,7 @@ class ClubController {
     }
     const clubId = Number.parseInt(request.query.clubId.toString());
     try {
-      const canAdmin = await this.placeService.canAdmin('personalclub', clubId, session.id);
+      const canAdmin = await this.clubService.isOwner(clubId, session.id);
       if (canAdmin) {
         response.status(200).json({isMember: true});
         return;
@@ -47,16 +48,29 @@ class ClubController {
   public async createClub(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) {
-      response.status(401).json({message: 'Session not found or invalid'});
+      response.status(401).json({ message: 'Session not found or invalid' });
       return;
     }
     const {name, description, type} = request.body;
+    if (!name || !description || !type) {
+      response.status(400).json({ message: 'Missing required fields' });
+      return;
+    }
+    const badWords = badwords.regex;
+    if (name.match(badWords)) {
+      response.status(400).json({ message: 'Club name contains inappropriate language' });
+      return;
+    }
+    if (description.match(badWords)) {
+      response.status(400).json({ message: 'Club description contains inappropriate language' });
+      return;
+    }
     try {
       const club = await this.clubService.createClub(session.id, name, description, type);
       response.status(200).json({success: club});
     } catch (error) {
       console.log(error);
-      response.status(400).json({'error': error.message});
+      response.status(400).json({message: error.message});
     }
   }
   
@@ -154,7 +168,24 @@ class ClubController {
       response.status(400).json({message: error.message});
     }
   }
-  
+
+  public async isOwner(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) {
+      response.status(401).json({message: 'Session not found or invalid'});
+      return;
+    }
+    const clubId = Number.parseInt(request.params.clubId);
+    try {
+      const isOwner = await this.clubService.isOwner(clubId, session.id);
+      console.log(`Is this ${session.id} the owner of the club? ${isOwner}`);
+      response.status(200).json({isOwner});
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({message: "Error checking permissions"});
+    }
+  }
+
   public async joinClub(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) {
@@ -173,9 +204,40 @@ class ClubController {
 
   public async updateClub(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
+    const { updateInfo } = request.body;
     if (!session) {
-      response.status(401).send();
+      response.status(401).json({message: 'Session not found or invalid'});
       return;
+    }
+    const isOwner = await this.clubService.isOwner(updateInfo.id, session.id);
+    if (!isOwner) {
+      response.status(403).json({message: 'You are not the owner of this club'});
+      return;
+    }
+    if (
+      !updateInfo || !updateInfo.id || !updateInfo.description) {
+      response.status(400).json({message: 'Invalid update information'});
+      return;
+    }
+    if (
+      updateInfo.description === undefined ||
+      updateInfo.private === undefined ||
+      (updateInfo.private !== 0 && updateInfo.private !== 1)
+    ) {
+      response.status(400).json({ message: 'Missing information for updating' });
+      return;
+    }
+    const badWords = badwords.regex;
+    if (updateInfo.description.match(badWords)) {
+      response.status(400).json({message: 'Club description contains inappropriate language'});
+      return;
+    }
+    try {
+      await this.placeService.updatePlaces(updateInfo);
+      response.status(200).json({ success: true });
+    } catch (error) {
+      console.log(error);
+      response.status(400).json({ message: error.message });
     }
   }
 

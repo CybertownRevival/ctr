@@ -132,6 +132,7 @@ export default Vue.extend({
   methods: {
     async hasAccess(): Promise<boolean> {
       let endpoint = null;
+      console.log("Checking access for place type:", this.$store.data.place.type);
       switch (this.$store.data.place.type) {
       case "block":
         endpoint =
@@ -157,7 +158,7 @@ export default Vue.extend({
         break;
       case "club":
         endpoint =
-          `/place/can_manage_access/${this.$store.data.place.slug}/${this.$store.data.place.id}`;
+          `/club/can_manage_access/${this.$store.data.place.id}`;
         break;
       case "shop": {
         const mallId = await this.$http.get("api/place/mall");
@@ -165,11 +166,21 @@ export default Vue.extend({
         break;
       }
       default:
+        console.error("Unknown place type:", this.$store.data.place.type);
+        this.access = false;
+        this.loaded = true;
         break;
       }
 
       try {
-        await this.$http.get(endpoint);
+        await this.$http.get(endpoint).then((response) => {
+          if (response.data.isOwner) {
+            this.access = true;
+          } else {
+            this.access = false;
+            this.loaded = true;
+          }
+        });
       } catch (error) {
         this.access = false;
         this.loaded = true;
