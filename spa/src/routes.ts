@@ -90,6 +90,7 @@ import ClubTools from "@/pages/club/ClubTools.vue";
 import ClubDirPage from "./pages/club/ClubDir.vue";
 import ClubMemberList from "./pages/club/Members.vue";
 import ClubDoor from "@/pages/club/ClubDoor.vue";
+import ClubUpdate from "@/pages/club/ClubUpdate.vue";
 
 export default [
   {
@@ -779,6 +780,12 @@ export default [
         path: "",
         component: AccessRights,
         name: "clubAccessRights",
+        meta: { wrapper: true },
+      },
+      {
+        path: "",
+        component: ClubUpdate,
+        name: "club-update",
         meta: { wrapper: true },
       },
     ],

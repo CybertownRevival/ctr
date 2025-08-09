@@ -42,7 +42,7 @@ export default Vue.extend({
     },
     async getMembership(): Promise<void> {
       await this.$http.get("/club/status", { clubId: this.$route.params.id }).then((response) => {
-        console.log(response)
+        console.log(response.data)
         this.status = response.data.status;
         if(this.status === 'none'){
           this.showButton = true;

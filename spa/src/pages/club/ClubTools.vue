@@ -18,8 +18,8 @@
     </span>
     <br />
     <div v-if="canAdmin">
-      <span href=""
-            class="btn-ui">Update</span>
+      <router-link :to="{ name: 'club-update' }"
+                   class="btn-ui">Update</router-link>
       <span>
         <router-link :to="{ name: 'clubAccessRights' }"
                      class="btn-ui">Access Rights</router-link>

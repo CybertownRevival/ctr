@@ -3,6 +3,8 @@ import {clubController} from '../controllers';
 
 const clubRoutes = Router();
 
+clubRoutes.get('/can_manage_access/:clubId', (request, response) =>
+  clubController.isOwner(request, response));
 clubRoutes.post('/create', (request, response) =>
   clubController.createClub(request, response));
 clubRoutes.post('/changememberstatus', (request, response) =>

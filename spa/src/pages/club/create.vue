@@ -92,9 +92,9 @@ export default Vue.extend({
         // redirect to the new club page using the response data id
         this.$router.push(`/club/${response.data.success}`);
         // Handle success (e.g., redirect to another page or show a success message)
-      } catch (error) {
-        console.log(error);
-        this.error = error.response.data.error;
+      } catch (Error) {
+        console.log(Error.response.data.message);
+        this.error = Error.response.data.message || "An error occurred while creating the club.";
         // Handle error (e.g., show an error message)
       }
     },
