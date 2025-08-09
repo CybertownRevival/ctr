@@ -9,6 +9,7 @@ import {
   RoleAssignmentService,
   ObjectInstanceService, } from '../services';
 import { Place } from 'models/place.model';
+import * as badwordlist from 'badwords-list';
 
 class AdminController {
   constructor(
@@ -521,7 +522,47 @@ class AdminController {
       response.status(403).json({message: 'Access Denied'});
       return;
     }
+    
     const  placeinfo = request.body;
+
+    // Check for blank required fields based on type
+    const blankFields = [];
+    
+    // Name is always required
+    console.log(placeinfo.name);
+    if (!placeinfo.name || placeinfo.name.trim() === '') {
+      blankFields.push('Name');
+    }
+    
+    // Description is required for specific types
+    if (['public', 'shop', 'colony', 'home', 'club', 'private'].includes(placeinfo.type)) {
+      if (!placeinfo.description || placeinfo.description.trim() === '') {
+        blankFields.push('Description');
+      }
+    }
+    
+    // Slug is required for specific types
+    if (['public', 'shop', 'colony', 'private'].includes(placeinfo.type)) {
+      if (!placeinfo.slug || placeinfo.slug.trim() === '') {
+        blankFields.push('Slug');
+      }
+    }
+    
+    if (blankFields.length > 0) {
+      const fieldList = blankFields.join(', ');
+      response.status(400).json({error: `These fields cannot be blank: ${fieldList}`});
+      return;
+    }
+
+    // Check for bad words
+    if (
+      placeinfo.description.match(badwordlist.regex)
+      || placeinfo.name.match(badwordlist.regex)
+      || placeinfo.slug.match(badwordlist.regex)
+    ) {
+      response.status(400).json({error: 'Inappropriate language detected'});
+      return;
+    }
     try {
       this.placeService.updatePlaces(placeinfo);
       response.status(200).json({status: 'success'});

@@ -105,7 +105,7 @@ export default Vue.extend({
         await this.$http.post(`/admin/places/update`, this.place);
         this.success = "Place updated successfully.";
       } catch (e) {
-        this.error = "Error updating place.";
+        this.error = e.response.data.error || "Error updating place.";
       }
     },
   },
