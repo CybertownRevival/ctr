@@ -18,8 +18,8 @@
           <td class="text-right p-2">Club Access: </td>
           <td class="w-96 p-2">
             <select class="text-black w-full" v-model="place.private">
-              <option value="1">By Invitation</option>
-              <option value="0">Open For Everyone</option>
+              <option value=1>By Invitation</option>
+              <option value=0>Open For Everyone</option>
             </select>
           </td>
         </tr>
