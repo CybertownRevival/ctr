@@ -81,7 +81,7 @@ class PlaceController {
     const { slug } = request.params;
     try {
       const session = this.memberService.decodeMemberToken(<string>apitoken);
-      if (!session || !(await this.placeService.canManageAccess(slug, parseInt(id), session.id))) {
+      if (!session) {
         response.status(400).json({
           error: 'Invalid or missing token.',
         });

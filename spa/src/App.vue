@@ -20,7 +20,7 @@
     <div>
       <div
         class="flex flex-row flex-grow"
-        style="height: calc(100vh - 70px) !important"
+        :style="$store.data.isUser && this.$route.meta.wrapper ? 'height: calc(100vh - 70px) !important' : 'height: 100vh !important'"
       >
         <!--Content-->
         <div class="flex flex-1">

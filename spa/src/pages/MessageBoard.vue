@@ -51,7 +51,16 @@
         <div class="w-full flex flex-row">
           <div class="flex-grow border-2 border-black"/>
           <div class="flex-grow" style="width:80%">
-            <p>Date: {{ ddate }}</p>
+            <p>Date: {{ new Date(ddate)
+                  .toLocaleString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    timeZone: 'America/Detroit',
+                  })}}</p>
             <p>Subject: <span v-if="this.dreply === 1">RE: </span>{{ dsubject }}</p>
             <p>From: {{ dfrom }}</p>
           </div>
