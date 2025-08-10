@@ -87,8 +87,7 @@ export class InboxRepository {
       .where('inbox.place_id', placeId)
       .where('inbox.status', 1)
       .innerJoin('member', 'inbox.member_id', 'member.id')
-      .orderBy('inbox.parent_id', 'desc')
-      .orderBy('inbox.id', 'asc');
+      .orderBy('inbox.id', 'desc');
   }
   
   public async getMessage(

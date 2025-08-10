@@ -52,7 +52,16 @@
         <div class="w-full flex flex-row">
           <div class="flex-grow border-2 border-black"/>
           <div class="flex-grow" style="width:80%">
-            <p>Date: {{ ddate }}</p>
+            <p>Date: {{ new Date(ddate)
+                  .toLocaleString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    timeZone: 'America/Detroit',
+                  })}}</p>
             <p>Subject: <span v-if="this.dreply === 1">RE: </span>{{ dsubject }}</p>
             <p>From: {{ dfrom }}</p>
           </div>
@@ -131,9 +140,6 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { debugMsg } from "@/helpers";
-import {response} from "express";
-
 export default Vue.extend({
   name: "Inbox",
   data: () => {
@@ -201,7 +207,6 @@ export default Vue.extend({
     },
     //get admin info from db and/or check if user is owner of message board
     async getAdminInfo(): Promise<any> {
-      console.log(this.placeinfo[0].type);
       return this.$http.post("/inbox/getadmininfo", {
         place_id: this.$route.params.place_id,
         type: this.placeinfo[0].type,

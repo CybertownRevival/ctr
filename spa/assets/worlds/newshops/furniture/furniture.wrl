@@ -10,26 +10,38 @@ groundColor[.4 .4 .8,0 0 .5,.4 0 .6]
 groundAngle [1.309,1.571]
 }
 
-EXTERNPROTO BlaxxunZone [
-eventIn         MFNode   addEvents
-eventIn         MFNode   removeEvents
-eventIn         MFNode   addAvatars
-eventIn         MFNode   removeAvatars
-exposedField    MFNode   events
-exposedField    MFNode   avatars
-eventOut        MFNode   events_added
-eventOut        MFNode   events_removed
-eventOut        MFNode   avatars_added
+PROTO BlaxxunZone [#PROTO supplied by BLAXXUN  
+eventIn         MFNode   addEvents  
+eventIn         MFNode   removeEvents  
+eventIn         MFNode   addAvatars  
+eventIn         MFNode   removeAvatars  
+exposedField    MFNode   events []
+exposedField    MFNode   avatars [] 
+exposedField    SFString myAvatarURL "" 
+exposedField    SFString myAvatarName ""
+exposedField    SFFloat  number_avatars 0
+eventOut        MFNode   avatars_added 
 eventOut        MFNode   avatars_removed
-eventIn         SFInt32  set_myAvatarGesture
-eventIn         SFInt32  myAvatarGestureFromServer
-eventOut        SFInt32  myAvatarGesture_changed
-eventOut        SFInt32  myAvatarGestureToServer
-exposedField    MFString sendToChat
-exposedField    SFFloat  beamToDistance
-exposedField    MFString groupChatName
-exposedField    MFString groupChat
-] "/externprotos/shared_xite.wrl#BlaxxunZone"
+exposedField    MFNode   avatarLOD []
+exposedField    MFFloat   avatarRange []
+]{ 
+Transform { 
+addChildren IS addEvents 
+removeChildren IS removeEvents 
+children IS events 
+} 
+Transform { 
+        addChildren IS addAvatars
+        removeChildren IS removeAvatars 
+        children IS avatars 
+}
+}# END BlaxxunZone
+
+DEF SharedZone BlaxxunZone { 
+  events [ 
+    
+   ] 
+}
 
 EXTERNPROTO SharedObject [
 exposedField SFVec3f translation

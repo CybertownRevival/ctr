@@ -81,6 +81,10 @@ export default Vue.extend({
         infopoint = "/place/getAccessInfo/mall";
         break;
       }
+      case "club": {
+        infopoint = `/place/getAccessInfo/personalclub/${this.$route.params.id}`;
+        break;
+      }
       default:
         break;
       }

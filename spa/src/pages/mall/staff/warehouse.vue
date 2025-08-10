@@ -177,7 +177,9 @@ export default Vue.extend({
       }
     },
     async getStores(){
-      const stores = await this.$http.get(`/mall/stores`);
+      const stores = await this.$http.get(`/mall/stores`, {
+        orderBy: "name",
+      });
       stores.data.stores.forEach(store => {
         this.mallStoreData.push({
           title: store.name,
