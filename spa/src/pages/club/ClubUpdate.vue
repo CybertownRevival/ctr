@@ -17,16 +17,16 @@
         <tr>
           <td class="text-right p-2">Club Access: </td>
           <td class="w-96 p-2">
-            <select class="text-black w-full" v-model="place.private">
+            <select class="text-black w-full" v-model.number="place.private">
               <option value=1>By Invitation</option>
               <option value=0>Open For Everyone</option>
             </select>
           </td>
         </tr>
       </table>
-      <div class="grid justify-center">
-        <span class="w-screen text-center text-red-500" v-if="error">{{ error }}</span>
-        <span class="w-screen text-center text-green-500" v-if="success">{{ success }}</span>
+      <div class="flex justify-center w-full">
+        <span class="w-full text-center text-red-500" v-if="error">{{ error }}</span>
+        <span class="w-full text-center text-green-500" v-if="success">{{ success }}</span>
       </div>
       <div class="flex justify-center w-full">
         <button class="btn m-2" @click="updatePlace">Update Club</button>
