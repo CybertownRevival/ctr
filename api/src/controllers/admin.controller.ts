@@ -533,7 +533,7 @@ class AdminController {
     if (!placeinfo.name || placeinfo.name.trim() === '') {
       blankFields.push('Name');
     }
-    else (placeinfo.name.match(badwordlist.regex)) {
+    else if (placeinfo.name.match(badwordlist.regex)) {
       response.status(400).json({error: 'Inappropriate language detected in name'});
     }
 
@@ -542,7 +542,7 @@ class AdminController {
       if (!placeinfo.description || placeinfo.description.trim() === '') {
         blankFields.push('Description');
       }
-      else (placeinfo.description.match(badwordlist.regex)) {
+      else if (placeinfo.description.match(badwordlist.regex)) {
         response.status(400).json({error: 'Inappropriate language detected in description'});
       }
     }
@@ -552,7 +552,7 @@ class AdminController {
       if (!placeinfo.slug || placeinfo.slug.trim() === '') {
         blankFields.push('Slug');
       }
-      else (placeinfo.slug.match(badwordlist.regex)) {
+      else if (placeinfo.slug.match(badwordlist.regex)) {
         response.status(400).json({error: 'Inappropriate language detected in slug'});
       }
     }
