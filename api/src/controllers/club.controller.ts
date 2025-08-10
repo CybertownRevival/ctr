@@ -204,15 +204,20 @@ class ClubController {
 
   public async updateClub(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
-    const { updateInfo } = request.body;
+    const updateInfo = request.body;
     if (!session) {
       response.status(401).json({message: 'Session not found or invalid'});
       return;
     }
-    const isOwner = await this.clubService.isOwner(updateInfo.id, session.id);
-    if (!isOwner) {
-      response.status(403).json({message: 'You are not the owner of this club'});
-      return;
+    try {
+      const isOwner = await this.clubService.isOwner(Number(updateInfo.id), session.id);
+      if (!isOwner) {
+        response.status(403).json({message: 'You are not the owner of this club'});
+        return;
+      }
+    } catch (error) {
+        console.log(error);
+        response.status(400).json({message: 'Error checking permissions'});
     }
     if (
       !updateInfo || !updateInfo.id || !updateInfo.description) {
