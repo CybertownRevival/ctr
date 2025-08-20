@@ -103,7 +103,7 @@ class HoodController {
         });
         return;
       }
-      response.status(200).json({ status: 'success' });
+      response.status(200).json({ isOwner: true });
     } catch (error) {
       console.error(error);
       response.status(400).json({ error });
