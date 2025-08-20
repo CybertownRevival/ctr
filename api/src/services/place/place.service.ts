@@ -92,7 +92,6 @@ export class PlaceService {
   public async canManageAccess(slug: string, placeId: number, memberId: number): Promise<boolean> {
     const placeRoleId = await this.findRoleIdsBySlug(slug);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-
     //if no roles assignable, access rights is closed to all
     if(!placeRoleId) return false;
 
@@ -157,7 +156,6 @@ export class PlaceService {
     } catch (error) {
       console.error(error);
     }
-    console.log('Security Info ', SecurityInfo);
     return SecurityInfo;
   }
 
@@ -292,7 +290,7 @@ export class PlaceService {
         owner: this.roleRepository.roleMap.ePlexChief,
         deputy: this.roleRepository.roleMap.ePlexDeputy,
       },
-      flea: {
+      fleamarket: {
         owner: this.roleRepository.roleMap.FleaMarketChief,
         deputy: this.roleRepository.roleMap.FleaMarketDeputy,
       },
