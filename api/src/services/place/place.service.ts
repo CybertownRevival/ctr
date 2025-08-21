@@ -278,7 +278,7 @@ export class PlaceService {
         owner: this.roleRepository.roleMap.BankManager,
         deputy: this.roleRepository.roleMap.BankCashier,
       },
-      clubs: {
+      clubdir: {
         owner: this.roleRepository.roleMap.ClubsChief,
         deputy: this.roleRepository.roleMap.ClubsDeputy,
       },
@@ -307,7 +307,7 @@ export class PlaceService {
         deputy: this.roleRepository.roleMap.PostOfficeDeputy,
       },
       beach: {
-        owner: this.roleRepository.roleMap.SunsetBeachManager,
+        owner: this.roleRepository.roleMap.SunsetBeachChief,
         deputy: this.roleRepository.roleMap.SunsetBeachDeputy,
       },
       waterpark: {
@@ -336,6 +336,14 @@ export class PlaceService {
       personalclub: {
         owner: this.roleRepository.roleMap.ClubOwner,
         deputy: this.roleRepository.roleMap.ClubAssistant,
+      },
+      newcomers: {
+        owner: this.roleRepository.roleMap.SeniorCityGuide,
+        deputy: this.roleRepository.roleMap.CityGuide,
+      },
+      funpark: {
+        owner: this.roleRepository.roleMap.FunParkChief,
+        deputy: this.roleRepository.roleMap.FunParkDeputy,
       },
     };
     return roleId[slug];
