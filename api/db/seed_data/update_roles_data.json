@@ -442,5 +442,11 @@
     "required_xp": "0",
     "income_xp": "23",
     "income_cc": "275"
+  },
+  {
+    "name": "Colony Representative",
+    "required_xp": "0",
+    "income_xp": "0",
+    "income_cc": "0"
   }
 ]

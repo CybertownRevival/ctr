@@ -280,9 +280,9 @@
     "income_cc": 275
   },
   {
-    "name": "Place Chief",
-    "income_xp": 22,
-    "income_cc": 260
+    "name": "Places Chief",
+    "income_xp": 0,
+    "income_cc": 0
   },
   {
     "name": "Place Deputy",
