@@ -102,6 +102,7 @@ export class PlaceService {
             this.roleRepository.roleMap.Admin,
             this.roleRepository.roleMap.CityMayor,
             this.roleRepository.roleMap.DeputyMayor,
+            this.roleRepository.roleMap.PlacesChief,
           ].includes(assignment.role_id) ||
         ([placeRoleId.owner].includes(assignment.role_id) &&
          assignment.place_id === placeId)
@@ -307,7 +308,7 @@ export class PlaceService {
         deputy: this.roleRepository.roleMap.PostOfficeDeputy,
       },
       beach: {
-        owner: this.roleRepository.roleMap.SunsetBeachManager,
+        owner: this.roleRepository.roleMap.SunsetBeachChief,
         deputy: this.roleRepository.roleMap.SunsetBeachDeputy,
       },
       waterpark: {
