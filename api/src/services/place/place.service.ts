@@ -55,8 +55,6 @@ export class PlaceService {
           return (
             [
               this.roleRepository.roleMap.Admin,
-              this.roleRepository.roleMap.CityMayor,
-              this.roleRepository.roleMap.DeputyMayor,
             ].includes(assignment.role_id)
           );
         })
@@ -72,8 +70,7 @@ export class PlaceService {
           return (
             [
               this.roleRepository.roleMap.Admin,
-              this.roleRepository.roleMap.CityMayor,
-              this.roleRepository.roleMap.DeputyMayor,
+              this.roleRepository.roleMap.PlacesChief,
             ].includes(assignment.role_id) ||
           ([
             placeRoleId.owner,
@@ -100,9 +97,7 @@ export class PlaceService {
         return (
           [
             this.roleRepository.roleMap.Admin,
-            this.roleRepository.roleMap.CityMayor,
-            this.roleRepository.roleMap.DeputyMayor,
-            this.roleRepository.roleMap.PlacesChief,
+            ...(slug !== 'mall' ? [this.roleRepository.roleMap.PlacesChief] : []),
           ].includes(assignment.role_id) ||
         ([placeRoleId.owner].includes(assignment.role_id) &&
          assignment.place_id === placeId)
@@ -337,6 +332,9 @@ export class PlaceService {
       personalclub: {
         owner: this.roleRepository.roleMap.ClubOwner,
         deputy: this.roleRepository.roleMap.ClubAssistant,
+      },
+      cityhall: {
+        owner: this.roleRepository.roleMap.CityCouncil,
       },
     };
     return roleId[slug];
