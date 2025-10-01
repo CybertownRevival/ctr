@@ -63,29 +63,17 @@ export class MemberService {
     ];
     return !!roleAssignments.find(assignment => ADMIN_ROLES.includes(assignment.role_id));
   }
-  
-  public async canMayor(memberId: number): Promise<boolean> {
+
+  public async canLeader(memberId: number): Promise<boolean> {
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     // Extracted admin roles into a constant for easy management
-    const MAYOR_ROLES = [
+    const LEADER_ROLES = [
       this.roleRepository.roleMap.Admin,
-      this.roleRepository.roleMap.CityMayor,
-      this.roleRepository.roleMap.DeputyMayor,
-    ];
-    return !!roleAssignments.find(assignment => MAYOR_ROLES.includes(assignment.role_id));
-  }
-  
-  public async canCouncil(memberId: number): Promise<boolean> {
-    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-    // Extracted admin roles into a constant for easy management
-    const MAYOR_ROLES = [
-      this.roleRepository.roleMap.Admin,
-      this.roleRepository.roleMap.CityMayor,
-      this.roleRepository.roleMap.DeputyMayor,
       this.roleRepository.roleMap.ColonyLeader,
-      this.roleRepository.roleMap.CityCouncil,
+      this.roleRepository.roleMap.ColonyRepresentative,
+      this.roleRepository.roleMap.PlacesChief,
     ];
-    return !!roleAssignments.find(assignment => MAYOR_ROLES.includes(assignment.role_id));
+    return !!roleAssignments.find(assignment => LEADER_ROLES.includes(assignment.role_id));
   }
 
   public async canStaff(memberId: number): Promise<boolean> {
@@ -112,10 +100,9 @@ export class MemberService {
   }
 
   public async getAccessLevel(memberId: number): Promise<any> {
-    const mayor = await this.canMayor(memberId);
     const security = await this.canAdmin(memberId);
-    const council = await this.canCouncil(memberId);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    const leader = await this.canLeader(memberId);
     const admin = !!roleAssignments.find(
       assignment => assignment.role_id === this.roleRepository.roleMap.Admin,
     );
@@ -123,14 +110,11 @@ export class MemberService {
     if (admin) {
       accessLevel.push('admin');
     }
-    if (mayor) {
-      accessLevel.push('mayor');
-    }
     if (security) {
       accessLevel.push('security');
     }
-    if (council) {
-      accessLevel.push('council');
+    if (leader) {
+      accessLevel.push('leader');
     }
     return accessLevel;
   }
