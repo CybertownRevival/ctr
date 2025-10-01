@@ -47,6 +47,18 @@ export class PlaceService {
         return true;
       }
     }
+    if (slug === 'cityhall') {
+      if(
+        roleAssignments.find(assignment => {
+          return (
+            [
+              this.roleRepository.roleMap.CityCouncil,
+            ].includes(assignment.role_id)
+          );
+        })) {
+        return true;
+      }
+    }
     
     //check if admin even if there is no assigned roles for the place
     if (!placeRoleId) {
