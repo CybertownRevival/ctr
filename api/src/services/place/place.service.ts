@@ -97,7 +97,7 @@ export class PlaceService {
         return (
           [
             this.roleRepository.roleMap.Admin,
-            ...(slug !== 'mall' ? [this.roleRepository.roleMap.PlacesChief] : []),
+            this.roleRepository.roleMap.PlacesChief,
           ].includes(assignment.role_id) ||
         ([placeRoleId.owner].includes(assignment.role_id) &&
          assignment.place_id === placeId)
