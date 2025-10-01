@@ -89,7 +89,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    if (!this.accessLevel.includes("mayor")) {
+    if (!this.accessLevel.includes("leader")) {
       this.$router.push({ name: "restrictedaccess" });
     }
     this.getRoleList();
