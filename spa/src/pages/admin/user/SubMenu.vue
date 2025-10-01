@@ -31,10 +31,10 @@
         <router-link class="btn-ui-inline mx-1 w-24"
          :to="{name: 'UserCurrentRoles'}">CURRENT</router-link>
         <router-link
-          v-if="accessLevel.includes('leader')"
+          v-if="accessLevel.includes('admin')"
           class="btn-ui-inline mx-1 w-24"
           :to="{name: 'UserHireRoles'}">HIRE</router-link>
-        <router-link v-if="accessLevel.includes('leader')" class="btn-ui-inline mx-1 w-24"
+        <router-link v-if="accessLevel.includes('admin')" class="btn-ui-inline mx-1 w-24"
          :to="{name: 'UserFireRoles'}">TERMINATE</router-link>
       </div>
       <div class="w-full min-w-min text-center my-2"
