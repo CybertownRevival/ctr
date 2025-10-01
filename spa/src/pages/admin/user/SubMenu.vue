@@ -27,7 +27,7 @@
          :to="{name: 'UserBanHistory'}">HISTORY</router-link>
       </div>
       <div class="w-full min-w-min text-center my-2"
-       v-else-if="isUserRoleRoute && (accessLevel.includes('council') || accessLevel.includes('security'))">
+       v-else-if="isUserRoleRoute && (accessLevel.includes('leader') || accessLevel.includes('security'))">
         <router-link class="btn-ui-inline mx-1 w-24"
          :to="{name: 'UserCurrentRoles'}">CURRENT</router-link>
         <router-link

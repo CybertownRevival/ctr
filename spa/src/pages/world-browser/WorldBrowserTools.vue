@@ -45,7 +45,7 @@
       </span>
       <span href=""
             class="btn-ui">Update</span>
-      <span v-show="$store.data.place.type !== 'shop'">
+      <span v-show="$store.data.place.type !== 'shop' && $store.data.place.slug !== 'cityhall'">
         <router-link :to="{ name: 'worldAccessRights' }"
                      class="btn-ui">Access Rights</router-link>
       </span>
