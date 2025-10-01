@@ -165,8 +165,7 @@ export class BlockService {
         return (
           [
             this.roleRepository.roleMap.Admin,
-            this.roleRepository.roleMap.CityMayor,
-            this.roleRepository.roleMap.DeputyMayor,
+            this.roleRepository.roleMap.ColonyRepresentative,
           ].includes(assignment.role_id) ||
           ([
             this.roleRepository.roleMap.ColonyLeader,
@@ -202,8 +201,7 @@ export class BlockService {
         return (
           [
             this.roleRepository.roleMap.Admin,
-            this.roleRepository.roleMap.CityMayor,
-            this.roleRepository.roleMap.DeputyMayor,
+            this.roleRepository.roleMap.ColonyRepresentative,
           ].includes(assignment.role_id) ||
           ([
             this.roleRepository.roleMap.ColonyLeader,

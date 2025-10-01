@@ -171,8 +171,7 @@ export class ColonyService {
         return (
           [
             this.roleRepository.roleMap.Admin,
-            this.roleRepository.roleMap.CityMayor,
-            this.roleRepository.roleMap.DeputyMayor,
+            this.roleRepository.roleMap.ColonyRepresentative,
           ].includes(assignment.role_id) ||
           ([this.roleRepository.roleMap.ColonyLeader].includes(assignment.role_id) &&
             assignment.place_id === colonyId)
