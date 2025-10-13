@@ -164,13 +164,28 @@
             @click="handler($event)" @contextmenu="handler($event)"
           >
             <div v-if="object.object_name && object.object_name !== ''" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id,  object.member_id, object.object_price)">
-              {{ object.object_name }}
+              <div class="flex-1 bg-gray-400 text-black" v-if="object.id === selectedId">
+                {{ object.object_name }}
+              </div>
+              <div v-else>
+                {{ object.object_name }}
+              </div>
             </div>
             <div v-else-if="$store.data.place.type === 'shop'" class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id, $store.data.place.type)">
-              {{ object.name }}
+              <div class="flex-1 bg-gray-400 text-black" v-if="object.id === selectedId">
+                {{ object.name }}
+              </div>
+              <div v-else>
+                {{ object.name }}
+              </div>
             </div>
             <div v-else class="flex-1 whitespace-nowrap overflow-x-hidden" @mouseup="menu(object.id,  object.member_id, object.object_price)">
-              {{ object.name }}
+              <div class="flex-1 bg-gray-400 text-black" v-if="object.id === selectedId">
+                {{ object.name }}
+              </div>
+              <div v-else>
+                {{ object.name }}
+              </div>
             </div>
           </li>
         </ul>
@@ -413,6 +428,7 @@ export default Vue.extend({
     "place",
     "sharedEvent",
     "sharedObjects",
+    "clickId",
   ],
   data: () => {
     return {
@@ -477,6 +493,7 @@ export default Vue.extend({
       virtualPetOutputs: [[],[],[],],
       virtualPetDefault: [],
       entryMessageCode: new Date().getTime(),
+      selectedId: null,
     };
   },
   directives: {
@@ -840,6 +857,7 @@ export default Vue.extend({
       }
     },
     changeActivePanel(): void {
+      this.selectedId = null;
       this.backpackObjects = [];
       switch (this.activePanel) {
         case "users":
@@ -1215,6 +1233,12 @@ export default Vue.extend({
         }
       },
       deep: true,
+    },
+    clickId(newValue, oldValue) {
+      if(newValue) {
+        this.selectedId = newValue;
+        this.activePanel = 'sharedObjects';
+      }
     },
     async activePanel() {
       if(this.activePanel === 'backpack') {
