@@ -184,11 +184,13 @@ export default Vue.extend({
       });
       sharedObject.addFieldCallback("touchTime", {}, (_t) => {
         if(obj.id){
-          if(/\D/.test(obj.id)){
-            // user avatar clicked.
-            } else {
-              this.clickId = obj.id;
-            }
+          if(obj.id === this.clickId){
+            this.clickId = null;
+          } else {
+            this.clickId = obj.id;
+          }
+        } else {
+          this.clickId = null;
         }
       });
       this.sharedObjectsMap.set(obj.id, sharedObject);
