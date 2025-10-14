@@ -857,7 +857,6 @@ export default Vue.extend({
       }
     },
     changeActivePanel(): void {
-      this.selectedId = null;
       this.backpackObjects = [];
       switch (this.activePanel) {
         case "users":
@@ -1234,11 +1233,9 @@ export default Vue.extend({
       },
       deep: true,
     },
-    clickId(newValue, oldValue) {
-      if(newValue) {
-        this.selectedId = newValue;
-        this.activePanel = 'sharedObjects';
-      }
+    clickId(newValue) {
+      this.selectedId = newValue;
+      this.activePanel = 'sharedObjects';
     },
     async activePanel() {
       if(this.activePanel === 'backpack') {
