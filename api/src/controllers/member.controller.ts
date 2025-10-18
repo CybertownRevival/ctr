@@ -151,7 +151,7 @@ class MemberController {
     if (!session) return;
     if (id !== undefined) {
       const admin = await this.memberService.getAccessLevel(session.id);
-      if (admin.includes('council') || admin.includes('security')) {
+      if (admin.includes('leader') || admin.includes('security')) {
         try {
           const roles = await this.memberService.getRoles(parseInt(id));
           response.status(200).json({roles});

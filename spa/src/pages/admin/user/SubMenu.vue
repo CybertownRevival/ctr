@@ -27,14 +27,14 @@
          :to="{name: 'UserBanHistory'}">HISTORY</router-link>
       </div>
       <div class="w-full min-w-min text-center my-2"
-       v-else-if="isUserRoleRoute && (accessLevel.includes('council') || accessLevel.includes('security'))">
+       v-else-if="isUserRoleRoute && (accessLevel.includes('leader') || accessLevel.includes('security'))">
         <router-link class="btn-ui-inline mx-1 w-24"
          :to="{name: 'UserCurrentRoles'}">CURRENT</router-link>
         <router-link
-          v-if="accessLevel.includes('mayor')"
+          v-if="accessLevel.includes('admin')"
           class="btn-ui-inline mx-1 w-24"
           :to="{name: 'UserHireRoles'}">HIRE</router-link>
-        <router-link v-if="accessLevel.includes('mayor')" class="btn-ui-inline mx-1 w-24"
+        <router-link v-if="accessLevel.includes('admin')" class="btn-ui-inline mx-1 w-24"
          :to="{name: 'UserFireRoles'}">TERMINATE</router-link>
       </div>
       <div class="w-full min-w-min text-center my-2"

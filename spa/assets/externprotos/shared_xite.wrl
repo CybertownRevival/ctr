@@ -350,8 +350,12 @@ eventOut SFInt32 choice_changed
 eventOut MFString attributes_changed IS attributes_changed
 url "vrmlscript:
 function set_enable(v,t){
- if(!v){return;}
- choice_changed = 0;
+  if (!v) return;
+  initialPosition = initialT1.translation;
+  initialRotation = initialT1.rotation;
+  currentPosition = initialPosition;
+  currentRotation = initialRotation;
+  choice_changed = 0;
 }
 function set_X(v,t){
   newPosition = new X3D.SFRotation(X3D.getBrowser().viewpointOrientation).multVec((new SFVec3f(v[0],0,0)).subtract(XlastChange)).multiply(rate);

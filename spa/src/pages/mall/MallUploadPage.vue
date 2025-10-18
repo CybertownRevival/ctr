@@ -212,7 +212,7 @@ If you sell all 10 chairs, you earn 250 CCs and double your investment.
       <li>The maximum VRML file size is 80KB. The "wrl" VRML format is required.</li>
       <li>For textures and thumbnails, the maximum file size is 80KB. The files
           must be in jpeg or jpg format.</li>
-      <li>Uploaded objects will be positioned at "eye height" at the world's origin (0, 1.75, 0).</li>
+      <li>Uploaded objects will be positioned at "eye height" at the world's origin (0, -1.75, 0).</li>
       <li>Try to create objects of "realistic" size, i.e. a table would be perhaps 1 x 2 x 0.8 meters.</li>
     </ul>
   </div>

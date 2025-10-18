@@ -24,4 +24,5 @@ export interface WorldBrowserData {
     mainComponent: any;
     force2d: boolean;
     pet: any;
+    clickId: string;
 }

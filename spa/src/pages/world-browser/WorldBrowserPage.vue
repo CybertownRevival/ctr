@@ -20,6 +20,7 @@
         :place="place"
         :shared-event="sharedEvent"
         :shared-objects="sharedObjects"
+        :clickId="clickId"
         @move-object="moveObject"
         @beam-to="beamTo"
         @drop-object="dropObject"
@@ -67,6 +68,7 @@ export default Vue.extend({
       mainComponent: null,
       force2d: false,
       pet: null,
+      clickId: null,
     };
   },
   methods: {
@@ -179,6 +181,17 @@ export default Vue.extend({
       });
       sharedObject.addFieldCallback("newRotation", {}, (rot) => {
         this.saveObjectLocation(obj.id);
+      });
+      sharedObject.addFieldCallback("touchTime", {}, (_t) => {
+        if(obj.id){
+          if(obj.id === this.clickId){
+            this.clickId = null;
+          } else {
+            this.clickId = obj.id;
+          }
+        } else {
+          this.clickId = null;
+        }
       });
       this.sharedObjectsMap.set(obj.id, sharedObject);
     },

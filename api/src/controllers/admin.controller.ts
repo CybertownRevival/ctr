@@ -112,7 +112,7 @@ class AdminController {
       place_id = parseInt(place_id);
     }
     const accessLevel = await this.memberService.getAccessLevel(session.id);
-    if (accessLevel.includes('mayor')) {
+    if (accessLevel.includes('admin')) {
       try {
         await this.adminService.fireRole(
           parseInt(member_id),
@@ -168,7 +168,7 @@ class AdminController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const accessLevel = await this.memberService.getAccessLevel(session.id);
-    if (accessLevel.includes('mayor')) {
+    if (accessLevel.includes('admin')) {
       const {member_id, role_id} = request.body;
       try {
         await this.adminService.hireRole(

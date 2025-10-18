@@ -47,6 +47,18 @@ export class PlaceService {
         return true;
       }
     }
+    if (slug === 'cityhall') {
+      if(
+        roleAssignments.find(assignment => {
+          return (
+            [
+              this.roleRepository.roleMap.CityCouncil,
+            ].includes(assignment.role_id)
+          );
+        })) {
+        return true;
+      }
+    }
     
     //check if admin even if there is no assigned roles for the place
     if (!placeRoleId) {
@@ -55,8 +67,6 @@ export class PlaceService {
           return (
             [
               this.roleRepository.roleMap.Admin,
-              this.roleRepository.roleMap.CityMayor,
-              this.roleRepository.roleMap.DeputyMayor,
             ].includes(assignment.role_id)
           );
         })
@@ -72,8 +82,7 @@ export class PlaceService {
           return (
             [
               this.roleRepository.roleMap.Admin,
-              this.roleRepository.roleMap.CityMayor,
-              this.roleRepository.roleMap.DeputyMayor,
+              this.roleRepository.roleMap.PlacesChief,
             ].includes(assignment.role_id) ||
           ([
             placeRoleId.owner,
@@ -100,8 +109,7 @@ export class PlaceService {
         return (
           [
             this.roleRepository.roleMap.Admin,
-            this.roleRepository.roleMap.CityMayor,
-            this.roleRepository.roleMap.DeputyMayor,
+            this.roleRepository.roleMap.PlacesChief,
           ].includes(assignment.role_id) ||
         ([placeRoleId.owner].includes(assignment.role_id) &&
          assignment.place_id === placeId)
@@ -344,6 +352,8 @@ export class PlaceService {
       funpark: {
         owner: this.roleRepository.roleMap.FunParkChief,
         deputy: this.roleRepository.roleMap.FunParkDeputy,
+      cityhall: {
+        owner: this.roleRepository.roleMap.CityCouncil,
       },
     };
     return roleId[slug];
