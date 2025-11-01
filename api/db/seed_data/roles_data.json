@@ -291,7 +291,14 @@
   },
   {
     "name": "Post Office Manager",
-    "income_xp": 20,
+    "required_xp": "200",
+    "income_xp": 24,
+    "income_cc": 280
+  },
+  {
+    "name": "Post Office Deputy",
+    "required_xp": "200",
+    "income_xp": 21,
     "income_cc": 250
   },
   {
