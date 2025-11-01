@@ -212,8 +212,8 @@
   {
     "name": "Item Creator",
     "required_xp": "0",
-    "income_xp": "19",
-    "income_cc": "225"
+    "income_xp": "0",
+    "income_cc": "0"
   },
   {
     "name": "Lead Jail Guard",
@@ -272,8 +272,8 @@
   {
     "name": "Master Item Creator",
     "required_xp": "0",
-    "income_xp": "21",
-    "income_cc": "250"
+    "income_xp": "0",
+    "income_cc": "0"
   },
   {
     "name": "Master World Builder",
