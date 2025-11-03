@@ -160,6 +160,7 @@
           <li
             v-for="object in sharedObjects"
             :key="object.id"
+            :ref="'obj-'+object.id"
             class="flex cursor-default"
             @click="handler($event)" @contextmenu="handler($event)"
           >
@@ -524,6 +525,17 @@ export default Vue.extend({
       }
       e.preventDefault();
     },
+    scrollToSelected(): void {
+      if (!this.selectedId) return;
+      this.$nextTick(() => {
+        const refKey = `obj-${this.selectedId}`;
+        const el = (this.$refs as any)[refKey] as Element | Element[] | undefined;
+        const node = Array.isArray(el) ? el[0] : el;
+        if (node && (node as any).scrollIntoView) {
+          (node as any).scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        }
+      });
+    },
     async getRole(): Promise<void> {
       const response = await this.$http.get("/member/getrolename");
       if(response.data.PrimaryRoleName.length === 0 ){
@@ -570,7 +582,6 @@ export default Vue.extend({
             body: this.message,
           })
           .then((response) => {
-            //this.debugMsg(response.data);
             msgID = response.data.messageId;
             if(this.displayRole){
               this.$socket.emit("CHAT", {
@@ -1236,6 +1247,10 @@ export default Vue.extend({
     clickId(newValue) {
       this.selectedId = newValue;
       this.activePanel = 'sharedObjects';
+      this.$nextTick(() => this.scrollToSelected());
+    },
+    selectedId() {
+      this.scrollToSelected();
     },
     async activePanel() {
       if(this.activePanel === 'backpack') {
@@ -1243,6 +1258,9 @@ export default Vue.extend({
       }
       if(this.activePanel === 'places') {
         await this.getActivePlaces();
+      }
+      if(this.activePanel === 'sharedObjects' && this.selectedId) {
+        this.$nextTick(() => this.scrollToSelected());
       }
     },
   },
