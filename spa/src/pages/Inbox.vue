@@ -21,13 +21,24 @@
           </div>
           <div>
             <p v-for="(id, index) in inboxmessages" :key="id.id">
-              <a href="#" @click.prevent="getMessage(
-            id.id,
-            id.created_at,
-            id.username,
-            id.subject,
-            id.parent_id,
-            id.reply);">{{ new Date(id.created_at)
+              <a href="#"
+              @click.prevent="getMessage(
+                id.id,
+                id.created_at,
+                id.username,
+                id.subject,
+                id.parent_id,
+                id.reply
+              )"
+              :style="visitedMessages.includes(id.id)
+                ? 'color:#F888F8 !important'
+                : ''"
+              :class="[
+                'hover:underline',
+                visitedMessages.includes(id.id)
+                  ? ''
+                  : 'font-bold'
+              ]">{{ new Date(id.created_at)
                   .toLocaleString('en-US', {
                     weekday: 'short',
                     month: 'short',
@@ -162,6 +173,7 @@ export default Vue.extend({
       placeinfo: [],
       subject: "",
       success: "",
+      visitedMessages: JSON.parse(localStorage.getItem("visitedInbox") || "[]"),
     };
   },
   methods: {
@@ -250,6 +262,11 @@ export default Vue.extend({
         this.dparentid = parentid;
         this.dreply = reply;
         this.display = true;
+
+        if (!this.visitedMessages.includes(id)) {
+          this.visitedMessages.push(id);
+          localStorage.setItem("visitedInbox", JSON.stringify(this.visitedMessages));
+        }
       });
     },
     //gets all messages that are active on message board
