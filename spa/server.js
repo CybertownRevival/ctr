@@ -2,27 +2,64 @@ const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const https = require("https");
-const io = require("socket.io")(http);
+const io = require("socket.io")(http, {
+    pingInterval: 10000, 
+    pingTimeout: 30000
+    });
+const { URL } = require("url");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const package = require("./package.json");
 const badwords = require("badwords-list");
 const USERS = new Map();
 
+
 function webhookMessage(from, message) {
-    return;
-    if (!process.env.CHAT_WEBHOOK_URL) return;
+    // 1. Check if the URL is set
+    if (!process.env.CHAT_WEBHOOK_URL) {
+        console.warn("WARN: CHAT_WEBHOOK_URL is not set. Webhook skipped.");
+        return;
+    }
+
+    let url;
+    try {
+        // 2. Parse the URL string into a URL object
+        url = new URL(process.env.CHAT_WEBHOOK_URL);
+    } catch (e) {
+        console.error("ERROR: Invalid CHAT_WEBHOOK_URL format:", e.message);
+        return;
+    }
+
     const body = JSON.stringify({
         username: from,
         content: message,
     });
-    const req = https.request(process.env.CHAT_WEBHOOK_URL, {
+
+    // 3. Define the request options using the parsed URL
+    const options = {
+        hostname: url.hostname,
+        port: url.port || (url.protocol === 'https:' ? 443 : 80),
+        path: url.pathname + url.search,
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Content-Length": Buffer.byteLength(body),
         },
+    };
+
+    // 4. Create the request and add error handling
+    const req = https.request(options, (res) => {
+        // Optional: Log the webhook's response status code for debugging
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+            console.warn(`Webhook failed. Status: ${res.statusCode}`);
+        }
     });
+
+    // CRITICAL: Handle connection/network errors to prevent server crash
+    req.on("error", (e) => {
+        console.error("ERROR sending webhook message:", e.message);
+    });
+
     req.write(body);
     req.end();
 }
@@ -168,28 +205,31 @@ io.on("connection", async function(socket) {
     });
 
     //handle chat messages
-    socket.on("CHAT", (chatData) => {
-        console.log("chat message...");
-        if (!chatData || !chatData.msg || typeof chatData.msg !== "string")
-            return;
-        const user = USERS.get(socket);
-        const bannedwords = badwords.regex;
-        if(chatData.msg.match(bannedwords)){
-            console.log(`${user.username} used a banned word in ${user.room}`);
-            return;
-        } else {
-            if (user?.room) {
-                io.to(user.room).emit("CHAT", {
-                    username: user.username,
-                    id: chatData.msg_id,
-                    msg: chatData.msg,
-                    role: chatData.role,
-                    new: true,
-                    exp: chatData.exp,
-                });
-            }
+socket.on("CHAT", (chatData) => {
+    console.log("chat message...");
+    if (!chatData || !chatData.msg || typeof chatData.msg !== "string")
+        return;
+    const user = USERS.get(socket);
+    const bannedwords = badwords.regex;
+    if (chatData.msg.match(bannedwords)) {
+        console.log(`${user.username} used a banned word in ${user.room}`);
+        return;
+    } else {
+        const currentTime = Date.now(); 
+        
+        if (user?.room) {
+            io.to(user.room).emit("CHAT", {
+                username: user.username,
+                id: chatData.msg_id,
+                msg: chatData.msg,
+                role: chatData.role,
+                new: true,
+                exp: chatData.exp,
+                time_ms: currentTime, 
+            });
         }
-    });
+    }
+});
 
     socket.on("unsubscribe", () => {
         const user = USERS.get(socket);
