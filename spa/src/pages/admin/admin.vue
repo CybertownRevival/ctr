@@ -46,7 +46,6 @@ export default Vue.extend({
       try{
         const access = await this.$http.get("/member/getadminlevel");
         this.accessLevel = access.data.accessLevel;
-        this.accessCheck();
       } catch (e) {
         console.log(e);
       }
@@ -57,8 +56,9 @@ export default Vue.extend({
       }
     },
   },
-  mounted() {
-    this.getAdminLevel();
+  async created() {
+    await this.getAdminLevel();
+    await this.accessCheck();
   },
 });
 </script>
