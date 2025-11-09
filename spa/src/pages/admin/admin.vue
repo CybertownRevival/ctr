@@ -1,12 +1,11 @@
 <template>
-  <main class="flex w-full h-full">
+  <main class="flex w-full h-full" v-if="accessLevel.length > 0">
     <div class="flex-col w-56 h-full border-r-2 border-white text-center">
       <div class="pt-3">Admin Panel</div>
       <div class="p-3"><hr></div>
       <div class="mb-2" v-if="accessLevel.includes('admin')">
         <router-link class="btn-ui" :to="{name: 'AvatarSearch'}">Avatars</router-link>
       </div>
-      <br v-if="accessLevel.includes('admin')" />
       <div class="mb-2">
         <router-link class="btn-ui" v-if="accessLevel.includes('security')" :to="{name: 'CommunityOverview'}">Overview</router-link>
       </div>
@@ -58,7 +57,7 @@ export default Vue.extend({
       }
     },
   },
-  created() {
+  mounted() {
     this.getAdminLevel();
   },
 });
