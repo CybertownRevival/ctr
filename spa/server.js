@@ -2,7 +2,10 @@ const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const https = require("https");
-const io = require("socket.io")(http);
+const io = require("socket.io")(http, {
+    pingInterval: 10000, 
+    pingTimeout: 30000
+    });
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const package = require("./package.json");
