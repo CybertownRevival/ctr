@@ -16,6 +16,10 @@
           <td class="text-right p-2">Description: </td>
           <td class="w-96 p-2"><input class="text-black w-full" v-model="place.description" type="text" /></td>
         </tr>
+        <tr v-if="isTypeIncluded(['home'])">
+          <td class="text-right p-2">2D Home Index: </td>
+          <td class="w-96 p-2"><input class="text-black w-full" v-model="place.map_icon_index" type="text" /></td>
+        </tr>
         <tr v-if="isTypeIncluded(['public', 'shop', 'colony', 'private'])">
           <td class="text-right p-2">Slug: </td>
           <td class="w-96 p-2"><input class="text-black w-full" v-model="place.slug" type="text" /></td>
@@ -64,6 +68,7 @@ export default Vue.extend({
     return {
       accessLevel: "none",
       oldName: "",
+      icon2D: null,
       place: {} as any,
       error: "",
       success: "",
@@ -89,6 +94,7 @@ export default Vue.extend({
         await this.$http.get(`/place/by_id/${this.$route.params.id}`).then((response) => {
           this.place = response.data.place;
           this.oldName = response.data.place.name;
+          this.icon2D = response.data.place.map_icon_index;
         });
       } catch (e) {
         console.log(e);
