@@ -68,7 +68,6 @@ export default Vue.extend({
     return {
       accessLevel: "none",
       oldName: "",
-      icon2D: null,
       place: {} as any,
       error: "",
       success: "",
@@ -94,7 +93,6 @@ export default Vue.extend({
         await this.$http.get(`/place/by_id/${this.$route.params.id}`).then((response) => {
           this.place = response.data.place;
           this.oldName = response.data.place.name;
-          this.icon2D = response.data.place.map_icon_index;
         });
       } catch (e) {
         console.log(e);
