@@ -291,6 +291,8 @@
         </div>
         <h2>Section One - Expected Behaviour</h2>
         <br />
+        <p class="p-5">Be nice, don't be an idiot.</p>
+        <br />
         <h5>1: Chat</h5>
         <div class="p-5">
           <p>Cybertown Revival is a family friendly site. We have many people who come together from across the globe to

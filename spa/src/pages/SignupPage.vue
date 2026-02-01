@@ -25,6 +25,12 @@
                 <router-link to="/login">Click here to login.</router-link>
               </p>
               <div align="center" v-if="!showSuccess">
+                <div class="flex justify-center">
+                  <h3 class="p-2"><router-link to="/privacypolicy"> Privacy Policy </router-link></h3>
+                  <h3 class="p-2"><router-link to="/rulesandregulations"> Rules and Regulations </router-link></h3>
+                  <h3 class="p-2"><router-link to="/constitution"> Constitution </router-link></h3>
+                </div>
+                
                 <br />
                 <font color="#ffff00">*** These fields are mandatory!</font>
                 <font color="red" size="+1"></font>

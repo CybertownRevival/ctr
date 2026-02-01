@@ -141,6 +141,12 @@
     <p>
       <strong>Immigration or Login Problems?</strong> Check the
       <a href="" target="_self">Quick Help</a>!<br /><br />
+      <div class="flex justify-center">
+        <h3 class="p-2"><router-link to="/privacypolicy"> Privacy Policy </router-link></h3>
+        <h3 class="p-2"><router-link to="/rulesandregulations"> Rules and Regulations </router-link></h3>
+        <h3 class="p-2"><router-link to="/constitution"> Constitution </router-link></h3>
+      </div>
+      <br />
       <font size="+1" color="#FFFF00">
         <strong>Please note:</strong> to enter the site your browser must accept
         cookies.
