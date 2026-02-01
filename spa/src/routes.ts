@@ -1,5 +1,6 @@
 import HomePage from "./pages/HomePage.vue";
 import AboutPage from "./pages/AboutPage.vue";
+import ConstitutionPage from './pages/Constitution.vue';
 import RulesRegulationsPage from "./pages/RulesandRegulationPage.vue";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.vue";
 import BannedNotice from "./pages/Banned.vue";
@@ -107,6 +108,14 @@ export default [
     name: "about",
     meta: {
       title: "About Cybertown Revival",
+    },
+  },
+  {
+    path: "/constitution",
+    component: ConstitutionPage,
+    name: "constitution",
+    meta: {
+      title: "Cybertown Revival Constitution",
     },
   },
   {
