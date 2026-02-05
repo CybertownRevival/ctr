@@ -78,7 +78,7 @@ export default Vue.extend({
       success: '',
       showSuccess: false,
       loaded: false,
-      limit: 1000,
+      limit: 2000,
       offset: 0,
       showNext: true,
       sortList: 9,
