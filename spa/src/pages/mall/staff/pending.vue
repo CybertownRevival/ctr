@@ -64,8 +64,8 @@
             </div>
           </div>
           <div>
-            <button class="btn-ui" @click="approve(object.id)">Accept</button>
-            <button class="btn-ui" @click="reject(object.id)">Reject</button>
+            <button class="btn-ui" :disabled="isProcessing" @click="approve(object.id)">Accept</button>
+            <button class="btn-ui" :disabled="isProcessing" @click="reject(object.id)">Reject</button>
           </div>
         </div>
       </div>
@@ -112,6 +112,7 @@ export default Vue.extend({
       column: 'status',
       compare: '=',
       content: 2,
+      isProcessing: false,
     };
   },
   methods: {
@@ -232,8 +233,11 @@ export default Vue.extend({
       window.open("/#/mall/checker/"+objectId, "targetWindow", "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0");
     },
     async approve(objectId): Promise<void> {
+      if(this.isProcessing) return;
+
       this.showSuccess = false;
       this.showError = false;
+      this.isProcessing = true;
       try {
           this.error = '';
           this.showError = false;
@@ -242,6 +246,7 @@ export default Vue.extend({
           });
           this.success = 'Object Approved';
           this.showSuccess = true;
+          this.isProcessing = false;
           this.getResults();
         } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {
@@ -254,14 +259,18 @@ export default Vue.extend({
       }
     },
     async reject(objectId): Promise<void> {
+      if(this.isProcessing) return;
+
       this.showSuccess = false;
       this.showError = false;
+      this.isProcessing = true;
       try {
         await this.$http.post("/mall/reject", {
           'id': objectId
         });
         this.success = 'Object Rejected';
         this.showSuccess = true;
+        this.isProcessing = false;
         this.getResults();
       } catch (errorResponse: any) {
         if (errorResponse.response.data.error) {

@@ -71,8 +71,16 @@ export default Vue.extend({
 
     },
     mapIconImage (index): string {
-      return "/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
+      if(
+        colonyDataHelper[this.colony.slug].map_theme === 'cyberhood' && index > 5 ||
+        colonyDataHelper[this.colony.slug].map_theme === 'desert' && index > 7
+      ) {
+        return "/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
+        "/block/Picon2D000.gif";
+      } else {
+        return "/assets/img/map_themes/" + colonyDataHelper[this.colony.slug].map_theme +
         "/block/Picon2D"+(index-1).toString().padStart(3,"0")+".gif";
+      }
     },
   },
   computed: {

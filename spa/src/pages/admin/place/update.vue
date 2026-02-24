@@ -16,6 +16,10 @@
           <td class="text-right p-2">Description: </td>
           <td class="w-96 p-2"><input class="text-black w-full" v-model="place.description" type="text" /></td>
         </tr>
+        <tr v-if="isTypeIncluded(['home'])">
+          <td class="text-right p-2">2D Home Index: </td>
+          <td class="w-96 p-2"><input class="text-black w-full" v-model="place.map_icon_index" type="text" /></td>
+        </tr>
         <tr v-if="isTypeIncluded(['public', 'shop', 'colony', 'private'])">
           <td class="text-right p-2">Slug: </td>
           <td class="w-96 p-2"><input class="text-black w-full" v-model="place.slug" type="text" /></td>

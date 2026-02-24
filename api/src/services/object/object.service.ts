@@ -105,7 +105,10 @@ export class ObjectService {
   }
 
   public async updateStatusApproved(objectId: number) {
-    this.mallRepository.addToMallObjects(objectId);
+    const checkExist = await this.mallRepository.findByObjectId(objectId);
+    if(checkExist.length === 0) {
+      this.mallRepository.addToMallObjects(objectId);
+    }
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + ObjectService.MALL_EXPIRATION_DAYS);
 

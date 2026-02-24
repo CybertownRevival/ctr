@@ -308,7 +308,7 @@ export default Vue.extend({
           x: dropRotation._value.x_,
           y: dropRotation._value.y_,
           z: dropRotation._value.z_,
-          angle: dropRotation._value.angle + 3.15,
+          angle: dropRotation._value.angle + Math.PI,
         },
       });
       this.sharedObjects.push(request.data.object_instance);
