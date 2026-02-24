@@ -18,9 +18,14 @@ export class InboxService {
     console.log(`Service${placeId}`);
     return await this.inboxRepository.changeInboxIntro(placeId, Intro);
   }
-  public async deleteInboxMessage(messageId): Promise<any> {
-    return await this.inboxRepository.deleteInboxMessage(messageId);
-  }
+
+ public async deleteInboxMessages(
+   messageIds: number[],
+   placeId: number,
+   type: string
+ ): Promise<any> {
+   return this.inboxRepository.deleteInboxMessages(messageIds, placeId, type);
+ }
 
   public async getAdminInfo(placeId, memberId): Promise<any> {
     return await this.inboxRepository.getAdminInfo(placeId, memberId);
@@ -44,17 +49,17 @@ export class InboxService {
   
   public async postInboxAllMessage(
     memberId: number,
-    locations: object,
+    locations: number[],
     subject: string,
     message: string,
-  ): Promise<any> {
-    forEach(locations, async (id) => {
-      await this
-        .inboxRepository
-        .postInboxMessage(memberId, id, subject, message);
-    });
-    return;
+  ): Promise<void> {
+    await Promise.all(
+      locations.map(id =>
+        this.inboxRepository.postInboxMessage(memberId, id, subject, message),
+      ),
+    );
   }
+
 
   public async postInboxReply(
     senderMemberId: number,
@@ -75,6 +80,8 @@ export class InboxService {
       parentId,
     );
   }
+
+
 
   public async sanitize(uncleanInfo: string): Promise<any> {
     const cleanInfo = sanitizeHtml(uncleanInfo, {
