@@ -310,31 +310,45 @@ class InboxController {
     }
   }
   
-  public async deleteInboxMessage(request: Request, response: Response): Promise<void> {
-    const placeId = Number.parseInt(request.body.place_id);
-    const messageId = Number.parseInt(request.body.message_id);
-    const type = request.body.type;
-    const { apitoken } = request.headers;
-    const session = this.memberService.decodeMemberToken(<string> apitoken);
-    if(!session) {
-      response.status(400).json({
-        error: 'Invalid or missing token.',
-      });
-      return;
-    }
-    const { id } = session;
-    const admin = await this.adminCheck(placeId, id, type);
-    if (admin) {
-      try {
-        await this.inboxService.deleteInboxMessage(messageId);
-        response.status(200).json({success: 'deleted'});
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      response.status(403).json({error:'Access Denied'});
-    }
-  }
+	public async deleteInboxMessage(request: Request, response: Response): Promise<void> {
+	  const placeId = Number.parseInt(request.body.place_id);
+	  const rawMessageId = request.body.message_id;   // may be number OR array
+	  const type = request.body.type;
+	  const { apitoken } = request.headers;
+
+	  const session = this.memberService.decodeMemberToken(<string>apitoken);
+	  if (!session) {
+		response.status(400).json({
+		  error: 'Invalid or missing token.',
+		});
+		return;
+	  }
+
+	  const { id } = session;
+	  const admin = await this.adminCheck(placeId, id, type);
+
+	  if (!admin) {
+		response.status(403).json({ error: 'Access Denied' });
+		return;
+	  }
+
+	  try {
+		// Normalize to array
+		const ids = Array.isArray(rawMessageId)
+		  ? rawMessageId.map(n => Number.parseInt(n))
+		  : [Number.parseInt(rawMessageId)];
+
+		// Delete each message
+		for (const messageId of ids) {
+		  await this.inboxService.deleteInboxMessage(messageId);
+		}
+
+		response.status(200).json({ success: 'deleted' });
+	  } catch (error) {
+		console.log(error);
+		response.status(500).json({ error: 'Unable to delete message(s).' });
+	  }
+	}
   
   public async changeInboxIntro(request: Request, response: Response): Promise<void> {
     const type = request.body.type;
