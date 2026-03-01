@@ -18,13 +18,16 @@ export class InboxRepository {
   }
   constructor(private db: Db) {}
 
-  public async deleteInboxMessage(
-    messageId: number,
-  ): Promise<any> {
-    return knex('inbox')
-      .where('id', messageId)
-      .update({status: 0});
-  }
+ public async deleteInboxMessages(
+   messageIds: number[],
+   placeId: number,
+   type: string
+ ): Promise<any> {
+   return knex('inbox')
+     .where({ place_id: placeId })
+     .whereIn('id', messageIds)
+     .update({ status: 0 });
+ }
   
   public async getAdminInfo(
     placeId: number,
