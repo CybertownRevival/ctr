@@ -65,13 +65,16 @@
           </div>
 
           <!-- DELETE SELECTED BUTTON -->
-          <button
-            v-if="selectedMessages.length > 0"
-            class="btn-ui bg-red-600 text-white mt-4"
+          <div class="flex fixed top-0 right-50 left-0 m-4 gap-2 z-10 bg-gray-800 p-2 w-1/4 center"
+            v-if="selectedMessages.length > 0">
+            <button
+            class="btn-ui"
+            style="white-space: nowrap; width:fit-content; padding: 0 10px;"
             @click="deleteSelected"
           >
             Delete Selected ({{ selectedMessages.length }})
-          </button>
+            </button>
+          </div>
         </div>
       </div>
 
