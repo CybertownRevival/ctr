@@ -260,7 +260,7 @@ export default Vue.extend({
 	  } finally {
 		this.getInboxMessages();
 	  }
-	}
+	},
 
     // NEW MULTI-DELETE
 	async deleteSelected(): Promise<void> {
