@@ -65,7 +65,7 @@
           </div>
 
           <!-- DELETE SELECTED BUTTON -->
-          <div class="flex fixed top-0 right-50 left-0 m-4 gap-2 z-10 bg-gray-800 p-2 w-1/4 center"
+          <div class="flex fixed top-0 right-0 left-0 mx-8 gap-2 z-10 bg-gray-800 p-2 w-1/4 center"
             v-if="selectedMessages.length > 0">
             <button
             class="btn-ui"
