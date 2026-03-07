@@ -208,214 +208,44 @@
         </ul>
       </div>
     </div>
-    <div v-show="userMenu" 
-      class="
-        absolute
-        flex-none
-        w-40
-        text-black
-        bg-gray-300
-        cursor-pointer
-        cls-context-menu
-      " 
-      style="border: outset #EEE;" 
-      :style="{left: menuLeft, top: menuTop, bottom: menuBottom}"
-      @mouseleave="closeMenu()"
-    >
-      <ul>
-        <li 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          @click="closeMenu()">
-          Close Menu
-        </li>
-        <li style="border: inset #EEE 3px;"></li>
-        <li v-show="menuGoTo" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          @click="goToPlace()">
-          Go to
-        </li>
-        <li v-show="menuToggleRole" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          >
-          <input type="checkbox" id="role" v-model="showRole" />
-          <label for="role"> Users Roles</label>
-        </li>
-        <li v-show="menuToggleXP" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          >
-          <input type="checkbox" id="XP" v-model="showXP" />
-          <label for="XP"> Users XP</label>
-        </li>
-        <li v-show="menuToggleSpeech" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          >
-          <input type="checkbox" id="speech" v-model="tts" />
-          <label for="speech"> Text To Speech</label>
-        </li>
-        <li v-show="menuBeamTo" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          @click="beamTo()">
-          Beam to
-        </li>
-        <li v-show="menuWhisper" 
-          class="
-            p-1
-            pl-3.5
-            text-gray-500
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-        >
-          Start Whisper
-        </li>
-        <li v-show="menuInviteChat" 
-          class="
-            p-1
-            pl-3.5
-            text-gray-500
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-        >
-          Invite Chat
-        </li>
-        <li v-show="menuIgnore" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          @click="blockMember()"
-        >
-          Ignore
-        </li>
-        <li v-show="menuBuy" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          @click="objectOpener()"
-        >
-          Buy
-        </li>
-        <li v-show="menuMove" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          " 
-          @click="moveObject()"
-        >
-          Move
-        </li>
-        <li v-show="menuTake" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          @click="pickUpObject()"
-        >
-          Take
-        </li>
-        <li v-show="menuDrop" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          " 
-          @click="dropObject()"
-        >
-          Drop
-        </li>
-        <li v-show="menuDestroy" 
-          class="
-            p-1
-            pl-3.5
-            text-gray-500
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-        >
-          Destroy
-        </li>
-        <li v-show="menuProperties" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          v-on:click="objectOpener()"
-        >
-          Properties
-        </li>
-        <li v-if="menuRequestBackpack && activePanel === 'users'" style="border:inset #EEE 3px;"></li>
-        <li v-show="menuRequestBackpack" 
-          class="
-            p-1
-            pl-3.5
-            hover:text-white 
-            hover:bg-gray-500
-            active:bg-gray-400
-          "
-          @click="userBackpack()"
-        >
-          Request Objects
-        </li>
-      </ul>
-    </div>
+    <UserMenu
+      :visible="userMenu"
+      :menu-left="menuLeft"
+      :menu-top="menuTop"
+      :menu-bottom="menuBottom"
+      :active-panel-users="activePanel === 'users'"
+      :menu-go-to="menuGoTo"
+      :menu-toggle-role="menuToggleRole"
+      :menu-toggle-xp="menuToggleXP"
+      :menu-toggle-speech="menuToggleSpeech"
+      :menu-beam-to="menuBeamTo"
+      :menu-whisper="menuWhisper"
+      :menu-invite-chat="menuInviteChat"
+      :menu-ignore="menuIgnore"
+      :menu-drop="menuDrop"
+      :menu-move="menuMove"
+      :menu-take="menuTake"
+      :menu-buy="menuBuy"
+      :menu-destroy="menuDestroy"
+      :menu-properties="menuProperties"
+      :menu-request-backpack="menuRequestBackpack"
+      :show-role="showRole"
+      :show-xp="showXP"
+      :tts="tts"
+      @close="closeMenu"
+      @go-to-place="goToPlace"
+      @role-change="showRole = $event"
+      @xp-change="showXP = $event"
+      @speech-change="tts = $event"
+      @beam-to="beamTo"
+      @ignore="blockMember"
+      @buy="objectOpener"
+      @move-object="moveObject"
+      @take-object="pickUpObject"
+      @drop-object="dropObject"
+      @properties="objectOpener"
+      @request-backpack="userBackpack"
+    />
   </div>
 </template>
 
@@ -423,8 +253,12 @@
 
 import Vue from 'vue';
 import { debugMsg } from '@/helpers';
+import UserMenu from './UserMenu.vue';
 export default Vue.extend({
   name: "Chat",
+  components: {
+    UserMenu,
+  },
   props: [
     "place",
     "sharedEvent",
@@ -1224,7 +1058,7 @@ export default Vue.extend({
         this.messages.splice(index, 1);
       }
     },
-  },
+  } as any,
   watch: {
     place() {
       this.startNewChat();
