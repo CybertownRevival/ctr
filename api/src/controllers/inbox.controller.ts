@@ -310,43 +310,43 @@ class InboxController {
     }
   }
   
-	public async deleteInboxMessage(request: Request, response: Response): Promise<void> {
-	  const placeId = Number.parseInt(request.body.place_id);
-	  const rawMessageId = request.body.message_id; // number OR array
-	  const type = request.body.type;
-	  const { apitoken } = request.headers;
+  public async deleteInboxMessage(request: Request, response: Response): Promise<void> {
+    const placeId = Number.parseInt(request.body.place_id);
+    const rawMessageId = request.body.message_id; // number OR array
+    const type = request.body.type;
+    const { apitoken } = request.headers;
 
-	  const session = this.memberService.decodeMemberToken(<string>apitoken);
-	  if (!session) {
-		response.status(400).json({
-		  error: 'Invalid or missing token.',
-		});
-		return;
-	  }
+    const session = this.memberService.decodeMemberToken(<string>apitoken);
+    if (!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
 
-	  const { id } = session;
-	  const admin = await this.adminCheck(placeId, id, type);
+    const { id } = session;
+    const admin = await this.adminCheck(placeId, id, type);
 
-	  if (!admin) {
-		response.status(403).json({ error: 'Access Denied' });
-		return;
-	  }
+    if (!admin) {
+      response.status(403).json({ error: 'Access Denied' });
+      return;
+    }
 
-	  try {
-		// Always normalize to an array of numbers
-		const messageIds = Array.isArray(rawMessageId)
-		  ? rawMessageId.map(n => Number.parseInt(n))
-		  : [Number.parseInt(rawMessageId)];
+    try {
+      // Always normalize to an array of numbers
+      const messageIds = Array.isArray(rawMessageId)
+        ? rawMessageId.map(n => Number.parseInt(n))
+        : [Number.parseInt(rawMessageId)];
 
-		// Pass all 3 arguments again
-		await this.inboxService.deleteInboxMessages(messageIds, placeId, type);
+      // Pass all 3 arguments again
+      await this.inboxService.deleteInboxMessages(messageIds, placeId, type);
 
-		response.status(200).json({ success: 'deleted', count: messageIds.length });
-	  } catch (error) {
-		console.log(error);
-		response.status(500).json({ error: 'Unable to delete message(s).' });
-	  }
-	}
+      response.status(200).json({ success: 'deleted', count: messageIds.length });
+    } catch (error) {
+      console.log(error);
+      response.status(500).json({ error: 'Unable to delete message(s).' });
+    }
+  }
   
   public async changeInboxIntro(request: Request, response: Response): Promise<void> {
     const type = request.body.type;
