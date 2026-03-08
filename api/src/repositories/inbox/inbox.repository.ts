@@ -20,8 +20,7 @@ export class InboxRepository {
 
  public async deleteInboxMessages(
    messageIds: number[],
-   placeId: number,
-   type: string
+   placeId: number
  ): Promise<any> {
    return knex('inbox')
      .where({ place_id: placeId })
