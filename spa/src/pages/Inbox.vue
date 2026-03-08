@@ -246,47 +246,47 @@ export default Vue.extend({
     },
 
     // UPDATED SINGLE DELETE
-	async deleteInboxMessage(messageId: number): Promise<void> {
-	  try {
-		await this.$http.post("/inbox/deletemessage/", {
-		  place_id: this.$route.params.place_id,
-		  message_id: [messageId],   // <-- ALWAYS an array now
-		  type: this.placeinfo[0].type,
-		});
+    async deleteInboxMessage(messageId: number): Promise<void> {
+      try {
+        await this.$http.post("/inbox/deletemessage/", {
+          place_id: this.$route.params.place_id,
+          message_id: [messageId],   // <-- ALWAYS an array now
+          type: this.placeinfo[0].type,
+        });
 
-		this.success = "Message Deleted";
-		this.error = "";
-		this.display = false;
-	  } catch (error) {
-		this.error = error.response?.data?.error || "Error deleting message";
-		this.success = "";
-	  } finally {
-		this.getInboxMessages();
-	  }
-	},
+        this.success = "Message Deleted";
+        this.error = "";
+        this.display = false;
+      } catch (error) {
+        this.error = error.response?.data?.error || "Error deleting message";
+        this.success = "";
+      } finally {
+        this.getInboxMessages();
+      }
+    },
 
     // NEW MULTI-DELETE
-	async deleteSelected(): Promise<void> {
-	  if (this.selectedMessages.length === 0) return;
+    async deleteSelected(): Promise<void> {
+      if (this.selectedMessages.length === 0) return;
 
-	  try {
-		await this.$http.post("/inbox/deletemessage/", {
-		  place_id: this.$route.params.place_id,
-		  message_id: this.selectedMessages,   // <-- already an array
-		  type: this.placeinfo[0].type,
-		});
+      try {
+        await this.$http.post("/inbox/deletemessage/", {
+          place_id: this.$route.params.place_id,
+          message_id: this.selectedMessages,   // <-- already an array
+          type: this.placeinfo[0].type,
+        });
 
-		this.success = "Selected messages deleted";
-		this.error = "";
-		this.display = false;
-	  } catch (error) {
-		this.error = error.response?.data?.error || "Error deleting messages";
-		this.success = "";
-	  } finally {
-		this.selectedMessages = [];
-		this.getInboxMessages();
-	  }
-	},
+        this.success = "Selected messages deleted";
+        this.error = "";
+        this.display = false;
+      } catch (error) {
+        this.error = error.response?.data?.error || "Error deleting messages";
+        this.success = "";
+      } finally {
+        this.selectedMessages = [];
+        this.getInboxMessages();
+      }
+    },
 
     async getAdminInfo(): Promise<any> {
       return this.$http.post("/inbox/getadmininfo", {
