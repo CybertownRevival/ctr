@@ -339,7 +339,7 @@ class InboxController {
         : [Number.parseInt(rawMessageId)];
 
       // Pass all 3 arguments again
-      await this.inboxService.deleteInboxMessages(messageIds, placeId, type);
+      await this.inboxService.deleteInboxMessages(messageIds, placeId);
 
       response.status(200).json({ success: 'deleted', count: messageIds.length });
     } catch (error) {

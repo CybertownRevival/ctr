@@ -22,9 +22,8 @@ export class InboxService {
  public async deleteInboxMessages(
    messageIds: number[],
    placeId: number,
-   type: string
  ): Promise<any> {
-   return this.inboxRepository.deleteInboxMessages(messageIds, placeId, type);
+   return this.inboxRepository.deleteInboxMessages(messageIds, placeId);
  }
 
   public async getAdminInfo(placeId, memberId): Promise<any> {
