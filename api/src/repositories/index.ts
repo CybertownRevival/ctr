@@ -16,6 +16,7 @@ export * from './role/role.repository';
 export * from './role-assignment/role-assignment.repository';
 export * from './place/place.repository';
 export * from './transaction/transaction.repository';
+export * from './vote/vote.repository';
 export * from './wallet/wallet.repository';
 export * from './messageboard/messageboard.repository';
 export * from './inbox/inbox.repository';
