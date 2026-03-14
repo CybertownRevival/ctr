@@ -50,6 +50,12 @@ export class MemberService {
     private roleRepository: RoleRepository,
   ) {}
 
+  public async getBid(memberId: number): Promise<string> {
+    const member = (await this.find({ id: memberId })).username;
+    const bid = await this.encodeBid(member);
+    return bid;
+  }
+
   public async canAdmin(memberId: number): Promise<boolean> {
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     // Extracted admin roles into a constant for easy management
@@ -411,6 +417,20 @@ export class MemberService {
         username: member.username,
         avatar,
         admin: member.admin,
+      },
+      process.env.JWT_SECRET,
+    );
+  }
+
+  /**
+   * Encodes a JSON web token for the member with the given username.
+   * @param username username of member to encode a token for
+   * @returns promise resolving in encoded token, or rejecting on error
+   */
+  private async encodeBid(username: string): Promise<string> {
+    return jwt.sign(
+      {
+        username,
       },
       process.env.JWT_SECRET,
     );

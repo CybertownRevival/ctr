@@ -93,6 +93,8 @@ import ClubMemberList from "./pages/club/Members.vue";
 import ClubDoor from "@/pages/club/ClubDoor.vue";
 import ClubUpdate from "@/pages/club/ClubUpdate.vue";
 
+import MayorElection from '@/pages/MayorElection.vue';
+
 export default [
   {
     path: "/",
@@ -837,4 +839,14 @@ export default [
       wrapper: true,
     },
   },
+  {
+    path: "/mayorelection",
+    component: MayorElection,
+    name: "mayor-election",
+    meta: {
+      title: "Mayor Election",
+      wrapper: false,
+    },
+  },
+
 ];
