@@ -3,8 +3,9 @@ import axios from "axios";
 import appStore from "./appStore";
 
 // axios config
-axios.interceptors.request.use(function(config) {
+axios.interceptors.request.use(function (config) {
     config.headers.apiToken = appStore.data.user.token;
+    config.headers.bid = localStorage.getItem("bid");
     return config;
 });
 
