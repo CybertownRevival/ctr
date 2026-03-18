@@ -60,7 +60,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex('vote_list').insert({
     title: 'Mayor Election 2026',
     place_id: 1,
-    creator_member_id: 1,
+    creator_member_id: null,
     description: 'Vote for the next mayor of Cybertown',
     expires_at: null,
   });
