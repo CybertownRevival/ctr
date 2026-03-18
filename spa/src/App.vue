@@ -79,7 +79,11 @@
                 ></router-link>
               </div>
             </div>
-            <div class="flex justify-center">
+            <div class="flex justify-center" v-if="isVotingOpen">
+              <img src="/assets/img/vote_button.png" @click="openWindow('#/mayorelection')"
+                  class="cursor-pointer" style="width: 85px; height: 70px;" />
+            </div>
+            <div class="flex justify-center" v-else>
               <img src="/assets/img/outlandico.jpeg" />
             </div>
             <div class="px-8">
@@ -319,6 +323,7 @@ export default Vue.extend({
                  */
       ],
       jumpGate: "",
+      isVotingOpen: false,
     };
   },
   methods: {
@@ -327,6 +332,15 @@ export default Vue.extend({
         this.$router.push({ path: `/place/${this.jumpGate}` });
         this.jumpGate = "";
       }
+    },
+    checkVotingStatus(): void {
+      const currentEST = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+      const now = new Date(currentEST);
+      // Start: March 23, 2026 00:00:00 at -04:00
+      const start = new Date("2026-03-23T00:00:00-04:00");
+      // End: March 30, 2026 23:59:59 at -04:00
+      const end = new Date("2026-03-30T23:59:59-04:00");
+      this.isVotingOpen = now >= start && now <= end;
     },
     reloadWindow(): void {
       window.location.reload();
@@ -341,6 +355,9 @@ export default Vue.extend({
       ModalService.open(SecurityAlertModal, {
         data: data.data,
       });
+    },
+    openWindow(url: string): void {
+      window.open(url, "targetWindow", "height=650,width=800,menubar=no,status=no");
     },
     receivedInstantMessage(){
       ModalService.open(InstantMessageModal);
@@ -390,6 +407,7 @@ export default Vue.extend({
     },
   },
   mounted() {
+    this.checkVotingStatus();
     this.checkAccessLevel();
     this.instantMessagingListener();
     this.moderationListener();
