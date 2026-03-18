@@ -14,9 +14,9 @@ class VoteController {
     private memberService: MemberService,
   ) { }
 
-  // Voting starts on March 13, 2026 at 12:00 AM EDT
+  // Voting starts on March 23, 2026 at 12:00 AM EDT
   public static readonly VOTING_START_DATE = new Date('2026-03-23T00:00:00-04:00');
-  // Voting ends on March 20, 2026 at 11:59 PM EDT
+  // Voting ends on March 30, 2026 at 11:59 PM EDT
   public static readonly VOTING_END_DATE = new Date('2026-03-30T23:59:59-04:00');
   // created date for new members to be eligible to vote
   public static readonly REQUIRED_MEMBER_IMMIGRATION_DATE = new Date('2025-10-01T23:59:59-04:00');
