@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   console.log('Creating vote_list table...');
-  return knex.schema
+  await knex.schema
     // 1. Table for the main Vote/Poll metadata
     .createTable('vote_list', (table) => {
       table.increments('id').primary();
@@ -32,6 +32,9 @@ export async function up(knex: Knex): Promise<void> {
       console.log('Creating vote_response table...');
       table.increments('id').primary();
 
+      //status of the vote
+      table.integer('status').notNullable().defaultTo(1);
+
       // Foreign key to votes table
       table.integer('vote_id').unsigned().notNullable()
         .references('id').inTable('vote_list');
@@ -54,6 +57,29 @@ export async function up(knex: Knex): Promise<void> {
       // Ensure a member can only vote once per specific poll
       table.unique(['vote_id', 'member_id']);
     });
+  console.log('Adding voting seeds...');
+  await knex('vote_list').insert({
+    title: 'Mayor Election 2026',
+    place_id: 1,
+    creator_member_id: 1,
+    description: 'Vote for the next mayor of Cybertown',
+    expires_at: null,
+  });
+  await knex('vote_options').insert([
+    {
+      vote_id: 1,
+      option_text: 'EmperorAjay',
+    },
+    {
+      vote_id: 1,
+      option_text: 'MorningStar',
+    },
+    {
+      vote_id: 1,
+      option_text: 'phil_00',
+    },
+  ]);
+  return;
 }
 
 

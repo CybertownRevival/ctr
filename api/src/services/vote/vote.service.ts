@@ -9,12 +9,21 @@ export class VoteService {
     private voteRepository: VoteRepository,
   ) { }
 
+  public async getBid(): Promise<number> {
+    //random 16 digit number
+    const bid = Math.floor(1000000000000000 + Math.random() * 9000000000000000);
+    if (await this.voteRepository.checkBid(bid)) {
+      return this.getBid();
+    }
+    return bid;
+  }
+
   public async castMayorVote(
     status: number,
     memberId: number,
     optionPicked: number,
     voteId: number,
-    bid: string,
+    bid: number,
   ): Promise<void> {
     try {
       await this.voteRepository.castMayorVote({

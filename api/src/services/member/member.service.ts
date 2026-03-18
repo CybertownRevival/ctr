@@ -48,13 +48,7 @@ export class MemberService {
     private roleAssignmentRepository: RoleAssignmentRepository,
     private objectInstanceRepository: ObjectInstanceRepository,
     private roleRepository: RoleRepository,
-  ) {}
-
-  public async getBid(memberId: number): Promise<string> {
-    const member = (await this.find({ id: memberId })).username;
-    const bid = await this.encodeBid(member);
-    return bid;
-  }
+  ) { }
 
   public async canAdmin(memberId: number): Promise<boolean> {
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
@@ -223,7 +217,7 @@ export class MemberService {
       primary_role_id: member.primary_role_id,
     };
   }
-  
+
   public async getMemberChat(memberId: number): Promise<number> {
     const member = await this.find({ id: memberId });
     return member.chatdefault;
@@ -423,20 +417,6 @@ export class MemberService {
   }
 
   /**
-   * Encodes a JSON web token for the member with the given username.
-   * @param username username of member to encode a token for
-   * @returns promise resolving in encoded token, or rejecting on error
-   */
-  private async encodeBid(username: string): Promise<string> {
-    return jwt.sign(
-      {
-        username,
-      },
-      process.env.JWT_SECRET,
-    );
-  }
-
-  /**
    * Hashes the given password.
    * @param password cleartext password to be encrypted
    * @returns promise resolving in hashed password or rejecting on error
@@ -444,7 +424,7 @@ export class MemberService {
   private encryptPassword(password: string): Promise<string> {
     return bcrypt.hash(password, MemberService.SALT_ROUNDS);
   }
-  
+
   /**
    * Updates a members default chat choice firstname and lastname
    * @param memberId id of the member
@@ -492,7 +472,7 @@ export class MemberService {
     const userId = await this.memberRepository.findIdByUsername(username);
     return userId;
   }
-  
+
   public async check3d(username: string): Promise<void> {
     const user = await this.memberRepository.check3d(username);
     return user;
@@ -511,14 +491,14 @@ export class MemberService {
     const activeTime = new Date(Date.now() - 5 * 60000);
     const places = await this.memberRepository.getActivePlaces(activeTime);
     for (const place of places) {
-      if(placeIds.indexOf(place.place_id) === -1){
+      if (placeIds.indexOf(place.place_id) === -1) {
         placeIds.push(place.place_id);
         const userPlace = await this.placeRepository.findById(place.place_id);
         const userCount = await this.memberRepository.countByPlaceId(place.place_id, activeTime);
         place.name = userPlace.name;
         place.slug = userPlace.slug;
         place.type = userPlace.type;
-        if(userPlace.member_id){
+        if (userPlace.member_id) {
           const userOwner = await this.memberRepository.findById(userPlace.member_id);
           place.username = userOwner.username;
         }
@@ -581,7 +561,7 @@ export class MemberService {
     } catch (error) {
       userId = null;
     }
-    if(userId !== null){
+    if (userId !== null) {
       return await this.objectInstanceRepository.getMemberBackpack(userId);
     }
   }
