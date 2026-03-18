@@ -13,7 +13,7 @@ export class VoteRepository {
       member_id: number;
       option_id: number;
       vote_id: number;
-      bid: string;
+      bid: number;
     },
   ): Promise<void> {
     try {
@@ -22,6 +22,17 @@ export class VoteRepository {
     } catch (error) {
       console.error('Error casting vote:', error);
       throw error;
+    }
+  }
+
+  public async checkBid(bid: number): Promise<boolean> {
+    try {
+      const vote = await knex('vote_response')
+        .where('bid', bid)
+        .first();
+      return vote !== undefined;
+    } catch (error) {
+      return false;
     }
   }
 

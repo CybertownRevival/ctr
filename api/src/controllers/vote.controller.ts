@@ -14,10 +14,8 @@ class VoteController {
     private memberService: MemberService,
   ) { }
 
-  // Required experience points to be eligible to vote
-  public static readonly REQUIRED_EXPERIENCE = 1000;
   // Voting starts on March 13, 2026 at 12:00 AM EDT
-  public static readonly VOTING_START_DATE = new Date('2026-03-23T00:00:00-04:00');
+  public static readonly VOTING_START_DATE = new Date('2026-03-17T00:00:00-04:00');
   // Voting ends on March 20, 2026 at 11:59 PM EDT
   public static readonly VOTING_END_DATE = new Date('2026-03-30T23:59:59-04:00');
   // created date for new members to be eligible to vote
@@ -68,9 +66,10 @@ class VoteController {
     }
 
     // Cast the vote using the service
-    let currentBid = typeof bid === 'string' ? bid : null;
+    const bidNumber = Number(bid);
+    let currentBid = typeof bidNumber === 'number' ? bidNumber : null;
     if (!currentBid) {
-      currentBid = await this.memberService.getBid(session.id);
+      currentBid = await this.voteService.getBid();
       try {
         await this.voteService.castMayorVote(1, session.id, optionPicked, voteId, currentBid);
       } catch (error) {
@@ -94,9 +93,15 @@ class VoteController {
 
     // Check if voting is currently open
     const now = new Date();
-    if (now <= VoteController.VOTING_START_DATE || now >= VoteController.VOTING_END_DATE) {
+    if (now <= VoteController.VOTING_START_DATE) {
       return res.status(403).json({
-        error: 'Voting will open on March 23, 2026 and will close on March 30, 2026',
+        error: 'Voting will open on March 23, 2026',
+      });
+    }
+
+    if (now >= VoteController.VOTING_END_DATE) {
+      return res.status(403).json({
+        error: 'Voting closed on March 30, 2026',
       });
     }
 

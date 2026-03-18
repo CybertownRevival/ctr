@@ -40,7 +40,7 @@ export interface Place {
 /** Represents the shape of the global app store object */
 export interface AppStore {
     data: {
-        bid: string;
+        bid: number;
         loading: boolean;
         isUser: boolean;
         x3dReady: boolean;
@@ -54,13 +54,13 @@ export interface AppStore {
         setView3d: (value: boolean) => void;
         setPlace: (value: Place) => void;
         setUser: (userData: object) => void;
-        setBid: (bid: string) => void;
+        setBid: (bid: number) => void;
     };
 }
 
 const appStore = Vue.observable<AppStore>({
     data: {
-        bid: "",
+        bid: 0,
         loading: false,
         isUser: false,
         x3dReady: false,
@@ -99,8 +99,8 @@ const appStore = Vue.observable<AppStore>({
                 appStore.data.view3d = true;
             }
         },
-        setBid(bid: string): void {
-            localStorage.setItem("bid", bid);
+        setBid(bid: number): void {
+            localStorage.setItem("bid", bid.toString());
         },
     },
 });

@@ -56,23 +56,31 @@ export default Vue.extend({
       success: null,
       items: [
         { id: 'ajay', choice: 1, name: 'EmperorAjay', description: 'I am asking for your vote to serve as the next Mayor of Cybertown. ' +
-        'We all want Cybertown to succeed and thrive, yet activity has declined and our community is no longer growing the way it should. ' +
-        'My opponents are perfectly nice people, but the real question is who will truly lead Cybertown back to growth and prosperity. ' +
-        'As the leader of Cyberhood and through my real-life work in public relations, I have always been passionate about recruiting, ' +
-        'outreach, and building strong communities. If elected Mayor, I will not accept business as usual or settle for mediocrity, I ' +
-        'will work tirelessly to make everyone feel included, revive activity, and bring both returning citizens and new people to Cybertown ' +
-        'so it once again becomes the vibrant place we all love.',
+          'We all want Cybertown to succeed and thrive, yet activity has declined and our community is no longer growing the way it should. ' +
+          'My opponents are perfectly nice people, but the real question is who will truly lead Cybertown back to growth and prosperity. ' +
+          'As the leader of Cyberhood and through my real-life work in public relations, I have always been passionate about recruiting, ' +
+          'outreach, and building strong communities. If elected Mayor, I will not accept business as usual or settle for mediocrity, I ' +
+          'will work tirelessly to make everyone feel included, revive activity, and bring both returning citizens and new people to Cybertown ' +
+          'so it once again becomes the vibrant place we all love.',
         },
         { id: 'ms', choice: 2, name: 'MorningStar', description: 'There are countless places to chat in 2D & play games on the internet so ' +
-        'that isn\'t what makes CTR unique & valuable. The sense of long-term community & the ability to be creative & contribute to the ' +
-        'energy & artistry of this community, particularly in 3D but in 2D as well, are what make CTR a special place in the metaverse. ' +
-        'As a candidate, my interest is in seeing CTR become a viable site that can attract folks based on the finesse of the site & the ' +
-        'opportunities afforded to its existing citizens & those we wish to attract into the community. I have suggested that we focus our ' +
-        'attention on completing the site & developing niche interests such as building & renovating activities, taking advantage of the ' +
-        'skills of the builders & creators at our disposal as well as offering events such as contests, bingo, parties, & others in order ' +
-        'to attract new folks to the community. I feel confident that we have what we need to make CTR an ongoing concern; & if we don\'t yet, ' +
-        'we can work together to make it happen.'},
-        { id: 'phil', choice: 3, name: 'phil_00', description: 'information from phil_00' }
+          'that isn\'t what makes CTR unique & valuable. The sense of long-term community & the ability to be creative & contribute to the ' +
+          'energy & artistry of this community, particularly in 3D but in 2D as well, are what make CTR a special place in the metaverse. ' +
+          'As a candidate, my interest is in seeing CTR become a viable site that can attract folks based on the finesse of the site & the ' +
+          'opportunities afforded to its existing citizens & those we wish to attract into the community. I have suggested that we focus our ' +
+          'attention on completing the site & developing niche interests such as building & renovating activities, taking advantage of the ' +
+          'skills of the builders & creators at our disposal as well as offering events such as contests, bingo, parties, & others in order ' +
+          'to attract new folks to the community. I feel confident that we have what we need to make CTR an ongoing concern; & if we don\'t yet, ' +
+          'we can work together to make it happen.'},
+        { id: 'phil', choice: 3, name: 'phil_00', description: 'Cybertown has been part of my life for ' + 
+          'many years, and the friendships and community here are what keep bringing me back. I\'m running ' +
+          'for Mayor because I want to help strengthen the engagement and communication that make this ' +
+          'place special. By supporting community events, restarting CVN, and bringing back City/Place of ' +
+          'the Month, we can create more opportunities for people to connect and participate. I believe ' +
+          'the Mayor should listen to the citizens and represent their voice while working closely with ' +
+          'the council and founders. My goal is simple: help keep Cybertown Revival a community we are ' +
+          'proud to be part of.'
+        }
       ],
 
     };
