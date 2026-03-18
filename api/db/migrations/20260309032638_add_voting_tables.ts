@@ -10,8 +10,7 @@ export async function up(knex: Knex): Promise<void> {
       table.string('title').notNullable();
       table.integer('place_id').unsigned().notNullable();
       table.foreign('place_id').references('id').inTable('place');
-      table.integer('creator_member_id').unsigned().notNullable();
-      table.foreign('creator_member_id').references('id').inTable('member');
+      table.integer('creator_member_id').unsigned();
       table.text('description');
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('expires_at').nullable();
