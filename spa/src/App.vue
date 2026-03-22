@@ -337,7 +337,7 @@ export default Vue.extend({
       const currentEST = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
       const now = new Date(currentEST);
       // Start: March 23, 2026 00:00:00 at -04:00
-      const start = new Date("2026-03-23T00:00:00-04:00");
+      const start = new Date("2026-03-22T12:00:00-04:00");
       // End: March 30, 2026 23:59:59 at -04:00
       const end = new Date("2026-03-30T23:59:59-04:00");
       this.isVotingOpen = now >= start && now <= end;
