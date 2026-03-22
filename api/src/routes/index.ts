@@ -14,3 +14,4 @@ export * from './object.routes';
 export * from './place.routes';
 export * from './messageboard.routes';
 export * from './inbox.routes';
+export * from './vote.routes';
