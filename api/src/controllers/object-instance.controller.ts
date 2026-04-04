@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import { Container } from 'typedi';
-import { MemberService, ObjectInstanceService, PlaceService, FleaMarketService } from '../services';
+import { 
+  MemberService, 
+  ObjectInstanceService, 
+  PlaceService, 
+  FleaMarketService, 
+  BlackMarketService } from '../services';
 import * as badwords from 'badwords-list';
 
 class ObjectInstanceController {
@@ -9,6 +14,7 @@ class ObjectInstanceController {
     private placeService: PlaceService,
     private memberService: MemberService,
     private fleaMarketService: FleaMarketService,
+    private blackMarketService: BlackMarketService,
   ) {}
 
   /** Stores the position of an object instance in the database */
@@ -35,6 +41,9 @@ class ObjectInstanceController {
       let adminStatus = false;
       if(place.slug === 'fleamarket'){
         adminStatus = await this.fleaMarketService.canAdmin(session.id);
+      }
+      if(place.slug === 'blackmarket'){
+        adminStatus = await this.blackMarketService.canAdmin(session.id);
       }
       if (!adminStatus && objectInstance.member_id != session.id) {
         throw new Error('Not the owner of this object');
@@ -74,7 +83,10 @@ class ObjectInstanceController {
       const objectInstance = await this.objectInstanceService.find(id);
       const place = await this.placeService.findById(Number.parseInt(request.body.placeId));
 
-      if (place.slug !== 'fleamarket' && place.member_id != session.id) {
+      if (
+        place.slug !== 'fleamarket' && 
+        place.slug !== 'blackmarket' && 
+        place.member_id != session.id) {
         throw new Error('Not the owner of this place');
       }
 
@@ -235,6 +247,9 @@ class ObjectInstanceController {
       if(place.slug === 'fleamarket'){
         adminStatus = await this.fleaMarketService.canAdmin(session.id);
       }
+      if(place.slug === 'blackmarket'){
+        adminStatus = await this.blackMarketService.canAdmin(session.id);
+      }
 
       if (!adminStatus && objectInstance.member_id != session.id) {
         throw new Error('Not the owner of this object');
@@ -251,9 +266,11 @@ const objectInstanceService = Container.get(ObjectInstanceService);
 const placeService = Container.get(PlaceService);
 const memberService = Container.get(MemberService);
 const fleaMarketService = Container.get(FleaMarketService);
+const blackMarketService = Container.get(BlackMarketService);
 export const objectInstanceController = new ObjectInstanceController(
   objectInstanceService,
   placeService,
   memberService,
   fleaMarketService,
+  blackMarketService,
 );
