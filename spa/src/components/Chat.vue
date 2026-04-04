@@ -749,6 +749,7 @@ export default Vue.extend({
           this.$store.data.view3d &&
           (
             this.$store.data.place.slug === 'fleamarket' || 
+            this.$store.data.place.slug === 'blackmarket' || 
             this.$store.data.place.member_id === this.$store.data.user.id
           )){
             this.menuDrop = true;
@@ -773,6 +774,11 @@ export default Vue.extend({
       }
       if(this.$store.data.place.slug === 'fleamarket'){
         admin = await this.$http.get("/fleamarket/can_admin", {
+          'id': this.$store.data.user.id
+        });
+      }
+      if(this.$store.data.place.slug === 'blackmarket'){
+        admin = await this.$http.get("/blackmarket/can_admin", {
           'id': this.$store.data.user.id
         });
       }
