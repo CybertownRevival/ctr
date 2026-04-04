@@ -15,9 +15,9 @@ class VoteController {
   ) { }
 
   // Voting starts on March 23, 2026 at 12:00 AM EDT
-  public static readonly VOTING_START_DATE = new Date('2026-03-22T12:00:00-04:00');
+  public static readonly VOTING_START_DATE = new Date('2026-03-21T12:00:00-04:00');
   // Voting ends on March 30, 2026 at 11:59 PM EDT
-  public static readonly VOTING_END_DATE = new Date('2026-03-30T23:59:59-04:00');
+  public static readonly VOTING_END_DATE = new Date('2026-03-29T23:59:59-04:00');
   // created date for new members to be eligible to vote
   public static readonly REQUIRED_MEMBER_IMMIGRATION_DATE = new Date('2025-10-01T23:59:59-04:00');
 
@@ -35,7 +35,7 @@ class VoteController {
     const now = new Date();
     if (now <= VoteController.VOTING_START_DATE || now >= VoteController.VOTING_END_DATE) {
       return res.status(403).json({
-        error: 'Voting will open on March 23, 2026 and will close on March 30, 2026',
+        error: 'Voting will open on March 22, 2026 and will close on March 29, 2026',
       });
     }
 
@@ -96,13 +96,13 @@ class VoteController {
     const now = new Date();
     if (now <= VoteController.VOTING_START_DATE) {
       return res.status(403).json({
-        error: 'Voting will open on March 23, 2026',
+        error: 'Voting will open on March 22, 2026',
       });
     }
 
     if (now >= VoteController.VOTING_END_DATE) {
       return res.status(403).json({
-        error: 'Voting closed on March 30, 2026',
+        error: 'Voting closed on March 29, 2026',
       });
     }
 
@@ -123,7 +123,7 @@ class VoteController {
     if (new Date(immigrationDate) > VoteController.REQUIRED_MEMBER_IMMIGRATION_DATE) {
       return res.status(403).json({
         error: 'You must be a citizen of Cybertown prior to October 1, 2025 to vote. ' +
-          `Your immigration date is ${immigrationDate}.`,
+          `<br>Your immigration date is ${immigrationDate}.`,
       });
     }
 

@@ -23,8 +23,8 @@
     </div>
 
     <div class="vote-section">
-      <span v-if="error" class="text-red-500">{{ error }}</span>
-      <span v-if="success" class="text-green-500">{{ success }}</span>
+      <span v-if="error" class="text-red-500 text-center" v-html="error"></span>
+      <span v-if="success" class="text-green-500 text-center" v-html="success"></span>
       <span v-if="!error && !success">
       <h3 class="vote-title">Cast Your Vote</h3>
       <div class="vote-controls">
