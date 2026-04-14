@@ -309,6 +309,28 @@ class InboxController {
       });
     }
   }
+
+  public async removeInbox(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      console.log('Removing inbox for: ', session.id);
+      response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error removing inbox.'});
+    }
+  }
+
+  public async removeAllMessages(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      console.log('Removing all inbox messages by: ', session.id);
+      response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error removing inbox messages.'});
+    }
+  }
   
   public async deleteInboxMessage(request: Request, response: Response): Promise<void> {
     const placeId = Number.parseInt(request.body.place_id);

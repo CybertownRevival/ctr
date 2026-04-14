@@ -119,6 +119,28 @@ class MessageboardController {
       });
     }
   }
+
+  public async removeMessageboard(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      console.log('Removing messageboard for: ', session.id);
+      response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error removing messageboard.'});
+    }
+  }
+
+  public async removeAllMessages(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      console.log('Removing all messageboard messages by: ', session.id);
+      response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error removing messageboard messages.'});
+    }
+  }
   
   public async getMessageboardMessages(request: Request, response: Response): Promise<void> {
     const placeId = Number.parseInt(request.body.place_id);

@@ -22,5 +22,9 @@ inboxRoutes.post('/postinboxall/',
   (request, response) => inboxController.postInboxAllMessage(request, response));
 inboxRoutes.post('/postreply/',
   (request, response) => inboxController.postInboxReply(request, response));
+inboxRoutes.get('/remove_inbox',
+  (request, response) => inboxController.removeInbox(request, response));
+inboxRoutes.get('/remove_all_messages',
+  (request, response) => inboxController.removeAllMessages(request, response));
 
 export { inboxRoutes };
