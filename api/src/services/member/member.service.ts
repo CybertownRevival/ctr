@@ -440,10 +440,15 @@ export class MemberService {
     });
   }
   public async updateInfo(
-    memberId: number, firstName: string, lastName: string, chatdefault: number): Promise<void> {
+    memberId: number, 
+    firstName: string, 
+    lastName: string, 
+    email:string, 
+    chatdefault: number): Promise<void> {
     await this.memberRepository.update(memberId, {
       firstname: firstName,
       lastname: lastName,
+      email: email,
       chatdefault: chatdefault,
     });
   }
