@@ -167,6 +167,28 @@ class PlaceController {
     }
   }
 
+  public async removeAllStorage(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      console.log('Removing all storage areas for: ', session.id);
+      response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error remvoing storage areas.'});
+    }
+  }
+
+  public async removeVirtualPet(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      console.log('Removing virtual pet for: ', session.id);
+      response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error removing Virtual Pet.'});
+    }
+  }
+
   public async deleteStorage(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;

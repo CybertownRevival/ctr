@@ -22,5 +22,9 @@ messageboardRoutes.post('/postmessageall/',
   (request, response) => messageboardController.postMessageAllMessage(request, response));
 messageboardRoutes.post('/postreply/',
   (request, response) => messageboardController.postMessageboardReply(request, response));
+messageboardRoutes.get('/remove_messageboard',
+  (request, response) => messageboardController.removeMessageboard(request, response));
+messageboardRoutes.get('/remove_all_messages',
+  (request, response) => messageboardController.removeAllMessages(request, response));
 
 export { messageboardRoutes };

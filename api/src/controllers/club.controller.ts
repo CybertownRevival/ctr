@@ -246,6 +246,17 @@ class ClubController {
     }
   }
 
+  public async removeAllClubs(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      console.log('Removing all clubs for: ', session.id);
+      response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error moving objects.'});
+    }
+  }
+
   public async searchClubs(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) {

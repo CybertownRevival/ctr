@@ -26,5 +26,7 @@ objectInstanceRoutes.post('/backpack', (request, response) =>
 
 objectInstanceRoutes.post('/storage', (request, response) =>
   objectInstanceController.moveToStorage(request, response));
+objectInstanceRoutes.get('/move_all_objects', (request, response) =>
+  objectInstanceController.moveAllObjects(request, response));
 
 export { objectInstanceRoutes };

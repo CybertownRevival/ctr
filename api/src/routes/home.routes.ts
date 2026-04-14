@@ -10,6 +10,8 @@ import { homeController } from '../controllers';
 const homeRoutes = Router();
 homeRoutes.get('',
   (request, response) => homeController.getHome(request, response));
+homeRoutes.get('/remove_home',
+  (request, response) => homeController.removeHome(request, response));
 homeRoutes.get('/:username',
   (request, response) => homeController.getHome(request, response));
 homeRoutes.post('/settle',
@@ -18,5 +20,4 @@ homeRoutes.post('/move',
   (request, response) => homeController.moveHome(request, response));
 homeRoutes.post('/update',
   (request, response) => homeController.updateHome(request, response));
-
 export { homeRoutes };

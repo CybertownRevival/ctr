@@ -21,6 +21,10 @@ placeRoutes.post('/add_storage', (request, response) =>
   placeController.addStorage(request, response));
 placeRoutes.post('/delete_storage', (request, response) =>
   placeController.deleteStorage(request, response));
+placeRoutes.get('/remove_all_storage', (request, response) =>
+  placeController.removeAllStorage(request, response));
+placeRoutes.get('/remove_virtual_pet', (request, response) =>
+  placeController.removeVirtualPet(request, response));
 placeRoutes.post('/postAccessInfo/:slug/:id?',
   (request, response) => placeController.postAccessInfo(request, response));
 placeRoutes.get('/virtual-pet/:place_id', 
