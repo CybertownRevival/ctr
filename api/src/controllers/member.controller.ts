@@ -186,7 +186,7 @@ class MemberController {
       response.status(200).json({ message: 'success' });
     } catch (error) {
       response.status(400).json({
-        error: error instanceof Error ? error.message : 'Error on Updating',
+        error: error.message,
       });
     }
   }
