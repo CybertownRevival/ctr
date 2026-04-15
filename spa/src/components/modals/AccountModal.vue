@@ -134,26 +134,26 @@ export default Vue.extend({
      },
      async deleteAccount(): Promise<void> {
       await this.$http.get("/object_instance/move_all_objects");
-      await this.$http.get("/home/remove_home");
-      await this.$http.get("/club/remove_all_clubs");
-      await this.$http.get("/message/remove_all_messages");
-      await this.$http.get("/inbox/remove_inbox");
-      await this.$http.get("/messageboard/remove_messageboard");
-      await this.$http.get("/inbox/remove_all_messages");
-      await this.$http.get("/messageboard/remove_all_messages");
-      await this.$http.get("/place/remove_all_storage");
-      await this.$http.get("/member/remove_all_roles");
-      await this.$http.get("/member/remove_all_bans");
-      await this.$http.get("/member/remove_wallet");
-      await this.$http.get("/avatar/remove_all_avatars");
-      await this.$http.get("/place/remove_virtual_pet");
-      const removeAccount = await this.$http.get("/member/remove_account");
-      if(removeAccount){
-        this.close("Modal closed");
-        this.$router.push("/logout");
-      } else {
-        console.log("Account Removal Failed.")
-      }
+      // await this.$http.get("/message/remove_all_messages");
+      // await this.$http.get("/inbox/remove_all_messages");
+      // await this.$http.get("/messageboard/remove_all_messages");
+      // await this.$http.get("/place/remove_all_storage");
+      // await this.$http.get("/place/remove_virtual_pet");
+      // await this.$http.get("/club/remove_all_clubs");
+      // await this.$http.get("/inbox/remove_inbox");
+      // await this.$http.get("/messageboard/remove_messageboard");
+      // await this.$http.get("/home/remove_home");
+      // await this.$http.get("/member/remove_all_roles");
+      // await this.$http.get("/member/remove_all_bans");
+      // await this.$http.get("/member/remove_wallet");
+      // await this.$http.get("/avatar/remove_all_avatars");   
+      // const removeAccount = await this.$http.get("/member/remove_account");
+      // if(removeAccount){
+      //   this.close("Modal closed");
+      //   this.$router.push("/logout");
+      // } else {
+      //   console.log("Account Removal Failed.")
+      // }
      },
      cancelRemoval() {
       this.removeAccount = false;

@@ -227,8 +227,38 @@ class ObjectInstanceController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
-      console.log('Moving all objects from: ', session.id);
+      await this.objectInstanceService.moveAllObjects(session.id);
       response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error moving objects.'});
+    }
+  }
+
+  public async updateObjectOwner(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const username = request.body.username;
+      const objects = request.body.id;
+      const userId = await this.memberService.getMemberId(username);
+      if(!userId){
+        throw new Error('Username not found.')
+      }
+      for (const obj of objects) {
+        await this.objectInstanceService.updateObjectOwner(obj, userId[0].id);
+      }
+      response.status(200).json({ status: 'success' });
+    } catch (error) {
+      response.status(400).json({error: error});
+    }
+  }
+
+  public async seizedObjects(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const seizedObjects = await this.objectInstanceService.seizedObjects();
+      response.status(200).json({ objects: seizedObjects });
     } catch {
       response.status(400).json({error: 'Error moving objects.'});
     }

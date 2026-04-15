@@ -78,6 +78,18 @@ export class ObjectInstanceService {
     return await this.objectInstanceRepository.getObjectInstanceWithObject(objectInstanceId);
   }
 
+  public async moveAllObjects(id): Promise<any> {
+    await this.objectInstanceRepository.moveAllObjects(id);
+  }
+
+  public async updateObjectOwner(objectId, userId): Promise<any> {
+    await this.objectInstanceRepository.updateObjectOwner(objectId, userId);
+  }
+
+  public async seizedObjects(): Promise<any> {
+    return await this.objectInstanceRepository.seizedObjects();
+  }
+
   public async findAllObjectInstances(limit: number, offset: number): Promise<any> {
     const objects = await this.objectInstanceRepository.getAllObjectInstances(limit, offset);
     const returnObjects = [];

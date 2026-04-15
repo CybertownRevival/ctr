@@ -6,6 +6,9 @@
       <div class="mb-2" v-if="accessLevel.includes('admin')">
         <router-link class="btn-ui" :to="{name: 'AvatarSearch'}">Avatars</router-link>
       </div>
+      <div class="mb-2" v-if="accessLevel.includes('admin')">
+        <router-link class="btn-ui" :to="{name: 'SeizedObjects'}">Seized Objects</router-link>
+      </div>
       <div class="mb-2">
         <router-link class="btn-ui" v-if="accessLevel.includes('security')" :to="{name: 'CommunityOverview'}">Overview</router-link>
       </div>
