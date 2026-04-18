@@ -94,6 +94,12 @@ export class RoleAssignmentRepository {
     return roleResults;
   }
 
+  public async removeRoleAssignment(id: number): Promise<any> {
+    await this.db.knex('role_assignment')
+      .where('place_id', id)
+      .del();
+  }
+
   public async getUsernamesByRoleId(roleId: number): Promise<any> {
     return this.db.knex('role_assignment')
       .select('member.username')
@@ -196,7 +202,7 @@ export class RoleAssignmentRepository {
     memberId: number,
     roleId: number,
   ): Promise<any> {
-    return this.db.knex('role_assignment')
+    return await this.db.knex('role_assignment')
       .where('place_id', placeId)
       .where('member_id', memberId)
       .where('role_id', roleId)

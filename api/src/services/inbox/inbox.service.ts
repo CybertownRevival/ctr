@@ -26,6 +26,10 @@ export class InboxService {
    return this.inboxRepository.deleteInboxMessages(messageIds, placeId);
  }
 
+ public async removeAllMessages(userId: number): Promise<any> {
+   return this.inboxRepository.removeAllMessages(userId);
+ }
+
   public async getAdminInfo(placeId, memberId): Promise<any> {
     return await this.inboxRepository.getAdminInfo(placeId, memberId);
   }

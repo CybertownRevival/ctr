@@ -199,6 +199,25 @@ class ObjectController {
     }
   }
 
+  public async removeAccount(request: Request, response: Response): Promise<any> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string> apitoken);
+
+    if(!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+    try{
+      await this.objectService.removeAccount(session.id);
+      response.status(200).json({ status: 'success' });
+    } catch(error) {
+      console.error(error);
+      response.status(400).json({'error': error.message});
+    }
+  }
+
   public async increaseQuantity(request: Request, response: Response): Promise<void> {
     const { apitoken } = request.headers;
     const session = this.memberService.decodeMemberToken(<string> apitoken);

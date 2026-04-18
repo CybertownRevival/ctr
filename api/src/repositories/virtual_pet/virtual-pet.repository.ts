@@ -26,6 +26,12 @@ export class VirtualPetRepository {
     return pet;
   }
 
+  public async removeVirtualPet(id: number): Promise<any> {
+    await this.db.knex('virtual_pet')
+      .where('place_id', id)
+      .del();
+  }
+
   public async updateVirtualPet(
     placeId: number, 
     name: string, 

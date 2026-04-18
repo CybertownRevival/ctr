@@ -39,6 +39,10 @@ export class AvatarService {
     return await this.avatarRepository.findAllForMemberId(memberId);
   }
 
+  public async removeAllAvatars(userId : number): Promise<any> {
+    await this.avatarRepository.removeAllAvatars(userId);
+  }
+
   /**
    * create an avatar (file upload and record)
    * @param wrlFile
