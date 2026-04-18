@@ -25,6 +25,18 @@ export class MessageboardRepository {
       .where('id', messageId)
       .update({status: 0});
   }
+
+  public async removeAllMessages(userId: number): Promise<any> {
+    await knex('messageboard')
+      .where('member_id', userId)
+      .del();
+  }
+
+  public async removeAllPlaceMessages(id: number): Promise<any> {
+    await knex('messageboard')
+      .where('place_id', id)
+      .del();
+  }
   
   public async getAdminInfo(
     placeId: number,

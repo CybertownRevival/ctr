@@ -6,7 +6,7 @@ export interface Object extends Model {
   filename: string;
   image: string;
   texture: string;
-  member_id: number;
+  member_id: number | null;
   name: string;
   quantity: number;
   limit: number;

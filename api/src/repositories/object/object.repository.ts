@@ -16,6 +16,19 @@ export class ObjectRepository {
     return this.find({ id: objectId });
   }
 
+  public async removeAccount(userId: number): Promise<any> {
+    await this.db.object
+      .where('member_id', userId)
+      .whereIn('status', [1, 2, 3])
+      .update({
+        member_id: null,
+        status: this.db.object.client.raw(
+          'CASE WHEN status = ? THEN ? ELSE ? END',
+          [1, 4, 0],
+        ),
+      });
+  }
+
   /**
    *
    * @param directory
@@ -158,7 +171,7 @@ export class ObjectRepository {
       .select('object.*', 'member.username')
       .where('object.status','!=', '0')
       .where('object.status','!=', '2')
-      .join('member', 'object.member_id', 'member.id')
+      .leftJoin('member', 'object.member_id', 'member.id')
       .orderBy('id', 'desc')
       .limit(limit)
       .offset(offset);

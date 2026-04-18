@@ -42,7 +42,7 @@ class AvatarController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
-      console.log('Removing all avatars for: ', session.id);
+      await this.avatarService.removeAllAvatars(session.id);
       response.status(200).json({ status: 'success' });
     } catch {
       response.status(400).json({error: 'Error remvoing avatars.'});

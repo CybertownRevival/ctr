@@ -91,7 +91,7 @@ public async removeAllMessages(request: Request, response: Response):  Promise<v
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
-      console.log('Removing all messages by: ', session.id);
+      await this.messageService.removeAllMessages(session.id);
       response.status(200).json({ status: 'success' });
     } catch {
       response.status(400).json({error: 'Error remvoing messages.'});

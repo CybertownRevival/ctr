@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import { PlaceService, MemberService, HomeService } from '../services';
+import { PlaceService, MemberService, HomeService} from '../services';
 import { Container } from 'typedi';
 
 import * as badwords from 'badwords-list';
@@ -167,25 +167,23 @@ class PlaceController {
     }
   }
 
-  public async removeAllStorage(request: Request, response: Response):  Promise<void>{
+  public async removeAccount(request: Request, response: Response):  Promise<void>{
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
+    // storage, pet, home, club
+
     try {
-      console.log('Removing all storage areas for: ', session.id);
+      const places = await this.placeService.getOwnedPlaces(session.id);
+      const home = places.filter(place => place.type === 'home');
+      const other = places.filter(place => place.type !== 'home');
+      await this.placeService.removeVirtualPet(home[0].id);
+      places.forEach(place => {
+        this.placeService.removePlace(place.id);
+      });
+
       response.status(200).json({ status: 'success' });
     } catch {
       response.status(400).json({error: 'Error remvoing storage areas.'});
-    }
-  }
-
-  public async removeVirtualPet(request: Request, response: Response):  Promise<void>{
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) return;
-    try {
-      console.log('Removing virtual pet for: ', session.id);
-      response.status(200).json({ status: 'success' });
-    } catch {
-      response.status(400).json({error: 'Error removing Virtual Pet.'});
     }
   }
 
@@ -307,4 +305,5 @@ class PlaceController {
 const placeService = Container.get(PlaceService);
 const memberService = Container.get(MemberService);
 const homeService = Container.get(HomeService);
-export const placeController = new PlaceController(placeService, memberService, homeService);
+export const placeController = new PlaceController(
+  placeService, memberService, homeService);

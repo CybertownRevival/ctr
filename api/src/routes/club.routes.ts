@@ -25,7 +25,7 @@ clubRoutes.post('/update', (request, response) =>
   clubController.updateClub(request, response));
 clubRoutes.get('/search', (request, response) =>
   clubController.searchClubs(request, response));
-clubRoutes.get('/remove_all_clubs', (request, response) =>
-  clubController.removeAllClubs(request, response));
+clubRoutes.get('/remove_account', (request, response) =>
+  clubController.removeAccount(request, response));
 
 export {clubRoutes};
