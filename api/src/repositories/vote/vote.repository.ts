@@ -51,4 +51,22 @@ export class VoteRepository {
       return false;
     }
   }
+
+  public async removePlace(id: number): Promise<any> {
+    await knex('vote_list')
+      .where('place_id', id)
+      .del();
+  }
+
+  public async removeListByUserId(id: number): Promise<any> {
+    await knex('vote_list')
+      .where('creator_member_id', id)
+      .del();
+  }
+
+  public async removeResponseByUserId(id: number): Promise<any> {
+    await knex('vote_response')
+      .where('member_id', id)
+      .del();
+  }
 }

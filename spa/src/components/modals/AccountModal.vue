@@ -140,20 +140,14 @@ export default Vue.extend({
       await this.$http.get("/messageboard/remove_all_messages");
       await this.$http.get("/avatar/remove_all_avatars");
       await this.$http.get("/club/remove_account")
-      await this.$http.get("/place/remove_account");
-      // await this.$http.get("/member/remove_all_roles");
-      // await this.$http.get("/member/remove_all_bans");
-      // await this.$http.get("/member/remove_wallet");
-      // transaction
-      // vote_response
-       
-      // const removeAccount = await this.$http.get("/member/remove_account");
-      // if(removeAccount){
-      //   this.close("Modal closed");
-      //   this.$router.push("/logout");
-      // } else {
-      //   console.log("Account Removal Failed.")
-      // }
+      await this.$http.get("/place/remove_account");      
+      const removeAccount = await this.$http.get("/member/remove_account");
+      if(removeAccount){
+        this.close("Modal closed");
+        this.$router.push("/logout");
+      } else {
+        console.log("Account Removal Failed.")
+      }
      },
      cancelRemoval() {
       this.removeAccount = false;
