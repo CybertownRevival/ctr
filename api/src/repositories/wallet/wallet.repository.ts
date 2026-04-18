@@ -38,4 +38,10 @@ export class WalletRepository {
       .limit(10)
       .join('member', 'member.wallet_id', 'wallet.id');
   }
+
+  public async removeAccount(id: number): Promise<any> {
+    await this.db.wallet
+      .where('id', id)
+      .del();
+  }
 }

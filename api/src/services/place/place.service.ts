@@ -10,6 +10,7 @@ import {
   MessageRepository,
   InboxRepository,
   MessageboardRepository,
+  VoteRepository,
 } from '../../repositories';
 import { Place, ObjectInstance } from '../../types/models';
 
@@ -26,6 +27,7 @@ export class PlaceService {
     private messageRepository: MessageRepository,
     private inboxRepository: InboxRepository,
     private messageboardRepository: MessageboardRepository,
+    private voteRepository: VoteRepository,
   ) {}
 
   public async canAdmin(slug: string, placeId: number, memberId: number):
@@ -152,6 +154,7 @@ export class PlaceService {
     await this.messageRepository.removeAllPlaceMessages(id);
     await this.inboxRepository.removeAllPlaceMessages(id);
     await this.messageboardRepository.removeAllPlaceMessages(id);
+    await this.voteRepository.removePlace(id);
     await this.placeRepository.removePlace(id);
   }
 

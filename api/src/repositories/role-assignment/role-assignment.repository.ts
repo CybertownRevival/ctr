@@ -100,6 +100,12 @@ export class RoleAssignmentRepository {
       .del();
   }
 
+  public async removeAllByUserId(id: number): Promise<any> {
+    await this.db.knex('role_assignment')
+      .where('member_id', id)
+      .del();
+  }
+
   public async getUsernamesByRoleId(roleId: number): Promise<any> {
     return this.db.knex('role_assignment')
       .select('member.username')

@@ -188,45 +188,12 @@ class MemberController {
     }
   }
 
-  public async removeAllRoles(request: Request, response: Response):  Promise<void>{
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) return;
-    try {
-      console.log('Removing all roles from: ', session.id);
-      response.status(200).json({ status: 'success' });
-    } catch {
-      response.status(400).json({error: 'Error removing roles.'});
-    }
-  }
-
-  public async removeAllBans(request: Request, response: Response):  Promise<void>{
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) return;
-    try {
-      console.log('Removing all bans from: ', session.id);
-      response.status(200).json({ status: 'success' });
-    } catch {
-      response.status(400).json({error: 'Error removing bans.'});
-    }
-  }
-
-  public async removeWallet(request: Request, response: Response):  Promise<void>{
-    const session = this.memberService.decryptSession(request, response);
-    if (!session) return;
-    try {
-      console.log('Removing wallet from: ', session.id);
-      response.status(200).json({ status: 'success' });
-    } catch {
-      response.status(400).json({error: 'Error removing wallet.'});
-    }
-  }
-
   public async removeAccount(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const { id } = session;
     try {
-      console.log('Removing user: ', id)
+      await this.memberService.removeAccount(id);
       response.status(200).json({ message: 'success' });
     } catch (error) {
       response.status(400).json({

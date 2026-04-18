@@ -170,17 +170,14 @@ class PlaceController {
   public async removeAccount(request: Request, response: Response):  Promise<void>{
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
-    // storage, pet, home, club
 
     try {
       const places = await this.placeService.getOwnedPlaces(session.id);
       const home = places.filter(place => place.type === 'home');
-      const other = places.filter(place => place.type !== 'home');
       await this.placeService.removeVirtualPet(home[0].id);
       places.forEach(place => {
         this.placeService.removePlace(place.id);
       });
-
       response.status(200).json({ status: 'success' });
     } catch {
       response.status(400).json({error: 'Error remvoing storage areas.'});

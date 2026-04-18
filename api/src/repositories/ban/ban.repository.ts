@@ -30,6 +30,12 @@ export class BanRepository {
         reason: updateReason,
       });
   }
+
+  public async removeAllByUserId(id: number): Promise<any> {
+    await this.db.knex('ban')
+      .where('ban_member_id', id)
+      .del();
+  }
   
   public async getBanHistory(ban_member_id: number): Promise<any> {
     return knex

@@ -171,6 +171,12 @@ export class MemberRepository {
     await this.db.member.where({id: memberId}).update(props);
   }
 
+  public async removeAccount(id: number): Promise<any> {
+    await this.db.member
+      .where('id', id)
+      .del();
+  }
+
   /**
    * Updates properties on the member record with the given id.
    * @param memberId id of member to be updated

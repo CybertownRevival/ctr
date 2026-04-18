@@ -69,10 +69,10 @@ export class MallService {
     const returnObjects= [];
     const objects = await this.objectRepository.findMallSoldOut();
     for (const obj of objects) {
-      const user = await this.memberRepository.findById(obj.member_id);
+      const user = obj.member_id ? await this.memberRepository.findById(obj.member_id) : null;
       const store = await this.mallRepository.getStore(obj.id);
       const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
-      obj.username = user.username;
+      obj.username = user?.username || 'Deleted User';
       obj.store = store[0];
       obj.instances = instances;
       returnObjects.push(obj);
@@ -103,9 +103,9 @@ export class MallService {
     const returnObjects = [];
     const objects = await this.objectRepository.searchMallObjects(search, limit, offset);
     for (const obj of objects) {
-      const user = await this.memberRepository.findById(obj.member_id);
+      const user = obj.member_id ? await this.memberRepository.findById(obj.member_id) : null;
       const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
-      obj.username = user.username;
+      obj.username = user?.username || 'Deleted User';
       obj.instances = instances;
       returnObjects.push(obj);
     }
@@ -126,9 +126,9 @@ export class MallService {
     const objects = await this.objectRepository.searchAllObjects(
       search, compare, status, limit, offset);
     for (const obj of objects) {
-      const user = await this.memberRepository.findById(obj.member_id);
+      const user = obj.member_id ? await this.memberRepository.findById(obj.member_id) : null;
       const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
-      obj.username = user.username;
+      obj.username = user?.username || 'Deleted User';
       obj.instances = instances;
       returnObjects.push(obj);
     }
@@ -150,10 +150,10 @@ export class MallService {
     const objects = await this.objectRepository
       .findAllObjects(column, compare, content, limit, offset, orderBy);
     for (const obj of objects) {
-      const user = await this.memberRepository.findById(obj.member_id);
+      const user = obj.member_id ? await this.memberRepository.findById(obj.member_id) : null;
       const store = await this.mallRepository.getStore(obj.id);
       const instances = await this.objectInstanceRepository.countByObjectId(obj.id);
-      obj.username = user.username;
+      obj.username = user?.username || 'Deleted User';
       obj.store = store[0];
       obj.instances = instances;
       returnObjects.push(obj);
