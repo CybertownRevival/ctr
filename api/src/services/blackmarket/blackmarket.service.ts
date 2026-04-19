@@ -5,7 +5,6 @@ import {
   RoleRepository,
 } from '../../repositories';
 
-/** Service for dealing with the flea market */
 @Service()
 export class BlackMarketService {
   constructor(
