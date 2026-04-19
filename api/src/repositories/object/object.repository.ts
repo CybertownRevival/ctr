@@ -17,16 +17,35 @@ export class ObjectRepository {
   }
 
   public async removeAccount(userId: number): Promise<any> {
+    const objectInstanceIds = this.db.objectInstance
+      .distinct('object_id')
+      .whereNotNull('object_id');
+
     await this.db.object
       .where('member_id', userId)
-      .whereIn('status', [1, 2, 3])
-      .update({
-        member_id: null,
-        status: this.db.object.client.raw(
-          'CASE WHEN status = ? THEN ? ELSE ? END',
-          [1, 4, 0],
-        ),
-      });
+      .where('status', 1)
+      .update({status: 4});
+
+    await this.db.object
+      .where('member_id', userId)
+      .where('status', 2)
+      .update({status: 0});
+
+    await this.db.object
+      .where('member_id', userId)
+      .where('status', 3)
+      .whereIn('id', objectInstanceIds.clone())
+      .update({status: 4});
+
+    await this.db.object
+      .where('member_id', userId)
+      .where('status', 3)
+      .whereNotIn('id', objectInstanceIds)
+      .update({status: 0});
+
+    await this.db.object
+      .where('member_id', userId)
+      .update({member_id: null});
   }
 
   /**

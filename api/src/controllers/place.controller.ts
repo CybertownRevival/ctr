@@ -173,14 +173,19 @@ class PlaceController {
 
     try {
       const places = await this.placeService.getOwnedPlaces(session.id);
-      const home = places.filter(place => place.type === 'home');
-      await this.placeService.removeVirtualPet(home[0].id);
-      places.forEach(place => {
-        this.placeService.removePlace(place.id);
-      });
+      if(places.length >= 1) {
+        const home = places.find(place => place.type === 'home');
+        if(home){
+          await this.placeService.removeVirtualPet(home.id);
+        }
+        
+        places.forEach(place => {
+          this.placeService.removePlace(place.id);
+        });
+      }
       response.status(200).json({ status: 'success' });
     } catch {
-      response.status(400).json({error: 'Error remvoing storage areas.'});
+      response.status(400).json({error: 'Error remvoing places.'});
     }
   }
 

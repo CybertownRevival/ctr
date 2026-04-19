@@ -57,5 +57,11 @@ export class MapLocationRepository {
       .merge(['available']);
   }
 
+  public async removePlace(id: number): Promise<any> {
+    await this.db.mapLocation
+      .where('place_id', id)
+      .del();
+  }
+
 
 }
