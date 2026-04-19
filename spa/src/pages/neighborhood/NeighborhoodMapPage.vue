@@ -95,7 +95,7 @@ export default Vue.extend({
         this.$store.data.user.token,
       );
     },
-  } as any,
+  },
   watch: {},
   computed: {
     mapBackground() {

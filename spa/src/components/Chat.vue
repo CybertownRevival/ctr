@@ -216,7 +216,7 @@
       :active-panel-users="activePanel === 'users'"
       :menu-go-to="menuGoTo"
       :menu-toggle-role="menuToggleRole"
-      :menu-toggle-xp="menuToggleXP"
+      :menu-toggle-xp="menuToggleXp"
       :menu-toggle-speech="menuToggleSpeech"
       :menu-beam-to="menuBeamTo"
       :menu-whisper="menuWhisper"
@@ -254,18 +254,100 @@
 import Vue from 'vue';
 import { debugMsg } from '@/helpers';
 import UserMenu from './UserMenu.vue';
-export default Vue.extend({
+
+interface ChatData {
+  message: string;
+  messages: any[];
+  users: any[];
+  backpackObjects: any[];
+  primaryRole: string;
+  displayRole: boolean;
+  xpAmount: number;
+  activePanel: string;
+  objectId: any;
+  canInteractWithObject: boolean;
+  canModify: boolean;
+  memberId: any;
+  username: any;
+  usernameBackPack: any;
+  blockedUser: boolean;
+  blockedMembers: any[];
+  cursorX: any;
+  cursorY: any;
+  numberOfPosts: number;
+  userMenu: boolean;
+  menuTop: any;
+  menuLeft: any;
+  menuBottom: any;
+  menuBeamTo: boolean;
+  menuWhisper: boolean;
+  menuInviteChat: boolean;
+  menuIgnore: boolean;
+  menuDrop: boolean;
+  menuMove: boolean;
+  menuTake: boolean;
+  menuBuy: boolean;
+  menuDestroy: boolean;
+  menuProperties: boolean;
+  menuRequestBackpack: boolean;
+  menuGoTo: boolean;
+  menuToggleRole: boolean;
+  menuToggleXp: boolean;
+  menuToggleSpeech: boolean;
+  mallObject: boolean;
+  activePlaces: any[];
+  placeList: any[];
+  placeType: any;
+  placeUsername: any;
+  placeSlug: any;
+  placeId: any;
+  chatIntervalId: any;
+  pingIntervalId: any;
+  worldMembers: any[];
+  chatEnabled: boolean;
+  showRole: boolean;
+  showXP: boolean;
+  tts: boolean;
+  virtualPet: any;
+  virtualPetDirectly: any[];
+  virtualPetWhisper: any[];
+  virtualPetBeam: any[];
+  virtualPetMessageData: any[];
+  virtualPetInputs: any[][];
+  virtualPetOutputs: any[][];
+  virtualPetDefault: any[];
+  entryMessageCode: number;
+  selectedId: any;
+}
+
+interface ChatMethods {
+  [key: string]: (...args: any[]) => any;
+}
+
+interface ChatComputed {
+  connected: boolean;
+}
+
+export default Vue.extend<ChatData, ChatMethods, ChatComputed, Record<string, any>>({
   name: "Chat",
   components: {
     UserMenu,
   },
-  props: [
-    "place",
-    "sharedEvent",
-    "sharedObjects",
-    "clickId",
-  ],
-  data: () => {
+  props: {
+    place: {
+      default: null,
+    },
+    sharedEvent: {
+      default: null,
+    },
+    sharedObjects: {
+      default: null,
+    },
+    clickId: {
+      default: null,
+    },
+  },
+  data(): ChatData {
     return {
       message: "",
       messages: [],
@@ -303,7 +385,7 @@ export default Vue.extend({
       menuRequestBackpack: true,
       menuGoTo: false,
       menuToggleRole: false,
-      menuToggleXP: false,
+      menuToggleXp: false,
       menuToggleSpeech: false,
       mallObject: false,
       activePlaces: [],
@@ -486,7 +568,7 @@ export default Vue.extend({
       this.menuRequestBackpack = false;
       this.menuGoTo = false;
       this.menuToggleRole = false;
-      this.menuToggleXP = false;
+      this.menuToggleXp = false;
       this.menuToggleSpeech = false;
       this.mallObject = false;
       this.placeType = null;
@@ -532,7 +614,7 @@ export default Vue.extend({
       if(this.activePanel === 'users'){
         if(target[0] === this.$store.data.user.id){
           this.menuToggleRole = true;
-          this.menuToggleXP = true;
+          this.menuToggleXp = true;
           this.menuToggleSpeech = true;
         } else {
           this.menuIgnore = true;
@@ -1058,7 +1140,7 @@ export default Vue.extend({
         this.messages.splice(index, 1);
       }
     },
-  } as any,
+  },
   watch: {
     place() {
       this.startNewChat();
