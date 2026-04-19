@@ -51,7 +51,7 @@
         <input type="checkbox" id="role" :checked="showRole" @change="$emit('role-change', $event.target.checked)" />
         <label for="role"> Users Roles</label>
       </li>
-      <li v-show="menuToggleXP || menuToggleXp" class="
+      <li v-show="menuToggleXp" class="
         p-1
         pl-3.5
         hover:text-white
@@ -219,7 +219,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: "UserMenu",
   props: {
@@ -234,7 +234,6 @@ export default {
     menuGoTo: Boolean,
     menuToggleRole: Boolean,
     menuToggleXp: Boolean,
-    menuToggleXP: Boolean,
     menuToggleSpeech: Boolean,
     menuBeamTo: Boolean,
     menuWhisper: Boolean,
