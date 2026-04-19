@@ -11,6 +11,8 @@ import {
   InboxRepository,
   MessageboardRepository,
   VoteRepository,
+  MapLocationRepository,
+  HomeRepository,
 } from '../../repositories';
 import { Place, ObjectInstance } from '../../types/models';
 
@@ -28,6 +30,8 @@ export class PlaceService {
     private inboxRepository: InboxRepository,
     private messageboardRepository: MessageboardRepository,
     private voteRepository: VoteRepository,
+    private mapLocationRepository: MapLocationRepository,
+    private homeRepository: HomeRepository,
   ) {}
 
   public async canAdmin(slug: string, placeId: number, memberId: number):
@@ -156,6 +160,8 @@ export class PlaceService {
     await this.messageboardRepository.removeAllPlaceMessages(id);
     await this.voteRepository.removePlace(id);
     await this.placeRepository.removePlace(id);
+    await this.homeRepository.removePlace(id);
+    await this.mapLocationRepository.removePlace(id);
   }
 
   public async getAccessInfoByUsername(slug: string, placeId: number): Promise<object> {
