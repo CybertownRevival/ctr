@@ -246,6 +246,17 @@ class ClubController {
     }
   }
 
+  public async removeAccount(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      await this.clubService.removeAccount(session.id);
+      response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error moving objects.'});
+    }
+  }
+
   public async searchClubs(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) {

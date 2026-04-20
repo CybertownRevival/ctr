@@ -83,6 +83,25 @@ export class ObjectInstanceRepository {
     });
   }
 
+  public async moveAllObjects(id: number): Promise<void> {
+    await this.db.objectInstance.where({ member_id: id }).update({
+      place_id: 0, member_id: null,
+    });
+  }
+
+  public async updateObjectOwner(objectId: number, userId: number): Promise<void> {
+    await this.db.objectInstance.where({ id: objectId }).update({
+      member_id: userId,
+    });
+  }
+
+  public async seizedObjects(): Promise<any> {
+    const seizedObjects = await this.db.objectInstance.where({
+      member_id: null,
+    });
+    return seizedObjects;
+  }
+
   public async updateObjectPlacement(
     objectInstanceId: number,
     positionStr: string,

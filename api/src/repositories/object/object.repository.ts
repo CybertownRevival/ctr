@@ -16,6 +16,38 @@ export class ObjectRepository {
     return this.find({ id: objectId });
   }
 
+  public async removeAccount(userId: number): Promise<any> {
+    const objectInstanceIds = this.db.objectInstance
+      .distinct('object_id')
+      .whereNotNull('object_id');
+
+    await this.db.object
+      .where('member_id', userId)
+      .where('status', 1)
+      .update({status: 4});
+
+    await this.db.object
+      .where('member_id', userId)
+      .where('status', 2)
+      .update({status: 0});
+
+    await this.db.object
+      .where('member_id', userId)
+      .where('status', 3)
+      .whereIn('id', objectInstanceIds.clone())
+      .update({status: 4});
+
+    await this.db.object
+      .where('member_id', userId)
+      .where('status', 3)
+      .whereNotIn('id', objectInstanceIds)
+      .update({status: 0});
+
+    await this.db.object
+      .where('member_id', userId)
+      .update({member_id: null});
+  }
+
   /**
    *
    * @param directory
@@ -158,7 +190,7 @@ export class ObjectRepository {
       .select('object.*', 'member.username')
       .where('object.status','!=', '0')
       .where('object.status','!=', '2')
-      .join('member', 'object.member_id', 'member.id')
+      .leftJoin('member', 'object.member_id', 'member.id')
       .orderBy('id', 'desc')
       .limit(limit)
       .offset(offset);

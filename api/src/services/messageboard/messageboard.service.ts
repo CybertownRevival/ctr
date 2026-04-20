@@ -32,6 +32,10 @@ export class MessageboardService {
       .messageboardRepository
       .deleteMessageboardMessage(messageId);
   }
+
+  public async removeAllMessages(userId: number): Promise<any> {
+    await this.messageboardRepository.removeAllMessages(userId);
+  }
   
   public async getAdminInfo(
     placeId,
