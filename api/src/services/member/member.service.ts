@@ -264,6 +264,28 @@ export class MemberService {
   }
 
   /**
+   * Builds a member info staff view.
+   * @param memberId id of member to retrieve info for
+   * @returns promise resolving in a member info view object, or rejecting on error
+   */
+  public async getMemberInfoStaff(memberId: number): Promise<MemberAdminView> {
+    const member = await this.find({ id: memberId });
+    const wallet = await this.walletRepository.findById(member.wallet_id);
+    return {
+      immigrationDate: member.created_at,
+      username: member.username,
+      walletBalance: wallet.balance,
+      xp: member.xp,
+      firstName: member.firstname,
+      lastName: member.lastname,
+      chatdefault: member.chatdefault,
+      last_daily_login_credit: member.last_daily_login_credit,
+      last_weekly_role_credit: member.last_weekly_role_credit,
+      lastAccess: member.last_activity,
+    };
+  }
+
+  /**
    * Returns a JSON web token for the member with the given memberId.
    * @param memberId id of member to generate a token for
    * @returns promise resolving in encoded token, or rejecting on error
