@@ -7,7 +7,7 @@
     <template v-slot:body>
       <div class="flex-1">
         <div style="color: #00df00" v-if="success">{{ success }}</div>
-        <div style="color: darkred" v-if="error">{{ error }}</div>
+        <div style="color: red" v-if="error">{{ error }}</div>
         <h3 class="text-center text-2xl">Personal Info</h3>
         <table border=0 width=100% class="text-2xl">
           <tr>
@@ -16,7 +16,7 @@
             </tr>
             <tr>
               <td><b>Email</b></td>
-              <td>{{ info.email }}</td>
+              <td><input type="text" class="input-text" maxLength="64" size="20" v-model="info.email" /></td>
             </tr>
           <tr>
               <td><b>First Name</b></td>
@@ -84,6 +84,7 @@ export default Vue.extend({
   async created() {
     const { data } = await this.$http.get("/member/info");
     this.info = data.memberInfo;
+    this.originalEmail = data.memberInfo.email;
     this.selectedRoleId = this.info.primary_role_id;
     await this.$http.get("/member/roles").then((response) => {
       this.roles = response.data.roles;
@@ -103,6 +104,7 @@ export default Vue.extend({
 	chatdefault: undefined,
         primary_role_id: undefined,
       },
+      originalEmail: undefined,
       roles: [],
       selectedRoleId: null,
       success: undefined,
@@ -112,21 +114,24 @@ export default Vue.extend({
     backToInfoModal(): void {
       ModalService.open(InfoModal);
     },
-    update(): void {
+    async update(): Promise<void> {
       try {
-        this.$http.post("/member/update_role", {
+        await this.$http.post("/member/update_role", {
           primaryRoleId: this.selectedRoleId,
         });
-        this.$http.post("/member/updateinfo", {
-	  firstName: this.info.firstName,
-	  lastName: this.info.lastName,
-	  chatdefault: this.info.chatdefault,
+        await this.$http.post("/member/updateinfo", {
+          firstName: this.info.firstName,
+          lastName: this.info.lastName,
+          email: this.info.email,
+          chatdefault: this.info.chatdefault,
         });
+        this.originalEmail = this.info.email;
         this.error = null;
         this.success = "Information Updated";
-      }catch (error) {
+      } catch (error: any) {
+        this.info.email = this.originalEmail;
         this.success = null;
-        this.error = error;
+        this.error = error.response.data.error;
       }
     },
   },
