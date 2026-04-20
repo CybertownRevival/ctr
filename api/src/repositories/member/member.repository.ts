@@ -1,13 +1,13 @@
-import {Service} from 'typedi';
+import { Service } from 'typedi';
 import { Db } from '../../db/db.class';
 import { Member, Wallet } from 'models';
-import {knex} from '../../db';
+import { knex } from '../../db';
 
 /** Repository for interacting with member table data in the database. */
 @Service()
 export class MemberRepository {
-  constructor(private db: Db) {}
-  
+  constructor(private db: Db) { }
+
   /**
    * Creates a new member with the given parameters.
    * @param memberParams parameters to be used for the new member
@@ -42,7 +42,7 @@ export class MemberRepository {
   public async findById(memberId: number): Promise<Member> {
     return this.find({ id: memberId });
   }
-  
+
   public async findIdByUsername(username: string): Promise<any> {
     return this.db.knex
       .select('id')
@@ -60,7 +60,7 @@ export class MemberRepository {
     return this.db.knex
       .count('id as count')
       .from('member')
-      .where('last_activity','>=', time);
+      .where('last_activity', '>=', time);
   }
 
   public async getNewestMembers(): Promise<any> {
@@ -74,7 +74,7 @@ export class MemberRepository {
     return this.db.knex
       .count('id as count')
       .from('member')
-      .where('created_at','>=', time);
+      .where('created_at', '>=', time);
   }
 
   public async check3d(username: string): Promise<any> {
@@ -86,9 +86,9 @@ export class MemberRepository {
 
   public async findOnlineUsers(current: Date): Promise<any> {
     return this.db.knex
-      .select('id','username')
+      .select('id', 'username')
       .from('member')
-      .where('last_activity','>=', current)
+      .where('last_activity', '>=', current)
       .orderBy('username', 'ASC');
   }
 
@@ -103,7 +103,7 @@ export class MemberRepository {
     return this.db.knex
       .select('place_id')
       .from('member')
-      .where('last_activity','>=', current);
+      .where('last_activity', '>=', current);
   }
 
   /**
@@ -118,7 +118,7 @@ export class MemberRepository {
       .limit(1)
       .first();
   }
-  
+
   public async getPrimaryRoleName(memberId: number): Promise<string> {
     return this.db.knex
       .select('role.name', 'member.primary_role_id')
@@ -126,7 +126,7 @@ export class MemberRepository {
       .where('member.id', memberId)
       .join('role', 'member.primary_role_id', 'role.id');
   }
-  
+
   /**
    * This is to assist with the pagination of the user search
    * @param search
@@ -146,29 +146,27 @@ export class MemberRepository {
       .where('place_id', placeId)
       .where('last_activity', '>=', active);
   }
-  
+
   public async searchUsers(search: string, limit: number, offset: number): Promise<any> {
     return knex
       .select(
         'id',
         'username',
-        'email',
         'last_daily_login_credit',
       )
       .from('member')
       .where(this.like('username', search))
-      .orWhere(this.like('email', search))
       .orderBy('id', 'desc')
       .limit(limit)
       .offset(offset);
   }
 
   public async joinedPlace(memberId: number, props: Partial<Member>): Promise<void> {
-    await this.db.member.where({id: memberId}).update(props);
+    await this.db.member.where({ id: memberId }).update(props);
   }
 
   public async updateLatestActivity(memberId: number, props: Partial<Member>): Promise<void> {
-    await this.db.member.where({id: memberId}).update(props);
+    await this.db.member.where({ id: memberId }).update(props);
   }
 
   public async removeAccount(id: number): Promise<any> {
@@ -192,7 +190,7 @@ export class MemberRepository {
     await this.db.member.where({ id: memberId }).update(props);
     return returning ? this.findById(memberId) : undefined;
   }
-  
+
   /**
    * This is used to bind the user inputted value to prevent
    * SQL injection attempts while using a Knex Raw
@@ -201,9 +199,9 @@ export class MemberRepository {
    * @private
    */
   private like(field: string, value: string) {
-    return function() {
+    return function () {
       this.whereRaw('?? LIKE ?', [field, `%${value}%`]);
     };
   }
-  
+
 }

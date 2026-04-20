@@ -65,7 +65,7 @@ class MemberController {
         if (await this.memberService.canAdmin(session.id)) {
           memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
         } else if (await this.memberService.canStaff(session.id)) {
-          memberInfo = await this.memberService.getMemberInfoAdmin(parseInt(request.params.id));
+          memberInfo = await this.memberService.getMemberInfoStaff(parseInt(request.params.id));
         } else if (parseInt(request.params.id) === session.id) {
           memberInfo = await this.memberService.getMemberInfo(parseInt(request.params.id));
         } else {
@@ -177,13 +177,16 @@ class MemberController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const { id } = session;
-    const { firstName, lastName, chatdefault } = request.body;
+    const { firstName, lastName, email, chatdefault } = request.body;
     try {
-      await this.memberService.updateInfo(id, firstName, lastName, chatdefault);
+      if (!email || !String(email).trim()) {
+        throw new Error('An email is required');
+      }
+      await this.memberService.updateInfo(id, firstName, lastName, email, chatdefault);
       response.status(200).json({ message: 'success' });
     } catch (error) {
       response.status(400).json({
-        error: 'Error on Updating',
+        error: error.message,
       });
     }
   }
