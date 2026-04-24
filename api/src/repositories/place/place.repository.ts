@@ -2,14 +2,14 @@ import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
 import { knex } from '../../db';
-import {Place, Store} from '../../types/models';
+import { Place, Store } from '../../types/models';
 
 /** Repository for fetching/interacting with place data in the database. */
 @Service()
 export class PlaceRepository {
 
-  constructor(private db: Db) {}
-  
+  constructor(private db: Db) { }
+
   /**
    * Count number of clubs where type is Public or Private
    * and where member_id is equal to the member_id
@@ -20,11 +20,12 @@ export class PlaceRepository {
     const count = await knex
       .from('place')
       .count('id as count')
-      .where({member_id: memberId})
+      .where({ member_id: memberId })
+      .andWhere('status', 1)
       .whereIn('type', ['club']);
     return count[0].count;
   }
-  
+
   /**
    * Finds a place record with the given id.
    * @param id id of place to look for
@@ -42,10 +43,10 @@ export class PlaceRepository {
   public async findAllStores(orderBy: string): Promise<Store[]> {
     return this.db.knex
       .table('place')
-      .where({type: 'shop', status: 1})
-      .orderBy(orderBy,'asc');
+      .where({ type: 'shop', status: 1 })
+      .orderBy(orderBy, 'asc');
   }
-  
+
   /**
    * Finds a place record with the given name
    * @param name name of place to look for
@@ -68,7 +69,7 @@ export class PlaceRepository {
   public async findStorageByUserID(memberId: number): Promise<any> {
     return this.db.place
       .select('place.name', 'place.id')
-      .where({type: 'storage', member_id: memberId, status: 1})
+      .where({ type: 'storage', member_id: memberId, status: 1 })
       .orderBy('place.name', 'asc');
   }
 
@@ -146,16 +147,16 @@ export class PlaceRepository {
     limit: number,
     offset: number): Promise<any> {
     return this.db.place
-      .where('type',compare, type)
+      .where('type', compare, type)
       .where(this.like('name', search))
       .limit(limit)
       .offset(offset);
   }
-  
+
   public searchClubs(
-    search: string, 
-    limit: number, 
-    offset: number, 
+    search: string,
+    limit: number,
+    offset: number,
     orderBy: string,
     order: string,
   ): Promise<any> {
@@ -178,7 +179,7 @@ export class PlaceRepository {
       .limit(limit)
       .offset(offset);
   }
-  
+
   public async searchClubsTotal(search: string): Promise<any> {
     return this.db.place
       .count('id as count')
@@ -196,11 +197,11 @@ export class PlaceRepository {
   public async getSearchTotal(search: string, compare: string, type: string): Promise<any> {
     return this.db.place
       .count('id as count')
-      .where('type',compare, type)
+      .where('type', compare, type)
       .where(this.like('place.name', search));
   }
 
-  public async getUserPlaceTotal(id:number,type: string): Promise<any> {
+  public async getUserPlaceTotal(id: number, type: string): Promise<any> {
     return await this.db.place
       .count('id as count')
       .where('type', type)
@@ -208,7 +209,7 @@ export class PlaceRepository {
   }
 
   private like(field: string, value: string) {
-    return function() {
+    return function () {
       this.whereRaw('?? LIKE ?', [field, `%${value}%`]);
     };
   }
