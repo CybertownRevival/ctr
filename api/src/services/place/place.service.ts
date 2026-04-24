@@ -20,13 +20,13 @@ export class PlaceService {
     private roleRepository: RoleRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
     private virtualPetRepository: VirtualPetRepository,
-  ) {}
+  ) { }
 
   public async canAdmin(slug: string, placeId: number, memberId: number):
-   Promise<boolean> {
+    Promise<boolean> {
     const placeRoleId = await this.findRoleIdsBySlug(slug);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-    
+
     //check club admin ability
     if (slug === 'personalclub') {
       if (
@@ -35,12 +35,12 @@ export class PlaceService {
             [
               this.roleRepository.roleMap.Admin,
             ].includes(assignment.role_id) ||
-           ([
-             this.roleRepository.roleMap.ClubOwner,
-             this.roleRepository.roleMap.ClubAssistant,
-             placeRoleId.deputy,
-           ].includes(assignment.role_id) &&
-            assignment.place_id === placeId)
+            ([
+              this.roleRepository.roleMap.ClubOwner,
+              this.roleRepository.roleMap.ClubAssistant,
+              placeRoleId.deputy,
+            ].includes(assignment.role_id) &&
+              assignment.place_id === placeId)
           );
         })
       ) {
@@ -48,7 +48,7 @@ export class PlaceService {
       }
     }
     if (slug === 'cityhall') {
-      if(
+      if (
         roleAssignments.find(assignment => {
           return (
             [
@@ -59,7 +59,20 @@ export class PlaceService {
         return true;
       }
     }
-    
+    if (slug === 'newcomers') {
+      if (
+        roleAssignments.find(assignment => {
+          return (
+            [
+              this.roleRepository.roleMap.SeniorCityGuide,
+              this.roleRepository.roleMap.CityGuide,
+            ].includes(assignment.role_id)
+          );
+        })) {
+        return true;
+      }
+    }
+
     //check if admin even if there is no assigned roles for the place
     if (!placeRoleId) {
       if (
@@ -84,11 +97,11 @@ export class PlaceService {
               this.roleRepository.roleMap.Admin,
               this.roleRepository.roleMap.PlacesChief,
             ].includes(assignment.role_id) ||
-          ([
-            placeRoleId.owner,
-            placeRoleId.deputy,
-          ].includes(assignment.role_id) &&
-           assignment.place_id === placeId)
+            ([
+              placeRoleId.owner,
+              placeRoleId.deputy,
+            ].includes(assignment.role_id) &&
+              assignment.place_id === placeId)
           );
         })
       ) {
@@ -102,7 +115,7 @@ export class PlaceService {
     const placeRoleId = await this.findRoleIdsBySlug(slug);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     //if no roles assignable, access rights is closed to all
-    if(!placeRoleId) return false;
+    if (!placeRoleId) return false;
 
     if (
       roleAssignments.find(assignment => {
@@ -111,8 +124,8 @@ export class PlaceService {
             this.roleRepository.roleMap.Admin,
             this.roleRepository.roleMap.PlacesChief,
           ].includes(assignment.role_id) ||
-        ([placeRoleId.owner].includes(assignment.role_id) &&
-         assignment.place_id === placeId)
+          ([placeRoleId.owner].includes(assignment.role_id) &&
+            assignment.place_id === placeId)
         );
       })
     ) {
@@ -132,26 +145,26 @@ export class PlaceService {
   public async getPlaceObjects(placeId: number): Promise<ObjectInstance[]> {
     return await this.objectInstanceRepository.findByPlaceId(placeId);
   }
-  
+
   public async getAccessInfoByUsername(slug: string, placeId: number): Promise<object> {
     const placeRoleId = await this.findRoleIdsBySlug(slug);
     return await this
       .roleAssignmentRepository
       .getAccessInfoByUsername(placeId, placeRoleId.owner, placeRoleId.deputy);
   }
-  
+
   public async getSecurityInfo(): Promise<object> {
     const SecurityInfo = {};
-    const securityRoles  = [
-      {mapName: 'SecurityChief', roleName: 'Security Chief'},
-      {mapName: 'SecurityCaptain', roleName: 'Security Captain'},
-      {mapName: 'SecurityLieutenant', roleName: 'Security Lieutenant'},
-      {mapName: 'SecuritySergeant', roleName: 'Security Sergeant'},
-      {mapName: 'SecurityOfficer', roleName: 'Security Officer'},
-      {mapName: 'JailGuard', roleName: 'Jail Guard'},
+    const securityRoles = [
+      { mapName: 'SecurityChief', roleName: 'Security Chief' },
+      { mapName: 'SecurityCaptain', roleName: 'Security Captain' },
+      { mapName: 'SecurityLieutenant', roleName: 'Security Lieutenant' },
+      { mapName: 'SecuritySergeant', roleName: 'Security Sergeant' },
+      { mapName: 'SecurityOfficer', roleName: 'Security Officer' },
+      { mapName: 'JailGuard', roleName: 'Jail Guard' },
     ];
     try {
-      await Promise.all(securityRoles.map (async (role) => {
+      await Promise.all(securityRoles.map(async (role) => {
         const roleCode = await this.roleRepository.roleMap[role.mapName];
         await this.roleAssignmentRepository.getUsernamesByRoleId(roleCode).then(response => {
           const users = [];
@@ -168,9 +181,9 @@ export class PlaceService {
   }
 
   public async addStorage(name: string, memberId: number): Promise<any> {
-    await this.placeRepository.create({name: name, type: 'storage', member_id: memberId});
+    await this.placeRepository.create({ name: name, type: 'storage', member_id: memberId });
   }
-  
+
   public async deleteStorage(id: number): Promise<any> {
     await this.placeRepository.deleteStorageArea(id);
   }
@@ -189,8 +202,8 @@ export class PlaceService {
     const ownerCode = placeRoleId.owner;
     let oldOwner = null;
     let newOwner = 0;
-    const oldDeputies = [0,0,0,0,0,0,0,0];
-    const newDeputies = [0,0,0,0,0,0,0,0];
+    const oldDeputies = [0, 0, 0, 0, 0, 0, 0, 0];
+    const newDeputies = [0, 0, 0, 0, 0, 0, 0, 0];
     const data = await this
       .roleAssignmentRepository
       .getAccessInfoByID(placeId, ownerCode, deputyCode);
@@ -211,8 +224,8 @@ export class PlaceService {
         const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
         if (response.length !== 0) {
           const primaryRoleId = response[0].primary_role_id;
-          if (ownerCode === primaryRoleId){
-            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          if (ownerCode === primaryRoleId) {
+            await this.memberRepository.update(oldOwner, { primary_role_id: null });
           }
         }
       }
@@ -223,8 +236,8 @@ export class PlaceService {
         const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
         if (response.length !== 0) {
           const primaryRoleId = response[0].primary_role_id;
-          if (ownerCode === primaryRoleId){
-            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          if (ownerCode === primaryRoleId) {
+            await this.memberRepository.update(oldOwner, { primary_role_id: null });
           }
         }
       }
@@ -249,7 +262,7 @@ export class PlaceService {
                 if (response.length !== 0) {
                   const primaryRoleId = response[0].primary_role_id;
                   if (primaryRoleId && deputyCode === primaryRoleId) {
-                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                    this.memberRepository.update(oldDeputies, { primary_role_id: null });
                   }
                 }
               });
@@ -262,7 +275,7 @@ export class PlaceService {
                 if (response.length !== 0) {
                   const primaryRoleId = response[0].primary_role_id;
                   if (deputyCode === primaryRoleId) {
-                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                    this.memberRepository.update(oldDeputies, { primary_role_id: null });
                   }
                 }
               });
@@ -280,7 +293,7 @@ export class PlaceService {
     return await this.placeRepository.updatePlaces(placeinfo);
   }
 
-  private async findRoleIdsBySlug(slug: string): Promise<{owner: number, deputy: number}> {
+  private async findRoleIdsBySlug(slug: string): Promise<{ owner: number, deputy: number }> {
     const roleId = {
       bank: {
         owner: this.roleRepository.roleMap.BankManager,
@@ -371,7 +384,7 @@ export class PlaceService {
     return newDeputies;
   }
 
-  public async findUserPlaces(id: number,type: string): Promise<any> {
+  public async findUserPlaces(id: number, type: string): Promise<any> {
     let returnPlaces = [];
     const places = await this.placeRepository.findUserPlaces(id, type);
     returnPlaces = places;
@@ -383,17 +396,17 @@ export class PlaceService {
   }
 
   public async searchAllPlaces(
-    search: string, 
-    compare: string, 
-    type: string, 
-    limit: number, 
+    search: string,
+    compare: string,
+    type: string,
+    limit: number,
     offset: number): Promise<any> {
     const ownerRequired = ['home', 'club', 'storage'];
     let returnPlaces = [];
     const places = await this.placeRepository.searchAllPlaces(
       search, compare, type, limit, offset);
-    if(ownerRequired.includes(type)){
-      for(const place of places) {
+    if (ownerRequired.includes(type)) {
+      for (const place of places) {
         const user = await this.memberRepository.findById(place.member_id);
         place.username = user.username;
         returnPlaces.push(place);
@@ -408,34 +421,54 @@ export class PlaceService {
     };
   }
 
-  public async addVirtualPet(placeId: number): Promise<any>{
+  public async addVirtualPet(placeId: number): Promise<any> {
     const name = 'VirtualPet';
     const avatar = '/assets/pets/dog/dog.wrl';
     const behaviours = [
-      {id: 0, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
-      {id: 1, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
-      {id: 2, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
-      {id: 3, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
-      {id: 4, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
-      {id: 5, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
-      {id: 6, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
-      {id: 7, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
-      {id: 8, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
-      {id: 9, match: 'exact', directly: false, input: '', 
-        whisper: false, beam: false, output: '',},
+      {
+        id: 0, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
+      {
+        id: 1, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
+      {
+        id: 2, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
+      {
+        id: 3, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
+      {
+        id: 4, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
+      {
+        id: 5, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
+      {
+        id: 6, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
+      {
+        id: 7, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
+      {
+        id: 8, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
+      {
+        id: 9, match: 'exact', directly: false, input: '',
+        whisper: false, beam: false, output: '',
+      },
     ];
     return await this.virtualPetRepository
       .addVirtualPet(placeId, name, avatar, JSON.stringify(behaviours));
-  } 
+  }
 
   public async getVirtualPet(placeId: number): Promise<any> {
     const virtualPet = await this.virtualPetRepository.getVirtualPet(placeId);
@@ -443,14 +476,14 @@ export class PlaceService {
   }
 
   public async updateVirtualPet(
-    placeId: number, 
-    name: string, 
-    avatar: string, 
-    active: boolean, 
+    placeId: number,
+    name: string,
+    avatar: string,
+    active: boolean,
     voice: number,
     behaviours: string): Promise<any> {
     await this.virtualPetRepository.updateVirtualPet(
-      placeId, 
+      placeId,
       name,
       avatar,
       active,
