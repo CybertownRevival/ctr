@@ -1,30 +1,25 @@
 import { Service } from 'typedi';
 
-import { InboxRepository, ColonyRepository } from '../../repositories';
+import { InboxRepository } from '../../repositories';
 import sanitizeHtml from 'sanitize-html';
-import { stringify } from 'ts-jest';
-import {forEach} from 'lodash';
 
 /** Service for dealing with messages on message boards */
 @Service()
 export class InboxService {
-  public static readonly MAX_QUERY_LIMIT = 1000;
-  public static readonly VALID_ORDERS = ['id', 'date'];
-  public static readonly VALID_ORDER_DIRECTIONS = ['asc', 'desc'];
 
-  constructor(private inboxRepository: InboxRepository) {}
+  constructor(private inboxRepository: InboxRepository) { }
 
   public async changeInboxIntro(placeId, Intro): Promise<any> {
     console.log(`Service${placeId}`);
     return await this.inboxRepository.changeInboxIntro(placeId, Intro);
   }
 
- public async deleteInboxMessages(
-   messageIds: number[],
-   placeId: number,
- ): Promise<any> {
-   return this.inboxRepository.deleteInboxMessages(messageIds, placeId);
- }
+  public async deleteInboxMessages(
+    messageIds: number[],
+    placeId: number,
+  ): Promise<any> {
+    return this.inboxRepository.deleteInboxMessages(messageIds, placeId);
+  }
 
   public async getAdminInfo(placeId, memberId): Promise<any> {
     return await this.inboxRepository.getAdminInfo(placeId, memberId);
@@ -45,7 +40,7 @@ export class InboxService {
   ): Promise<any> {
     return await this.inboxRepository.postInboxMessage(memberId, placeId, subject, message);
   }
-  
+
   public async postInboxAllMessage(
     memberId: number,
     locations: number[],
@@ -79,8 +74,6 @@ export class InboxService {
       parentId,
     );
   }
-
-
 
   public async sanitize(uncleanInfo: string): Promise<any> {
     const cleanInfo = sanitizeHtml(uncleanInfo, {
@@ -167,8 +160,8 @@ export class InboxService {
         a: ['href', 'name', 'target'],
         img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'usemap'],
         font: ['color', 'size'],
-        map: [ 'name' ],
-        area: [ 'alt', 'title', 'href', 'coords', 'shape', 'target', 'class' ],
+        map: ['name'],
+        area: ['alt', 'title', 'href', 'coords', 'shape', 'target', 'class'],
         marquee: ['width', 'height', 'direction'],
       },
     });
