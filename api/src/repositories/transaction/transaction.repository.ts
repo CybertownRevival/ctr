@@ -318,4 +318,11 @@ export class TransactionRepository {
       .where('recipient_wallet_id', id)
       .orWhere('sender_wallet_id', id);
   }
+
+  public async removeAllByWalletId(id: number): Promise<any> {
+    await this.db.knex('transaction')
+      .where('recipient_wallet_id', id)
+      .orWhere('sender_wallet_id', id)
+      .del();
+  }
 }

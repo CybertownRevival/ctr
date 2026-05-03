@@ -26,5 +26,10 @@ objectInstanceRoutes.post('/backpack', (request, response) =>
 
 objectInstanceRoutes.post('/storage', (request, response) =>
   objectInstanceController.moveToStorage(request, response));
-
+objectInstanceRoutes.get('/move_all_objects', (request, response) =>
+  objectInstanceController.moveAllObjects(request, response));
+objectInstanceRoutes.get('/seized_objects', (request, response) =>
+  objectInstanceController.seizedObjects(request, response));
+objectInstanceRoutes.post('/update_owner', (request, response) =>
+  objectInstanceController.updateObjectOwner(request, response));
 export { objectInstanceRoutes };

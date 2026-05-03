@@ -41,6 +41,10 @@ export class ObjectService {
     return this.objectRepository.findById(objectId);
   }
 
+  public async removeAccount(userId: number): Promise<any> {
+    return this.objectRepository.removeAccount(userId);
+  }
+
   public async findByObjectId(objectId: number): Promise<any> {
     const returnObjects = [];
     const object = await this.objectRepository.getMallObject(objectId);

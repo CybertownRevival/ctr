@@ -35,4 +35,10 @@ export class HomeRepository {
       : undefined;
   }
 
+  public async removePlace(id: number): Promise<any> {
+    await this.db.home
+      .where('place_id', id)
+      .del();
+  }
+
 }

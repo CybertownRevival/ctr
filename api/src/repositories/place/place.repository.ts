@@ -39,11 +39,23 @@ export class PlaceRepository {
     return this.db.place.where({ slug: slug }).first();
   }
 
+  public async findByUserId(userId: number): Promise<any> {
+    return await this.db.place
+      .select('place.id', 'place.type')
+      .where({ member_id: userId })
+  }
+
   public async findAllStores(orderBy: string): Promise<Store[]> {
     return this.db.knex
       .table('place')
       .where({type: 'shop', status: 1})
       .orderBy(orderBy,'asc');
+  }
+
+  public async removePlace(id: number): Promise<any> {
+    await this.db.place
+      .where('id', id)
+      .del();
   }
   
   /**

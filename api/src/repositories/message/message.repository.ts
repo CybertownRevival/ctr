@@ -33,6 +33,18 @@ export class MessageRepository {
         status: 0,
       });
   }
+
+  public async removeAllMessages(userId: number): Promise<any> {
+    await knex('message')
+      .where('member_id', userId)
+      .del();
+  }
+
+  public async removeAllPlaceMessages(id: number): Promise<any> {
+    await knex('message')
+      .where('place_id', id)
+      .del();
+  }
   
   public async getChatTotal(search: string, user: number): Promise<any> {
     return knex

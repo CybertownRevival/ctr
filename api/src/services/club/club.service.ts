@@ -175,6 +175,10 @@ export class ClubService {
   public async getMemberCount(place_id: number): Promise<number> {
     return await this.clubMemberRepository.getMembersCount(place_id, 'member') + 1;
   }
+
+  public async removeAccount(userId: number): Promise<any> {
+    await this.clubMemberRepository.removeAccount(userId);
+  }
   
   public async joinClub(clubId: number, memberId: number): Promise<void> {
     const information = await this.placeRepository.findById(clubId);

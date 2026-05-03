@@ -191,6 +191,20 @@ class MemberController {
     }
   }
 
+  public async removeAccount(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    const { id } = session;
+    try {
+      await this.memberService.removeAccount(id);
+      response.status(200).json({ message: 'success' });
+    } catch (error) {
+      response.status(400).json({
+        error: 'Error Removing Account',
+      });
+    }
+  }
+
   /** isBanned results based on member status
    * 1 = active
    * 0 = banned

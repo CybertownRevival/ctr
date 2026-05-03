@@ -41,7 +41,7 @@
             style="max-width: 190px; max-height: 190px; width:auto; height:auto;">
           </div>
           <div>
-            <div class="w-full p-2 text-right">by {{ object.username }}</div>
+            <div class="w-full p-2 text-right">by {{ object.username || 'A Deleted Account' }}</div>
           </div>
         </li>
       </ul>
@@ -198,7 +198,7 @@ export default Vue.extend({
       this.objectImage = details.image;
       this.name = details.name;
       this.price = details.price;
-      this.creator = details.username;
+      this.creator = details.username || 'A Deleted Account';
       if(details.limit && details.limit >= 1){
         this.objectLimit ="1/"+details.limit;
       } else {
