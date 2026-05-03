@@ -4,7 +4,7 @@ import VueGtag from "vue-gtag";
 
 import App from "./App.vue";
 import api from "./api";
-import appStore, {User} from "./appStore";
+import appStore, { User } from "./appStore";
 import * as filters from "./helpers/fiters";
 import routes from "./routes";
 import socket from "./socket";
@@ -24,21 +24,21 @@ document.querySelector("html").classList.add("dark");
 
 const router = new VueRouter({ routes });
 Vue.use(VueRouter);
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.meta.title) {
-    document.title = `${ to.meta.title } - Cybertown`;
+    document.title = `${to.meta.title} - Cybertown`;
   } else {
     document.title = "Cybertown";
   }
   if (to.fullPath.includes("/place/")) {
-    api.get<any>(`/place/${to.params.id}`)
+    await api.get<any>(`/place/${to.params.id}`)
       .then(response => {
         const Data = response.data;
-        const place = {...Data.place};
+        const place = { ...Data.place };
         appStore.methods.setPlace(place);
       });
   } else if (to.fullPath.includes("/club/")) {
-    api.get<any>(`/place/by_id/${to.params.id}`)
+    await api.get<any>(`/place/by_id/${to.params.id}`)
       .then(response => {
         const Data = response.data;
         //check if user is a member of the club
@@ -56,50 +56,51 @@ router.beforeEach((to, from, next) => {
         };
         appStore.methods.setPlace(place);
       });
-    } else if (to.fullPath.includes("/inbox/") || to.fullPath.includes("/messageboard/")) {
-      api.get<any>(`/place/by_id/${to.params.place_id}`)
-        .then(response => {
-          const Data = response.data;
-          if(Data.place.type === 'club' && Data.place.private){
-            api.get<any>(`/club/ismember?clubId=${Data.place.id}`)
+  } else if (to.fullPath.includes("/inbox/") || to.fullPath.includes("/messageboard/")) {
+    await api.get<any>(`/place/by_id/${to.params.place_id}`)
+      .then(response => {
+        const Data = response.data;
+        if (Data.place.type === 'club' && Data.place.private) {
+          api.get<any>(`/club/ismember?clubId=${Data.place.id}`)
             .then(response => {
               const member = response.data.isMember;
-              if(!member && to.fullPath.includes("/messageboard/")){
+              if (!member && to.fullPath.includes("/messageboard/")) {
                 api.post<any>(`/messageboard/getadmininfo/`, {
                   place_id: Data.place.id,
                   type: Data.place.type
                 }).then(response => {
-                  if(!response.data.admin){
+                  if (!response.data.admin) {
                     next(`/clubdoor/${Data.place.id}`)
                   }
                 })
               }
-              if(!member && to.fullPath.includes("/inbox/")){
+              if (!member && to.fullPath.includes("/inbox/")) {
                 api.post<any>(`/inbox/getadmininfo/`, {
                   place_id: Data.place.id,
                   type: Data.place.type
                 }).then(response => {
-                  if(!response.data.admin){
+                  if (!response.data.admin) {
                     next('/clubdoor/${Data.place.id}')
                   }
                 })
               }
             });
-          }});
+        }
+      });
   } else if (to.fullPath.includes("/clubdoor/")) {
-    api.get<any>(`/place/by_id/${to.params.id}`)
+    await api.get<any>(`/place/by_id/${to.params.id}`)
       .then(response => {
         const Data = response.data;
         appStore.methods.setPlace(Data.place);
       });
-  } else if (to.fullPath.includes("/home/")){
-    api.get<any>(`/home/${ to.params.username }`)
+  } else if (to.fullPath.includes("/home/")) {
+    await api.get<any>(`/home/${to.params.username}`)
       .then(response => {
         const Data = response.data;
         const place = {
           ...Data.homeData,
           assets_dir: Data.homeDesignData ?
-            (`${ Data.homeDesignData.id  }/`) : null,
+            (`${Data.homeDesignData.id}/`) : null,
           world_filename: "home.wrl",
           slug: "home",
           block: Data.blockData,
@@ -111,7 +112,7 @@ router.beforeEach((to, from, next) => {
   if (!["login", "logout", "signup", "forgot", "password_reset",
     "about", "privacypolicy", "rulesandregulations", "constitution", "banned"]
     .includes(to.name)) {
-    api.get<{
+    await api.get<{
       user: User,
       status: number,
       roleName: string,
@@ -120,14 +121,14 @@ router.beforeEach((to, from, next) => {
     }>("/member/session")
       .then(response => {
         const { user } = response.data;
-        const  { banInfo, banned } = response.data;
+        const { banInfo, banned } = response.data;
         if (banned) {
           if (
             banInfo.type === "jail" &&
-           to.fullPath.includes("/messageboard/") ||
-           to.fullPath.includes("/inbox/") ||
-           to.fullPath.includes("/information/")
-          ){
+            to.fullPath.includes("/messageboard/") ||
+            to.fullPath.includes("/inbox/") ||
+            to.fullPath.includes("/information/")
+          ) {
             next("/restricted");
           } else if (to.fullPath === "/restricted") {
             next();
@@ -136,7 +137,7 @@ router.beforeEach((to, from, next) => {
             api.get<any>("/place/jail")
               .then(response => {
                 const Data = response.data;
-                const place = {...Data.place};
+                const place = { ...Data.place };
                 appStore.methods.setPlace(place);
               });
           } else if (to.fullPath === "/place/jail") {
