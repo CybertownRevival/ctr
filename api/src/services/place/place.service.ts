@@ -13,6 +13,7 @@ import {
   VoteRepository,
   MapLocationRepository,
   HomeRepository,
+  ClubMemberRepository,
 } from '../../repositories';
 import { Place, ObjectInstance } from '../../types/models';
 
@@ -32,6 +33,7 @@ export class PlaceService {
     private voteRepository: VoteRepository,
     private mapLocationRepository: MapLocationRepository,
     private homeRepository: HomeRepository,
+    private clubMemberRepository: ClubMemberRepository,
   ) {}
 
   public async canAdmin(slug: string, placeId: number, memberId: number):
@@ -154,6 +156,7 @@ export class PlaceService {
   }
 
   public async removePlace(id: number): Promise<any> {
+    await this.clubMemberRepository.removeAllMembers(id);
     await this.roleAssignmentRepository.removeRoleAssignment(id);
     await this.messageRepository.removeAllPlaceMessages(id);
     await this.inboxRepository.removeAllPlaceMessages(id);
