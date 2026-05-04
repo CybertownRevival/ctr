@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import {
   adminRoutes,
   avatarRoutes,
+  blackmarketRoutes,
   blockRoutes,
   clubRoutes,
   colonyRoutes,
@@ -63,6 +64,7 @@ app.use('/api/messageboard', messageboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/inbox', inboxRoutes);
 app.use('/api/mall', mallRoutes);
+app.use('/api/blackmarket', blackmarketRoutes);
 app.use('/api/fleamarket', fleamarketRoutes);
 app.use('/api/club', clubRoutes);
 app.use('/api/vote', voteRoutes);

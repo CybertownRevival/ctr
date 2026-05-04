@@ -1,5 +1,6 @@
 export * from './admin.routes';
 export * from './avatar.routes';
+export * from './blackmarket.routes';
 export * from './block.routes';
 export * from './club.routes';
 export * from './colony.routes';

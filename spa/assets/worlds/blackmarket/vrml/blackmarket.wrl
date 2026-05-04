@@ -7,418 +7,50 @@ EXTERNPROTO HUD[
     eventIn MFNode removeChildren
 ]
 ["/externprotos/nodes_xite.wrl#HUD"]
-#Inline {
-#url "http://www.cybertown.com/places/no_cache/blackmarket/temp.wrl"
-#}
-PROTO SharedObject [
-exposedField SFVec3f translation 0 0 0
-exposedField SFRotation rotation 0 1 0 0
-exposedField SFString name ""
-exposedField SFString id ""
-exposedField MFNode children [
-]
+
+EXTERNPROTO BlaxxunZone [ 
+eventIn         MFNode   addEvents 
+eventIn         MFNode   removeEvents 
+eventIn         MFNode   addAvatars 
+eventIn         MFNode   removeAvatars 
+exposedField    MFNode   events 
+exposedField    MFNode   avatars 
+eventOut        MFNode   events_added 
+eventOut        MFNode   events_removed 
+eventOut        MFNode   avatars_added 
+eventOut        MFNode   avatars_removed
+eventIn         SFInt32  set_myAvatarGesture 
+eventIn         SFInt32  myAvatarGestureFromServer 
+eventOut        SFInt32  myAvatarGesture_changed 
+eventOut        SFInt32  myAvatarGestureToServer 
+exposedField    MFString sendToChat
+exposedField    SFFloat  beamToDistance
+exposedField    MFString groupChatName
+exposedField    MFString groupChat
+] "/externprotos/shared_xite.wrl#BlaxxunZone"
+
+EXTERNPROTO SharedObject [
+exposedField SFVec3f translation
+exposedField SFRotation rotation
+exposedField MFNode children
+exposedField SFString name
+exposedField SFString id
 eventIn SFBool startMove
-eventOut SFTime touchTime
 eventOut SFBool isOver
+eventOut SFTime touchTime
 eventOut SFVec3f newPosition
 eventOut SFRotation newRotation
-exposedField MFFloat range [
-30
-]
-]
-{
-DEF T1 Transform {
-translation IS translation
-rotation IS rotation
-children [
-DEF TS TouchSensor {
-isOver IS isOver
-touchTime IS touchTime
-}
+] "/externprotos/shared_xite.wrl#SharedObject"
 
-LOD {
-range IS range
-level [
-Group {
-children IS children
-}
-Group {
-}
-]
-}
-]
-}
-#BEGIN MOVE HUD CODE#
-DEF SOSwitch Switch {
-choice [
-Collision {
-collide FALSE
-children [
-DEF HUD HUD {
-children [
-Transform {
-translation .15 .08 -.3
-scale .8 .8 .8
-children [
-DirectionalLight {
-}
-Transform {
-#Done Button
-translation -.033 -.063 0
-scale .08 .08 .08
-children [
-DEF DoneButton TouchSensor {
-}
-Shape {
-appearance Appearance {
-material Material {
-diffuseColor 0 1 0
-specularColor 0 1 0
-}
-}
-geometry IndexedFaceSet {
-coord Coordinate {
-point [
-0 0 0, -.15 .1 0, -.05 .15 0, 0 .05 0, .085 .3 0, .2 .25 0,
+EXTERNPROTO SharedEvent [ 
+exposedField   SFString	name
+exposedField   SFString	type
+eventIn	       SFTime   set_time 
+eventOut       SFTime   timeToServer 
+eventIn	       SFTime   timeFromServer 
+eventOut       SFTime   time_changed 
+] [ "/externprotos/shared_xite.wrl#SharedEvent" ]
 
-]
-}
-coordIndex [
-0 3 2 1 -1, 5 4 3 0 -1,
-]
-}
-}
-Transform {
-translation 0 .1 0
-children Shape {
-appearance Appearance {
-material Material {
-transparency 1
-}
-}
-geometry Sphere {
-radius .3
-}
-}
-}
-]
-}
-#END DoneButton
-Transform {
-#CancelButton
-translation .033 -.054 0
-scale .07 .07 .07
-children [
-DEF CancelButton TouchSensor {
-}
-Shape {
-appearance Appearance {
-material Material {
-diffuseColor 1 0 0
-specularColor 1 0 0
-}
-}
-geometry IndexedFaceSet {
-coord Coordinate {
-point [
-0 0 0, .15 -.1 0, .1 -.15 0, .15 .1 0, .1 .15 0, -.15 -.1 0,
--.1 -.15 0, -.15 .1 0, -.1 .15 0,
-]
-}
-coordIndex [
-0 2 1 -1, 0 3 4 -1, 0 5 6 -1, 0 8 7 -1,
-]
-}
-}
-Shape {
-appearance Appearance {
-material Material {
-transparency 1
-}
-}
-geometry Sphere {
-radius .2
-}
-}
-]
-}
-#END CancelButton
-Transform {
-#Rotation Control
-translation 0 -.054 0
-scale .16 .16 .16
-children [
-DEF RotControlKnob Transform {
-scale 1 .5 1
-children [
-Shape {
-appearance Appearance {
-material Material {
-diffuseColor 0 0 .5
-specularColor 1 1 1
-}
-}
-geometry Sphere {
-radius .1
-}
-}
-]
-}
-DEF RotControlSensor CylinderSensor {
-minAngle -3.142
-maxAngle 3.142
-}
-]
-}
-#END RotationControl
-Transform {
-#Panel
-scale .1 .1 .1
-children [
-Transform {
-translation .14 -.05 -.3
-children [
-Shape {
-appearance Appearance {
-material Material {
-diffuseColor 0 0 0
-transparency .5
-}
-}
-geometry Box {
-size 1 1.2 .01
-}
-}
-]
-}
-Transform {
-# Y-axis
-children [
-Transform {
-translation 0 .05 0
-children [
-Shape {
-appearance Appearance {
-material Material {
-transparency .1
-diffuseColor 0 1 0
-specularColor 0 1 0
-}
-}
-geometry DEF arrow IndexedFaceSet {
-solid FALSE
-coord Coordinate {
-point [
--.05 0 0, -.05 .2 0, -.15 .2 0, 0 .35 0, .15 .2 0, .05 .2 0,
-.05 0 0,
-]
-}
-coordIndex [
-0 1 5 6 -1, 2 3 4 -1,
-]
-}
-}
-]
-}
-Transform {
-translation 0 -.05 0
-rotation 0 0 1 3.142
-children [
-Shape {
-appearance Appearance {
-material Material {
-diffuseColor 0 1 0
-specularColor 0 1 0
-}
-}
-geometry USE arrow
-}
-]
-}
-DEF Y PlaneSensor {
-}
-]
-}
-#END Y-axis
-Transform {
-# X-axis
-children [
-Transform {
-translation -.05 0 0
-rotation 0 0 1 1.571
-children [
-Shape {
-appearance Appearance {
-material Material {
-diffuseColor 1 0 0
-specularColor 1 0 0
-}
-}
-geometry USE arrow
-}
-]
-}
-Transform {
-translation .05 0 0
-rotation 0 0 1 -1.571
-children [
-Shape {
-appearance Appearance {
-material Material {
-diffuseColor 1 0 0
-specularColor 1 0 0
-}
-}
-geometry USE arrow
-}
-]
-}
-DEF X PlaneSensor {
-}
-]
-}
-#END X-axis
-Transform {
-rotation 1 -.2 0 .8
-children [
-Transform {
-#Z-axis
-rotation 1 0 0 1.571
-children [
-Transform {
-translation 0 .05 0
-rotation 0 0 1 -.1
-children [
-Shape {
-appearance Appearance {
-material Material {
-transparency .1
-diffuseColor .2 .2 1
-specularColor 0 0 1
-}
-}
-geometry USE arrow
-}
-]
-}
-Transform {
-translation 0 -.05 0
-rotation 0 0 1 3.042
-children [
-Shape {
-appearance Appearance {
-material Material {
-diffuseColor .2 .2 1
-specularColor 0 0 1
-}
-}
-geometry USE arrow
-}
-]
-}
-DEF Z PlaneSensor {
-}
-]
-}
-#END Z-axis
-]
-}
-]
-}
-#END panel
-DEF SOScript Script {
-eventIn SFVec3f set_X
-eventIn SFVec3f set_Y
-eventIn SFVec3f set_Z
-eventIn SFRotation set_rotation
-eventIn SFBool set_done
-eventIn SFBool set_cancel
-eventIn SFBool set_enable IS startMove
-exposedField SFString name IS name exposedField SFString id IS id exposedField
-SFFloat rate 10 field SFVec3f initialPosition IS translation
-field SFRotation initialRotation IS rotation
-field SFVec3f currentPosition 0 0 0
-field SFRotation currentRotation 0 0 0 0
-field SFVec3f XlastChange 0 0 0
-field SFVec3f YlastChange 0 0 0
-field SFVec3f ZlastChange 0 0 0
-field SFFloat ROTlastChange 0
-eventOut SFVec3f position_changed
-eventOut SFRotation rotation_changed
-eventOut SFVec3f new_position IS newPosition
-eventOut SFRotation new_rotation IS newRotation
-eventOut SFInt32 choice_changed
-url "vrmlscript:
-function set_enable(v,t){
-if(!v){return;}
-choice_changed = 0;
-}
-function set_X(v,t){
-newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(v[0],0,0)).subtract(XlastChange))).multiply(rate);
-currentPosition = currentPosition.add(newPosition);
-position_changed = currentPosition;
-XlastChange = new SFVec3f(v[0],0,0);
-}
-function set_Y(v,t){
-newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,v[1],0)).subtract(YlastChange))).multiply(rate);
-currentPosition = currentPosition.add(newPosition);
-position_changed = currentPosition;
-YlastChange = new SFVec3f(0,v[1],0);
-}
-function set_Z(v,t){
-newPosition = (Browser.viewpointOrientation.multVec((new SFVec3f(0,0,v[1])).subtract(ZlastChange))).multiply(rate);
-currentPosition = currentPosition.add(newPosition);
-position_changed = currentPosition;
-ZlastChange = new SFVec3f(0,0,v[1]);
-}
-function set_rotation(v,t){
-rotation_changed = v;
-currentRotation = v;
-}
-function set_done(v,t){
-if(!v){return;}
-new_position = currentPosition;
-new_rotation = currentRotation;
-initialRotation = currentRotation;
-initialPosition = currentPosition;
-choice_changed = -1;
-}
-function set_cancel(v,t){
-if(!v){return;}
-choice_changed = -1;
-position_changed = initialPosition;
-rotation_changed = initialRotation;
-}
-function initialize() {
-currentRotation = initialRotation;
-currentPosition = initialPosition;
-}
-"
-}
-]
-}
-#END Collision
-]
-}
-#END HUD
-]
-}
-]
-}
-#END SOSwitch
-ROUTE X.translation_changed TO SOScript.set_X
-ROUTE Y.translation_changed TO SOScript.set_Y
-ROUTE Z.translation_changed TO SOScript.set_Z
-ROUTE RotControlSensor.rotation_changed TO RotControlKnob.set_rotation
-ROUTE RotControlSensor.rotation_changed TO SOScript.set_rotation
-ROUTE SOScript.position_changed TO T1.set_translation
-ROUTE SOScript.rotation_changed TO T1.set_rotation
-ROUTE DoneButton.isActive TO SOScript.set_done
-ROUTE CancelButton.isActive TO SOScript.set_cancel
-ROUTE SOScript.choice_changed TO SOSwitch.set_whichChoice
-#END MOVE HUD CODE#
-}
-#END SharedObject PROTO
 NavigationInfo {
   avatarSize [0.25 1.75 0.75]
   visibilityLimit 0.0
@@ -1965,6 +1597,40 @@ children DEF TM TransportMessage {
 #&#####################################################################
 #End HUD
 ########################################################################
+
+PROTO BlaxxunZone [#PROTO supplied by BLAXXUN  
+eventIn         MFNode   addEvents  
+eventIn         MFNode   removeEvents  
+eventIn         MFNode   addAvatars  
+eventIn         MFNode   removeAvatars  
+exposedField    MFNode   events []
+exposedField    MFNode   avatars [] 
+exposedField    SFString myAvatarURL "" 
+exposedField    SFString myAvatarName ""
+exposedField    SFFloat  number_avatars 0
+eventOut        MFNode   avatars_added 
+eventOut        MFNode   avatars_removed
+exposedField    MFNode   avatarLOD []
+exposedField    MFFloat   avatarRange []
+]{ 
+Transform { 
+addChildren IS addEvents 
+removeChildren IS removeEvents 
+children IS events 
+} 
+Transform { 
+        addChildren IS addAvatars
+        removeChildren IS removeAvatars 
+        children IS avatars 
+}
+}# END BlaxxunZone
+
+DEF SharedZone BlaxxunZone { 
+  events [ 
+    
+   ] 
+}
+
 #####blackmarket doors
 PROTO Transporter [
 field SFBool enabled TRUE
