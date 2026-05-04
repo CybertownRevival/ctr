@@ -8,7 +8,7 @@ import {
 } from '../../repositories';
 import { Place } from '../../types/models';
 import * as console from 'console';
-import {includes} from 'lodash';
+import { includes } from 'lodash';
 
 /** Service for dealing with colony */
 @Service()
@@ -18,8 +18,8 @@ export class ColonyService {
     private roleAssignmentRepository: RoleAssignmentRepository,
     private roleRepository: RoleRepository,
     private memberRepository: MemberRepository,
-  ) {}
-  
+  ) { }
+
   public async find(colonyId: number): Promise<Place> {
     return await this.colonyRepository.find(colonyId);
   }
@@ -27,7 +27,7 @@ export class ColonyService {
   public async getHoods(colonyId: number): Promise<any> {
     return await this.colonyRepository.getHoods(colonyId);
   }
-  
+
   public async getAccessInfoByUsername(colonyId: number): Promise<object> {
     const deputyCode = await this.roleRepository.roleMap.ColonyDeputy;
     const ownerCode = await this.roleRepository.roleMap.ColonyLeader;
@@ -50,8 +50,8 @@ export class ColonyService {
     const ownerCode = await this.roleRepository.roleMap.ColonyLeader;
     let oldOwner = null;
     let newOwner = 0;
-    const oldDeputies = [0,0,0,0,0,0,0,0];
-    const newDeputies = [0,0,0,0,0,0,0,0];
+    const oldDeputies = [0, 0, 0, 0, 0, 0, 0, 0];
+    const newDeputies = [0, 0, 0, 0, 0, 0, 0, 0];
     const data = await this
       .roleAssignmentRepository
       .getAccessInfoByID(colonyId, ownerCode, deputyCode);
@@ -72,8 +72,8 @@ export class ColonyService {
         const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
         if (response.length !== 0) {
           const primaryRoleId = response[0].primary_role_id;
-          if (ownerCode === primaryRoleId){
-            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          if (ownerCode === primaryRoleId) {
+            await this.memberRepository.update(oldOwner, { primary_role_id: null });
           }
         }
       }
@@ -84,8 +84,8 @@ export class ColonyService {
         const response: any = await this.memberRepository.getPrimaryRoleName(oldOwner);
         if (response.length !== 0) {
           const primaryRoleId = response[0].primary_role_id;
-          if (ownerCode === primaryRoleId){
-            await this.memberRepository.update(oldOwner, {primary_role_id: null});
+          if (ownerCode === primaryRoleId) {
+            await this.memberRepository.update(oldOwner, { primary_role_id: null });
           }
         }
       }
@@ -110,7 +110,7 @@ export class ColonyService {
                 if (response.length !== 0) {
                   const primaryRoleId = response[0].primary_role_id;
                   if (primaryRoleId && deputyCode === primaryRoleId) {
-                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                    this.memberRepository.update(oldDeputies, { primary_role_id: null });
                   }
                 }
               });
@@ -123,7 +123,7 @@ export class ColonyService {
                 if (response.length !== 0) {
                   const primaryRoleId = response[0].primary_role_id;
                   if (deputyCode === primaryRoleId) {
-                    this.memberRepository.update(oldDeputies, {primary_role_id: null});
+                    this.memberRepository.update(oldDeputies, { primary_role_id: null });
                   }
                 }
               });
@@ -146,8 +146,6 @@ export class ColonyService {
         return (
           [
             this.roleRepository.roleMap.Admin,
-            this.roleRepository.roleMap.CityMayor,
-            this.roleRepository.roleMap.DeputyMayor,
             this.roleRepository.roleMap.ColonyRepresentative,
           ].includes(assignment.role_id) ||
           ([
