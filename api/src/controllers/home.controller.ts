@@ -30,7 +30,7 @@ class HomeController {
 
       const { username } = request.params;
 
-      if(username) {
+      if(username && username !== 'undefined') {
         const user = await this.memberService.find({
           username: username,
         });
