@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import { PlaceService, MemberService, HomeService } from '../services';
+import { PlaceService, MemberService, HomeService} from '../services';
 import { Container } from 'typedi';
 
 import * as badwords from 'badwords-list';
@@ -167,6 +167,28 @@ class PlaceController {
     }
   }
 
+  public async removeAccount(request: Request, response: Response):  Promise<void>{
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+
+    try {
+      const places = await this.placeService.getOwnedPlaces(session.id);
+      if(places.length >= 1) {
+        const home = places.find(place => place.type === 'home');
+        if(home){
+          await this.placeService.removeVirtualPet(home.id);
+        }
+        
+        places.forEach(place => {
+          this.placeService.removePlace(place.id);
+        });
+      }
+      response.status(200).json({ status: 'success' });
+    } catch {
+      response.status(400).json({error: 'Error remvoing places.'});
+    }
+  }
+
   public async deleteStorage(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;
@@ -285,4 +307,5 @@ class PlaceController {
 const placeService = Container.get(PlaceService);
 const memberService = Container.get(MemberService);
 const homeService = Container.get(HomeService);
-export const placeController = new PlaceController(placeService, memberService, homeService);
+export const placeController = new PlaceController(
+  placeService, memberService, homeService);

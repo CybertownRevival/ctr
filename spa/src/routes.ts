@@ -67,6 +67,7 @@ import CommunityOverview from "@/pages/admin/overview/overview.vue";
 import CityRoles from "@/pages/admin/roles/roles.vue";
 import Transactions from "@/pages/admin/transactions/search.vue";
 import UserObjectSearch from "@/pages/admin/objects/instances/search.vue";
+import SeizedObjects from "@/pages/admin/objects/instances/seized.vue";
 
 import MallRulesPage from "@/pages/mall/MallRulesPage.vue";
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
@@ -448,6 +449,14 @@ export default [
         name: "UserObjectSearch",
         meta: {
           title: "User Object Search - Admin Panel",
+        },
+      },
+      {
+        path: "/admin/seized/",
+        component: SeizedObjects,
+        name: "SeizedObjects",
+        meta: {
+          title: "SeizedObjects - Admin Panel",
         },
       },
       {

@@ -15,6 +15,7 @@ import {
   TransactionRepository,
   WalletRepository,
   ObjectInstanceRepository,
+  VoteRepository,
 } from '../../repositories';
 import { Member } from '../../types/models';
 import { MemberInfoView, MemberAdminView } from '../../types/views';
@@ -48,6 +49,7 @@ export class MemberService {
     private roleAssignmentRepository: RoleAssignmentRepository,
     private objectInstanceRepository: ObjectInstanceRepository,
     private roleRepository: RoleRepository,
+    private voteRepository: VoteRepository,
   ) { }
 
   public async canAdmin(memberId: number): Promise<boolean> {
@@ -612,5 +614,16 @@ export class MemberService {
   public async getMemberByWalletId(walletId: number): Promise<any> {
     const user = await this.memberRepository.findByWalletId(walletId);
     return user;
+  }
+
+  public async removeAccount(id: number): Promise<any> {
+    const user = await this.memberRepository.findById(id);
+    await this.roleAssignmentRepository.removeAllByUserId(id);
+    await this.banRepository.removeAllByUserId(id);
+    await this.transactionRepository.removeAllByWalletId(user.wallet_id);
+    await this.voteRepository.removeListByUserId(id);
+    await this.voteRepository.removeResponseByUserId(id);
+    await this.memberRepository.removeAccount(id);
+    await this.walletRepository.removeAccount((user.wallet_id));
   }
 }

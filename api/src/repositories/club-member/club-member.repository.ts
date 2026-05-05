@@ -58,6 +58,12 @@ export class ClubMemberRepository {
       });
     return status[0].status;
   }
+
+  public async removeAccount(userId: number): Promise<any> {
+    await knex('club_member')
+      .where('member_id', userId)
+      .del();
+  }
   
   public async getMembersCount(clubId: number, status: string): Promise<number> {
     const count = await knex('club_member')

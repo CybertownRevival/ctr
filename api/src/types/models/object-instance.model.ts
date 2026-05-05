@@ -7,7 +7,7 @@ export interface ObjectInstance extends Model {
   object_name: string;
   object_price: number;
   object_buyer: string;
-  member_id: number;
+  member_id: number | null;
   place_id: number;
   place_name: string;
   place_type: string;

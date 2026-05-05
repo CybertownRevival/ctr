@@ -18,5 +18,4 @@ homeRoutes.post('/move',
   (request, response) => homeController.moveHome(request, response));
 homeRoutes.post('/update',
   (request, response) => homeController.updateHome(request, response));
-
 export { homeRoutes };

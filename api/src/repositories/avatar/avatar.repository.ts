@@ -28,6 +28,12 @@ export class AvatarRepository {
     return this.db.avatar.where({ status: 1 });
   }
 
+  public async removeAllAvatars(userId: number): Promise<any> {
+    await this.db.avatar
+      .where('member_id', userId)
+      .del();
+  }
+
   /**
    * gets all the avatars a memberId can access
    * @param memberId

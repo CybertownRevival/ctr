@@ -7,6 +7,13 @@ import {
   RoleRepository,
   RoleAssignmentRepository,
   VirtualPetRepository,
+  MessageRepository,
+  InboxRepository,
+  MessageboardRepository,
+  VoteRepository,
+  MapLocationRepository,
+  HomeRepository,
+  ClubMemberRepository,
 } from '../../repositories';
 import { Place, ObjectInstance } from '../../types/models';
 
@@ -20,6 +27,13 @@ export class PlaceService {
     private roleRepository: RoleRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
     private virtualPetRepository: VirtualPetRepository,
+    private messageRepository: MessageRepository,
+    private inboxRepository: InboxRepository,
+    private messageboardRepository: MessageboardRepository,
+    private voteRepository: VoteRepository,
+    private mapLocationRepository: MapLocationRepository,
+    private homeRepository: HomeRepository,
+    private clubMemberRepository: ClubMemberRepository,
   ) { }
 
   public async canAdmin(slug: string, placeId: number, memberId: number):
@@ -144,6 +158,26 @@ export class PlaceService {
 
   public async getPlaceObjects(placeId: number): Promise<ObjectInstance[]> {
     return await this.objectInstanceRepository.findByPlaceId(placeId);
+  }
+
+  public async getOwnedPlaces(userId: number): Promise<any> {
+    return await this.placeRepository.findByUserId(userId);
+  }
+
+  public async removeVirtualPet(id: number): Promise<any> {
+    await this.virtualPetRepository.removeVirtualPet(id);
+  }
+
+  public async removePlace(id: number): Promise<any> {
+    await this.clubMemberRepository.removeAllMembers(id);
+    await this.roleAssignmentRepository.removeRoleAssignment(id);
+    await this.messageRepository.removeAllPlaceMessages(id);
+    await this.inboxRepository.removeAllPlaceMessages(id);
+    await this.messageboardRepository.removeAllPlaceMessages(id);
+    await this.voteRepository.removePlace(id);
+    await this.placeRepository.removePlace(id);
+    await this.homeRepository.removePlace(id);
+    await this.mapLocationRepository.removePlace(id);
   }
 
   public async getAccessInfoByUsername(slug: string, placeId: number): Promise<object> {

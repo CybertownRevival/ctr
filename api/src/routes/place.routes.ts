@@ -3,6 +3,8 @@ import Router from 'express';
 import {placeController} from '../controllers';
 
 const placeRoutes = Router();
+placeRoutes.get('/remove_account', (request, response) => 
+  placeController.removeAccount(request, response));
 placeRoutes.get('/can_admin/:slug/:id?',
   (request, response) => placeController.canAdmin(request, response));
 placeRoutes.get('/can_manage_access/:slug/:id?',
