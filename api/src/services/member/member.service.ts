@@ -418,7 +418,28 @@ export class MemberService {
     await this.memberRepository.update(memberId, { password: hashedPassword });
   }
 
+  /**
+   * Sets the member's displayed role, rejecting any role they do not actually hold.
+   *
+   * primaryRoleId arrives straight from request.body, so without this check any
+   * authenticated member can display any role -- including City Guide or Security --
+   * without holding it. role_assignment is the authority for what a member holds.
+   *
+   * A null id clears the selection, which is legitimate.
+   */
   public async updatePrimaryRoleId(memberId: number, primaryRoleId: number): Promise<void> {
+    if (primaryRoleId === null || primaryRoleId === undefined) {
+      await this.memberRepository.update(memberId, { primary_role_id: null });
+      return;
+    }
+    const assignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    const holdsRole = assignments
+      .some(assignment => Number(assignment.role_id) === Number(primaryRoleId));
+    if (!holdsRole) {
+      throw new Error(
+        `member ${memberId} does not hold role ${primaryRoleId}; refusing to display it`,
+      );
+    }
     await this.memberRepository.update(memberId, { primary_role_id: primaryRoleId });
   }
 

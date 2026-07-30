@@ -10,6 +10,7 @@ import {
 import {
   AvatarRepository,
   MemberRepository,
+  RoleAssignmentRepository,
   TransactionRepository,
   WalletRepository,
 } from '../../repositories';
@@ -27,6 +28,7 @@ describe('MemberService', () => {
   };
   let avatarRepository: jest.Mocked<AvatarRepository>;
   let memberRepository: jest.Mocked<MemberRepository>;
+  let roleAssignmentRepository: jest.Mocked<RoleAssignmentRepository>;
   let transactionRepository: jest.Mocked<TransactionRepository>;
   let walletRepository: jest.Mocked<WalletRepository>;
   let service: MemberService;
@@ -38,11 +40,14 @@ describe('MemberService', () => {
     memberRepository.create.mockResolvedValue(fakeMember.id);
     memberRepository.find.mockResolvedValue(fakeMember as Member);
     memberRepository.findById.mockResolvedValue(fakeMember as Member);
+    roleAssignmentRepository = createSpyObj(RoleAssignmentRepository);
+    roleAssignmentRepository.getByMemberId.mockResolvedValue([]);
     transactionRepository = createSpyObj(TransactionRepository);
     walletRepository = createSpyObj(WalletRepository);
     Container.reset();
     Container.set(AvatarRepository, avatarRepository);
     Container.set(MemberRepository, memberRepository);
+    Container.set(RoleAssignmentRepository, roleAssignmentRepository);
     Container.set(TransactionRepository, transactionRepository);
     Container.set(WalletRepository, walletRepository);
     service = Container.get(MemberService);
@@ -151,6 +156,52 @@ describe('MemberService', () => {
           fakeMember.id,
           expect.objectContaining({ last_daily_login_credit: expect.any(Date) }),
         );
+      });
+    });
+  });
+
+  describe('updatePrimaryRoleId', () => {
+    const HELD_ROLE = 7;
+    const UNHELD_ROLE = 99;
+
+    describe('when the member holds the role', () => {
+      it('saves it as their primary role', async () => {
+        roleAssignmentRepository.getByMemberId.mockResolvedValue(
+          [{ member_id: fakeMember.id, role_id: HELD_ROLE, place_id: 1 }] as any,
+        );
+        await service.updatePrimaryRoleId(fakeMember.id, HELD_ROLE);
+        expect(memberRepository.update).toHaveBeenCalledWith(
+          fakeMember.id,
+          { primary_role_id: HELD_ROLE },
+        );
+      });
+    });
+
+    describe('when the member does not hold the role', () => {
+      beforeEach(() => {
+        roleAssignmentRepository.getByMemberId.mockResolvedValue(
+          [{ member_id: fakeMember.id, role_id: HELD_ROLE, place_id: 1 }] as any,
+        );
+      });
+      it('rejects', async () => {
+        await expect(service.updatePrimaryRoleId(fakeMember.id, UNHELD_ROLE))
+          .rejects.toThrow();
+      });
+      it('does not write anything to the member', async () => {
+        await expect(service.updatePrimaryRoleId(fakeMember.id, UNHELD_ROLE))
+          .rejects.toThrow();
+        expect(memberRepository.update).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when given null', () => {
+      it('clears the primary role without consulting assignments', async () => {
+        await service.updatePrimaryRoleId(fakeMember.id, null);
+        expect(memberRepository.update).toHaveBeenCalledWith(
+          fakeMember.id,
+          { primary_role_id: null },
+        );
+        expect(roleAssignmentRepository.getByMemberId).not.toHaveBeenCalled();
       });
     });
   });
