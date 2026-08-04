@@ -437,7 +437,7 @@ export class MemberService {
       .some(assignment => Number(assignment.role_id) === Number(primaryRoleId));
     if (!holdsRole) {
       throw new Error(
-        `member ${memberId} does not hold role ${primaryRoleId}; refusing to display it`,
+        'member does not hold that role; refusing to display it',
       );
     }
     await this.memberRepository.update(memberId, { primary_role_id: primaryRoleId });
