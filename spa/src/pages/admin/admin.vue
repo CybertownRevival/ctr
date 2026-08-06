@@ -18,6 +18,9 @@
       <div class="mb-2" v-if="accessLevel.includes('admin')">
         <router-link class="btn-ui" :to="{name: 'CityRoles'}">Roles</router-link>
       </div>
+      <div class="mb-2" v-if="accessLevel.includes('admin')">
+        <router-link class="btn-ui" :to="{name: 'NewsEditor'}">News</router-link>
+      </div>
       <div class="mb-2">
         <router-link class="btn-ui" :to="{name: 'PlaceSearch'}">Places</router-link>
       </div>

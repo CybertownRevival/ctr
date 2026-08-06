@@ -10,7 +10,7 @@ newsRoutes.get(
     newsController.getNews(request, response),
 );
 
-newsRoutes.put(
+newsRoutes.post(
   '/',
   (request, response) =>
     newsController.updateNews(request, response),

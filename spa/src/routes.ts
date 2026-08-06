@@ -69,6 +69,7 @@ import CityRoles from "@/pages/admin/roles/roles.vue";
 import Transactions from "@/pages/admin/transactions/search.vue";
 import UserObjectSearch from "@/pages/admin/objects/instances/search.vue";
 import SeizedObjects from "@/pages/admin/objects/instances/seized.vue";
+import NewsEditor from "@/pages/admin/news/editor.vue";
 
 import MallRulesPage from "@/pages/mall/MallRulesPage.vue";
 import MallUploadPage from "@/pages/mall/MallUploadPage.vue";
@@ -476,6 +477,14 @@ export default [
           title: "Member Search - Admin Panel",
         },
       },
+      {
+        path: "/admin/news",
+        component: NewsEditor,
+        name: "NewsEditor",
+        meta: {
+        title: "Edit Cybertown News",
+  },
+},
       {
         path: "/admin/member/user/:id",
         component: UserMain,
