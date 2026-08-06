@@ -25,9 +25,17 @@
       <hr class="my-6">
 
       <p class="text-sm">
-        Last updated:
-        {{ formatDate(news.updated_at) }}
-      </p>
+       Last updated:
+      {{ formatDate(news.updated_at) }}
+</p>
+
+<p
+  v-if="news.updated_by_username"
+  class="text-sm"
+>
+  Updated by:
+  {{ news.updated_by_username }}
+</p>
     </div>
   </main>
 </template>
@@ -39,6 +47,7 @@ interface NewsRecord {
   id: number;
   html: string;
   updated_by_member_id: number | null;
+  updated_by_username: string | null;
   created_at: string;
   updated_at: string;
 }
