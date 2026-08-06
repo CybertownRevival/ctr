@@ -30,7 +30,34 @@ class NewsController {
       });
     }
   }
+public async canEditNews(
+  request: Request,
+  response: Response,
+): Promise<void> {
+  const session = this.memberService.decryptSession(
+    request,
+    response,
+  );
 
+  if (!session) {
+    return;
+  }
+
+  try {
+    const canEdit =
+      await this.memberService.canEditNews(session.id);
+
+    response.status(200).json({
+      canEdit,
+    });
+  } catch (error) {
+    console.log(error);
+
+    response.status(400).json({
+      error: 'A problem occurred while checking News permissions.',
+    });
+  }
+}
   public async updateNews(
     request: Request,
     response: Response,
@@ -44,17 +71,16 @@ class NewsController {
       return;
     }
 
-    const accessLevel = await this.memberService.getAccessLevel(
-      session.id,
-    );
+    const canEditNews =
+  await this.memberService.canEditNews(session.id);
 
-    if (!accessLevel.includes('admin')) {
-      response.status(403).json({
-        error: 'Access Denied',
-      });
+if (!canEditNews) {
+  response.status(403).json({
+    error: 'Access Denied',
+  });
 
-      return;
-    }
+  return;
+}
 
     const uncleanHtml = request.body.html;
 

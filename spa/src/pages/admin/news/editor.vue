@@ -24,6 +24,7 @@
       <textarea
         v-model="html"
         class="w-full h-96 p-3 text-black"
+        spellcheck="false"
       />
 
       <div class="mt-4">
@@ -43,7 +44,7 @@
       </h2>
 
       <div
-        class="content p-4 border-2 border-black"
+        class="content border-2 border-black p-3"
         v-html="html"
       />
     </div>

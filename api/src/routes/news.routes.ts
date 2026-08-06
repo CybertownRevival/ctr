@@ -10,6 +10,12 @@ newsRoutes.get(
     newsController.getNews(request, response),
 );
 
+newsRoutes.get(
+  '/can-edit',
+  (request, response) =>
+    newsController.canEditNews(request, response),
+);
+
 newsRoutes.post(
   '/',
   (request, response) =>

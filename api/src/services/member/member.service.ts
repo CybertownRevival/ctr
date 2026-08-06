@@ -121,6 +121,20 @@ export class MemberService {
     return accessLevel;
   }
 
+    public async canEditNews(memberId: number): Promise<boolean> {
+    const roleAssignments =
+      await this.roleAssignmentRepository.getByMemberId(memberId);
+
+   const NEWS_ROLES = [
+      this.roleRepository.roleMap.Admin,
+      this.roleRepository.roleMap.CityMayor,
+      this.roleRepository.roleMap.CVNEditor,
+   ];
+
+    return !!roleAssignments.find(
+      assignment => NEWS_ROLES.includes(assignment.role_id),
+    );  
+}
   /**
    * Creates a new member with the given email, username, and password. If successful, distributes
    * daily login bonuses, and returns an encoded member token.

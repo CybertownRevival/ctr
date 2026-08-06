@@ -1,41 +1,37 @@
 <template>
-  <main class="w-full h-full p-6 overflow-y-auto">
-    <h1 class="mb-6 text-4xl">
-      Cybertown News
-    </h1>
+  <main class="news-page">
+   <div style="text-align:center; margin:10px 0;">
+    <img src="/assets/img/anchor.jpg" alt="Cybertown Virtual News" style="max-width:100%; height:auto;">
+  </div>
 
-    <div v-if="loading">
+    <div v-if="loading" class="news-status">
       Loading News...
     </div>
 
-    <div v-else-if="error" class="text-red-500">
+    <div v-else-if="error" class="news-status news-error">
       {{ error }}
     </div>
 
-    <div v-else-if="!news">
+    <div v-else-if="!news" class="news-status">
       No News has been published yet.
     </div>
 
-    <div v-else>
+    <div v-else class="news-wrapper">
       <div
-        class="content"
+        class="news-content"
         v-html="news.html"
       />
 
-      <hr class="my-6">
+      <div class="news-metadata">
+        Last updated:
+        {{ formatDate(news.updated_at) }}
 
-      <p class="text-sm">
-       Last updated:
-      {{ formatDate(news.updated_at) }}
-</p>
-
-<p
-  v-if="news.updated_by_username"
-  class="text-sm"
->
-  Updated by:
-  {{ news.updated_by_username }}
-</p>
+        <span v-if="news.updated_by_username">
+          &nbsp;|&nbsp;
+          Updated by:
+          {{ news.updated_by_username }}
+        </span>
+      </div>
     </div>
   </main>
 </template>
@@ -94,3 +90,42 @@ export default Vue.extend({
   },
 });
 </script>
+
+<style scoped>
+.news-page {
+  width: 100%;
+  min-height: 100%;
+  overflow-y: auto;
+  background-color: #000000;
+  color: #cccccc;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.news-wrapper {
+  width: 85%;
+  margin: 0 auto;
+}
+
+.news-content {
+  width: 100%;
+}
+
+.news-status {
+  padding: 20px;
+  text-align: center;
+  color: #cccccc;
+}
+
+.news-error {
+  color: #ff6666;
+}
+
+.news-metadata {
+  margin-top: 24px;
+  padding: 8px 0;
+  border-top: 1px solid #00ff00;
+  color: #999999;
+  font-size: 11px;
+  text-align: center;
+}
+</style>
