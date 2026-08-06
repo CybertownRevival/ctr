@@ -1,4 +1,5 @@
 import HomePage from "./pages/HomePage.vue";
+import NewsPage from "./pages/News.vue";
 import AboutPage from "./pages/AboutPage.vue";
 import ConstitutionPage from './pages/Constitution.vue';
 import RulesRegulationsPage from "./pages/RulesandRegulationPage.vue";
@@ -104,6 +105,14 @@ export default [
     meta: {
       title: "Welcome to Cybertown",
     },
+  },
+  {
+  path: "/News",
+  component: NewsPage,
+  name: "news",
+  meta: {
+    title: "Cybertown Virtual News",
+  },
   },
   {
     path: "/about",

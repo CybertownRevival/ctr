@@ -19,6 +19,7 @@ import {
   memberRoutes,
   messageRoutes,
   messageboardRoutes,
+  newsRoutes,
   objectInstanceRoutes,
   objectRoutes,
   placeRoutes,
@@ -68,6 +69,7 @@ app.use('/api/blackmarket', blackmarketRoutes);
 app.use('/api/fleamarket', fleamarketRoutes);
 app.use('/api/club', clubRoutes);
 app.use('/api/vote', voteRoutes);
+app.use('/api/news', newsRoutes);
 
 app.use((request, response, next) => {
   const error = new Error('Not found');

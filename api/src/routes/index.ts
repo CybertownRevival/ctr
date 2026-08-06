@@ -10,6 +10,7 @@ export * from './hood.routes';
 export * from './mall.routes';
 export * from './member.routes';
 export * from './message.routes';
+export * from './news.routes';
 export * from './object-instance.routes';
 export * from './object.routes';
 export * from './place.routes';
