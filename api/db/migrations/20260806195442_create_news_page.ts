@@ -31,7 +31,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  console.log('Dropping news_page table...');
+  console.log('Dropping news table...');
 
   await knex.schema.dropTableIfExists('news');
 }
