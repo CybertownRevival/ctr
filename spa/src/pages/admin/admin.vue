@@ -12,7 +12,7 @@
       <div class="mb-2">
         <router-link class="btn-ui" v-if="accessLevel.includes('security')" :to="{name: 'CommunityOverview'}">Overview</router-link>
       </div>
-      <div class="mb-2" v-if="accessLevel.length > 0">
+      <div class="mb-2" v-if="!accessLevel.includes('live-event') || accessLevel.length > 1">
         <router-link class="btn-ui" :to="{name: 'UserSearch'}">Members</router-link>
       </div>
       <div class="mb-2" v-if="accessLevel.includes('admin')">
@@ -21,8 +21,11 @@
       <div class="mb-2" v-if="canEditNews">
         <router-link class="btn-ui" :to="{name: 'NewsEditor'}">News</router-link>
       </div>
-      <div class="mb-2" v-if="accessLevel.length > 0">
+      <div class="mb-2" v-if="!accessLevel.includes('live-event') || accessLevel.length > 1">
         <router-link class="btn-ui" :to="{name: 'PlaceSearch'}">Places</router-link>
+      </div>
+      <div class="mb-2" v-if="accessLevel.includes('live-event')">
+        <router-link class="btn-ui" :to="{name: 'LiveEvent'}">Live Event</router-link>
       </div>
       <div class="mb-2" v-if="accessLevel.includes('security')">
         <router-link class="btn-ui" :to="{name: 'Transactions'}">Transactions</router-link>

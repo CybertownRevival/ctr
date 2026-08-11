@@ -56,11 +56,8 @@ export default Vue.extend({
       }
     },
     async loadPlaces(): Promise<void> {
-      const response = await this.$http.get(
-        '/admin/allplacessearch?search=&compare=!=&type=home&limit=500&offset=0',
-      );
-
-      this.places = response.data.results;
+      const response = await this.$http.get('/place/live-event-destinations');
+      this.places = response.data.destinations;
     },
     async save(): Promise<void> {
       await this.$http.post('/live-event', {
