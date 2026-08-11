@@ -15,6 +15,7 @@ import {
   homeRoutes,
   hoodRoutes,
   inboxRoutes,
+  liveEventRoutes,
   mallRoutes,
   memberRoutes,
   messageRoutes,
@@ -64,6 +65,7 @@ app.use('/api/home', homeRoutes);
 app.use('/api/messageboard', messageboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/inbox', inboxRoutes);
+app.use('/api/live-event', liveEventRoutes);
 app.use('/api/mall', mallRoutes);
 app.use('/api/blackmarket', blackmarketRoutes);
 app.use('/api/fleamarket', fleamarketRoutes);
