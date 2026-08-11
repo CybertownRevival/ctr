@@ -3,42 +3,89 @@
     <div class="flex-col w-56 h-full border-r-2 border-white text-center">
       <div class="pt-3">Admin Panel</div>
       <div class="p-3"><hr></div>
+
       <div class="mb-2" v-if="accessLevel.includes('admin')">
-        <router-link class="btn-ui" :to="{name: 'AvatarSearch'}">Avatars</router-link>
+        <router-link class="btn-ui" :to="{name: 'AvatarSearch'}">
+          Avatars
+        </router-link>
       </div>
+
       <div class="mb-2" v-if="accessLevel.includes('admin')">
-        <router-link class="btn-ui" :to="{name: 'SeizedObjects'}">Seized Objects</router-link>
+        <router-link class="btn-ui" :to="{name: 'SeizedObjects'}">
+          Seized Objects
+        </router-link>
       </div>
-      <div class="mb-2">
-        <router-link class="btn-ui" v-if="accessLevel.includes('security')" :to="{name: 'CommunityOverview'}">Overview</router-link>
-      </div>
-      <div class="mb-2">
-        <router-link class="btn-ui" :to="{name: 'UserSearch'}">Members</router-link>
-      </div>
-      <div class="mb-2" v-if="accessLevel.includes('admin')">
-        <router-link class="btn-ui" :to="{name: 'CityRoles'}">Roles</router-link>
-      </div>
-      <div class="mb-2">
-        <router-link class="btn-ui" :to="{name: 'PlaceSearch'}">Places</router-link>
-      </div>
+
       <div class="mb-2" v-if="accessLevel.includes('security')">
-        <router-link class="btn-ui" :to="{name: 'Transactions'}">Transactions</router-link>
+        <router-link class="btn-ui" :to="{name: 'CommunityOverview'}">
+          Overview
+        </router-link>
       </div>
+
+      <div
+        class="mb-2"
+        v-if="accessLevel.includes('admin') ||
+          accessLevel.includes('security') ||
+          accessLevel.includes('leader')"
+      >
+        <router-link class="btn-ui" :to="{name: 'UserSearch'}">
+          Members
+        </router-link>
+      </div>
+
       <div class="mb-2" v-if="accessLevel.includes('admin')">
-        <router-link class="btn-ui" :to="{name: 'ObjectSearch'}">Mall Objects</router-link>
+        <router-link class="btn-ui" :to="{name: 'CityRoles'}">
+          Roles
+        </router-link>
       </div>
+
+      <div
+        class="mb-2"
+        v-if="accessLevel.includes('admin') ||
+          accessLevel.includes('security') ||
+          accessLevel.includes('leader')"
+      >
+        <router-link class="btn-ui" :to="{name: 'PlaceSearch'}">
+          Places
+        </router-link>
+      </div>
+
+      <div class="mb-2" v-if="accessLevel.includes('live-event')">
+        <router-link class="btn-ui" :to="{name: 'LiveEvent'}">
+          Live Event
+        </router-link>
+      </div>
+
       <div class="mb-2" v-if="accessLevel.includes('security')">
-        <router-link class="btn-ui" :to="{name: 'UserObjectSearch'}">User Objects</router-link>
+        <router-link class="btn-ui" :to="{name: 'Transactions'}">
+          Transactions
+        </router-link>
+      </div>
+
+      <div class="mb-2" v-if="accessLevel.includes('admin')">
+        <router-link class="btn-ui" :to="{name: 'ObjectSearch'}">
+          Mall Objects
+        </router-link>
+      </div>
+
+      <div class="mb-2" v-if="accessLevel.includes('security')">
+        <router-link class="btn-ui" :to="{name: 'UserObjectSearch'}">
+          User Objects
+        </router-link>
       </div>
     </div>
-    <div class="w-11/12 h-full p-1 overflow-y-scroll"><router-view :accessLevel="accessLevel" /></div>
+
+    <div class="w-11/12 h-full p-1 overflow-y-scroll">
+      <router-view :accessLevel="accessLevel" />
+    </div>
   </main>
-  </template>
+</template>
+
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
 
 export default Vue.extend({
-  name: "admin",
+  name: 'admin',
   data: () => {
     return {
       accessLevel: [],
@@ -46,16 +93,16 @@ export default Vue.extend({
   },
   methods: {
     async getAdminLevel(): Promise<void> {
-      try{
-        const access = await this.$http.get("/member/getadminlevel");
+      try {
+        const access = await this.$http.get('/member/getadminlevel');
         this.accessLevel = access.data.accessLevel;
       } catch (e) {
         console.log(e);
       }
     },
     accessCheck() {
-      if (this.accessLevel.length <= 0){
-        this.$router.push({name: "restrictedaccess"});
+      if (this.accessLevel.length <= 0) {
+        this.$router.push({ name: 'restrictedaccess' });
       }
     },
   },

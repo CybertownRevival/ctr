@@ -60,6 +60,7 @@ import UserFireRoles from "@/pages/admin/user/FireRoles.vue";
 import UserDonor from "@/pages/admin/user/donor.vue";
 import AvatarSearch from "@/pages/admin/avatar/search.vue";
 import PlaceSearch from "@/pages/admin/place/search.vue";
+import LiveEvent from '@/pages/admin/LiveEvent.vue';
 import AdminPlaceUpdate from "@/pages/admin/place/update.vue";
 import ObjectSearch from "@/pages/admin/objects/search.vue";
 import AdminObjectUpdate from "@/pages/admin/objects/update.vue";
@@ -607,6 +608,14 @@ export default [
         name: "PlaceSearch",
         meta: {
           title: "Places Search - Admin Panel",
+        },
+      },
+      {
+        path: '/admin/live-event/',
+        component: LiveEvent,
+        name: 'LiveEvent',
+        meta: {
+          title: 'Live Event - Admin Panel',
         },
       },
       {

@@ -78,6 +78,21 @@ export class MemberService {
     return !!roleAssignments.find(assignment => LEADER_ROLES.includes(assignment.role_id));
   }
 
+  public async canManageLiveEvent(memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+
+    const LIVE_EVENT_ROLES = [
+      this.roleRepository.roleMap.Admin,
+      this.roleRepository.roleMap.CityMayor,
+      this.roleRepository.roleMap.PlacesChief,
+      this.roleRepository.roleMap.ColonyRepresentative,
+    ];
+
+    return !!roleAssignments.find(
+    assignment => LIVE_EVENT_ROLES.includes(assignment.role_id),
+    );
+  }
+
   public async canStaff(memberId: number): Promise<boolean> {
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     // Extracted staff roles into a constant for easy management
@@ -105,6 +120,7 @@ export class MemberService {
     const security = await this.canAdmin(memberId);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     const leader = await this.canLeader(memberId);
+    const liveEvent = await this.canManageLiveEvent(memberId);
     const admin = !!roleAssignments.find(
       assignment => assignment.role_id === this.roleRepository.roleMap.Admin,
     );
@@ -117,6 +133,9 @@ export class MemberService {
     }
     if (leader) {
       accessLevel.push('leader');
+    }
+    if (liveEvent) {
+        accessLevel.push('live-event');
     }
     return accessLevel;
   }
