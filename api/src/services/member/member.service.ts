@@ -122,17 +122,17 @@ export class MemberService {
   }
 
     public async canEditNews(memberId: number): Promise<boolean> {
-    const roleAssignments =
-      await this.roleAssignmentRepository.getByMemberId(memberId);
-
-   const NEWS_ROLES = [
-      this.roleRepository.roleMap.Admin,
-      this.roleRepository.roleMap.CityMayor,
-      this.roleRepository.roleMap.CVNEditor,
+      const roleAssignments = 
+        await this.roleAssignmentRepository.getByMemberId(memberId);
+    
+      const newsRoles = [
+        this.roleRepository.roleMap.Admin,
+        this.roleRepository.roleMap.CityMayor,
+        this.roleRepository.roleMap.CVNEditor,
    ];
 
     return !!roleAssignments.find(
-      assignment => NEWS_ROLES.includes(assignment.role_id),
+      assignment => newsRoles.includes(assignment.role_id),
     );  
 }
   /**

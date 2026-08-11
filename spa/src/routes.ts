@@ -108,12 +108,12 @@ export default [
     },
   },
   {
-  path: "/News",
-  component: NewsPage,
-  name: "news",
-  meta: {
-    title: "Cybertown Virtual News",
-  },
+    path: "/news",
+    component: NewsPage,
+    name: "news",
+    meta: {
+      title: "Cybertown Virtual News",
+    },
   },
   {
     path: "/about",
