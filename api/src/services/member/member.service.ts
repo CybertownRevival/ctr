@@ -59,6 +59,7 @@ export class MemberService {
       this.roleRepository.roleMap.Admin,
       this.roleRepository.roleMap.SecurityCaptain,
       this.roleRepository.roleMap.SecurityChief,
+      this.roleRepository.roleMap.DeputySecurityChief,
       this.roleRepository.roleMap.SecurityLieutenant,
       this.roleRepository.roleMap.SecurityOfficer,
       this.roleRepository.roleMap.SecuritySergeant,
