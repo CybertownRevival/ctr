@@ -44,7 +44,7 @@
       </h2>
 
       <div
-        class="content border-2 border-black p-3"
+        class="p-3 border-2 border-black"
         v-html="html"
       />
     </div>

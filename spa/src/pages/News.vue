@@ -1,28 +1,46 @@
 <template>
-  <main class="news-page">
-   <div style="text-align:center; margin:10px 0;">
-    <img src="/assets/img/anchor.jpg" alt="Cybertown Virtual News" style="max-width:100%; height:auto;">
-  </div>
+  <main class="w-full min-h-full overflow-y-auto bg-black text-gray-300 font-sans">
+    <div class="my-2 text-center">
+      <img
+        src="/assets/img/anchor.jpg"
+        alt="Cybertown Virtual News"
+        class="max-w-full h-auto mx-auto"
+      >
+    </div>
 
-    <div v-if="loading" class="news-status">
+    <div
+      v-if="loading"
+      class="p-5 text-center text-gray-300"
+    >
       Loading News...
     </div>
 
-    <div v-else-if="error" class="news-status news-error">
+    <div
+      v-else-if="error"
+      class="p-5 text-center text-red-400"
+    >
       {{ error }}
     </div>
 
-    <div v-else-if="!news" class="news-status">
+    <div
+      v-else-if="!news"
+      class="p-5 text-center text-gray-300"
+    >
       No News has been published yet.
     </div>
 
-    <div v-else class="news-wrapper">
+    <div
+      v-else
+      class="w-5/6 mx-auto"
+    >
       <div
-        class="news-content"
+        class="w-full"
         v-html="news.html"
       />
 
-      <div class="news-metadata">
+      <div
+        class="mt-6 py-2 border-t border-green-500 text-xs text-center text-gray-400"
+      >
         Last updated:
         {{ formatDate(news.updated_at) }}
 
@@ -90,42 +108,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style scoped>
-.news-page {
-  width: 100%;
-  min-height: 100%;
-  overflow-y: auto;
-  background-color: #000000;
-  color: #cccccc;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.news-wrapper {
-  width: 85%;
-  margin: 0 auto;
-}
-
-.news-content {
-  width: 100%;
-}
-
-.news-status {
-  padding: 20px;
-  text-align: center;
-  color: #cccccc;
-}
-
-.news-error {
-  color: #ff6666;
-}
-
-.news-metadata {
-  margin-top: 24px;
-  padding: 8px 0;
-  border-top: 1px solid #00ff00;
-  color: #999999;
-  font-size: 11px;
-  text-align: center;
-}
-</style>
