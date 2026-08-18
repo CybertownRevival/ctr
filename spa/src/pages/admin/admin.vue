@@ -12,7 +12,7 @@
       <div class="mb-2">
         <router-link class="btn-ui" v-if="accessLevel.includes('security')" :to="{name: 'CommunityOverview'}">Overview</router-link>
       </div>
-      <div class="mb-2">
+      <div class="mb-2" v-if="accessLevel.length > 0">
         <router-link class="btn-ui" :to="{name: 'UserSearch'}">Members</router-link>
       </div>
       <div class="mb-2" v-if="accessLevel.includes('admin')">
@@ -21,7 +21,7 @@
       <div class="mb-2" v-if="canEditNews">
         <router-link class="btn-ui" :to="{name: 'NewsEditor'}">News</router-link>
       </div>
-      <div class="mb-2">
+      <div class="mb-2" v-if="accessLevel.length > 0">
         <router-link class="btn-ui" :to="{name: 'PlaceSearch'}">Places</router-link>
       </div>
       <div class="mb-2" v-if="accessLevel.includes('security')">
