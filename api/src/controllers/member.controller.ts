@@ -40,6 +40,19 @@ class MemberController {
     response.status(200).json({ accessLevel });
   }
 
+  public async canManageSecurityRoles(
+    request: Request,
+    response: Response,
+  ): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+
+    const canManage =
+      await this.memberService.canManageSecurityRoles(session.id);
+
+    response.status(200).json({ canManage });
+  }
+
   public async getDonorLevel(request: Request, response: Response): Promise<string> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;

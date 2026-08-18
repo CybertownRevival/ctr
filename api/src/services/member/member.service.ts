@@ -67,6 +67,28 @@ export class MemberService {
     return !!roleAssignments.find(assignment => ADMIN_ROLES.includes(assignment.role_id));
   }
 
+  public async canManageSecurityRoles(memberId: number): Promise<boolean> {
+    const roleAssignments =
+      await this.roleAssignmentRepository.getByMemberId(memberId);
+    const SECURITY_ROLE_MANAGERS = [
+      this.roleRepository.roleMap.SecurityChief,
+      this.roleRepository.roleMap.DeputySecurityChief,
+    ];
+    return !!roleAssignments.find(assignment => SECURITY_ROLE_MANAGERS.includes(assignment.role_id),);
+  }
+
+  public canSecurityManageRole(roleId: number): boolean {
+    const SECURITY_ROLES = [
+      this.roleRepository.roleMap.SecurityCaptain,
+      this.roleRepository.roleMap.SecurityLieutenant,
+      this.roleRepository.roleMap.SecuritySergeant,
+      this.roleRepository.roleMap.SecurityOfficer,
+      this.roleRepository.roleMap.SecurityAdvisor,
+      this.roleRepository.roleMap.JailGuard,
+    ];
+    return SECURITY_ROLES.includes(roleId);
+  }
+
   public async canLeader(memberId: number): Promise<boolean> {
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     // Extracted admin roles into a constant for easy management

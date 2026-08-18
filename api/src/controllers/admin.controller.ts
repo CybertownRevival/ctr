@@ -123,11 +123,18 @@ class AdminController {
       place_id = parseInt(place_id);
     }
     const accessLevel = await this.memberService.getAccessLevel(session.id);
-    if (accessLevel.includes('admin')) {
+    const roleId = parseInt(role_id);
+    const canManageSecurityRoles =
+      await this.memberService.canManageSecurityRoles(session.id);
+    const canManageRole =
+      accessLevel.includes('admin') ||
+      (canManageSecurityRoles &&
+        this.memberService.canSecurityManageRole(roleId));
+    if (canManageRole) {
       try {
         await this.adminService.fireRole(
           parseInt(member_id),
-          parseInt(role_id),
+          roleId,
           place_id,
         );
         response.status(200).json({message: 'Role fired successfully'});
@@ -139,7 +146,7 @@ class AdminController {
       response.status(403).json({error: 'Access Denied'});
     }
   }
-  
+
   public async getDonor(request: Request, response: Response): Promise<string> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
@@ -179,12 +186,19 @@ class AdminController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const accessLevel = await this.memberService.getAccessLevel(session.id);
-    if (accessLevel.includes('admin')) {
-      const {member_id, role_id} = request.body;
+    const {member_id, role_id} = request.body;
+    const roleId = parseInt(role_id);
+    const canManageSecurityRoles =
+      await this.memberService.canManageSecurityRoles(session.id);
+    const canManageRole =
+      accessLevel.includes('admin') ||
+      (canManageSecurityRoles &&
+        this.memberService.canSecurityManageRole(roleId));
+    if (canManageRole) {
       try {
         await this.adminService.hireRole(
           parseInt(member_id),
-          parseInt(role_id),
+          roleId,
         );
         response.status(200).json({message: 'Role hired successfully'});
       } catch(e) {

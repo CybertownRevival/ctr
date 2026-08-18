@@ -20,6 +20,9 @@ memberRoutes.get('/getrolename', (request, response) =>
 memberRoutes.get('/getadminlevel', (request, response) =>
   memberController.getAdminLevel(request, response),
 );
+memberRoutes.get('/can-manage-security-roles', (request, response) =>
+  memberController.canManageSecurityRoles(request, response),
+);
 memberRoutes.get('/getdonorlevel', (request, response) =>
   memberController.getDonorLevel(request, response),
 );
