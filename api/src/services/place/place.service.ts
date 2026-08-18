@@ -191,6 +191,7 @@ export class PlaceService {
     const SecurityInfo = {};
     const securityRoles = [
       { mapName: 'SecurityChief', roleName: 'Security Chief' },
+      { mapName: 'DeputySecurityChief', roleName: 'Deputy Security Chief' },
       { mapName: 'SecurityCaptain', roleName: 'Security Captain' },
       { mapName: 'SecurityLieutenant', roleName: 'Security Lieutenant' },
       { mapName: 'SecuritySergeant', roleName: 'Security Sergeant' },
@@ -198,16 +199,16 @@ export class PlaceService {
       { mapName: 'JailGuard', roleName: 'Jail Guard' },
     ];
     try {
-      await Promise.all(securityRoles.map(async (role) => {
-        const roleCode = await this.roleRepository.roleMap[role.mapName];
-        await this.roleAssignmentRepository.getUsernamesByRoleId(roleCode).then(response => {
-          const users = [];
-          response.forEach(row => {
-            users.push(row.username);
-          });
-          SecurityInfo[role.roleName] = users;
-        });
-      }));
+     for (const role of securityRoles) {
+      const roleCode = await this.roleRepository.roleMap[role.mapName];
+      const response = await this.roleAssignmentRepository.getUsernamesByRoleId(roleCode);
+      const users = [];
+
+      response.forEach(row => {
+        users.push(row.username);
+      });
+      SecurityInfo[role.roleName] = users;
+    }
     } catch (error) {
       console.error(error);
     }
