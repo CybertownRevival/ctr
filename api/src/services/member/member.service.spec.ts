@@ -9,6 +9,7 @@ import {
 } from 'models';
 import {
   AvatarRepository,
+  CreditRepository,
   MemberRepository,
   TransactionRepository,
   WalletRepository,
@@ -26,6 +27,7 @@ describe('MemberService', () => {
     email: 'foo@foo.com',
   };
   let avatarRepository: jest.Mocked<AvatarRepository>;
+  let creditRepository: jest.Mocked<CreditRepository>;
   let memberRepository: jest.Mocked<MemberRepository>;
   let transactionRepository: jest.Mocked<TransactionRepository>;
   let walletRepository: jest.Mocked<WalletRepository>;
@@ -34,6 +36,8 @@ describe('MemberService', () => {
   beforeEach(() => {
     avatarRepository = createSpyObj(AvatarRepository);
     avatarRepository.find.mockResolvedValue(fakeAvatar as Avatar);
+    creditRepository = createSpyObj(CreditRepository);
+    creditRepository.giveDailyCredit.mockResolvedValue({ credited: true });
     memberRepository = createSpyObj(MemberRepository);
     memberRepository.create.mockResolvedValue(fakeMember.id);
     memberRepository.find.mockResolvedValue(fakeMember as Member);
@@ -42,6 +46,7 @@ describe('MemberService', () => {
     walletRepository = createSpyObj(WalletRepository);
     Container.reset();
     Container.set(AvatarRepository, avatarRepository);
+    Container.set(CreditRepository, creditRepository);
     Container.set(MemberRepository, memberRepository);
     Container.set(TransactionRepository, transactionRepository);
     Container.set(WalletRepository, walletRepository);
@@ -140,17 +145,28 @@ describe('MemberService', () => {
       beforeEach(async () => {
         await service.login(fakeMember.username, fakeMember.password);
       });
-      it('gives daily xp to the member', () => {
-        expect(memberRepository.update).toHaveBeenCalledWith(
-          fakeMember.id,
-          expect.objectContaining({ xp: expect.any(Number) }),
-        );
+      it('gives the member their daily citycash and xp', () => {
+        expect(creditRepository.giveDailyCredit).toHaveBeenCalledWith(fakeMember.id, {
+          unemployed: {
+            cc: MemberService.DAILY_CC_AMOUNT,
+            xp: MemberService.DAILY_XP_AMOUNT,
+          },
+          employed: {
+            cc: MemberService.DAILY_CC_EMPLOYED_AMOUNT,
+            xp: MemberService.DAILY_XP_EMPLOYED_AMOUNT,
+          },
+        });
       });
-      it('updates the timestamp of when the user last received login credit', () => {
-        expect(memberRepository.update).toHaveBeenCalledWith(
-          fakeMember.id,
-          expect.objectContaining({ last_daily_login_credit: expect.any(Date) }),
-        );
+    });
+    describe('when the daily credit cannot be given', () => {
+      // Refusing someone their account over a missed bonus would be the worse outcome,
+      // and the payout is all-or-nothing, so there is no partial credit to undo.
+      beforeEach(() => {
+        creditRepository.giveDailyCredit.mockRejectedValue(new Error('database is down'));
+      });
+      it('still logs the member in', async () => {
+        const token = await service.login(fakeMember.username, fakeMember.password);
+        expect(token).toBe(await service.getMemberToken(fakeMember.id));
       });
     });
   });

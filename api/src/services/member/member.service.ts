@@ -7,6 +7,8 @@ import { Service } from 'typedi';
 import {
   AvatarRepository,
   BanRepository,
+  CreditRepository,
+  hasReceivedDailyCreditToday,
   MapLocationRepository,
   MemberRepository,
   PlaceRepository,
@@ -17,10 +19,77 @@ import {
   ObjectInstanceRepository,
   VoteRepository,
 } from '../../repositories';
-import { Member } from '../../types/models';
+import { Member, ObjectInstance, Place } from '../../types/models';
 import { MemberInfoView, MemberAdminView } from '../../types/views';
 import { SessionInfo } from 'session-info.interface';
 import { Request, Response } from 'express';
+
+/** A role a member holds, as the member views list it. */
+interface MemberRoleSummary {
+  id: number;
+  place_id: number;
+  name: string;
+  place: string;
+}
+
+/** Whether a member is banned, and the ban that says so. */
+interface BanStatus {
+  banned: boolean;
+  banInfo?: { end_date?: string; reason?: string };
+}
+
+/** A place with people in it right now, decorated with its name and headcount. */
+interface ActivePlaceSummary {
+  place_id: number;
+  name?: string;
+  slug?: string;
+  type?: number;
+  username?: string;
+  count?: number;
+}
+
+/**
+ * A member who has been active recently, plus the two fields the member controller
+ * resolves onto each row after this returns. Optional because the service never sets
+ * them itself.
+ */
+interface OnlineMember {
+  id: number;
+  username: string;
+  hasHome?: boolean;
+  security?: boolean;
+}
+
+/** A storage unit belonging to a member, with the number of objects it holds. */
+interface StorageUnitSummary {
+  id: number;
+  count?: number;
+}
+
+/**
+ * A member identified from their wallet, as `findByWalletId` actually returns them.
+ *
+ * The query behind it selects `username` alone, so a full `Member` is not available
+ * here however much the name suggests otherwise.
+ */
+interface WalletMemberSummary {
+  username: string;
+}
+
+/**
+ * The value `MemberService.getAccessLevel()` resolves to.
+ *
+ * At runtime this is always a `string[]` of the access tags the member holds
+ * ('admin', 'security', 'leader'). The `'admin'` and `'security'` scalar members
+ * exist purely for compatibility: some legacy callers still compare the whole
+ * return value to a bare string (`accessLevel === 'admin'` in
+ * admin.controller.ts, `accessLevel === 'security'` in member.controller.ts)
+ * instead of testing membership. Those comparisons are an existing authority
+ * bug: they can never be true against the array this method actually returns.
+ * Repairing them changes who can reach admin functionality, so it is
+ * deliberately out of scope here and is tracked as separate authority work.
+ */
+type LegacyAccessLevel = string[] | 'admin' | 'security';
 
 /** Service for dealing with members */
 @Service()
@@ -42,6 +111,7 @@ export class MemberService {
     private avatarRepository: AvatarRepository,
     private banRepository: BanRepository,
     private memberRepository: MemberRepository,
+    private creditRepository: CreditRepository,
     private transactionRepository: TransactionRepository,
     private walletRepository: WalletRepository,
     private placeRepository: PlaceRepository,
@@ -101,7 +171,7 @@ export class MemberService {
     });
   }
 
-  public async getAccessLevel(memberId: number): Promise<any> {
+  public async getAccessLevel(memberId: number): Promise<LegacyAccessLevel> {
     const security = await this.canAdmin(memberId);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     const leader = await this.canLeader(memberId);
@@ -141,7 +211,7 @@ export class MemberService {
       username,
       password: hashedPassword,
     });
-    await this.maybeGiveDailyCredits(memberId);
+    await this.giveDailyCreditsForLogin(memberId);
     return this.getMemberToken(memberId);
   }
 
@@ -301,7 +371,7 @@ export class MemberService {
     return this.memberRepository.getPrimaryRoleName(memberId);
   }
 
-  public async getRoles(memberId: number): Promise<any> {
+  public async getRoles(memberId: number): Promise<MemberRoleSummary[]> {
     const roles = await this.roleAssignmentRepository.getRoleNameAndIdByMemberId(memberId);
     return roles;
   }
@@ -313,8 +383,7 @@ export class MemberService {
    * @returns `true` if the member has received their daily login bonus today, `false` otherwise
    */
   public hasReceivedLoginCreditToday(member: Member): boolean {
-    const today = new Date().setHours(0, 0, 0, 0);
-    return member.last_daily_login_credit.getTime() >= today;
+    return hasReceivedDailyCreditToday(member.last_daily_login_credit);
   }
 
   /**
@@ -332,7 +401,7 @@ export class MemberService {
    * @param memberId
    * @return banned boolean true if banned
    */
-  public async isBanned(memberId: number): Promise<any> {
+  public async isBanned(memberId: number): Promise<BanStatus> {
     let banned = false;
     const member = await this.memberRepository.findById(memberId);
     const banInfo = await this.banRepository.getBanMaxDate(memberId);
@@ -360,33 +429,51 @@ export class MemberService {
     const validPassword = await bcrypt.compare(password, member.password);
     if (!validPassword) throw new Error('Incorrect login details.');
     if (member.status === 0) throw new Error('banned');
-    this.maybeGiveDailyCredits(member.id);
+    await this.giveDailyCreditsForLogin(member.id);
     return this.encodeMemberToken(member);
   }
 
   /**
    * Distributes daily credits (citycash, xp) to the member with the given id if they haven't
    * already received any today.
+   *
+   * Eligibility is rechecked inside the transaction that pays, so calling this twice at
+   * once credits once. Rejects if the credit could not be applied - in which case nothing
+   * was applied, not even partly. Callers that are logging someone in should treat that
+   * rejection as a lost bonus, not as a failed login.
    * @param memberId id of member to receive daily credits
    * @returns promise resolving when complete, rejecting on error
    */
   public async maybeGiveDailyCredits(memberId: number): Promise<void> {
-    const member = await this.memberRepository.findById(memberId);
-    if (!this.hasReceivedLoginCreditToday(member)) {
-      let ccIncrease = MemberService.DAILY_CC_AMOUNT;
-      let xpIncrease = MemberService.DAILY_XP_AMOUNT;
+    await this.creditRepository.giveDailyCredit(memberId, {
+      unemployed: {
+        cc: MemberService.DAILY_CC_AMOUNT,
+        xp: MemberService.DAILY_XP_AMOUNT,
+      },
+      employed: {
+        cc: MemberService.DAILY_CC_EMPLOYED_AMOUNT,
+        xp: MemberService.DAILY_XP_EMPLOYED_AMOUNT,
+      },
+    });
+  }
 
-      const roles = await this.roleAssignmentRepository.getByMemberId(memberId);
-      if (roles.length > 0) {
-        ccIncrease = MemberService.DAILY_CC_EMPLOYED_AMOUNT;
-        xpIncrease = MemberService.DAILY_XP_EMPLOYED_AMOUNT;
-      }
-
-      await this.transactionRepository.createDailyCreditTransaction(member.wallet_id, ccIncrease);
-      await this.memberRepository.update(memberId, {
-        last_daily_login_credit: new Date(),
-        xp: member.xp + xpIncrease,
-      });
+  /**
+   * Gives daily credits as part of logging someone in, and swallows the failure if it
+   * cannot.
+   *
+   * Awaited, so the credit has landed before the caller gets a token: unawaited, the
+   * caller could read its own balance and not see it yet, and nothing kept the process
+   * interested in a write that outlived the response. Caught, because refusing someone
+   * their account over a missed bonus is the worse outcome of the two - and the payout is
+   * all-or-nothing, so a failure here leaves no half-applied credit to clean up.
+   * @param memberId id of member being logged in
+   * @returns promise resolving when the credit has been applied, or has failed
+   */
+  public async giveDailyCreditsForLogin(memberId: number): Promise<void> {
+    try {
+      await this.maybeGiveDailyCredits(memberId);
+    } catch (error) {
+      console.error(`Failed to give daily credits to member ${memberId}:`, error);
     }
   }
 
@@ -514,7 +601,7 @@ export class MemberService {
     });
   }
 
-  public async getActivePlaces(): Promise<any> {
+  public async getActivePlaces(): Promise<ActivePlaceSummary[]> {
     const returnPlaces = [];
     const placeIds = [];
     const activeTime = new Date(Date.now() - 5 * 60000);
@@ -575,13 +662,13 @@ export class MemberService {
     }
   }
 
-  public async getOnlineUsers(): Promise<any> {
+  public async getOnlineUsers(): Promise<OnlineMember[]> {
     const activeTime = new Date(Date.now() - 5 * 60000);
     const users = await this.memberRepository.findOnlineUsers(activeTime);
     return users;
   }
 
-  public async getBackpack(username: string): Promise<any> {
+  public async getBackpack(username: string): Promise<ObjectInstance[]> {
     let memberId = null;
     let userId = null;
     try {
@@ -595,7 +682,7 @@ export class MemberService {
     }
   }
 
-  public async getStorage(memberId: number): Promise<any> {
+  public async getStorage(memberId: number): Promise<StorageUnitSummary[]> {
     const units = [];
     const unit = await this.placeRepository.findStorageByUserID(memberId);
     for (const storage of unit) {
@@ -606,17 +693,19 @@ export class MemberService {
     return units;
   }
 
-  public async getStorageById(placeId: number): Promise<any> {
+  public async getStorageById(placeId: number): Promise<Place> {
     const unit = await this.placeRepository.findById(placeId);
     return unit;
   }
 
-  public async getMemberByWalletId(walletId: number): Promise<any> {
+  public async getMemberByWalletId(
+    walletId: number,
+  ): Promise<WalletMemberSummary[]> {
     const user = await this.memberRepository.findByWalletId(walletId);
     return user;
   }
 
-  public async removeAccount(id: number): Promise<any> {
+  public async removeAccount(id: number): Promise<void> {
     const user = await this.memberRepository.findById(id);
     await this.roleAssignmentRepository.removeAllByUserId(id);
     await this.banRepository.removeAllByUserId(id);
