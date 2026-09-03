@@ -6,11 +6,13 @@ import { MemberService } from './member.service';
 import {
   Avatar,
   Member,
+  RoleAssignment,
 } from 'models';
 import {
   AvatarRepository,
   MemberRepository,
   RoleAssignmentRepository,
+  RoleRepository,
   TransactionRepository,
   WalletRepository,
 } from '../../repositories';
@@ -42,12 +44,15 @@ describe('MemberService', () => {
     memberRepository.findById.mockResolvedValue(fakeMember as Member);
     roleAssignmentRepository = createSpyObj(RoleAssignmentRepository);
     roleAssignmentRepository.getByMemberId.mockResolvedValue([]);
+    const roleRepository = createSpyObj(RoleRepository);
+    roleRepository.roleMap = {};
     transactionRepository = createSpyObj(TransactionRepository);
     walletRepository = createSpyObj(WalletRepository);
     Container.reset();
     Container.set(AvatarRepository, avatarRepository);
     Container.set(MemberRepository, memberRepository);
     Container.set(RoleAssignmentRepository, roleAssignmentRepository);
+    Container.set(RoleRepository, roleRepository);
     Container.set(TransactionRepository, transactionRepository);
     Container.set(WalletRepository, walletRepository);
     service = Container.get(MemberService);
@@ -163,11 +168,19 @@ describe('MemberService', () => {
   describe('updatePrimaryRoleId', () => {
     const HELD_ROLE = 7;
     const UNHELD_ROLE = 99;
+    const assignmentFor = (roleId: number): RoleAssignment => ({
+      id: 1,
+      member_id: fakeMember.id,
+      role_id: roleId,
+      place_id: 1,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
 
     describe('when the member holds the role', () => {
       it('saves it as their primary role', async () => {
         roleAssignmentRepository.getByMemberId.mockResolvedValue(
-          [{ member_id: fakeMember.id, role_id: HELD_ROLE, place_id: 1 }] as any,
+          [assignmentFor(HELD_ROLE)],
         );
         await service.updatePrimaryRoleId(fakeMember.id, HELD_ROLE);
         expect(memberRepository.update).toHaveBeenCalledWith(
@@ -180,7 +193,7 @@ describe('MemberService', () => {
     describe('when the member does not hold the role', () => {
       beforeEach(() => {
         roleAssignmentRepository.getByMemberId.mockResolvedValue(
-          [{ member_id: fakeMember.id, role_id: HELD_ROLE, place_id: 1 }] as any,
+          [assignmentFor(HELD_ROLE)],
         );
       });
       it('rejects', async () => {
@@ -202,6 +215,21 @@ describe('MemberService', () => {
           { primary_role_id: null },
         );
         expect(roleAssignmentRepository.getByMemberId).not.toHaveBeenCalled();
+      });
+    });
+
+    describe.each([
+      ['undefined', undefined],
+      ['a numeric string', String(HELD_ROLE)],
+      ['a fraction', 1.5],
+      ['zero', 0],
+      ['a negative integer', -1],
+    ])('when given %s', (_description, invalidRoleId) => {
+      it('rejects without consulting assignments or updating the member', async () => {
+        await expect(service.updatePrimaryRoleId(fakeMember.id, invalidRoleId))
+          .rejects.toThrow('primary role id must be a positive integer or null');
+        expect(roleAssignmentRepository.getByMemberId).not.toHaveBeenCalled();
+        expect(memberRepository.update).not.toHaveBeenCalled();
       });
     });
   });

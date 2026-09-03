@@ -427,14 +427,25 @@ export class MemberService {
    *
    * A null id clears the selection, which is legitimate.
    */
-  public async updatePrimaryRoleId(memberId: number, primaryRoleId: number): Promise<void> {
-    if (primaryRoleId === null || primaryRoleId === undefined) {
+  public async updatePrimaryRoleId(
+    memberId: number,
+    primaryRoleId: unknown,
+  ): Promise<void> {
+    if (primaryRoleId === null) {
       await this.memberRepository.update(memberId, { primary_role_id: null });
       return;
     }
+
+    if (
+      typeof primaryRoleId !== 'number'
+      || !Number.isSafeInteger(primaryRoleId)
+      || primaryRoleId <= 0
+    ) {
+      throw new Error('primary role id must be a positive integer or null');
+    }
+
     const assignments = await this.roleAssignmentRepository.getByMemberId(memberId);
-    const holdsRole = assignments
-      .some(assignment => Number(assignment.role_id) === Number(primaryRoleId));
+    const holdsRole = assignments.some(assignment => assignment.role_id === primaryRoleId);
     if (!holdsRole) {
       throw new Error(
         'member does not hold that role; refusing to display it',
