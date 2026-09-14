@@ -30,11 +30,15 @@
     <div v-if="$store.data.place.slug === 'mall'">
       <button class="btn-ui" v-on:click="opener('#/mall/catalog')">Mall Catalog</button>
       <br />
-      <router-link 
+      <router-link
       :to="{ name: 'mall-upload' }"
       class="btn-ui">Upload</router-link>
       <button class="btn-ui" v-on:click="opener('#/creator/stocked')">My Uploads</button>
       <br />
+      <router-link v-if="isMallStaff"
+                   :to="{ name: 'MallPending' }"
+                   class="btn-ui">Mall Check</router-link>
+      <br v-if="isMallStaff" />
     </div>
     <div v-if="canAdmin">
       <span v-if="this.$store.data.place.type === 'colony'">
@@ -64,13 +68,32 @@ export default Vue.extend({
       adminCheck: false,
       loaded: false,
       canAdmin: false,
+      isMallStaff: false,
       data: null,
       mallId: null,
     };
   },
   methods: {
     async getMallId(){
-      this.mallId = await this.$http.get('/place/mall');
+      this.mallId = await this.$http.get("/place/mall");
+    },
+    /**
+     * Server-authoritative, mirroring the check the Mall staff pages themselves
+     * gate on (`/mall/can_admin`). This is deliberately a different, narrower
+     * check than the generic shop `checkAdmin()` above -- it answers "is this
+     * member Mall staff", not "can this member administer this specific shop".
+     */
+    async checkMallStaff() {
+      if (this.$store.data.place.slug !== "mall") {
+        this.isMallStaff = false;
+        return;
+      }
+      try {
+        await this.$http.get("/mall/can_admin");
+        this.isMallStaff = true;
+      } catch (error) {
+        this.isMallStaff = false;
+      }
     },
     async checkAdmin() {
       let endpoint;
@@ -98,12 +121,14 @@ export default Vue.extend({
   },
   mounted() {
     this.checkAdmin();
+    this.checkMallStaff();
     this.getMallId();
   },
   watch: {
-    async $route(to, from) {
+    async $route() {
       console.log("Place Change");
       await this.checkAdmin();
+      await this.checkMallStaff();
       this.loaded = true;
     },
   },

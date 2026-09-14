@@ -17,7 +17,34 @@ import {
   ObjectInstanceRepository,
   VoteRepository,
 } from '../../repositories';
-import { Member } from '../../types/models';
+import { Member, Place } from '../../types/models';
+import {
+  ActivePlaceRow,
+  OnlineUserRow,
+} from '../../repositories/member/member.repository';
+import { BackpackRow } from '../../repositories/object-instance/object-instance.repository';
+import {
+  RoleNameAndId,
+  RoleNameRow,
+} from '../../repositories/role-assignment/role-assignment.repository';
+
+/** The active ban row `BanRepository.getBanMaxDate` returns, if there is one. */
+interface BanRow {
+  end_date: Date;
+  reason: string;
+  type: number;
+}
+
+/** Whether a member is banned, and the ban that says so. */
+interface BanStatus {
+  banned: boolean;
+  banInfo: BanRow | undefined;
+}
+
+/** A storage place with the number of objects it holds. */
+interface StorageUnit extends Place {
+  count?: number;
+}
 import { MemberInfoView, MemberAdminView } from '../../types/views';
 import { SessionInfo } from 'session-info.interface';
 import { Request, Response } from 'express';
@@ -101,7 +128,7 @@ export class MemberService {
     });
   }
 
-  public async getAccessLevel(memberId: number): Promise<any> {
+  public async getAccessLevel(memberId: number): Promise<string[]> {
     const security = await this.canAdmin(memberId);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     const leader = await this.canLeader(memberId);
@@ -203,7 +230,7 @@ export class MemberService {
     return this.memberRepository.findByPasswordResetToken(resetToken);
   }
 
-  public async getDonorLevel(memberId: number): Promise<string> {
+  public async getDonorLevel(memberId: number): Promise<RoleNameRow | undefined> {
     const donorId = {
       supporter: await this.roleRepository.roleMap.Supporter,
       advocate: await this.roleRepository.roleMap.Advocate,
@@ -315,7 +342,7 @@ export class MemberService {
     return this.memberRepository.getPrimaryRoleName(memberId);
   }
 
-  public async getRoles(memberId: number): Promise<any> {
+  public async getRoles(memberId: number): Promise<RoleNameAndId[]> {
     const roles = await this.roleAssignmentRepository.getRoleNameAndIdByMemberId(memberId);
     return roles;
   }
@@ -346,7 +373,7 @@ export class MemberService {
    * @param memberId
    * @return banned boolean true if banned
    */
-  public async isBanned(memberId: number): Promise<any> {
+  public async isBanned(memberId: number): Promise<BanStatus> {
     let banned = false;
     const member = await this.memberRepository.findById(memberId);
     const banInfo = await this.banRepository.getBanMaxDate(memberId);
@@ -543,12 +570,16 @@ export class MemberService {
     await this.transactionRepository.createHomeRefundTransaction(member.wallet_id, amount);
   }
 
-  public async getMemberId(username: string): Promise<number> {
+  /**
+   * Rows, not an id, despite the name. Every caller already reads `[0].id`; the
+   * previous `Promise<number>` annotation was never what this returned.
+   */
+  public async getMemberId(username: string): Promise<Pick<Member, 'id'>[]> {
     const userId = await this.memberRepository.findIdByUsername(username);
     return userId;
   }
 
-  public async check3d(username: string): Promise<void> {
+  public async check3d(username: string): Promise<Pick<Member, 'is_3d'>[]> {
     const user = await this.memberRepository.check3d(username);
     return user;
   }
@@ -560,7 +591,7 @@ export class MemberService {
     });
   }
 
-  public async getActivePlaces(): Promise<any> {
+  public async getActivePlaces(): Promise<ActivePlaceRow[]> {
     const returnPlaces = [];
     const placeIds = [];
     const activeTime = new Date(Date.now() - 5 * 60000);
@@ -621,13 +652,13 @@ export class MemberService {
     }
   }
 
-  public async getOnlineUsers(): Promise<any> {
+  public async getOnlineUsers(): Promise<OnlineUserRow[]> {
     const activeTime = new Date(Date.now() - 5 * 60000);
     const users = await this.memberRepository.findOnlineUsers(activeTime);
     return users;
   }
 
-  public async getBackpack(username: string): Promise<any> {
+  public async getBackpack(username: string): Promise<BackpackRow[] | undefined> {
     let memberId = null;
     let userId = null;
     try {
@@ -641,7 +672,7 @@ export class MemberService {
     }
   }
 
-  public async getStorage(memberId: number): Promise<any> {
+  public async getStorage(memberId: number): Promise<StorageUnit[]> {
     const units = [];
     const unit = await this.placeRepository.findStorageByUserID(memberId);
     for (const storage of unit) {
@@ -652,17 +683,17 @@ export class MemberService {
     return units;
   }
 
-  public async getStorageById(placeId: number): Promise<any> {
+  public async getStorageById(placeId: number): Promise<Place> {
     const unit = await this.placeRepository.findById(placeId);
     return unit;
   }
 
-  public async getMemberByWalletId(walletId: number): Promise<any> {
+  public async getMemberByWalletId(walletId: number): Promise<Pick<Member, 'username'>[]> {
     const user = await this.memberRepository.findByWalletId(walletId);
     return user;
   }
 
-  public async removeAccount(id: number): Promise<any> {
+  public async removeAccount(id: number): Promise<void> {
     const user = await this.memberRepository.findById(id);
     await this.roleAssignmentRepository.removeAllByUserId(id);
     await this.banRepository.removeAllByUserId(id);

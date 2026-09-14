@@ -1,7 +1,18 @@
+import { Knex } from 'knex';
 import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
-import { Transaction, TransactionReason, Wallet } from '../../types/models';
+import { CountRow } from '../row.types';
+import { Member, Transaction, TransactionReason, Wallet } from '../../types/models';
+
+/**
+ * A transaction row as the admin pages consume it: the stored columns plus the
+ * usernames `AdminService` resolves onto them after the query.
+ */
+export interface TransactionRow extends Transaction {
+  recipient_username?: Pick<Member, 'username'>[];
+  sender_username?: Pick<Member, 'username'>[];
+}
 
 /** Repository for creating/interacting with transaction/wallet data in the database. */
 @Service()
@@ -161,22 +172,64 @@ export class TransactionRepository {
     });
   }
 
+  /**
+   * Credits a wallet and records the matching ledger row.
+   *
+   * Split out so a caller that is already inside a transaction can have the
+   * credit and the row commit together with its own writes, rather than
+   * committing separately and leaving a window where one landed and the other
+   * did not.
+   */
+  private async creditWallet(
+    trx: Knex.Transaction,
+    walletId: number,
+    amount: number,
+    reason: TransactionReason,
+  ): Promise<Transaction> {
+    // `balance = balance + ?` in SQL, not read-then-write in JavaScript. The
+    // object-row lock only serialises rejections of the same object; two
+    // different objects belonging to one uploader can be rejected at the same
+    // moment, and a read-modify-write would let both transactions read the same
+    // balance so the second overwrites the first -- losing a refund the ledger
+    // still says was paid.
+    const credited = await trx<Wallet>('wallet')
+      .where({ id: walletId })
+      .increment('balance', amount);
+    if (!credited) {
+      // No such wallet. Raised rather than ignored: the caller is mid-refund and
+      // must not commit a ledger row for money that was never credited.
+      throw new Error(`Cannot credit unknown wallet ${walletId}`);
+    }
+    const [transactionId] = await trx<Transaction>('transaction').insert({
+      amount,
+      reason,
+      recipient_wallet_id: walletId,
+    });
+    // Read back through the same `trx`, not `this.find()` -- that queries
+    // through the pool's own connection, which cannot see this row until the
+    // transaction commits, and holds the transaction open waiting on a second
+    // pool connection. Concurrent refunds could then contend the pool itself.
+    const [transaction] = await trx<Transaction>('transaction').where({ id: transactionId });
+    return transaction;
+  }
+
+  /**
+   * Refunds an upload fee.
+   *
+   * Joins the caller's transaction when one is supplied - the Mall rejection
+   * needs the refund and the object's status change to be the same commit - and
+   * otherwise opens its own, which is what every existing caller gets.
+   */
   public async createObjectUploadRefundTransaction(
     walletId: number,
     amount: number,
+    trx?: Knex.Transaction,
   ): Promise<Transaction> {
-    return await this.db.knex.transaction(async trx => {
-      const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
-      await trx<Wallet>('wallet')
-        .where({ id: walletId })
-        .update({ balance: wallet.balance + amount });
-      const [transactionId] = await trx<Transaction>('transaction').insert({
-        amount,
-        reason: TransactionReason.ObjectUploadRefund,
-        recipient_wallet_id: walletId,
-      });
-      return this.find({ id: transactionId });
-    });
+    if (trx) {
+      return this.creditWallet(trx, walletId, amount, TransactionReason.ObjectUploadRefund);
+    }
+    return await this.db.knex.transaction(async ownTrx =>
+      this.creditWallet(ownTrx, walletId, amount, TransactionReason.ObjectUploadRefund));
   }
 
   public async createUnsoldObjectRefundTransaction(
@@ -257,7 +310,11 @@ export class TransactionRepository {
     });
   }
 
-  public async getTransactions(type: string, limit: number, offset: number): Promise<any> {
+  public async getTransactions(
+    type: string,
+    limit: number,
+    offset: number,
+  ): Promise<TransactionRow[]> {
     return this.db.knex
       .select(
         'id',
@@ -272,10 +329,13 @@ export class TransactionRepository {
       .limit(limit)
       .offset(offset)
       .orderBy('id', 'DESC');
-    ;
   }
 
-  public async getTransactionsByWalletId(id: number, limit: number, offset: number): Promise<any> {
+  public async getTransactionsByWalletId(
+    id: number,
+    limit: number,
+    offset: number,
+  ): Promise<TransactionRow[]> {
     return this.db.knex
       .select(
         'id',
@@ -291,35 +351,33 @@ export class TransactionRepository {
       .limit(limit)
       .offset(offset)
       .orderBy('id', 'DESC');
-    ;
   }
 
-  public async getLatestTransactions(time: Date): Promise<any> {
+  public async getLatestTransactions(time: Date): Promise<TransactionRow[]> {
     return this.db.knex
       .select('transaction.*')
       .from('transaction')
       .where('created_at', '>=', time)
       .limit(30)
       .orderBy('transaction.id', 'DESC');
-    ;
   }
 
-  public async getTotal( type: string): Promise<any> {
+  public async getTotal( type: string): Promise<CountRow[]> {
     return this.db.knex
-      .count('id as count')
+      .count<CountRow[]>('id as count')
       .from('transaction')
       .where('reason', type);
   }
 
-  public async getWalletTotal( id: number): Promise<any> {
+  public async getWalletTotal( id: number): Promise<CountRow[]> {
     return this.db.knex
-      .count('id as count')
+      .count<CountRow[]>('id as count')
       .from('transaction')
       .where('recipient_wallet_id', id)
       .orWhere('sender_wallet_id', id);
   }
 
-  public async removeAllByWalletId(id: number): Promise<any> {
+  public async removeAllByWalletId(id: number): Promise<void> {
     await this.db.knex('transaction')
       .where('recipient_wallet_id', id)
       .orWhere('sender_wallet_id', id)

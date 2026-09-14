@@ -1,15 +1,62 @@
 import { Service } from 'typedi';
 
 import { Db } from '../../db/db.class';
-import { knex } from 'knex';
+import { CountRow } from '../row.types';
 import { RoleAssignment } from '../../types/models';
 
 /** Repository for fetching/interacting with role assignment data in the database. */
+/**
+ * The four donor role ids, plus the level being granted.
+ *
+ * `AdminService.addDonor` resolves these from the role map before calling, so
+ * the repository is handed ids rather than names.
+ */
+export interface DonorRoleIds {
+  supporter: number;
+  advocate: number;
+  devotee: number;
+  champion: number;
+  donorLevel?: number;
+}
+
+/** A username from a place's role assignments. */
+interface PlaceUsernameRow {
+  username: string;
+}
+
+/** A member id from a place's role assignments. */
+interface PlaceMemberRow {
+  member_id: number;
+}
+
+/** A member due their weekly role pay, with the role that pays best. */
+export interface RoleCreditRow {
+  member_id: number;
+  role_id: number;
+  wallet_id: number;
+  xp: number;
+  income_cc: number;
+  income_xp: number;
+}
+
+/** The one column `getDonor` selects: a role's name, or no row at all. */
+export interface RoleNameRow {
+  name: string;
+}
+
+/** A role assignment flattened for display: the role, and where it applies. */
+export interface RoleNameAndId {
+  id: number;
+  place_id: number | null;
+  name: string;
+  place: string | null;
+}
+
 @Service()
 export class RoleAssignmentRepository {
   constructor(private db: Db) {}
   
-  public async addDonor(member_id: number, roleId: any): Promise<void> {
+  public async addDonor(member_id: number, roleId: DonorRoleIds): Promise<void> {
     try{
       await this.db.knex('role_assignment')
         .where('member_id', member_id)
@@ -34,7 +81,7 @@ export class RoleAssignmentRepository {
     placeId: number,
     memberId: number,
     roleId: number,
-  ): Promise<any> {
+  ): Promise<number[]> {
     return this.db.knex('role_assignment')
       .insert(
         {
@@ -48,15 +95,15 @@ export class RoleAssignmentRepository {
   public async getAccessInfoByID(
     placeId,
     ownerCode,
-    deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
-    const owner: any[] = await this.db.knex
+    deputyCode): Promise<{ owner: PlaceMemberRow[]; deputies: PlaceMemberRow[] }> {
+    const owner: PlaceMemberRow[] = await this.db.knex
       .select(
         'member_id',
       )
       .from('role_assignment')
       .where('place_id', placeId)
       .where('role_id', ownerCode);
-    const deputies: any[] = await this.db.knex
+    const deputies: PlaceMemberRow[] = await this.db.knex
       .select(
         'member_id',
       )
@@ -69,8 +116,8 @@ export class RoleAssignmentRepository {
   public async getAccessInfoByUsername(
     placeId,
     ownerCode,
-    deputyCode): Promise<{ owner: any[]; deputies: any[] }> {
-    const owner: any[] = await this.db.knex
+    deputyCode): Promise<{ owner: PlaceUsernameRow[]; deputies: PlaceUsernameRow[] }> {
+    const owner: PlaceUsernameRow[] = await this.db.knex
       .select(
         'member.username',
       )
@@ -78,7 +125,7 @@ export class RoleAssignmentRepository {
       .where('role_assignment.place_id', placeId)
       .where('role_assignment.role_id', ownerCode)
       .innerJoin('member', 'role_assignment.member_id', 'member.id');
-    const deputies: any[] = await this.db.knex
+    const deputies: PlaceUsernameRow[] = await this.db.knex
       .select(
         'member.username',
       )
@@ -94,26 +141,26 @@ export class RoleAssignmentRepository {
     return roleResults;
   }
 
-  public async removeRoleAssignment(id: number): Promise<any> {
+  public async removeRoleAssignment(id: number): Promise<void> {
     await this.db.knex('role_assignment')
       .where('place_id', id)
       .del();
   }
 
-  public async removeAllByUserId(id: number): Promise<any> {
+  public async removeAllByUserId(id: number): Promise<void> {
     await this.db.knex('role_assignment')
       .where('member_id', id)
       .del();
   }
 
-  public async getUsernamesByRoleId(roleId: number): Promise<any> {
+  public async getUsernamesByRoleId(roleId: number): Promise<{ username: string }[]> {
     return this.db.knex('role_assignment')
       .select('member.username')
       .where('role_assignment.role_id', '=', roleId)
       .leftJoin('member', 'role_assignment.member_id', 'member.id');
   }
 
-  public async getLatest(): Promise<any> {
+  public async getLatest(): Promise<{ username: string; roleName: string }[]> {
     return this.db.knex('role_assignment')
       .select('member.username', 'role.name as roleName')
       .leftJoin('member', 'role_assignment.member_id', 'member.id')
@@ -122,7 +169,7 @@ export class RoleAssignmentRepository {
       .orderBy('role_assignment.id', 'desc');
   }
   
-  public async getDonor(memberId: number, roleId: any): Promise<string> {
+  public async getDonor(memberId: number, roleId: DonorRoleIds): Promise<RoleNameRow | undefined> {
     return this.db.knex
       .select('role.name')
       .from('role_assignment')
@@ -138,7 +185,7 @@ export class RoleAssignmentRepository {
       .first();
   }
   
-  public async getRoleNameAndIdByMemberId(memberId: number): Promise<any> {
+  public async getRoleNameAndIdByMemberId(memberId: number): Promise<RoleNameAndId[]> {
     return this.db.knex
       .distinct(
         'role_assignment.role_id as id',
@@ -160,7 +207,7 @@ export class RoleAssignmentRepository {
    * @param limit
    * @returns list of users with jobs that earned pay
    */
-  public async getMembersDueRoleCredit(limit: number): Promise<any> {
+  public async getMembersDueRoleCredit(limit: number): Promise<RoleCreditRow[]> {
     const query = await this.db.knex
       .select(
         'member.id',
@@ -207,7 +254,7 @@ export class RoleAssignmentRepository {
     placeId: number,
     memberId: number,
     roleId: number,
-  ): Promise<any> {
+  ): Promise<number> {
     return await this.db.knex('role_assignment')
       .where('place_id', placeId)
       .where('member_id', memberId)
@@ -215,9 +262,9 @@ export class RoleAssignmentRepository {
       .del();
   }
 
-  public async countByAssigned(id: number): Promise<any> {
+  public async countByAssigned(id: number): Promise<CountRow[]> {
     return this.db.knex('role_assignment')
-      .count('id as count')
+      .count<CountRow[]>('id as count')
       .where('role_id', id);
   }
 }

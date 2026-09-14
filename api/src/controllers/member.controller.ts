@@ -7,7 +7,6 @@ import * as badwords from 'badwords-list';
 
 import { sendPasswordResetEmail, sendPasswordResetUnknownEmail } from '../libs';
 import { MemberService, HomeService, PlaceService } from '../services';
-import { SessionInfo } from 'session-info.interface';
 import {parseInt} from 'lodash';
 
 class MemberController {
@@ -98,7 +97,7 @@ class MemberController {
     }
   }
 
-  public async check3d(request: Request, response: Response): Promise<any> {
+  public async check3d(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;
     try {
@@ -110,7 +109,7 @@ class MemberController {
     }
   }
 
-  public async getActivePlaces(request: Request, response: Response): Promise<any> {
+  public async getActivePlaces(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;
     try {
@@ -462,7 +461,7 @@ class MemberController {
     }
   }
 
-  public async getOnlineUsers(request: Request, response: Response): Promise<any> {
+  public async getOnlineUsers(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     try {
@@ -476,7 +475,12 @@ class MemberController {
         } else {
           user.hasHome = false;
         }
-        if(accessLevel && accessLevel === 'security'){
+        // Pre-existing: `getAccessLevel` returns a list of levels, so this
+        // comparison has never been true and this branch has never run.
+        // Deliberately left inert -- turning it into `.includes(...)` would
+        // newly enable an access-gated path, which is not a change to make
+        // while fixing types. Raised separately for a decision.
+        if(accessLevel && (accessLevel as unknown as string) === 'security'){
           user.security = true;
         } else {
           user.security = false;
@@ -491,7 +495,7 @@ class MemberController {
     }
   }
 
-  public async getStorage(request: Request, response: Response): Promise<any> {
+  public async getStorage(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const member_id = parseInt(request.body.member_id);
@@ -504,7 +508,7 @@ class MemberController {
     }
   }
 
-  public async updateStorage(request: Request, response: Response): Promise<any> {
+  public async updateStorage(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;
     try {
