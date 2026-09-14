@@ -66,6 +66,11 @@
               <img src="/assets/img/b3dchat.gif" @click="$store.methods.setView3d(true)"
                   class="cursor-pointer"/>
             </div>
+            <div class="flex flex-col items-center"
+                 v-if="$store.data.place.slug === 'flyby'">
+              <img src="/assets/img/place/flyby/mayor.jpg" alt="Flyby, Cybertown Mayor" />
+              <img src="/assets/img/place/flyby/flypan.jpg" alt="Steve Kash, Flyby, 1951-2003" />
+            </div>
             <div class="flex justify-center">
               <div class="menu">
                 <a href="#"
@@ -289,6 +294,10 @@ export default Vue.extend({
         {
           title: "Fun Park",
           slug: "funpark",
+        },
+        {
+          title: "Flyby's Park",
+          slug: "flyby",
         },
         {
           title: "Theatre",
