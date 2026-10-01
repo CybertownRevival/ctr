@@ -121,6 +121,20 @@ export class MemberService {
     return accessLevel;
   }
 
+    public async canEditNews(memberId: number): Promise<boolean> {
+      const roleAssignments = 
+        await this.roleAssignmentRepository.getByMemberId(memberId);
+    
+      const newsRoles = [
+        this.roleRepository.roleMap.Admin,
+        this.roleRepository.roleMap.CityMayor,
+        this.roleRepository.roleMap.CVNEditor,
+   ];
+
+    return !!roleAssignments.find(
+      assignment => newsRoles.includes(assignment.role_id),
+    );  
+}
   /**
    * Creates a new member with the given email, username, and password. If successful, distributes
    * daily login bonuses, and returns an encoded member token.
@@ -418,7 +432,39 @@ export class MemberService {
     await this.memberRepository.update(memberId, { password: hashedPassword });
   }
 
-  public async updatePrimaryRoleId(memberId: number, primaryRoleId: number): Promise<void> {
+  /**
+   * Sets the member's displayed role, rejecting any role they do not actually hold.
+   *
+   * primaryRoleId arrives straight from request.body, so without this check any
+   * authenticated member can display any role -- including City Guide or Security --
+   * without holding it. role_assignment is the authority for what a member holds.
+   *
+   * A null id clears the selection, which is legitimate.
+   */
+  public async updatePrimaryRoleId(
+    memberId: number,
+    primaryRoleId: unknown,
+  ): Promise<void> {
+    if (primaryRoleId === null) {
+      await this.memberRepository.update(memberId, { primary_role_id: null });
+      return;
+    }
+
+    if (
+      typeof primaryRoleId !== 'number'
+      || !Number.isSafeInteger(primaryRoleId)
+      || primaryRoleId <= 0
+    ) {
+      throw new Error('primary role id must be a positive integer or null');
+    }
+
+    const assignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    const holdsRole = assignments.some(assignment => assignment.role_id === primaryRoleId);
+    if (!holdsRole) {
+      throw new Error(
+        'member does not hold that role; refusing to display it',
+      );
+    }
     await this.memberRepository.update(memberId, { primary_role_id: primaryRoleId });
   }
 

@@ -12,7 +12,12 @@
           <img src="/assets/img/ctMinaBanner.gif" />
         </div>
         <div class="flex h-full items-center px-5" style="justify-content:right">
-          <img src="/assets/img/news.gif" />
+          <img
+            src="/assets/img/news.gif"
+            class="cursor-pointer"
+            alt="News"
+            @click="openWindow('#/news')"
+            />
         </div>
       </div>
     </div>
