@@ -257,6 +257,104 @@ export class TransactionRepository {
     });
   }
 
+  public async createFundboxDonationTransaction(
+    memberWalletId: number,
+    fundboxWalletId: number,
+    amount: number,
+    authorizedByMemberId: number,
+  ): Promise<Transaction> {
+    if (!Number.isInteger(amount) || amount <= 0) {
+      throw new Error('Fundbox donation amount must be a positive integer');
+    }
+
+    return this.db.knex.transaction(async trx => {
+      const memberWallet = await trx<Wallet>('wallet')
+        .where({ id: memberWalletId })
+        .forUpdate()
+        .first();
+
+      const fundboxWallet = await trx<Wallet>('wallet')
+        .where({ id: fundboxWalletId })
+        .forUpdate()
+        .first();
+
+      if (!memberWallet || !fundboxWallet) {
+        throw new Error('Wallet not found');
+      }
+
+      if (memberWallet.balance < amount) {
+        throw new Error('Insufficient funds');
+      }
+
+      await trx<Wallet>('wallet')
+        .where({ id: memberWalletId })
+        .update({ balance: memberWallet.balance - amount });
+
+      await trx<Wallet>('wallet')
+        .where({ id: fundboxWalletId })
+        .update({ balance: fundboxWallet.balance + amount });
+
+      const [transactionId] = await trx<Transaction>('transaction').insert({
+        amount,
+        reason: TransactionReason.FundboxDonation,
+        sender_wallet_id: memberWalletId,
+        recipient_wallet_id: fundboxWalletId,
+        authorized_by_member_id: authorizedByMemberId,
+      });
+
+      return this.find({ id: transactionId });
+    });
+  }
+
+  public async createFundboxAwardTransaction(
+    fundboxWalletId: number,
+    memberWalletId: number,
+    amount: number,
+    authorizedByMemberId: number,
+  ): Promise<Transaction> {
+    if (!Number.isInteger(amount) || amount <= 0) {
+      throw new Error('Fundbox award amount must be a positive integer');
+    }
+
+    return this.db.knex.transaction(async trx => {
+      const fundboxWallet = await trx<Wallet>('wallet')
+        .where({ id: fundboxWalletId })
+        .forUpdate()
+        .first();
+
+      const memberWallet = await trx<Wallet>('wallet')
+        .where({ id: memberWalletId })
+        .forUpdate()
+        .first();
+
+      if (!fundboxWallet || !memberWallet) {
+        throw new Error('Wallet not found');
+      }
+
+      if (fundboxWallet.balance < amount) {
+        throw new Error('Insufficient Fundbox balance');
+      }
+
+      await trx<Wallet>('wallet')
+        .where({ id: fundboxWalletId })
+        .update({ balance: fundboxWallet.balance - amount });
+
+      await trx<Wallet>('wallet')
+        .where({ id: memberWalletId })
+        .update({ balance: memberWallet.balance + amount });
+
+      const [transactionId] = await trx<Transaction>('transaction').insert({
+        amount,
+        reason: TransactionReason.FundboxAward,
+        sender_wallet_id: fundboxWalletId,
+        recipient_wallet_id: memberWalletId,
+        authorized_by_member_id: authorizedByMemberId,
+      });
+
+      return this.find({ id: transactionId });
+    });
+  }
+
   public async getTransactions(type: string, limit: number, offset: number): Promise<any> {
     return this.db.knex
       .select(
