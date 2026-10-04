@@ -24,6 +24,7 @@ import {
   objectRoutes,
   placeRoutes,
   voteRoutes,
+  fundboxRoutes,
 } from './routes';
 
 require('./cron/cron')();
@@ -70,6 +71,7 @@ app.use('/api/fleamarket', fleamarketRoutes);
 app.use('/api/club', clubRoutes);
 app.use('/api/vote', voteRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/fundbox', fundboxRoutes);
 
 app.use((request, response, next) => {
   const error = new Error('Not found');
