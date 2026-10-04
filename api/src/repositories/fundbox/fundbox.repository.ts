@@ -26,6 +26,26 @@ export class FundboxRepository {
   }
 
   /**
+   * Finds a Fundbox by place with its public place details.
+   *
+   * Financial information is intentionally excluded so this may be used
+   * for Fundbox discovery by any logged-in member.
+   */
+  public async findByPlaceIdWithDetails(placeId: number): Promise<any> {
+    return this.db.knex('fundbox')
+      .select(
+        'fundbox.id',
+        'fundbox.place_id',
+        'place.name as place_name',
+        'place.type as place_type',
+        'place.slug as place_slug',
+      )
+      .join('place', 'place.id', 'fundbox.place_id')
+      .where('fundbox.place_id', placeId)
+      .first();
+  }
+
+  /**
    * Returns all Fundboxes with their place details and current balance.
    */
   public async findAllWithBalances(): Promise<any[]> {

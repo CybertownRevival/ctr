@@ -15,7 +15,7 @@ class FundboxController {
     private transactionRepository: TransactionRepository,
   ) { }
 
-    /**
+  /**
    * Returns the Fundboxes available through the member's global audit role.
    */
   public async getAuditFundboxes(
@@ -60,6 +60,87 @@ class FundboxController {
         error:
           error.message ||
           'A problem occurred while loading Fundboxes.',
+      });
+    }
+  }
+
+  /**
+   * Returns Fundbox discovery information for a place.
+   *
+   * This endpoint intentionally does not expose the Fundbox balance or
+   * transaction history. Any logged-in member may use it to discover whether
+   * the current place has a Fundbox and whether they have view/award access.
+   */
+  public async getFundboxByPlace(
+    request: Request,
+    response: Response,
+  ): Promise<void> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string>apitoken);
+
+    if (!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+
+    const placeId = String(request.params.placeId);
+
+    if (!validator.isInt(placeId, { min: 1 })) {
+      response.status(400).json({
+        error: 'Invalid place.',
+      });
+      return;
+    }
+
+    try {
+      const member = await this.memberService.find({ id: session.id });
+
+      if (!member) {
+        response.status(400).json({
+          error: 'Member not found.',
+        });
+        return;
+      }
+
+      const fundbox = await this.fundboxService.findByPlaceIdWithDetails(
+        parseInt(placeId, 10),
+      );
+
+      if (!fundbox) {
+        response.status(404).json({
+          error: 'This place does not have a Fundbox.',
+        });
+        return;
+      }
+
+      const canView = await this.fundboxService.canView(
+        fundbox.id,
+        member.id,
+      );
+
+      const canAward = await this.fundboxService.canAward(
+        fundbox.id,
+        member.id,
+      );
+
+      response.status(200).json({
+        id: fundbox.id,
+        place_id: fundbox.place_id,
+        place_name: fundbox.place_name,
+        place_type: fundbox.place_type,
+        place_slug: fundbox.place_slug,
+        can_view: canView,
+        can_award: canAward,
+      });
+    } catch (error) {
+      console.log(error);
+
+      response.status(400).json({
+        error:
+          error.message ||
+          'A problem occurred while finding the Fundbox.',
       });
     }
   }

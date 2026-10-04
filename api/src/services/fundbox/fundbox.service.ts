@@ -34,6 +34,13 @@ export class FundboxService {
   }
 
   /**
+   * Finds a Fundbox by place with its public place details.
+   */
+  public async findByPlaceIdWithDetails(placeId: number): Promise<any> {
+    return this.fundboxRepository.findByPlaceIdWithDetails(placeId);
+  }
+
+  /**
    * Returns all Fundboxes with their place details and current balances.
    */
   public async findAllWithBalances(): Promise<any[]> {
@@ -99,12 +106,27 @@ export class FundboxService {
     return Boolean(
       roleAssignments.find(assignment =>
         assignment.role_id === ownerRoleId &&
-        assignment.place_id === fundbox.place_id,
+        (
+          assignment.place_id === fundbox.place_id ||
+          (
+            assignment.place_id === null &&
+          (
+            (
+              fundbox.place_slug === 'jail' &&
+              ownerRoleId === this.roleRepository.roleMap.SecurityChief
+            ) ||
+            (
+              fundbox.place_slug === 'cityhall' &&
+              ownerRoleId === this.roleRepository.roleMap.CityCouncil
+            )
+          )
+        )
+        ),
       ),
     );
   }
 
-    /**
+  /**
    * Checks whether a member may view a Fundbox's financial information.
    *
    * Global audit roles receive access according to their area of responsibility.
@@ -240,12 +262,27 @@ export class FundboxService {
     return Boolean(
       roleAssignments.find(assignment =>
         allowedRoles.includes(assignment.role_id) &&
-        assignment.place_id === fundbox.place_id,
+        (
+          assignment.place_id === fundbox.place_id ||
+          (
+            assignment.place_id === null &&
+            (
+              (
+                fundbox.place_slug === 'jail' &&
+                assignment.role_id === this.roleRepository.roleMap.SecurityChief
+              ) ||
+              (
+                fundbox.place_slug === 'cityhall' &&
+                assignment.role_id === this.roleRepository.roleMap.CityCouncil
+              )
+            )
+        )
+        ),
       ),
     );
   }
 
-    /**
+  /**
    * Returns the Fundboxes available to a member through global audit access.
    *
    * Admin and City Mayor may audit all Fundboxes.

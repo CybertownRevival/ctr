@@ -7,6 +7,9 @@ const fundboxRoutes = Router();
 fundboxRoutes.get('/audit', (request, response) =>
   fundboxController.getAuditFundboxes(request, response));
 
+fundboxRoutes.get('/place/:placeId', (request, response) =>
+  fundboxController.getFundboxByPlace(request, response));
+
 fundboxRoutes.get('/:id', (request, response) =>
   fundboxController.getFundbox(request, response));
 

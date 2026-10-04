@@ -21,10 +21,15 @@
       </button>
     </span>
     <span v-else>
-    <button class="btn-ui"
+      <button class="btn-ui"
             v-on:click="opener('#/inbox/' + $store.data.place.id)">Inbox</button>
-    <button class="btn-ui"
+      <button class="btn-ui"
             v-on:click="opener('#/messageboard/' + $store.data.place.id)">Messages</button>
+      <button v-if="fundbox"
+            class="btn-ui"
+            v-on:click="opener('#/fundbox/' + fundbox.id)">
+      {{ fundbox.can_view ? 'FUNDBOX' : 'DONATE' }}
+      </button>
     </span>
     <br />
     <div v-if="$store.data.place.slug === 'mall'">
@@ -66,9 +71,22 @@ export default Vue.extend({
       canAdmin: false,
       data: null,
       mallId: null,
+      fundbox: null,
     };
   },
   methods: {
+    async getFundbox() {
+      this.fundbox = null;
+
+      try {
+        const response = await this.$http.get(
+          `/fundbox/place/${this.$store.data.place.id}`,
+        );
+        this.fundbox = response.data;
+      } catch (error) {
+        this.fundbox = null;
+      }
+    },
     async getMallId(){
       this.mallId = await this.$http.get('/place/mall');
     },
@@ -99,11 +117,13 @@ export default Vue.extend({
   mounted() {
     this.checkAdmin();
     this.getMallId();
+    this.getFundbox();
   },
   watch: {
     async $route(to, from) {
       console.log("Place Change");
       await this.checkAdmin();
+      await this.getFundbox();
       this.loaded = true;
     },
   },
