@@ -4,6 +4,9 @@ import { fundboxController } from '../controllers';
 
 const fundboxRoutes = Router();
 
+fundboxRoutes.get('/audit', (request, response) =>
+  fundboxController.getAuditFundboxes(request, response));
+
 fundboxRoutes.get('/:id', (request, response) =>
   fundboxController.getFundbox(request, response));
 

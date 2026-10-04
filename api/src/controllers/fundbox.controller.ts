@@ -16,6 +16,55 @@ class FundboxController {
   ) { }
 
     /**
+   * Returns the Fundboxes available through the member's global audit role.
+   */
+  public async getAuditFundboxes(
+    request: Request,
+    response: Response,
+  ): Promise<void> {
+    const { apitoken } = request.headers;
+    const session = this.memberService.decodeMemberToken(<string>apitoken);
+
+    if (!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+
+    try {
+      const member = await this.memberService.find({ id: session.id });
+
+      if (!member) {
+        response.status(400).json({
+          error: 'Member not found.',
+        });
+        return;
+      }
+
+      const fundboxes =
+        await this.fundboxService.getAuditFundboxes(member.id);
+
+      if (fundboxes.length === 0) {
+        response.status(403).json({
+          error: 'You do not have permission to audit Fundboxes.',
+        });
+        return;
+      }
+
+      response.status(200).json(fundboxes);
+    } catch (error) {
+      console.log(error);
+
+      response.status(400).json({
+        error:
+          error.message ||
+          'A problem occurred while loading Fundboxes.',
+      });
+    }
+  }
+
+    /**
    * Returns a Fundbox and its current balance when the member has permission
    * to view it.
    */

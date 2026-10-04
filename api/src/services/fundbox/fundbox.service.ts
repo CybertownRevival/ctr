@@ -245,6 +245,50 @@ export class FundboxService {
     );
   }
 
+    /**
+   * Returns the Fundboxes available to a member through global audit access.
+   *
+   * Admin and City Mayor may audit all Fundboxes.
+   * Colony Representative may audit Colony Fundboxes.
+   * Places Chief may audit public City Place Fundboxes.
+   *
+   * Local leader/deputy access is handled separately by canView().
+   */
+  public async getAuditFundboxes(memberId: number): Promise<any[]> {
+    const roleAssignments =
+      await this.roleAssignmentRepository.getByMemberId(memberId);
+
+    const roleIds = roleAssignments.map(assignment => assignment.role_id);
+
+    const canAuditAll = [
+      this.roleRepository.roleMap.Admin,
+      this.roleRepository.roleMap.CityMayor,
+    ].some(roleId => roleIds.includes(roleId));
+
+    const canAuditColonies = roleIds.includes(
+      this.roleRepository.roleMap.ColonyRepresentative,
+    );
+
+    const canAuditPlaces = roleIds.includes(
+      this.roleRepository.roleMap.PlacesChief,
+    );
+
+    if (!canAuditAll && !canAuditColonies && !canAuditPlaces) {
+      return [];
+    }
+
+    const fundboxes = await this.fundboxRepository.findAllWithBalances();
+
+    if (canAuditAll) {
+      return fundboxes;
+    }
+
+    return fundboxes.filter(fundbox =>
+      (canAuditColonies && fundbox.place_type === 'colony') ||
+      (canAuditPlaces && fundbox.place_type === 'public'),
+    );
+  }
+
   /**
    * Returns the transaction history for a Fundbox.
    */
