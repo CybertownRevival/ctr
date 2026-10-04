@@ -19,6 +19,9 @@ export class Db {
   get clubMember() {
     return this.knex<Models.ClubMember, Models.ClubMember[]>('club_member');
   }
+  get fundbox() {
+    return this.knex<Models.Fundbox, Models.Fundbox[]>('fundbox');
+  }
   get home() {
     return this.knex<Models.Home, Models.Home[]>('home');
   }
