@@ -104,6 +104,147 @@ export class FundboxService {
     );
   }
 
+    /**
+   * Checks whether a member may view a Fundbox's financial information.
+   *
+   * Global audit roles receive access according to their area of responsibility.
+   * Local leaders and deputies receive access only to their assigned place.
+   */
+  public async canView(id: number, memberId: number): Promise<boolean> {
+    const fundbox = await this.fundboxRepository.findByIdWithBalance(id);
+
+    if (!fundbox) {
+      return false;
+    }
+
+    const roleAssignments =
+      await this.roleAssignmentRepository.getByMemberId(memberId);
+
+    // Admin and City Mayor may audit every Fundbox.
+    if (
+      roleAssignments.find(assignment =>
+        [
+          this.roleRepository.roleMap.Admin,
+          this.roleRepository.roleMap.CityMayor,
+        ].includes(assignment.role_id),
+      )
+    ) {
+      return true;
+    }
+
+    // Colony Representative may audit every Colony Fundbox.
+    if (
+      fundbox.place_type === 'colony' &&
+      roleAssignments.find(assignment =>
+        assignment.role_id ===
+          this.roleRepository.roleMap.ColonyRepresentative,
+      )
+    ) {
+      return true;
+    }
+
+    // Places Chief may audit every City Place Fundbox.
+    if (
+      fundbox.place_type === 'public' &&
+      roleAssignments.find(assignment =>
+        assignment.role_id === this.roleRepository.roleMap.PlacesChief,
+      )
+    ) {
+      return true;
+    }
+
+    // Colony leaders and deputies may view their own Colony Fundbox.
+    if (fundbox.place_type === 'colony') {
+      return Boolean(
+        roleAssignments.find(assignment =>
+          [
+            this.roleRepository.roleMap.ColonyLeader,
+            this.roleRepository.roleMap.ColonyDeputy,
+          ].includes(assignment.role_id) &&
+          assignment.place_id === fundbox.place_id,
+        ),
+      );
+    }
+
+    const placeRoles = {
+      bank: [
+        this.roleRepository.roleMap.BankManager,
+        this.roleRepository.roleMap.BankCashier,
+      ],
+      beach: [
+        this.roleRepository.roleMap.SunsetBeachChief,
+        this.roleRepository.roleMap.SunsetBeachDeputy,
+      ],
+      blackmarket: [
+        this.roleRepository.roleMap.BlackMarketChief,
+        this.roleRepository.roleMap.BlackMarketDeputy,
+      ],
+      cityhall: [
+        this.roleRepository.roleMap.CityCouncil,
+      ],
+      clubdir: [
+        this.roleRepository.roleMap.ClubsChief,
+        this.roleRepository.roleMap.ClubsDeputy,
+      ],
+      employment: [
+        this.roleRepository.roleMap.EmploymentChief,
+        this.roleRepository.roleMap.EmploymentDeputy,
+      ],
+      fleamarket: [
+        this.roleRepository.roleMap.FleaMarketChief,
+        this.roleRepository.roleMap.FleaMarketDeputy,
+      ],
+      funpark: [
+        this.roleRepository.roleMap.FunParkChief,
+        this.roleRepository.roleMap.FunParkDeputy,
+      ],
+      jail: [
+        this.roleRepository.roleMap.SecurityChief,
+      ],
+      mall: [
+        this.roleRepository.roleMap.MallManager,
+        this.roleRepository.roleMap.MallDeputy,
+      ],
+      newcomers: [
+        this.roleRepository.roleMap.SeniorCityGuide,
+        this.roleRepository.roleMap.CityGuide,
+      ],
+      theatre: [
+        this.roleRepository.roleMap.TheatreChief,
+        this.roleRepository.roleMap.TheatreDeputy,
+      ],
+      postoffice: [
+        this.roleRepository.roleMap.PostOfficeManager,
+        this.roleRepository.roleMap.PostOfficeDeputy,
+      ],
+      pool: [
+        this.roleRepository.roleMap.PoolChief,
+        this.roleRepository.roleMap.PoolDeputy,
+      ],
+      themepark: [
+        this.roleRepository.roleMap.ThemeParkChief,
+        this.roleRepository.roleMap.ThemeParkDeputy,
+      ],
+      waterpark: [
+        this.roleRepository.roleMap.WaterParkChief,
+        this.roleRepository.roleMap.WaterParkDeputy,
+      ],
+    };
+
+    const allowedRoles = placeRoles[fundbox.place_slug];
+
+    if (!allowedRoles) {
+      return false;
+    }
+
+    return Boolean(
+      roleAssignments.find(assignment =>
+        allowedRoles.includes(assignment.role_id) &&
+        assignment.place_id === fundbox.place_id,
+      ),
+    );
+  }
+
   /**
    * Returns the transaction history for a Fundbox.
    */

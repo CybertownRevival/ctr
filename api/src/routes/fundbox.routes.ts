@@ -4,6 +4,12 @@ import { fundboxController } from '../controllers';
 
 const fundboxRoutes = Router();
 
+fundboxRoutes.get('/:id', (request, response) =>
+  fundboxController.getFundbox(request, response));
+
+fundboxRoutes.get('/:id/transactions', (request, response) =>
+  fundboxController.getTransactions(request, response));
+
 fundboxRoutes.post('/donate', (request, response) =>
   fundboxController.donate(request, response));
 

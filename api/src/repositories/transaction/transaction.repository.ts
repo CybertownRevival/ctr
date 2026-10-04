@@ -364,7 +364,7 @@ export class TransactionRepository {
         'recipient_wallet_id',
         'sender_wallet_id',
         'reason',
-        'authorised_by_member_id',
+        'authorized_by_member_id',
       )
       .from('transaction')
       .where('reason', type)
@@ -383,7 +383,7 @@ export class TransactionRepository {
         'recipient_wallet_id',
         'sender_wallet_id',
         'reason',
-        'authorised_by_member_id',
+        'authorized_by_member_id',
       )
       .from('transaction')
       .where('recipient_wallet_id', id)
