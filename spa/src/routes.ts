@@ -14,6 +14,7 @@ import WorldPage from "@/pages/world-browser/WorldPage.vue";
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 import WorldBrowserTools from "./pages/world-browser/WorldBrowserTools.vue";
 import CityMapPage from "./pages/CityMapPage.vue";
+import FundboxPage from "./pages/Fundbox.vue";
 import InformationPage from "./pages/Information.vue";
 import NeighborhoodPage from "./pages/neighborhood/NeighborhoodPage.vue";
 import NeighborhoodMapPage from "./pages/neighborhood/NeighborhoodMapPage.vue";
@@ -394,6 +395,15 @@ export default [
     },
     name: "inbox",
     meta: { wrapper: false },
+  },
+  {
+    path: "/fundbox/:id",
+    component: FundboxPage,
+    name: "fundbox",
+    meta: {
+      title: "Fundbox",
+      wrapper: false,
+    },
   },
   {
     path: "/information/:type/:id/:slug?",

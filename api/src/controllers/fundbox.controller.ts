@@ -145,6 +145,104 @@ class FundboxController {
     }
   }
 
+  /**
+   * Returns safe Fundbox details for any logged-in member.
+   * Financial information is never included.
+   */
+  public async getPublicFundbox(
+    request: Request,
+    response: Response,
+  ): Promise<void> {
+const { apitoken } = request.headers;
+
+if (typeof apitoken !== 'string' || !apitoken.trim()) {
+  response.status(401).json({
+    error: 'Authentication required.',
+  });
+  return;
+}
+
+let session;
+
+try {
+  session = this.memberService.decodeMemberToken(apitoken);
+} catch (error) {
+  response.status(401).json({
+    error: 'Invalid authentication token.',
+  });
+  return;
+}
+    if (!session) {
+      response.status(400).json({
+        error: 'Invalid or missing token.',
+      });
+      return;
+    }
+
+    const fundboxId = String(request.params.id);
+
+    if (!validator.isInt(fundboxId, { min: 1 })) {
+      response.status(400).json({
+        error: 'Invalid Fundbox.',
+      });
+      return;
+    }
+
+    try {
+      const member = await this.memberService.find({ id: session.id });
+
+      if (!member) {
+        response.status(400).json({
+          error: 'Member not found.',
+        });
+        return;
+      }
+
+      const fundbox = await this.fundboxService.findById(
+        parseInt(fundboxId, 10),
+      );
+
+      if (!fundbox) {
+        response.status(404).json({
+          error: 'Fundbox not found.',
+        });
+        return;
+      }
+
+      const details = await this.fundboxService.findByPlaceIdWithDetails(
+        fundbox.place_id,
+      );
+
+      const canView = await this.fundboxService.canView(
+        fundbox.id,
+        member.id,
+      );
+
+      const canAward = await this.fundboxService.canAward(
+        fundbox.id,
+        member.id,
+      );
+
+      response.status(200).json({
+        id: fundbox.id,
+        place_id: fundbox.place_id,
+        place_name: details.place_name,
+        place_type: details.place_type,
+        place_slug: details.place_slug,
+        can_view: canView,
+        can_award: canAward,
+      });
+    } catch (error) {
+      console.log(error);
+
+      response.status(400).json({
+        error: error.message ||
+          'A problem occurred while loading Fundbox details.',
+      });
+    }
+  }
+
+
     /**
    * Returns a Fundbox and its current balance when the member has permission
    * to view it.
