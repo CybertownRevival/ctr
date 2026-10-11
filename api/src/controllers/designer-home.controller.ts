@@ -228,6 +228,26 @@ class DesignerHomeController {
     }
   }
 
+  public async getPreview(request: Request, response: Response): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+
+    try {
+      const homeDesign = await this.designerHomeService.getPreview(
+        Number.parseInt(request.params.id),
+        session.id,
+      );
+      if (!homeDesign) {
+        response.status(404).json({ error: 'Home not found.' });
+        return;
+      }
+      response.status(200).json({ status: 'success', homeDesign });
+    } catch (error) {
+      console.error(error);
+      response.status(400).json({ error: 'A problem occurred while fetching this home.' });
+    }
+  }
+
   public async getOwned(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;

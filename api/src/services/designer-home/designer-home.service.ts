@@ -97,6 +97,25 @@ export class DesignerHomeService {
     return this.designerHomeRepository.findById(id);
   }
 
+  /**
+   * Gets a Designer Home for previewing its world. Homes that aren't on sale can only be
+   * previewed by their creator or staff.
+   */
+  public async getPreview(id: number, memberId: number): Promise<HomeDesign> {
+    const designerHome = await this.designerHomeRepository.findById(id);
+    if (!designerHome) {
+      return undefined;
+    }
+    if (
+      designerHome.status !== DesignerHomeService.STATUS_ACTIVE &&
+      designerHome.member_id !== memberId &&
+      !(await this.canAdmin(memberId))
+    ) {
+      return undefined;
+    }
+    return this.toHomeDesign(designerHome);
+  }
+
   public async getPending(): Promise<any[]> {
     return this.designerHomeRepository.findWithDetails({
       status: DesignerHomeService.STATUS_PENDING,

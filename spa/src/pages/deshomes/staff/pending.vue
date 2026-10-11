@@ -37,6 +37,7 @@
             </div>
           </div>
           <div class="w-40 p-2">
+            <button class="btn-ui" @click="preview(designerHome.id)">Preview</button>
             <button class="btn-ui" @click="opener(designerHome, designerHome.filename)">WRL</button>
             <button class="btn-ui" @click="opener(designerHome, designerHome.image)">Image</button>
           </div>
@@ -115,6 +116,13 @@ export default Vue.extend({
     },
     assetUrl(designerHome, file): string {
       return `/assets/worlds/deshomes/${designerHome.directory}/${file}`;
+    },
+    preview(id) {
+      window.open(
+        `/#/deshomes/preview/${id}`,
+        "deshomesPreview",
+        "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0",
+      );
     },
     opener(designerHome, file) {
       window.open(

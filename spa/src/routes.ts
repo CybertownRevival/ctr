@@ -89,6 +89,7 @@ import ObjectCatalog from "@/pages/mall/ObjectCatalog.vue";
 import DesignerHomesUploadPage from "@/pages/deshomes/DesignerHomesUploadPage.vue";
 import DesignerHomesMyUploadsPage from "@/pages/deshomes/DesignerHomesMyUploadsPage.vue";
 import DesignerHomesHelpPage from "@/pages/deshomes/DesignerHomesHelpPage.vue";
+import DesignerHomesPreviewPage from "@/pages/deshomes/DesignerHomesPreviewPage.vue";
 import DesignerHomesStaffPage from "@/pages/deshomes/staff/StaffPage.vue";
 import DesignerHomesPending from "@/pages/deshomes/staff/pending.vue";
 import DesignerHomesStocked from "@/pages/deshomes/staff/stocked.vue";
@@ -747,6 +748,15 @@ export default [
     meta: {
       title: "Designer Homes Upload",
       wrapper: true,
+    },
+  },
+  {
+    path: "/deshomes/preview/:id",
+    component: DesignerHomesPreviewPage,
+    name: "deshomes-preview",
+    meta: {
+      title: "Designer Homes Preview",
+      wrapper: false,
     },
   },
   {

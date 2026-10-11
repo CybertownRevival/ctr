@@ -18,6 +18,8 @@ designerHomeRoutes.get('/upload_status', (request, response) =>
   designerHomeController.getUploadStatus(request, response));
 designerHomeRoutes.post('/upload', (request, response) =>
   designerHomeController.upload(request, response));
+designerHomeRoutes.get('/preview/:id', (request, response) =>
+  designerHomeController.getPreview(request, response));
 designerHomeRoutes.post('/buy', (request, response) =>
   designerHomeController.buy(request, response));
 designerHomeRoutes.get('/owned', (request, response) =>

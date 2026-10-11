@@ -131,6 +131,26 @@ describe('DesignerHomeService', () => {
     });
   });
 
+  describe('getPreview', () => {
+    it('lets anyone preview homes that are for sale', async () => {
+      designerHomeRepository.findById.mockResolvedValue(designerHome);
+      expect((await service.getPreview(7, 99)).world_filename).toBe('f00.wrl');
+    });
+
+    it('lets the creator and staff preview pending homes, but no one else', async () => {
+      designerHomeRepository.findById.mockResolvedValue({
+        ...designerHome,
+        status: DesignerHomeService.STATUS_PENDING,
+      });
+      roleAssignmentRepository.getByMemberId.mockImplementation(async memberId =>
+        (memberId === 1 ? [{ role_id: 20 }] : []) as any);
+
+      expect(await service.getPreview(7, 2)).toBeTruthy();
+      expect(await service.getPreview(7, 1)).toBeTruthy();
+      expect(await service.getPreview(7, 99)).toBeUndefined();
+    });
+  });
+
   it('recognises Designer Home design ids', () => {
     expect(service.isHomeDesignId('deshome-7')).toBe(true);
     expect(service.isHomeDesignId('003')).toBe(false);

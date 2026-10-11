@@ -34,6 +34,7 @@
         <div>by {{ designerHome.username || 'Deleted User' }}</div>
         <div>Price: <strong>{{ designerHome.price }}cc</strong></div>
         <div class="mt-2">
+          <button class="btn-ui" @click="preview(designerHome.id)">Preview</button>
           <span v-if="designerHome.owned" class="text-green-500">Owned</span>
           <button
             v-else
@@ -75,6 +76,13 @@ export default Vue.extend({
         this.error = errorResponse.response?.data?.error ?? "An unknown error occurred";
       }
       this.loaded = true;
+    },
+    preview(id): void {
+      window.open(
+        `/#/deshomes/preview/${id}`,
+        "deshomesPreview",
+        "width=1000px,height=700px,location=0,menubar=0,status=0,scrollbars=0",
+      );
     },
     async buy(designerHome): Promise<void> {
       if(this.isProcessing) return;
