@@ -418,6 +418,7 @@ export class PlaceService {
       },
       deshomes: {
         owner: this.roleRepository.roleMap.HomebuilderManager,
+        deputy: this.roleRepository.roleMap.HomebuilderAssistant,
       },
     };
     return roleId[slug];

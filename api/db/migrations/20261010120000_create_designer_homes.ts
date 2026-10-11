@@ -141,6 +141,15 @@ export async function up(knex: Knex): Promise<void> {
       await knex('place').insert(place);
     }
   }
+  
+  console.log('Adding Designer Homes Deputy job...');
+  if (!await knex('role').where({ name: 'Homebuilder Assistant' }).first()) {
+    await knex('role').insert({
+      name: 'Homebuilder Assistant',
+      income_xp: 19,
+      income_cc: 205,
+    });
+  }
 }
 
 export async function down(knex: Knex): Promise<void> {
