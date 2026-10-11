@@ -86,6 +86,13 @@ import MallSoldOut from "@/pages/mall/staff/soldout.vue";
 import MallObjectSearch from "@/pages/mall/staff/search.vue";
 import MallChecker from "@/pages/mall/checker.vue";
 import ObjectCatalog from "@/pages/mall/ObjectCatalog.vue";
+import DesignerHomesUploadPage from "@/pages/deshomes/DesignerHomesUploadPage.vue";
+import DesignerHomesMyUploadsPage from "@/pages/deshomes/DesignerHomesMyUploadsPage.vue";
+import DesignerHomesHelpPage from "@/pages/deshomes/DesignerHomesHelpPage.vue";
+import DesignerHomesStaffPage from "@/pages/deshomes/staff/StaffPage.vue";
+import DesignerHomesPending from "@/pages/deshomes/staff/pending.vue";
+import DesignerHomesStocked from "@/pages/deshomes/staff/stocked.vue";
+import DesignerHomesSettings from "@/pages/deshomes/staff/settings.vue";
 
 import ObjectProperties from "./pages/ObjectProperties.vue";
 
@@ -720,6 +727,68 @@ export default [
         name: "MallObjectSearch",
         meta: {
           title: "Mall Object Search - Mall Staff Panel",
+        },
+      },
+    ],
+  },
+  {
+    path: "/deshomes/help",
+    component: DesignerHomesHelpPage,
+    name: "deshomes-help",
+    meta: {
+      title: "Designer Homes Help",
+      wrapper: true,
+    },
+  },
+  {
+    path: "/deshomes/upload",
+    component: DesignerHomesUploadPage,
+    name: "deshomes-upload",
+    meta: {
+      title: "Designer Homes Upload",
+      wrapper: true,
+    },
+  },
+  {
+    path: "/deshomes/my-uploads",
+    component: DesignerHomesMyUploadsPage,
+    name: "deshomes-my-uploads",
+    meta: {
+      title: "My Designer Homes Uploads",
+      wrapper: true,
+    },
+  },
+  {
+    path: "/deshomes/staff",
+    component: DesignerHomesStaffPage,
+    name: "deshomes-staff",
+    meta: {
+      title: "Designer Homes Staff Panel",
+      wrapper: false,
+    },
+    children: [
+      {
+        path: "/deshomes/staff/pending",
+        component: DesignerHomesPending,
+        name: "DesignerHomesPending",
+        meta: {
+          title: "Pending - Designer Homes Staff Panel",
+        },
+      },
+      {
+        path: "/deshomes/staff/stocked",
+        component: DesignerHomesStocked,
+        name: "DesignerHomesStocked",
+        meta: {
+          title: "Stocked - Designer Homes Staff Panel",
+        },
+      },
+      {
+        path: "/deshomes/staff/settings",
+        component: DesignerHomesSettings,
+        name: "DesignerHomesSettings",
+        meta: {
+          title: "Settings - Designer Homes Staff Panel",
         },
       },
     ],

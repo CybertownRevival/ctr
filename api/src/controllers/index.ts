@@ -4,6 +4,7 @@ export * from './blackmarket.controller';
 export * from './block.controller';
 export * from './club.controller';
 export * from './colony.controller';
+export * from './designer-home.controller';
 export * from './fleamarket.controller';
 export * from './home.controller';
 export * from './hood.controller';

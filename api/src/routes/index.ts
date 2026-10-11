@@ -4,6 +4,7 @@ export * from './blackmarket.routes';
 export * from './block.routes';
 export * from './club.routes';
 export * from './colony.routes';
+export * from './designer-home.routes';
 export * from './fleamarket.routes';
 export * from './home.routes';
 export * from './hood.routes';

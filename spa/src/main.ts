@@ -100,8 +100,8 @@ router.beforeEach(async (to, from, next) => {
         const place = {
           ...Data.homeData,
           assets_dir: Data.homeDesignData ?
-            (`${Data.homeDesignData.id}/`) : null,
-          world_filename: "home.wrl",
+            (Data.homeDesignData.assets_dir ?? `${Data.homeDesignData.id}/`) : null,
+          world_filename: Data.homeDesignData?.world_filename ?? "home.wrl",
           slug: "home",
           block: Data.blockData,
         };

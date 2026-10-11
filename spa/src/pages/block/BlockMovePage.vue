@@ -110,6 +110,8 @@
           </template>
         </div>
 
+        <designer-home-options v-model="home3d" />
+
         <div v-if="showError" class="text-center text-red-500">{{ error }}</div>
         <div class="text-center">
           <button type="button" class="btn" @click="settle">Settle</button>
@@ -135,9 +137,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { colonyDataHelper, homeDataHelper } from "@/helpers";
+import DesignerHomeOptions from "@/components/home/DesignerHomeOptions.vue";
 
 export default Vue.extend({
   name: "BlockMovePage",
+  components: {
+    DesignerHomeOptions,
+  },
   props: [
     "block",
     "hood",

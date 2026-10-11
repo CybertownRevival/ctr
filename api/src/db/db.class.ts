@@ -19,6 +19,15 @@ export class Db {
   get clubMember() {
     return this.knex<Models.ClubMember, Models.ClubMember[]>('club_member');
   }
+  get designerHome() {
+    return this.knex<Models.DesignerHome, Models.DesignerHome[]>('designer_home');
+  }
+  get designerHomeBan() {
+    return this.knex<Models.DesignerHomeBan, Models.DesignerHomeBan[]>('designer_home_ban');
+  }
+  get designerHomeOwner() {
+    return this.knex<Models.DesignerHomeOwner, Models.DesignerHomeOwner[]>('designer_home_owner');
+  }
   get home() {
     return this.knex<Models.Home, Models.Home[]>('home');
   }
@@ -48,6 +57,9 @@ export class Db {
   }
   get roleAssignment() {
     return this.knex<Models.RoleAssignment, Models.RoleAssignment[]>('role_assignment');
+  }
+  get setting() {
+    return this.knex<Models.Setting, Models.Setting[]>('setting');
   }
   get transaction() {
     return this.knex<Models.Transaction, Models.Transaction[]>('transaction');

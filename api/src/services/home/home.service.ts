@@ -9,6 +9,7 @@ import {
   RoleRepository,
 } from '../../repositories';
 import { Place, HomeDesign } from '../../types/models';
+import { DesignerHomeService } from '../designer-home/designer-home.service';
 
 /** Service for dealing with members */
 @Service()
@@ -21,6 +22,7 @@ export class HomeService {
     private homeRepository: HomeRepository,
     private roleAssignmentRepository: RoleAssignmentRepository,
     private roleRepository: RoleRepository,
+    private designerHomeService: DesignerHomeService,
   ) {}
 
 
@@ -42,10 +44,17 @@ export class HomeService {
 
   public async getPlaceHomeDesign(memberId: number, homePlaceId: number): Promise<HomeDesign> {
     const homeInfo = await this.homeRepository.findById(homePlaceId);    
+    if (this.designerHomeService.isHomeDesignId(homeInfo.home_design_id)) {
+      return this.designerHomeService.findHomeDesign(homeInfo.home_design_id);
+    }
     return this.homeDesignRespository.find(homeInfo.home_design_id);
   }
 
   public async getHomeDesign(memberId: number, homeDesignId: string): Promise<HomeDesign> {
+    if (this.designerHomeService.isHomeDesignId(homeDesignId)) {
+      // members can only use the Designer Homes they have bought
+      return this.designerHomeService.findHomeDesign(homeDesignId, memberId);
+    }
     return this.homeDesignRespository.find(homeDesignId);
   }
 

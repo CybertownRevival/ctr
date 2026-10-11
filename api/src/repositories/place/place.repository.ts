@@ -53,6 +53,12 @@ export class PlaceRepository {
       .orderBy(orderBy, 'asc');
   }
 
+  public async findAllByType(type: string, orderBy = 'id'): Promise<Place[]> {
+    return this.db.place
+      .where({ type, status: 1 })
+      .orderBy(orderBy, 'asc');
+  }
+
   public async removePlace(id: number): Promise<any> {
     await this.db.place
       .where('id', id)
