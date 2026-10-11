@@ -11,6 +11,7 @@ import {
   blockRoutes,
   clubRoutes,
   colonyRoutes,
+  designerHomeRoutes,
   fleamarketRoutes,
   homeRoutes,
   hoodRoutes,
@@ -65,6 +66,7 @@ app.use('/api/messageboard', messageboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/inbox', inboxRoutes);
 app.use('/api/mall', mallRoutes);
+app.use('/api/designer_home', designerHomeRoutes);
 app.use('/api/blackmarket', blackmarketRoutes);
 app.use('/api/fleamarket', fleamarketRoutes);
 app.use('/api/club', clubRoutes);

@@ -134,6 +134,9 @@ class HomeController {
           // check they have enough in their wallet to buy the 3d home
           // this is optional (if not null)
           const homeDesignInfo = await this.homeService.getHomeDesign(session.id, home3d);
+          if(!homeDesignInfo) {
+            throw new Error('Home design not found.');
+          }
           if(donorLevel === 'Champion' && home3d === 'championhome'){
             purchaseAmount = 0;
           } else {
@@ -271,7 +274,7 @@ class HomeController {
           // check they have enough in their wallet to buy the 3d home
           // this is optional (if not null)
           const homeDesignInfo = await this.homeService.getHomeDesign(session.id, home3d);
-          if(typeof homeDesignInfo.id === 'undefined') {
+          if(!homeDesignInfo || typeof homeDesignInfo.id === 'undefined') {
             throw new Error('Home design not found.');
           }
 

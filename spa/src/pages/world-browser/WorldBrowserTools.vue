@@ -2,6 +2,12 @@
   <div>
 
     <button class="btn-ui"
+            v-if="$store.data.place.type === 'deshomeshop'"
+            v-on:click="opener(`#/information/public/${deshomesPlace.id}/deshomes`)">
+      Information
+    </button>
+    <button class="btn-ui"
+            v-else
             v-on:click="opener('#/information/'
               + $store.data.place.type
               + '/'
@@ -20,6 +26,14 @@
         Mall Messages
       </button>
     </span>
+    <span v-else-if="$store.data.place.type === 'deshomeshop'">
+      <button class="btn-ui" v-on:click="opener(`#/inbox/${deshomesPlace.id}`)">
+        Inbox
+      </button>
+      <button class="btn-ui" v-on:click="opener(`#/messageboard/${deshomesPlace.id}`)">
+        Messages
+      </button>
+    </span>
     <span v-else>
     <button class="btn-ui"
             v-on:click="opener('#/inbox/' + $store.data.place.id)">Inbox</button>
@@ -36,6 +50,16 @@
       <button class="btn-ui" v-on:click="opener('#/creator/stocked')">My Uploads</button>
       <br />
     </div>
+    <div v-if="isDesignerHomes">
+      <router-link
+        v-if="deshomesUploadEnabled"
+        :to="{ name: 'deshomes-upload' }"
+        class="btn-ui">Upload</router-link>
+      <router-link
+        :to="{ name: 'deshomes-my-uploads' }"
+        class="btn-ui">My Uploads</router-link>
+      <br />
+    </div>
     <div v-if="canAdmin">
       <span v-if="this.$store.data.place.type === 'colony'">
         <router-link :to="{ name: 'colonyMessageToAll' }"
@@ -43,9 +67,19 @@
         <router-link :to="{ name: 'colonyInboxToAll'}"
               class="btn-ui">Inbox to All</router-link>
       </span>
+      <span v-if="isDesignerHomes">
+        <div>
+          Upload Status:
+          <span :class="deshomesUploadEnabled ? 'text-green-500' : 'text-red-500'">
+            {{ deshomesUploadEnabled ? 'ON' : 'OFF' }}
+          </span>
+        </div>
+        <button class="btn-ui" v-on:click="opener('#/deshomes/staff/pending')">Staff Panel</button>
+      </span>
       <span href=""
             class="btn-ui">Update</span>
-      <span v-show="$store.data.place.type !== 'shop' && $store.data.place.slug !== 'cityhall'">
+      <span v-show="!['shop', 'deshomeshop'].includes($store.data.place.type) &&
+        $store.data.place.slug !== 'cityhall'">
         <router-link :to="{ name: 'worldAccessRights' }"
                      class="btn-ui">Access Rights</router-link>
       </span>
@@ -66,11 +100,32 @@ export default Vue.extend({
       canAdmin: false,
       data: null,
       mallId: null,
+      deshomesPlace: {},
+      deshomesUploadEnabled: false,
     };
+  },
+  computed: {
+    isDesignerHomes(): boolean {
+      return this.$store.data.place.slug === "deshomes" ||
+        this.$store.data.place.type === "deshomeshop";
+    },
   },
   methods: {
     async getMallId(){
       this.mallId = await this.$http.get('/place/mall');
+    },
+    async getDesignerHomesInfo(): Promise<void> {
+      if (!this.isDesignerHomes) return;
+      try {
+        const [placeResponse, statusResponse] = await Promise.all([
+          this.$http.get("/place/deshomes"),
+          this.$http.get("/designer_home/upload_status"),
+        ]);
+        this.deshomesPlace = placeResponse.data.place;
+        this.deshomesUploadEnabled = statusResponse.data.enabled;
+      } catch (error) {
+        this.deshomesUploadEnabled = false;
+      }
     },
     async checkAdmin() {
       let endpoint;
@@ -83,6 +138,9 @@ export default Vue.extend({
         break;
       case "shop":
         endpoint = "/place/can_admin/mall";
+        break;
+      case "deshomeshop":
+        endpoint = "/place/can_admin/deshomes";
         break;
       }
       try {
@@ -99,11 +157,13 @@ export default Vue.extend({
   mounted() {
     this.checkAdmin();
     this.getMallId();
+    this.getDesignerHomesInfo();
   },
   watch: {
     async $route(to, from) {
       console.log("Place Change");
       await this.checkAdmin();
+      await this.getDesignerHomesInfo();
       this.loaded = true;
     },
   },

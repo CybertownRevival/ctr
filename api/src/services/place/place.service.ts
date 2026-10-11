@@ -73,6 +73,19 @@ export class PlaceService {
         return true;
       }
     }
+    if (slug === 'deshomes') {
+      if (
+        roleAssignments.find(assignment => {
+          return (
+            [
+              this.roleRepository.roleMap.Admin,
+              this.roleRepository.roleMap.HomebuilderManager,
+            ].includes(assignment.role_id)
+          );
+        })) {
+        return true;
+      }
+    }
     if (slug === 'newcomers') {
       if (
         roleAssignments.find(assignment => {
@@ -402,6 +415,10 @@ export class PlaceService {
       },
       cityhall: {
         owner: this.roleRepository.roleMap.CityCouncil,
+      },
+      deshomes: {
+        owner: this.roleRepository.roleMap.HomebuilderManager,
+        deputy: this.roleRepository.roleMap.HomebuilderAssistant,
       },
     };
     return roleId[slug];

@@ -235,6 +235,10 @@ export default Vue.extend({
           slug: "mall",
         },
         {
+          title: "Designer Homes",
+          slug: "deshomes",
+        },
+        {
           title: "The Clubs",
           slug: "clubdir",
         },

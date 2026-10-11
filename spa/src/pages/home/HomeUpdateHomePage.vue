@@ -94,6 +94,8 @@
           </div>
 
 
+          <designer-home-options v-model="home3d" />
+
           <div v-if="showError" class="text-center text-red-500">{{ error }}</div>
 
           <div class="text-center">
@@ -114,9 +116,13 @@
 <script lang="ts">
 import Vue from "vue";
 import {colonyDataHelper, homeDataHelper} from "@/helpers";
+import DesignerHomeOptions from "@/components/home/DesignerHomeOptions.vue";
 
 export default Vue.extend({
   name: "HomeUpdateHomePage",
+  components: {
+    DesignerHomeOptions,
+  },
   data: () => {
     return {
       loaded: false,

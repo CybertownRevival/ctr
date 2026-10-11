@@ -4,6 +4,7 @@ export * from './blackmarket/blackmarket.service';
 export * from './block/block.service';
 export * from './club/club.service';
 export * from './colony/colony.service';
+export * from './designer-home/designer-home.service';
 export * from './fleamarket/fleamarket.service';
 export * from './home/home.service';
 export * from './hood/hood.service';

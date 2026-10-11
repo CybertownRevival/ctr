@@ -229,6 +229,12 @@ export default Vue.extend({
         this.force2d = true;
       }
 
+      // Designer Homes has no 3D world
+      if(this.$store.data.place.slug === "deshomes" ||
+        this.$store.data.place.type === "deshomeshop"){
+        this.force2d = true;
+      }
+
       if(this.$route.params.username){
         if(this.$store.data.place.assets_dir === null) {
           this.force2d = true;
@@ -252,6 +258,10 @@ export default Vue.extend({
         } else if(this.$store.data.place.type === "club"){
           this.mainComponent = () => import(
             "@/components/place/club/main2d.vue"
+          );
+        } else if(this.$store.data.place.type === "deshomeshop"){
+          this.mainComponent = () => import(
+            "@/components/place/deshomeshop/main2d.vue"
           );
         } else {
           this.mainComponent = () => import(
