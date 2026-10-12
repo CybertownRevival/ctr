@@ -150,5 +150,12 @@ export async function seed(knex: Knex): Promise<void> {
       assets_dir: '/post/',
       world_filename: 'vrml/post.wrl',
     },
+    {
+      name: 'Flyby\'s Park',
+      description: 'Welcome to Flyby\'s Park.',
+      slug: 'flyby',
+      assets_dir: '/flyby/',
+      world_filename: 'vrml/flyby.wrl',
+    },
   ]);
 }
