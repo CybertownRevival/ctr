@@ -13,5 +13,6 @@ export interface Object extends Model {
   price: number;
   status: number;
   directory: string;
+  description: string | null;
   mall_expiration: Date;
 }
