@@ -56,28 +56,14 @@ export async function up(knex: Knex): Promise<void> {
       // Ensure a member can only vote once per specific poll
       table.unique(['vote_id', 'member_id']);
     });
-  console.log('Adding voting seeds...');
-  await knex('vote_list').insert({
-    title: 'Mayor Election 2026',
-    place_id: 1,
-    creator_member_id: null,
-    description: 'Vote for the next mayor of Cybertown',
-    expires_at: null,
-  });
-  await knex('vote_options').insert([
-    {
-      vote_id: 1,
-      option_text: 'EmperorAjay',
-    },
-    {
-      vote_id: 1,
-      option_text: 'MorningStar',
-    },
-    {
-      vote_id: 1,
-      option_text: 'phil_00',
-    },
-  ]);
+  // The Mayor Election rows this migration used to insert now live in
+  // db/seed/12-votes.seed.ts. They are content, not schema, and inserting them from here
+  // made a fresh database impossible to build: `place_id` is a foreign key into `place`,
+  // and migrations run before seeds, so on an empty database there was no place to point
+  // at. It also assumed the new table would hand out vote id 1 for the options.
+  //
+  // Databases created before this change already ran the migration and already hold these
+  // rows; the seed is idempotent, so it is a no-op for them.
   return;
 }
 
