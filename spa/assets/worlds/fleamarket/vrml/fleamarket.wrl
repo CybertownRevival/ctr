@@ -9,6 +9,27 @@ EXTERNPROTO HUD[
 ]
 ["urn:inet:blaxxun.com:node:HUD","http://www.blaxxun.com/vrml/protos/nodes.wrl#HUD"]
 
+EXTERNPROTO BlaxxunZone [ 
+eventIn         MFNode   addEvents 
+eventIn         MFNode   removeEvents 
+eventIn         MFNode   addAvatars 
+eventIn         MFNode   removeAvatars 
+exposedField    MFNode   events 
+exposedField    MFNode   avatars 
+eventOut        MFNode   events_added 
+eventOut        MFNode   events_removed 
+eventOut        MFNode   avatars_added 
+eventOut        MFNode   avatars_removed
+eventIn         SFInt32  set_myAvatarGesture 
+eventIn         SFInt32  myAvatarGestureFromServer 
+eventOut        SFInt32  myAvatarGesture_changed 
+eventOut        SFInt32  myAvatarGestureToServer 
+exposedField    MFString sendToChat
+exposedField    SFFloat  beamToDistance
+exposedField    MFString groupChatName
+exposedField    MFString groupChat
+] "/externprotos/shared_xite.wrl#BlaxxunZone"
+
 EXTERNPROTO SharedObject [
 exposedField SFVec3f translation
 exposedField SFRotation rotation
@@ -120,6 +141,39 @@ function set_time           (value, time){if(debug){print(name + ' sent time eve
 function set_vec2f          (value, time){if(debug){print(name + ' sent vec2f event: '     + value);} vec2fToServer = value;    if(local){vec2fFromServer(value,time);}} 
 function set_vec3f          (value, time){if(debug){print(name + ' sent vec3f event: '     + value);} vec3fToServer = value;    if(local){vec3fFromServer(value,time);}} 
 "}
+}
+
+PROTO BlaxxunZone [#PROTO supplied by BLAXXUN  
+eventIn         MFNode   addEvents  
+eventIn         MFNode   removeEvents  
+eventIn         MFNode   addAvatars  
+eventIn         MFNode   removeAvatars  
+exposedField    MFNode   events []
+exposedField    MFNode   avatars [] 
+exposedField    SFString myAvatarURL "" 
+exposedField    SFString myAvatarName ""
+exposedField    SFFloat  number_avatars 0
+eventOut        MFNode   avatars_added 
+eventOut        MFNode   avatars_removed
+exposedField    MFNode   avatarLOD []
+exposedField    MFFloat   avatarRange []
+]{ 
+Transform { 
+addChildren IS addEvents 
+removeChildren IS removeEvents 
+children IS events 
+} 
+Transform { 
+        addChildren IS addAvatars
+        removeChildren IS removeAvatars 
+        children IS avatars 
+}
+}# END BlaxxunZone
+
+DEF SharedZone BlaxxunZone { 
+  events [ 
+    
+   ] 
 }
 
 PROTO Booth[
