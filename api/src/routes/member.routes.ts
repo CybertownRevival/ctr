@@ -51,6 +51,8 @@ memberRoutes.post('/storage/update', (request, response) =>
 memberRoutes.post('/ping', (request, response) => 
   memberController.updateLatestActivity(request, response));
 memberRoutes.get('/info/:id', (request, response) => memberController.getInfo(request, response));
+memberRoutes.get('/id/:username', (request, response) =>
+  memberController.getMemberId(request, response),);
 memberRoutes.get('/roles/:id?', (request, response) => 
   memberController.getRoles(request, response));
 memberRoutes.get('/check3d/:username', (request, response) => 
