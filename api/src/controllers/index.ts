@@ -17,3 +17,4 @@ export * from './object.controller';
 export * from './place.controller';
 export * from './vote.controller';
 export * from './fundbox.controller';
+export * from './live-event.controller';

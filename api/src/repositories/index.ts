@@ -23,3 +23,4 @@ export * from './inbox/inbox.repository';
 export * from './virtual_pet/virtual-pet.repository';
 export * from './news/news.repository';
 export * from './fundbox/fundbox.repository';
+export * from './live-event/live-event.repository';
