@@ -68,6 +68,7 @@ import AdminObjectUpdate from "@/pages/admin/objects/update.vue";
 import CommunityOverview from "@/pages/admin/overview/overview.vue";
 import CityRoles from "@/pages/admin/roles/roles.vue";
 import Transactions from "@/pages/admin/transactions/search.vue";
+import FundboxAdmin from "@/pages/admin/fundbox/fundboxadmin.vue";
 import UserObjectSearch from "@/pages/admin/objects/instances/search.vue";
 import SeizedObjects from "@/pages/admin/objects/instances/seized.vue";
 import NewsEditor from "@/pages/admin/news/editor.vue";
@@ -461,6 +462,14 @@ export default [
         name: "Transactions",
         meta: {
           title: "Transactions Search - Admin Panel",
+        },
+      },
+      {
+        path: "/admin/fundbox/",
+        component: FundboxAdmin,
+        name: "FundboxAdmin",
+        meta: {
+          title: "Fundbox Administration - Admin Panel",
         },
       },
       {

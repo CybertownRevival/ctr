@@ -45,23 +45,22 @@ class FundboxController {
       const fundboxes =
         await this.fundboxService.getAuditFundboxes(member.id);
 
-      if (fundboxes.length === 0) {
+      response.status(200).json(fundboxes);
+
+      } catch (error) {
+      console.log(error);
+
+      if (error.message === 'You do not have permission to audit Fundboxes.') {
         response.status(403).json({
-          error: 'You do not have permission to audit Fundboxes.',
+          error: error.message,
         });
         return;
       }
 
-      response.status(200).json(fundboxes);
-    } catch (error) {
-      console.log(error);
-
-      response.status(400).json({
-        error:
-          error.message ||
-          'A problem occurred while loading Fundboxes.',
-      });
-    }
+  response.status(400).json({
+    error: error.message || 'A problem occurred while loading Fundboxes.',
+  });
+}
   }
 
   /**

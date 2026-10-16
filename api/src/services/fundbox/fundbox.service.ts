@@ -165,9 +165,11 @@ export class FundboxService {
       return true;
     }
 
-    // Places Chief may audit every City Place Fundbox.
+    // Places Chief may view City Place Fundboxes,
+    // excluding Jail and City Hall.
     if (
       fundbox.place_type === 'public' &&
+      !['jail', 'cityhall'].includes(fundbox.place_slug) &&
       roleAssignments.find(assignment =>
         assignment.role_id === this.roleRepository.roleMap.PlacesChief,
       )
@@ -311,7 +313,7 @@ export class FundboxService {
     );
 
     if (!canAuditAll && !canAuditColonies && !canAuditPlaces) {
-      return [];
+     throw new Error('You do not have permission to audit Fundboxes.');
     }
 
     const fundboxes = await this.fundboxRepository.findAllWithBalances();
@@ -322,7 +324,11 @@ export class FundboxService {
 
     return fundboxes.filter(fundbox =>
       (canAuditColonies && fundbox.place_type === 'colony') ||
-      (canAuditPlaces && fundbox.place_type === 'public'),
+      (
+        canAuditPlaces &&
+        fundbox.place_type === 'public' &&
+        ![13, 17].includes(fundbox.place_id)
+      ),
     );
   }
 
