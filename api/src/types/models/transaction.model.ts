@@ -10,6 +10,10 @@ export enum TransactionReason {
   ItemPurchase = 'item-purchase',
   /** Catch-all for any transaction between two members */
   MemberToMember = 'member-to-member',
+  /** Used when a member donates CCs to a Fundbox */
+  FundboxDonation = 'fundbox-donation',
+  /** Used when a Fundbox awards CCs to a member */
+  FundboxAward = 'fundbox-award',
   /** Catch-all for any transaction between a member and Cybertown itself */
   SystemToMember = 'system-to-member',
   /** Used for refunding payments to users when they sell a house */
@@ -35,4 +39,6 @@ export interface Transaction extends Model {
   recipient_wallet_id?: number;
   /** ID of the wallet that sent CCS. Can be null if the sender is the system. */
   sender_wallet_id?: number;
+  /** ID of the member who authorised the transaction, where applicable */
+  authorized_by_member_id?: number;
 }

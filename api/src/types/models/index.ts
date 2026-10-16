@@ -21,3 +21,4 @@ export * from './home.model';
 export * from './messageboard.model';
 export * from './inbox.model';
 export * from './virtual-pet.model';
+export * from './fundbox.model';

@@ -20,4 +20,5 @@ export * from './messageboard/messageboard.service';
 export * from './inbox/inbox.service';
 export * from './vote/vote.service';
 export * from './news/news.service';
+export * from './fundbox/fundbox.service';
 export * from './live-event/live-event.service';
