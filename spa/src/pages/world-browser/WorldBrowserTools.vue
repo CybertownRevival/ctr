@@ -1,59 +1,134 @@
+
 <template>
   <div>
+    <button
+      class="btn-ui"
+      v-on:click="opener('#/information/'
+        + $store.data.place.type
+        + '/'
+        + $store.data.place.id
+        + '/'
+        + $store.data.place.slug)"
+    >
+      Information
+    </button>
 
-    <button class="btn-ui"
-            v-on:click="opener('#/information/'
-              + $store.data.place.type
-              + '/'
-              + $store.data.place.id
-              + '/'
-              + $store.data.place.slug)">Information</button>
     <span v-if="$store.data.place.slug === 'employment'">
-      <button class="btn-ui"
-              v-on:click="opener('#/messageboard/' + $store.data.place.id)">Job Offers</button>
+      <button
+        class="btn-ui"
+        v-on:click="opener('#/messageboard/' + $store.data.place.id)"
+      >
+        Job Offers
+      </button>
     </span>
+
     <span v-else-if="$store.data.place.type === 'shop'">
-      <button class="btn-ui" v-on:click="opener(`#/inbox/${mallId.data.place.id}`)">
+      <button
+        class="btn-ui"
+        v-on:click="opener(`#/inbox/${mallId.data.place.id}`)"
+      >
         Mall Inbox
       </button>
-      <button class="btn-ui" v-on:click="opener(`#/messageboard/${mallId.data.place.id}`)">
+
+      <button
+        class="btn-ui"
+        v-on:click="opener(`#/messageboard/${mallId.data.place.id}`)"
+      >
         Mall Messages
       </button>
     </span>
+
     <span v-else>
-      <button class="btn-ui"
-            v-on:click="opener('#/inbox/' + $store.data.place.id)">Inbox</button>
-      <button class="btn-ui"
-            v-on:click="opener('#/messageboard/' + $store.data.place.id)">Messages</button>
-      <button v-if="fundbox"
-            class="btn-ui"
-            v-on:click="opener('#/fundbox/' + fundbox.id)">
-      {{ fundbox.can_view ? 'FUNDBOX' : 'DONATE' }}
+      <button
+        class="btn-ui"
+        v-on:click="opener('#/inbox/' + $store.data.place.id)"
+      >
+        Inbox
       </button>
+
+      <button
+        class="btn-ui"
+        v-on:click="opener('#/messageboard/' + $store.data.place.id)"
+      >
+        Messages
+      </button>
+
+      <button
+        v-if="fundbox"
+        class="btn-ui"
+        v-on:click="opener('#/fundbox/' + fundbox.id)"
+      >
+        {{
+          $store.data.place.slug === 'enter'
+            ? 'DONATE'
+            : (fundbox.can_view ? 'FUNDBOX' : 'DONATE')
+        }}
+      </button>
+
     </span>
+
     <br />
+
     <div v-if="$store.data.place.slug === 'mall'">
-      <button class="btn-ui" v-on:click="opener('#/mall/catalog')">Mall Catalog</button>
+      <button
+        class="btn-ui"
+        v-on:click="opener('#/mall/catalog')"
+      >
+        Mall Catalog
+      </button>
+
       <br />
-      <router-link 
-      :to="{ name: 'mall-upload' }"
-      class="btn-ui">Upload</router-link>
-      <button class="btn-ui" v-on:click="opener('#/creator/stocked')">My Uploads</button>
+
+      <router-link
+        :to="{ name: 'mall-upload' }"
+        class="btn-ui"
+      >
+        Upload
+      </router-link>
+
+      <button
+        class="btn-ui"
+        v-on:click="opener('#/creator/stocked')"
+      >
+        My Uploads
+      </button>
+
       <br />
     </div>
+
     <div v-if="canAdmin">
-      <span v-if="this.$store.data.place.type === 'colony'">
-        <router-link :to="{ name: 'colonyMessageToAll' }"
-                     class="btn-ui">Message to All</router-link>
-        <router-link :to="{ name: 'colonyInboxToAll'}"
-              class="btn-ui">Inbox to All</router-link>
+      <span v-if="$store.data.place.type === 'colony'">
+        <router-link
+          :to="{ name: 'colonyMessageToAll' }"
+          class="btn-ui"
+        >
+          Message to All
+        </router-link>
+
+        <router-link
+          :to="{ name: 'colonyInboxToAll' }"
+          class="btn-ui"
+        >
+          Inbox to All
+        </router-link>
       </span>
-      <span href=""
-            class="btn-ui">Update</span>
-      <span v-show="$store.data.place.type !== 'shop' && $store.data.place.slug !== 'cityhall'">
-        <router-link :to="{ name: 'worldAccessRights' }"
-                     class="btn-ui">Access Rights</router-link>
+
+      <span href="" class="btn-ui">
+        Update
       </span>
+
+      <span
+        v-show="$store.data.place.type !== 'shop' &&
+          $store.data.place.slug !== 'cityhall'"
+      >
+        <router-link
+          :to="{ name: 'worldAccessRights' }"
+          class="btn-ui"
+        >
+          Access Rights
+        </router-link>
+      </span>
+
       <br />
     </div>
   </div>
@@ -64,6 +139,7 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "WorldBrowserTools",
+
   data: () => {
     return {
       adminCheck: false,
@@ -74,35 +150,52 @@ export default Vue.extend({
       fundbox: null,
     };
   },
-  methods: {
-    async getFundbox() {
-      this.fundbox = null;
 
-      try {
-        const response = await this.$http.get(
-          `/fundbox/place/${this.$store.data.place.id}`,
-        );
-        this.fundbox = response.data;
-      } catch (error) {
-        this.fundbox = null;
-      }
+  methods: {
+
+async getFundbox() {
+  this.fundbox = null;
+
+  try {
+    let placeId = this.$store.data.place.id;
+
+    // Main Plaza shares City Hall's Fundbox.
+    if (this.$store.data.place.slug === "enter") {
+      const cityHall = await this.$http.get("/place/cityhall");
+      placeId = cityHall.data.place.id;
+    }
+
+    const response = await this.$http.get(
+      `/fundbox/place/${placeId}`,
+    );
+
+    this.fundbox = response.data;
+  } catch (error) {
+    this.fundbox = null;
+  }
+},
+
+    async getMallId() {
+      this.mallId = await this.$http.get("/place/mall");
     },
-    async getMallId(){
-      this.mallId = await this.$http.get('/place/mall');
-    },
+
     async checkAdmin() {
       let endpoint;
+
       switch (this.$store.data.place.type) {
-      case "colony":
-        endpoint = `/colony/${this.$store.data.place.id}/can_admin`;
-        break;
-      case "public":
-        endpoint = `/place/can_admin/${this.$store.data.place.slug}`;
-        break;
-      case "shop":
-        endpoint = "/place/can_admin/mall";
-        break;
+        case "colony":
+          endpoint = `/colony/${this.$store.data.place.id}/can_admin`;
+          break;
+
+        case "public":
+          endpoint = `/place/can_admin/${this.$store.data.place.slug}`;
+          break;
+
+        case "shop":
+          endpoint = "/place/can_admin/mall";
+          break;
       }
+
       try {
         const adminCheck = await this.$http.get(endpoint);
         this.canAdmin = adminCheck.data.result;
@@ -110,15 +203,22 @@ export default Vue.extend({
         this.canAdmin = false;
       }
     },
+
     async opener(link) {
-      window.open(link, "targetWindow", "height=650,width=800,menubar=no,status=no");
+      window.open(
+        link,
+        "targetWindow",
+        "height=650,width=800,menubar=no,status=no",
+      );
     },
   },
+
   mounted() {
     this.checkAdmin();
     this.getMallId();
     this.getFundbox();
   },
+
   watch: {
     async $route(to, from) {
       console.log("Place Change");
