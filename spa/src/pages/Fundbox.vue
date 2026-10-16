@@ -1,142 +1,154 @@
-﻿
-<template>
-  <div class="min-h-screen bg-black p-6 font-sans text-gray-200">
-    <h1 class="mb-6 text-center text-2xl font-bold text-green-500">
-      FUNDBOX
-    </h1>
+﻿<template>
+  <div class="flex min-h-screen flex-col items-center bg-black px-4 py-6 font-sans text-indigo-100">
+    <div class="mx-auto w-full max-w-3xl">
+      <h1 class="mb-5 text-center text-3xl font-bold text-gray-300">FUNDBOX</h1>
 
-    <div class="mx-auto max-w-3xl">
-      <p v-if="loading" class="text-center text-gray-400">
-        Loading Fundbox...
-      </p>
-
-      <div
-        v-else-if="error"
-        class="rounded border border-red-700 p-4 text-center text-red-400"
-      >
-        {{ error }}
-      </div>
+      <p v-if="loading" class="text-center">Loading Fundbox...</p>
+      <p v-else-if="error" class="text-center text-red-400">{{ error }}</p>
 
       <div v-else-if="fundbox">
-        <!-- Balance: authorised members only -->
-        <div
-          v-if="fundbox.can_view"
-          class="rounded border border-gray-700 p-6 text-center"
-        >
-          <h2 class="mb-3 text-xl font-bold text-green-400">
-            {{ fundbox.place_name || "Fundbox" }}
-          </h2>
+        <h2 class="mb-3 text-center text-2xl font-bold text-green">
+          {{ fundbox.place_name || "Fundbox" }}
+        </h2>
 
-          <p class="mb-2 text-sm text-gray-400">
-            Available Balance
-          </p>
-
-          <p class="text-3xl font-bold text-white">
-            {{ formatCC(fundbox.balance) }} CC
-          </p>
+        <div v-if="fundbox.can_view" class="mx-auto mb-6 w-full max-w-3xl rounded-xl border border-white px-5 py-5 text-center">
+          <div class="text-2xl font-bold text-green">Available Balance</div>
+          <div class="mt-2 text-xl">{{ formatCC(fundbox.balance) }} CCs</div>
         </div>
 
-        <!-- Donation form: all logged-in members -->
-        <div class="mt-6 rounded border border-gray-700 p-6">
-          <h3 class="mb-4 text-center text-xl font-bold text-green-400">
-            Donate CC
-          </h3>
-
-          <p class="mb-4 text-center text-sm text-gray-400">
-            Support {{ fundbox.place_name }} by donating Cybertown Credits.
+        <section class="mx-auto mb-6 w-full max-w-3xl rounded-xl border border-white px-5 py-6">
+          <h3 class="mb-2 text-center text-2xl font-bold text-green">Donate CCs</h3>
+          <p class="mb-4 text-center">
+            Support {{ fundbox.place_name }} by donating CCs.
           </p>
-
-          <form @submit.prevent="donateCC">
-            <label for="donationAmount" class="mb-2 block text-sm">
-              Donation amount (CC)
-            </label>
-
-            <input
-              id="donationAmount"
-              v-model="donationAmount"
-              type="number"
-              min="1"
-              step="1"
-              required
-              class="w-full rounded border border-gray-600 bg-gray-900 p-3 text-white"
-              placeholder="Enter amount"
-            />
-
-            <button
-              type="submit"
-              :disabled="donating"
-              class="mt-4 w-full rounded bg-green-700 p-3 font-bold text-white disabled:opacity-50"
-            >
-              {{ donating ? "Processing..." : "Donate CC" }}
-            </button>
+          <form class="mx-auto max-w-lg" @submit.prevent="donateCC">
+            <div class="flex flex-wrap items-center justify-center gap-3">
+              <label for="donationAmount" class="font-bold">Amount (CC):</label>
+              <input
+                id="donationAmount"
+                v-model="donationAmount"
+                type="number"
+                min="1"
+                max="99999999"
+                step="1"
+                required
+                class="w-36 border border-gray-400 bg-white px-2 py-1 text-lg text-black rounded-none"
+                placeholder="0"
+              />
+              <button
+                type="submit"
+                :disabled="donating"
+                class="border border-green-800 bg-green-700 px-5 py-2 font-bold text-white rounded-none disabled:opacity-50"
+              >
+                {{ donating ? "Processing..." : "Donate CCs" }}
+              </button>
+            </div>
           </form>
-
-          <p
-            v-if="donationMessage"
-            class="mt-4 text-center text-sm text-green-400"
-          >
+          <p v-if="donationMessage" class="mt-3 text-center" role="status">
             {{ donationMessage }}
           </p>
-        </div>
+        </section>
 
-        <!-- Award CC: authorised leaders/owners only -->
-        <div
-          v-if="fundbox.can_award"
-          class="mt-6 rounded border border-gray-700 p-6"
-        >
-          <h3 class="mb-4 text-center text-xl font-bold text-green-400">
-            Award CC
-          </h3>
-
-          <p class="mb-4 text-center text-sm text-gray-400">
-            Award Cybertown Credits from {{ fundbox.place_name }} to a resident.
+        <section v-if="fundbox.can_award" class="mx-auto mb-6 w-full max-w-3xl rounded-xl border border-white px-5 py-6">
+          <h3 class="mb-2 text-center text-2xl font-bold text-green">Award CCs</h3>
+          <p class="mb-4 text-center">
+            Award CCs from {{ fundbox.place_name }} to a resident.
           </p>
-
-          <form @submit.prevent="awardCC">
-            <label for="awardUsername" class="mb-2 block text-sm">
-              Recipient username
-            </label>
-
-            <input
-              id="awardUsername"
-              v-model="awardUsername"
-              type="text"
-              required
-              class="mb-4 w-full rounded border border-gray-600 bg-gray-900 p-3 text-white"
-              placeholder="Enter username"
-            />
-
-            <label for="awardAmount" class="mb-2 block text-sm">
-              Award amount (CC)
-            </label>
-
-            <input
-              id="awardAmount"
-              v-model="awardAmount"
-              type="number"
-              min="1"
-              step="1"
-              required
-              class="w-full rounded border border-gray-600 bg-gray-900 p-3 text-white"
-              placeholder="Enter amount"
-            />
-
-            <button
-              type="submit"
-              :disabled="awarding"
-              class="mt-4 w-full rounded bg-green-700 p-3 font-bold text-white disabled:opacity-50"
-            >
-              {{ awarding ? "Processing..." : "Award CC" }}
-            </button>
+          <form class="mx-auto max-w-lg" @submit.prevent="awardCC">
+            <div class="mb-3 flex flex-wrap items-center justify-center gap-3">
+              <label for="awardUsername" class="font-bold">Recipient:</label>
+              <input
+                id="awardUsername"
+                v-model="awardUsername"
+                type="text"
+                required
+                class="w-60 max-w-full border border-gray-400 bg-white px-2 py-1 text-lg text-black rounded-none"
+                placeholder="Username"
+              />
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-3">
+              <label for="awardAmount" class="font-bold">Amount (CC):</label>
+              <input
+                id="awardAmount"
+                v-model="awardAmount"
+                type="number"
+                min="1"
+                max="99999999"
+                step="1"
+                required
+                class="w-36 border border-gray-400 bg-white px-2 py-1 text-lg text-black rounded-none"
+                placeholder="0"
+              />
+              <button
+                type="submit"
+                :disabled="awarding"
+                class="border border-red-800 bg-red-700 px-5 py-2 font-bold text-white rounded-none disabled:opacity-50"
+              >
+                {{ awarding ? "Processing..." : "Award CCs" }}
+              </button>
+            </div>
           </form>
-
-          <p
-            v-if="awardMessage"
-            class="mt-4 text-center text-sm text-green-400"
-          >
+          <p v-if="awardMessage" class="mt-3 text-center" role="status">
             {{ awardMessage }}
           </p>
-        </div>
+        </section>
+
+        <section v-if="fundbox.can_view" class="mx-auto mt-6 w-full max-w-3xl rounded-xl border border-white px-5 py-6">
+          <h3 class="mb-4 text-center text-2xl font-bold text-green">
+            Transaction History
+          </h3>
+          <p v-if="transactionsLoading" class="text-center">Loading transactions...</p>
+          <p v-else-if="transactionsError" class="text-center text-red-400">
+            {{ transactionsError }}
+          </p>
+          <p v-else-if="transactions.length === 0" class="text-center">
+            No transactions recorded.
+          </p>
+          <div v-else class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="border-b border-indigo-200 font-bold text-indigo-100">
+                <tr>
+                  <th class="p-2">Date</th>
+                  <th class="p-2">Type</th>
+                  <th class="p-2">Member</th>
+                  <th class="p-2 text-right">Amount</th>
+                  <th class="p-2">Authorised By</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="transaction in transactions"
+                  :key="transaction.id"
+                  class="border-b border-gray-800"
+                >
+                  <td class="whitespace-nowrap p-2">{{ formatDate(transaction.created_at) }}</td>
+                  <td
+                    class="p-2"
+                    :class="transaction.recipient_wallet_id === fundbox.wallet_id ? 'text-green-400' : 'text-red-400'"
+                  >
+                    {{ transaction.recipient_wallet_id === fundbox.wallet_id ? "Donation" : "Award" }}
+                  </td>
+                  <td class="p-2">
+                    {{ transaction.recipient_wallet_id === fundbox.wallet_id
+                      ? (transaction.sender_username || "Unknown")
+                      : (transaction.recipient_username || "Unknown") }}
+                  </td>
+                  <td
+                    class="whitespace-nowrap p-2 text-right"
+                    :class="transaction.recipient_wallet_id === fundbox.wallet_id ? 'text-green-400' : 'text-red-400'"
+                  >
+                    {{ transaction.recipient_wallet_id === fundbox.wallet_id ? "+" : "−" }}{{ formatCC(transaction.amount) }} CC
+                  </td>
+                  <td class="p-2">
+                    {{ transaction.recipient_wallet_id === fundbox.wallet_id
+                      ? "—"
+                      : (transaction.authorized_by_username || "Unknown") }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -162,6 +174,9 @@ export default Vue.extend({
       awardAmount: "",
       awarding: false,
       awardMessage: "",
+      transactions: [] as any[],
+      transactionsLoading: false,
+      transactionsError: "",
     };
   },
 
@@ -172,6 +187,32 @@ export default Vue.extend({
       return Number.isFinite(value)
         ? value.toLocaleString("en-GB")
         : "Unavailable";
+    },
+
+    formatDate(date: string): string {
+      return new Date(date).toLocaleString("en-GB");
+    },
+
+    async loadTransactions() {
+      if (!this.fundbox || !this.fundbox.can_view) {
+        this.transactions = [];
+        return;
+      }
+
+      this.transactionsLoading = true;
+      this.transactionsError = "";
+
+      try {
+        const response = await this.$http.get(
+          `/fundbox/${this.fundbox.id}/transactions`
+        );
+
+        this.transactions = response.data;
+      } catch (error) {
+        this.transactionsError = "Unable to load transaction history.";
+      } finally {
+        this.transactionsLoading = false;
+      }
     },
 
     async loadFundbox() {
@@ -199,6 +240,9 @@ export default Vue.extend({
               ...publicFundbox,
               ...privateResponse.data,
             };
+
+            await this.loadTransactions();
+
           } catch (error) {
             // Public details and donations remain accessible.
             this.fundbox = {
@@ -235,9 +279,10 @@ export default Vue.extend({
       if (
         !Number.isSafeInteger(amount) ||
         amount <= 0 ||
+        amount > 99999999 ||
         !/^[0-9]+$/.test(this.donationAmount.trim())
       ) {
-        this.donationMessage = "Please enter a valid whole number of CC.";
+        this.donationMessage = "Please enter a whole number between 1 and 99,999,999 CC.";
         return;
       }
 
@@ -271,6 +316,9 @@ export default Vue.extend({
               ...this.fundbox,
               ...response.data,
             };
+
+          await this.loadTransactions();
+
           } catch (error) {
             // Donation succeeded even if refresh failed.
           }
@@ -312,9 +360,10 @@ export default Vue.extend({
       if (
         !Number.isSafeInteger(amount) ||
         amount <= 0 ||
+        amount > 99999999 ||
         !/^[0-9]+$/.test(this.awardAmount.trim())
       ) {
-        this.awardMessage = "Please enter a valid whole number of CC.";
+        this.awardMessage = "Please enter a whole number between 1 and 99,999,999 CC.";
         return;
       }
 
@@ -376,6 +425,9 @@ export default Vue.extend({
             ...this.fundbox,
             ...response.data,
           };
+
+        await this.loadTransactions();
+
         } catch (refreshError) {
           // Award succeeded even if balance refresh failed.
         }

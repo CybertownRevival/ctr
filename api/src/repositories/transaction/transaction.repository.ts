@@ -374,25 +374,49 @@ export class TransactionRepository {
     ;
   }
 
-  public async getTransactionsByWalletId(id: number, limit: number, offset: number): Promise<any> {
-    return this.db.knex
-      .select(
-        'id',
-        'created_at',
-        'amount',
-        'recipient_wallet_id',
-        'sender_wallet_id',
-        'reason',
-        'authorized_by_member_id',
-      )
-      .from('transaction')
-      .where('recipient_wallet_id', id)
-      .orWhere('sender_wallet_id', id)
-      .limit(limit)
-      .offset(offset)
-      .orderBy('id', 'DESC');
-    ;
-  }
+
+public async getTransactionsByWalletId(
+  id: number,
+  limit: number,
+  offset: number,
+): Promise<any> {
+  return this.db.knex('transaction as t')
+    .select(
+      't.id',
+      't.created_at',
+      't.amount',
+      't.recipient_wallet_id',
+      't.sender_wallet_id',
+      't.reason',
+      't.authorized_by_member_id',
+      'sender.username as sender_username',
+      'recipient.username as recipient_username',
+      'authorizer.username as authorized_by_username',
+    )
+    .leftJoin(
+      'member as sender',
+      'sender.wallet_id',
+      't.sender_wallet_id',
+    )
+    .leftJoin(
+      'member as recipient',
+      'recipient.wallet_id',
+      't.recipient_wallet_id',
+    )
+    .leftJoin(
+      'member as authorizer',
+      'authorizer.id',
+      't.authorized_by_member_id',
+    )
+    .where(function () {
+      this.where('t.recipient_wallet_id', id)
+        .orWhere('t.sender_wallet_id', id);
+    })
+    .orderBy('t.id', 'desc')
+    .limit(limit)
+    .offset(offset);
+}
+
 
   public async getLatestTransactions(time: Date): Promise<any> {
     return this.db.knex
