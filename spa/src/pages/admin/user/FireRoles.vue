@@ -143,6 +143,7 @@ export default {
       }
 
       const securityRoles = [
+        "Deputy Security Chief",
         "Security Captain",
         "Security Lieutenant",
         "Security Sergeant",
