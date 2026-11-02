@@ -119,6 +119,7 @@ export default Vue.extend({
         const response = await this.$http.get("/admin/rolelist/");
 
         const securityRoles = [
+          "Deputy Security Chief",
           "Security Captain",
           "Security Lieutenant",
           "Security Sergeant",
