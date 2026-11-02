@@ -79,6 +79,7 @@ export class MemberService {
 
   public canSecurityManageRole(roleId: number): boolean {
     const SECURITY_ROLES = [
+      this.roleRepository.roleMap.DeputySecurityChief,
       this.roleRepository.roleMap.SecurityCaptain,
       this.roleRepository.roleMap.SecurityLieutenant,
       this.roleRepository.roleMap.SecuritySergeant,
