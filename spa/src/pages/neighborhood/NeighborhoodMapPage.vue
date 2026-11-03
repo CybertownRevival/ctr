@@ -73,7 +73,9 @@ export default Vue.extend({
 
         this.hood = response[0].data.hood;
         this.colony = response[0].data.colony;
-        this.blocks = response[1].data.blocks;
+        this.blocks = response[1].data.blocks.filter(
+          block => block.status === 1,
+          );
         this.$store.methods.setPlace(place);
         document.title = `${this.hood.name  } - Cybertown`;
       });

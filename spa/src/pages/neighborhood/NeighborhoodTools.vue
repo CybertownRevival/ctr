@@ -25,7 +25,8 @@
         Message to All</router-link>
       <router-link :to="{ name: 'neighborhoodInboxToAll'}" class="btn-ui">
         Inbox to All</router-link>
-			<span href="" class="btn-ui">Update</span>
+			<router-link :to="{ name: 'neighborhoodUpdate' }" class="btn-ui">
+        Update</router-link>
       <router-link :to="{ name: 'neighborhoodAccessRights' }" class="btn-ui">Access Rights</router-link>
 		</div>
 		<br />
@@ -46,9 +47,10 @@ export default Vue.extend({
   methods: {
     async checkAdmin() {
       try {
-        this.canAdmin = await this.$http.get(
-          `/hood/${  this.$store.data.place.hood.id  }/can_admin`,
+        const response = await this.$http.get(
+          `/hood/${this.$store.data.place.hood.id}/can_admin`,
         );
+        this.canAdmin = response.data.result === true;
       } catch (e) {
         this.canAdmin = false;
       }
@@ -59,10 +61,14 @@ export default Vue.extend({
   },
   watch: {
     "$store.data.place.hood": {
+      immediate: true,
       handler() {
         if (this.$store.data.place.hood) {
           this.loaded = true;
           this.checkAdmin();
+        } else {
+          this.loaded = false;
+          this.canAdmin = false;
         }
       },
     },

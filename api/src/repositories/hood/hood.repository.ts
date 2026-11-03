@@ -14,10 +14,54 @@ export class HoodRepository {
   
   public async getBlocks(hoodId: number): Promise<any> {
     return knex
-      .select('place.id', 'place.name', 'map_location.location')
+      .select('place.id', 'place.name', 'place.status', 'map_location.location')
       .from('place')
       .innerJoin('map_location', 'map_location.place_id', 'place.id')
       .where('map_location.parent_place_id', hoodId)
+      .where('place.type', 'block')
       .orderBy('map_location.location');
   }
+
+  public async updateBlockStatus(
+    hoodId: number,
+    blockId: number,
+    status: number,
+  ): Promise<boolean> {
+    const updated = await knex('place')
+      .where({
+        id: blockId,
+        type: 'block',
+      })
+      .whereExists(function () {
+        this.select(knex.raw('1'))
+          .from('map_location')
+          .whereRaw('map_location.place_id = place.id')
+          .where('map_location.parent_place_id', hoodId);
+      })
+    . update({ status });
+
+    return updated === 1;
+  }
+
+  public async renameBlock(
+    hoodId: number,
+    blockId: number,
+    name: string,
+  ): Promise<boolean> {
+    const updated = await knex('place')
+      .where({
+        id: blockId,
+        type: 'block',
+      })
+      .whereExists(function () {
+        this.select(knex.raw('1'))
+          .from('map_location')
+          .whereRaw('map_location.place_id = place.id')
+          .where('map_location.parent_place_id', hoodId);
+      })
+      .update({ name });
+
+    return updated === 1;
+  }
+
 }
