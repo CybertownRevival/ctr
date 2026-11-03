@@ -129,11 +129,35 @@ export class MemberService {
       this.roleRepository.roleMap.Admin,
       this.roleRepository.roleMap.SecurityCaptain,
       this.roleRepository.roleMap.SecurityChief,
+      this.roleRepository.roleMap.DeputySecurityChief,
       this.roleRepository.roleMap.SecurityLieutenant,
       this.roleRepository.roleMap.SecurityOfficer,
       this.roleRepository.roleMap.SecuritySergeant,
     ];
     return !!roleAssignments.find(assignment => ADMIN_ROLES.includes(assignment.role_id));
+  }
+
+  public async canManageSecurityRoles(memberId: number): Promise<boolean> {
+    const roleAssignments =
+      await this.roleAssignmentRepository.getByMemberId(memberId);
+    const SECURITY_ROLE_MANAGERS = [
+      this.roleRepository.roleMap.SecurityChief,
+      this.roleRepository.roleMap.DeputySecurityChief,
+    ];
+    return !!roleAssignments.find(assignment => SECURITY_ROLE_MANAGERS.includes(assignment.role_id),);
+  }
+
+  public canSecurityManageRole(roleId: number): boolean {
+    const SECURITY_ROLES = [
+      this.roleRepository.roleMap.DeputySecurityChief,
+      this.roleRepository.roleMap.SecurityCaptain,
+      this.roleRepository.roleMap.SecurityLieutenant,
+      this.roleRepository.roleMap.SecuritySergeant,
+      this.roleRepository.roleMap.SecurityOfficer,
+      this.roleRepository.roleMap.SecurityAdvisor,
+      this.roleRepository.roleMap.JailGuard,
+    ];
+    return SECURITY_ROLES.includes(roleId);
   }
 
   public async canLeader(memberId: number): Promise<boolean> {
@@ -146,6 +170,21 @@ export class MemberService {
       this.roleRepository.roleMap.PlacesChief,
     ];
     return !!roleAssignments.find(assignment => LEADER_ROLES.includes(assignment.role_id));
+  }
+
+  public async canManageLiveEvent(memberId: number): Promise<boolean> {
+    const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+
+    const LIVE_EVENT_ROLES = [
+      this.roleRepository.roleMap.Admin,
+      this.roleRepository.roleMap.CityMayor,
+      this.roleRepository.roleMap.PlacesChief,
+      this.roleRepository.roleMap.ColonyRepresentative,
+    ];
+
+    return !!roleAssignments.find(
+    assignment => LIVE_EVENT_ROLES.includes(assignment.role_id),
+    );
   }
 
   public async canStaff(memberId: number): Promise<boolean> {
@@ -175,6 +214,7 @@ export class MemberService {
     const security = await this.canAdmin(memberId);
     const roleAssignments = await this.roleAssignmentRepository.getByMemberId(memberId);
     const leader = await this.canLeader(memberId);
+    const liveEvent = await this.canManageLiveEvent(memberId);
     const admin = !!roleAssignments.find(
       assignment => assignment.role_id === this.roleRepository.roleMap.Admin,
     );
@@ -188,9 +228,26 @@ export class MemberService {
     if (leader) {
       accessLevel.push('leader');
     }
+    if (liveEvent) {
+        accessLevel.push('live-event');
+    }
     return accessLevel;
   }
 
+    public async canEditNews(memberId: number): Promise<boolean> {
+      const roleAssignments = 
+        await this.roleAssignmentRepository.getByMemberId(memberId);
+    
+      const newsRoles = [
+        this.roleRepository.roleMap.Admin,
+        this.roleRepository.roleMap.CityMayor,
+        this.roleRepository.roleMap.CVNEditor,
+   ];
+
+    return !!roleAssignments.find(
+      assignment => newsRoles.includes(assignment.role_id),
+    );  
+}
   /**
    * Creates a new member with the given email, username, and password. If successful, distributes
    * daily login bonuses, and returns an encoded member token.
@@ -505,7 +562,39 @@ export class MemberService {
     await this.memberRepository.update(memberId, { password: hashedPassword });
   }
 
-  public async updatePrimaryRoleId(memberId: number, primaryRoleId: number): Promise<void> {
+  /**
+   * Sets the member's displayed role, rejecting any role they do not actually hold.
+   *
+   * primaryRoleId arrives straight from request.body, so without this check any
+   * authenticated member can display any role -- including City Guide or Security --
+   * without holding it. role_assignment is the authority for what a member holds.
+   *
+   * A null id clears the selection, which is legitimate.
+   */
+  public async updatePrimaryRoleId(
+    memberId: number,
+    primaryRoleId: unknown,
+  ): Promise<void> {
+    if (primaryRoleId === null) {
+      await this.memberRepository.update(memberId, { primary_role_id: null });
+      return;
+    }
+
+    if (
+      typeof primaryRoleId !== 'number'
+      || !Number.isSafeInteger(primaryRoleId)
+      || primaryRoleId <= 0
+    ) {
+      throw new Error('primary role id must be a positive integer or null');
+    }
+
+    const assignments = await this.roleAssignmentRepository.getByMemberId(memberId);
+    const holdsRole = assignments.some(assignment => assignment.role_id === primaryRoleId);
+    if (!holdsRole) {
+      throw new Error(
+        'member does not hold that role; refusing to display it',
+      );
+    }
     await this.memberRepository.update(memberId, { primary_role_id: primaryRoleId });
   }
 

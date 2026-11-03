@@ -149,6 +149,18 @@ class PlaceController {
     }
   }
 
+  public async getLiveEventDestinations(request: Request, response: Response,): Promise<void> {
+    const session = this.memberService.decryptSession(request, response);
+    if (!session) return;
+    try {
+      const destinations = await this.placeService.getLiveEventDestinations();
+        response.status(200).json({ destinations });
+      } catch (error) {
+        console.log(error);
+        response.status(400).json({ error });
+      }
+}
+
   public async addStorage(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if(!session) return;

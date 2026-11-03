@@ -53,6 +53,20 @@ export class PlaceRepository {
       .orderBy(orderBy, 'asc');
   }
 
+  public async findLiveEventDestinations(): Promise<any[]> {
+    return this.db.place
+      .select(
+        'place.id',
+        'place.name',
+        'place.slug',
+        'place.type',
+      )
+      .whereIn('place.type', ['colony', 'public'])
+      .where('place.status', 1)
+      .orderBy('place.type', 'asc')
+      .orderBy('place.name', 'asc');
+  }
+
   public async removePlace(id: number): Promise<any> {
     await this.db.place
       .where('id', id)

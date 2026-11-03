@@ -15,10 +15,12 @@ import {
   homeRoutes,
   hoodRoutes,
   inboxRoutes,
+  liveEventRoutes,
   mallRoutes,
   memberRoutes,
   messageRoutes,
   messageboardRoutes,
+  newsRoutes,
   objectInstanceRoutes,
   objectRoutes,
   placeRoutes,
@@ -63,11 +65,13 @@ app.use('/api/home', homeRoutes);
 app.use('/api/messageboard', messageboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/inbox', inboxRoutes);
+app.use('/api/live-event', liveEventRoutes);
 app.use('/api/mall', mallRoutes);
 app.use('/api/blackmarket', blackmarketRoutes);
 app.use('/api/fleamarket', fleamarketRoutes);
 app.use('/api/club', clubRoutes);
 app.use('/api/vote', voteRoutes);
+app.use('/api/news', newsRoutes);
 
 app.use((request, response, next) => {
   const error = new Error('Not found');

@@ -35,8 +35,9 @@ const config: { [key: string]: Knex.Config } = {
    * constructor calls `knex(...)` at import time, every suite that transitively imports a
    * repository dies while loading rather than running a single assertion. The
    * database-backed specs need the key for a second reason: it is the connection they
-   * actually talk to. Point DB_DATABASE at a disposable schema before running those --
-   * see `spec/integration-db.ts`, which refuses to write without an explicit opt-in.
+   * actually talk to -- see `spec/integration-db.ts`, which refuses to write without an
+   * explicit opt-in. The database name is deliberately fixed instead of reading
+   * DB_DATABASE, so NODE_ENV=test cannot select a development or production schema.
    */
   test: {
     client: 'mysql',
@@ -45,7 +46,7 @@ const config: { [key: string]: Knex.Config } = {
       port: Number.parseInt(process.env.DB_PORT),
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
-      database: process.env.DB_DATABASE,
+      database: 'ctr_test',
       charset: 'utf8mb4',
     },
     // min 0, unlike the other environments: a minimum of 2 opens connections nothing asks

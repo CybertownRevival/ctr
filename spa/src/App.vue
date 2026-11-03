@@ -12,7 +12,12 @@
           <img src="/assets/img/ctMinaBanner.gif" />
         </div>
         <div class="flex h-full items-center px-5" style="justify-content:right">
-          <img src="/assets/img/news.gif" />
+          <img
+            src="/assets/img/news.gif"
+            class="cursor-pointer"
+            alt="News"
+            @click="openWindow('#/news')"
+            />
         </div>
       </div>
     </div>
@@ -84,7 +89,8 @@
                   class="cursor-pointer" style="width: 85px; height: 70px;" />
             </div>
             <div class="flex justify-center" v-else>
-              <img src="/assets/img/outlandico.jpeg" />
+              <img v-if="liveEvent.enabled && liveEvent.place" src="/assets/img/live-event.gif" class="cursor-pointer" style="width: 75%; height: 75%;" @click="$router.push({ path: `/place/${liveEvent.place.slug}` })" />
+              <img v-else src="/assets/img/outlandico.jpeg" />
             </div>
             <div class="px-8">
               <select
@@ -160,6 +166,10 @@ export default Vue.extend({
   data: () => {
     return {
       accessLevel: null,
+      liveEvent: {
+        enabled: false,
+        place: null,
+      },
       jumpGateData: [
         {
           title: "COLONIES:",
@@ -327,6 +337,17 @@ export default Vue.extend({
     };
   },
   methods: {
+    async loadLiveEvent(): Promise<void> {
+      try {
+      const response = await this.$http.get('/live-event');
+      this.liveEvent = response.data.liveEvent;
+    } catch (error) {
+      this.liveEvent = {
+        enabled: false,
+        place: null,
+      };
+    }
+  },
     changeJumpGate(): void {
       if (this.jumpGate?.length) {
         this.$router.push({ path: `/place/${this.jumpGate}` });
@@ -408,6 +429,7 @@ export default Vue.extend({
   },
   mounted() {
     this.checkVotingStatus();
+    this.loadLiveEvent();
     this.checkAccessLevel();
     this.instantMessagingListener();
     this.moderationListener();

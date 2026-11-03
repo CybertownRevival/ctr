@@ -1,27 +1,31 @@
 import dotenv from 'dotenv';
 import { Knex } from 'knex';
 
+import config from '../src/knexfile';
+
 // `knexfile` loads this same file, but these helpers read DB_* directly to decide whether
 // they are allowed to write, so they cannot rely on that import having happened first.
 // jest's cwd is `api/`, so `../.env` is the repository root env the API itself uses.
 dotenv.config({ path: '../.env' });
 
+/** The schema the specs really connect to; `knexfile` fixes it for NODE_ENV=test. */
+const testDatabase = (config.test.connection as Knex.ConnectionConfig).database;
+
 /**
  * Whether a spec may create and delete fixture rows in the configured database.
  *
- * `DB_HOST`/`DB_DATABASE` only prove that *a* database is reachable, and the API's
- * ordinary environment defines both -- pointed at a shared or production schema where
- * fixture INSERTs and cleanup DELETEs must never run. Writing therefore additionally
- * requires `CTR_INTEGRATION_TEST_DB` to name the configured database exactly: an
- * explicit, per-environment statement that this specific schema is disposable, rather
- * than an inference drawn from configuration that happens to be present.
+ * `DB_HOST` only proves that *a* database is reachable, and the API's ordinary
+ * environment defines it -- pointed at a server where fixture INSERTs and cleanup
+ * DELETEs may not be welcome. Writing therefore additionally requires
+ * `CTR_INTEGRATION_TEST_DB` to name the test schema exactly: an explicit,
+ * per-environment statement that this specific schema is disposable, rather than an
+ * inference drawn from configuration that happens to be present.
  */
 export function integrationDbAuthorized(env: NodeJS.ProcessEnv = process.env): boolean {
   return Boolean(
     env.DB_HOST
-    && env.DB_DATABASE
     && env.CTR_INTEGRATION_TEST_DB
-    && env.CTR_INTEGRATION_TEST_DB === env.DB_DATABASE,
+    && env.CTR_INTEGRATION_TEST_DB === testDatabase,
   );
 }
 
