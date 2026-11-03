@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-const http = require("http").createServer(app);
+const http = require("http");
+const server = http.createServer(app);
 const https = require("https");
-const io = require("socket.io")(http, {
+const io = require("socket.io")(server, {
     pingInterval: 10000, 
     pingTimeout: 30000
     });
@@ -38,6 +39,44 @@ function validJwt(token) {
     }
 }
 
+function getPrimaryRole(token) {
+    return new Promise((resolve, reject) => {
+        const req = http.get({
+            hostname: "ct-api",
+            port: 3000,
+            path: "/api/member/getrolename",
+            headers: {
+                apitoken: token,
+            },
+        }, (res) => {
+            let body = "";
+
+            res.on("data", (chunk) => {
+                body += chunk;
+            });
+
+            res.on("end", () => {
+                if (res.statusCode !== 200) {
+                    reject(new Error("Role lookup failed"));
+                    return;
+                }
+
+                try {
+                    const data = JSON.parse(body);
+                    resolve(data.PrimaryRoleName?.[0]?.name || "");
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        });
+
+        req.on("error", reject);
+        req.setTimeout(3000, () => {
+            req.destroy(new Error("Role lookup timed out"));
+        });
+    });
+}
+
 app.use(express.static("dist"));
 
 // serves the SPA
@@ -66,6 +105,7 @@ io.on("connection", async function(socket) {
             USERS.get(socket).avatar = tokenData.avatar;
             USERS.get(socket).room = room;
             USERS.get(socket).username = tokenData.username;
+            USERS.get(socket).token = data.token;
 
             // inform other members of the room that someone joined
             socket.to(room).emit("AV:new", {
@@ -171,27 +211,40 @@ io.on("connection", async function(socket) {
     });
 
     //handle chat messages
-    socket.on("CHAT", (chatData) => {
-        console.log("chat message...");
-        if (!chatData || !chatData.msg || typeof chatData.msg !== "string")
+    socket.on("CHAT", async (chatData) => {
+        if (!chatData || typeof chatData.msg !== "string" || !chatData.msg) {
             return;
+        }
+
         const user = USERS.get(socket);
-        const bannedwords = badwords.regex;
-        if(chatData.msg.match(bannedwords)){
-            console.log(`${user.username} used a banned word in ${user.room}`);
+
+        if (!user?.room || !user?.token) {
             return;
-        } else {
-            if (user?.room) {
-                io.to(user.room).emit("CHAT", {
-                    username: user.username,
-                    id: chatData.msg_id,
-                    msg: chatData.msg,
-                    role: chatData.role,
-                    new: true,
-                    exp: chatData.exp,
-                });
+        }
+
+        if (chatData.msg.match(badwords.regex)) {
+        console.log(`${user.username} used a banned word in ${user.room}`);
+            return;
+        }
+
+        let role = "";
+
+        if (chatData.role) {
+            try {
+                role = await getPrimaryRole(user.token);
+            } catch (error) {
+                console.error("Chat role verification failed:", error.message);
             }
         }
+
+        io.to(user.room).emit("CHAT", {
+            username: user.username,
+            id: chatData.msg_id,
+            msg: chatData.msg,
+            role,
+            new: true,
+            exp: chatData.exp,
+        });
     });
 
     socket.on("unsubscribe", () => {
@@ -219,5 +272,5 @@ io.on("connection", async function(socket) {
 });
 
 const port = process.env.WEBSOCKET_PORT || 8000;
-http.listen(port);
+server.listen(port);
 console.log(`listening on port:${port}`);
