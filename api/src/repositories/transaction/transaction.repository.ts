@@ -3,35 +3,25 @@ import { Service } from 'typedi';
 import { Db } from '../../db/db.class';
 import { Transaction, TransactionReason, Wallet } from '../../types/models';
 
+/** A `count(id)` result, as knex returns it: a single row holding the total. */
+export interface TransactionCount {
+  count: number;
+}
+
+/**
+ * A transaction as the admin listings hand it back: the stored columns, plus the two
+ * username fields `AdminService` resolves onto each row from the wallet ids once it has
+ * them. Optional because the repository never sets them itself.
+ */
+export interface TransactionListRow extends Transaction {
+  recipient_username?: { username: string }[];
+  sender_username?: { username: string }[];
+}
+
 /** Repository for creating/interacting with transaction/wallet data in the database. */
 @Service()
 export class TransactionRepository {
   constructor(private db: Db) {}
-
-  /**
-   * Applies the given amount to the balance for the wallet with the given id, and creates
-   * a transaction record.
-   * @param walletId id of recipient wallet
-   * @param amount amount transacted
-   * @returns promise resolving in the created transaction object, or rejecting on error
-   */
-  public async createDailyCreditTransaction(
-    walletId: number,
-    amount: number,
-  ): Promise<Transaction> {
-    return await this.db.knex.transaction(async trx => {
-      const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
-      await trx<Wallet>('wallet')
-        .where({ id: walletId })
-        .update({ balance: wallet.balance + amount });
-      const [transactionId] = await trx<Transaction>('transaction').insert({
-        amount,
-        reason: TransactionReason.DailyCredit,
-        recipient_wallet_id: walletId,
-      });
-      return this.find({ id: transactionId });
-    });
-  }
 
   /**
    * Finds a transaction with the given search parameters if one exists.
@@ -89,24 +79,7 @@ export class TransactionRepository {
       return this.find({ id: transactionId });
     });
   }
-  public async createWeeklyRoleCreditTransaction(
-    walletId: number,
-    amount: number,
-    roleId: number,
-  ): Promise<Transaction> {
-    return await this.db.knex.transaction(async trx => {
-      const wallet = await trx<Wallet>('wallet').where({ id: walletId }).first();
-      await trx<Wallet>('wallet')
-        .where({ id: walletId })
-        .update({ balance: wallet.balance + amount });
-      const [transactionId] = await trx<Transaction>('transaction').insert({
-        amount,
-        reason: `${TransactionReason.WeeklyCredit} for ${roleId}`,
-        recipient_wallet_id: walletId,
-      });
-      return this.find({ id: transactionId });
-    });
-  }
+
   public async createSystemCreditTransaction(
     walletId: number,
     amount: number,
@@ -257,7 +230,11 @@ export class TransactionRepository {
     });
   }
 
-  public async getTransactions(type: string, limit: number, offset: number): Promise<any> {
+  public async getTransactions(
+    type: string,
+    limit: number,
+    offset: number,
+  ): Promise<TransactionListRow[]> {
     return this.db.knex
       .select(
         'id',
@@ -272,10 +249,13 @@ export class TransactionRepository {
       .limit(limit)
       .offset(offset)
       .orderBy('id', 'DESC');
-    ;
   }
 
-  public async getTransactionsByWalletId(id: number, limit: number, offset: number): Promise<any> {
+  public async getTransactionsByWalletId(
+    id: number,
+    limit: number,
+    offset: number,
+  ): Promise<TransactionListRow[]> {
     return this.db.knex
       .select(
         'id',
@@ -291,35 +271,37 @@ export class TransactionRepository {
       .limit(limit)
       .offset(offset)
       .orderBy('id', 'DESC');
-    ;
   }
 
-  public async getLatestTransactions(time: Date): Promise<any> {
+  public async getLatestTransactions(time: Date): Promise<TransactionListRow[]> {
     return this.db.knex
       .select('transaction.*')
       .from('transaction')
       .where('created_at', '>=', time)
       .limit(30)
       .orderBy('transaction.id', 'DESC');
-    ;
   }
 
-  public async getTotal( type: string): Promise<any> {
-    return this.db.knex
+  public async getTotal( type: string): Promise<TransactionCount[]> {
+    // knex types an untyped `count` as a dictionary of unnamed columns; the alias makes
+    // the shape known here in a way the builder's own types cannot express.
+    const rows = await this.db.knex
       .count('id as count')
       .from('transaction')
       .where('reason', type);
+    return <TransactionCount[]><unknown>rows;
   }
 
-  public async getWalletTotal( id: number): Promise<any> {
-    return this.db.knex
+  public async getWalletTotal( id: number): Promise<TransactionCount[]> {
+    const rows = await this.db.knex
       .count('id as count')
       .from('transaction')
       .where('recipient_wallet_id', id)
       .orWhere('sender_wallet_id', id);
+    return <TransactionCount[]><unknown>rows;
   }
 
-  public async removeAllByWalletId(id: number): Promise<any> {
+  public async removeAllByWalletId(id: number): Promise<void> {
     await this.db.knex('transaction')
       .where('recipient_wallet_id', id)
       .orWhere('sender_wallet_id', id)

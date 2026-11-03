@@ -31,9 +31,13 @@ const config: { [key: string]: Knex.Config } = {
   /**
    * Used when NODE_ENV=test, which jest sets for us.
    *
-   * Without this key, Db passes undefined to knex while test modules load. The database
-   * name is deliberately fixed instead of reading DB_DATABASE, so NODE_ENV=test cannot
-   * select a development or production schema.
+   * Without this key `config[process.env.NODE_ENV]` is undefined, and because `Db`'s
+   * constructor calls `knex(...)` at import time, every suite that transitively imports a
+   * repository dies while loading rather than running a single assertion. The
+   * database-backed specs need the key for a second reason: it is the connection they
+   * actually talk to -- see `spec/integration-db.ts`, which refuses to write without an
+   * explicit opt-in. The database name is deliberately fixed instead of reading
+   * DB_DATABASE, so NODE_ENV=test cannot select a development or production schema.
    */
   test: {
     client: 'mysql',
@@ -45,12 +49,19 @@ const config: { [key: string]: Knex.Config } = {
       database: 'ctr_test',
       charset: 'utf8mb4',
     },
-    // min 0, unlike the other environments. A minimum of 2 makes the pool open
-    // connections it will not be asked for, and jest then hangs at the end of a run
-    // waiting on handles that nothing will close.
+    // min 0, unlike the other environments: a minimum of 2 opens connections nothing asks
+    // for, and jest then hangs at the end of a run waiting on handles nothing will close.
     pool: {
       min: 0,
       max: 5,
+    },
+    migrations: {
+      directory: '../db/migrations',
+      extension: 'ts',
+      tableName: 'migrations',
+    },
+    seeds: {
+      directory: './../db/seed',
     },
   },
   production: {
