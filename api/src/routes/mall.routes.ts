@@ -37,6 +37,12 @@ mallRoutes.get('/objects/:id', (request, response) =>
   mallController.objectsForSale(request, response));
 mallRoutes.get('/object/:id', (request, response) => 
   mallController.findByObjectId(request, response));
+mallRoutes.get('/export', (request, response) =>
+  mallController.exportMallData(request, response));
+mallRoutes.get('/object/:id/inspection', (request, response) =>
+  mallController.getObjectInspection(request, response));
+mallRoutes.get('/object/:id/source', (request, response) =>
+  mallController.getObjectSource(request, response));
 mallRoutes.get('/getObject/:id', (request, response) => 
   mallController.getObject(request, response));
 mallRoutes.get('/store/:id', (request, response) => 

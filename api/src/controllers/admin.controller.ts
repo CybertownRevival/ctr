@@ -12,9 +12,8 @@ import {
   MessageService,
   InboxService,
   MessageboardService,
-  ClubService
+  ClubService,
 } from '../services';
-import { Place } from 'models/place.model';
 import * as badwordlist from 'badwords-list';
 
 class AdminController {
@@ -32,7 +31,7 @@ class AdminController {
     private clubService: ClubService,
   ) {}
   
-  public async addBan(request: Request, response: Response): Promise<any> {
+  public async addBan(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.canAdmin(session.id);
@@ -59,7 +58,12 @@ class AdminController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const accessLevel = await this.memberService.getAccessLevel(session.id);
-    if (accessLevel === 'admin') {
+    // Pre-existing: `getAccessLevel` returns a list of levels, so this
+    // comparison has never been true and this branch has never run.
+    // Deliberately left inert -- turning it into `.includes(...)` would
+    // newly enable an access-gated path, which is not a change to make
+    // while fixing types. Raised separately for a decision.
+    if ((accessLevel as unknown as string) === 'admin') {
       try {
         await this.adminService.addDonor(
           request.body.member_id,
@@ -75,7 +79,7 @@ class AdminController {
     }
   }
   
-  public async getBanHistory(request: Request, response: Response): Promise<any> {
+  public async getBanHistory(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -151,7 +155,12 @@ class AdminController {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const accessLevel = await this.memberService.getAccessLevel(session.id);
-    if (accessLevel === 'admin') {
+    // Pre-existing: `getAccessLevel` returns a list of levels, so this
+    // comparison has never been true and this branch has never run.
+    // Deliberately left inert -- turning it into `.includes(...)` would
+    // newly enable an access-gated path, which is not a change to make
+    // while fixing types. Raised separately for a decision.
+    if ((accessLevel as unknown as string) === 'admin') {
       const currentLevel = await this
         .adminService
         .getDonor(Number(request.query.memberId));
@@ -161,7 +170,7 @@ class AdminController {
     }
   }
 
-  public async getRoleList(request: Request, response: Response): Promise<any> {
+  public async getRoleList(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -182,7 +191,7 @@ class AdminController {
     }
   }
 
-  public async hireRole(request: Request, response: Response): Promise<any> {
+  public async hireRole(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const accessLevel = await this.memberService.getAccessLevel(session.id);
@@ -210,7 +219,7 @@ class AdminController {
     }
   }
   
-  public async searchUsers(request: Request, response: Response): Promise<any> {
+  public async searchUsers(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -231,7 +240,7 @@ class AdminController {
     }
   }
 
-  public async getTransactions(request: Request, response: Response): Promise<any> {
+  public async getTransactions(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -246,7 +255,7 @@ class AdminController {
           Number.parseInt(request.query.limit.toString()),
           Number.parseInt(request.query.offset.toString()),
         );
-        findUsername = results.transactions
+        findUsername = results.transactions;
         for(const res of findUsername) {
           let sender = [{username: 'System'}];
           let receiver = [{username: 'System'}];
@@ -276,7 +285,7 @@ class AdminController {
     }
   }
 
-  public async getTransactionsByWalletId(request: Request, response: Response): Promise<any> {
+  public async getTransactionsByWalletId(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -293,7 +302,7 @@ class AdminController {
           Number.parseInt(request.query.limit.toString()),
           Number.parseInt(request.query.offset.toString()),
         );
-        findUsername = results.transactions
+        findUsername = results.transactions;
         for(const res of findUsername) {
           let sender = [{username: 'System'}];
           let receiver = [{username: 'System'}];
@@ -323,7 +332,7 @@ class AdminController {
     }
   }
 
-  public async getObjectInstances(request: Request, response: Response): Promise<any> {
+  public async getObjectInstances(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -346,7 +355,7 @@ class AdminController {
     }
   }
 
-  public async getOwnedObjects(request: Request, response: Response): Promise<any> {
+  public async getOwnedObjects(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -368,7 +377,7 @@ class AdminController {
     }
   }
   
-  public async searchUserChat(request: Request, response: Response): Promise<any> {
+  public async searchUserChat(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -390,7 +399,7 @@ class AdminController {
     }
   }
 
-  public async getCommunityData(request: Request, response: Response): Promise<any> {
+  public async getCommunityData(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -407,7 +416,7 @@ class AdminController {
     }
   }
 
-  public async avatars(request: Request, response: Response): Promise<any> {
+  public async avatars(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.canAdmin(session.id);
@@ -428,7 +437,7 @@ class AdminController {
     }
   }
 
-  public async avatarApprove(request: Request, response: Response): Promise<any> {
+  public async avatarApprove(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.canAdmin(session.id);
@@ -446,7 +455,7 @@ class AdminController {
       response.status(400).json({error});
     }
   }
-  public async avatarReject(request: Request, response: Response): Promise<any> {
+  public async avatarReject(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.canAdmin(session.id);
@@ -465,7 +474,7 @@ class AdminController {
     }
   }
 
-  public async places(request: Request, response: Response): Promise<any> {
+  public async places(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -487,7 +496,7 @@ class AdminController {
     }
   }
 
-  public async searchAllPlaces(request: Request, response: Response): Promise<any> {
+  public async searchAllPlaces(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -517,7 +526,7 @@ class AdminController {
     }
   }
 
-  public async findUserPlaces(request: Request, response: Response): Promise<any> {
+  public async findUserPlaces(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.getAccessLevel(session.id);
@@ -598,7 +607,7 @@ class AdminController {
     }
   }
 
-  public async objectssUpdate(request: Request, response: Response): Promise<any> {
+  public async objectssUpdate(request: Request, response: Response): Promise<void> {
     const session = this.memberService.decryptSession(request, response);
     if (!session) return;
     const admin = await this.memberService.canAdmin(session.id);
@@ -632,7 +641,7 @@ class AdminController {
             price,
             limit,
             quantity,
-            status
+            status,
           );
         } else {
           throw new Error ('Some details are blank. Please complete the form');
@@ -653,30 +662,30 @@ class AdminController {
     const admin = await this.memberService.canAdmin(session.id);
     if (admin) {
       const id = request.body.id;
-    try {
-      await this.objectInstanceService.moveAllObjects(id);
-      await this.objectService.removeAccount(id);
-      await this.messageService.removeAllMessages(id);
-      await this.inboxService.removeAllMessages(id);
-      await this.messageboardService.removeAllMessages(id);
-      await this.avatarService.removeAllAvatars(id);
-      await this.clubService.removeAccount(id);
-      const places = await this.placeService.getOwnedPlaces(id);
-      if(places.length >= 1) {
-        const home = places.find(place => place.type === 'home');
-        if(home){
-          await this.placeService.removeVirtualPet(home.id);
-        }
+      try {
+        await this.objectInstanceService.moveAllObjects(id);
+        await this.objectService.removeAccount(id);
+        await this.messageService.removeAllMessages(id);
+        await this.inboxService.removeAllMessages(id);
+        await this.messageboardService.removeAllMessages(id);
+        await this.avatarService.removeAllAvatars(id);
+        await this.clubService.removeAccount(id);
+        const places = await this.placeService.getOwnedPlaces(id);
+        if(places.length >= 1) {
+          const home = places.find(place => place.type === 'home');
+          if(home){
+            await this.placeService.removeVirtualPet(home.id);
+          }
         
-        places.forEach(place => {
-          this.placeService.removePlace(place.id);
-        });
+          places.forEach(place => {
+            this.placeService.removePlace(place.id);
+          });
+        }
+        await this.memberService.removeAccount(id);
+        response.status(200).json({ status: 'success' });
+      } catch {
+        response.status(400).json({error: 'Error moving objects.'});
       }
-      await this.memberService.removeAccount(id);
-      response.status(200).json({ status: 'success' });
-    } catch {
-      response.status(400).json({error: 'Error moving objects.'});
-    }
     }
   }
 }

@@ -1,4 +1,6 @@
 import { Service } from 'typedi';
+import { CountRow } from '../../repositories/row.types';
+import { RoleCreditRow } from '../../repositories/role-assignment/role-assignment.repository';
 
 import { RoleAssignment } from '../../types/models';
 import {
@@ -26,7 +28,7 @@ export class RoleAssignmentService {
    * places them in response array sorts respone into highest cc payout 
    * then drops all other payouts to the same user
    */
-  public async getMembersDueRoleCredit(limit: number): Promise<any[]> {
+  public async getMembersDueRoleCredit(limit: number): Promise<RoleCreditRow[]> {
     const response = await this.roleAssignmentRepository.getMembersDueRoleCredit(limit);
     return response;
   }
@@ -51,7 +53,8 @@ export class RoleAssignmentService {
     });
   }
 
-  public async countByAssigned(id: number): Promise<RoleAssignment[]> {
+  /** A count, despite the previous `RoleAssignment[]` annotation. */
+  public async countByAssigned(id: number): Promise<CountRow[]> {
     return await this.roleAssignmentRepository.countByAssigned(id);
   }
 }

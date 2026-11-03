@@ -12,6 +12,7 @@ import {
   PlaceRepository,
   ObjectRepository,
   ObjectInstanceRepository,
+  RoleNameRow,
   TransactionRepository,
   WalletRepository,
 } from '../../repositories';
@@ -61,6 +62,7 @@ export class AdminService {
   }
 
   public async fireRole(member_id: number, role_id: number, place_id: number): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
     const response: any = await this.memberRepository.getPrimaryRoleName(member_id);
     if (response.length !== 0) {
       const primaryRoleId = response[0].primary_role_id;
@@ -72,11 +74,12 @@ export class AdminService {
     return;
   }
   
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
   public async getBanHistory(ban_member_id: number): Promise<any> {
     return await this.banRepository.getBanHistory(ban_member_id);
   }
   
-  public async getDonor(member_id: number): Promise<string> {
+  public async getDonor(member_id: number): Promise<RoleNameRow | undefined> {
     const donorId = {
       supporter: await this.roleRepository.roleMap.Supporter,
       advocate: await this.roleRepository.roleMap.Advocate,
@@ -90,6 +93,7 @@ export class AdminService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
   public async getRoleList(): Promise<any> {
     return this.roleRepository.findAll();
   }
@@ -99,6 +103,7 @@ export class AdminService {
     return;
   }
   
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
   public async searchUsers(search: string, limit: number, offset: number): Promise<any> {
     const users = await this.memberRepository.searchUsers(search, limit, offset);
     const total = await this.memberRepository.getTotal(search);
@@ -108,6 +113,7 @@ export class AdminService {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
   public async getTransactions(type: string, limit: number, offset: number): Promise<any> {
     const transactions = await this.transactionRepository
       .getTransactions(type, limit, offset);
@@ -119,6 +125,7 @@ export class AdminService {
   }
 
   public async getTransactionsByWalletId(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
     id: number, limit: number, offset: number): Promise<any> {
     const transactions = await this.transactionRepository
       .getTransactionsByWalletId(id, limit, offset);
@@ -129,6 +136,7 @@ export class AdminService {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
   public async getCommunityData(): Promise<any> {
     const second = 1000;
     const minute = 60 * second;
@@ -279,6 +287,7 @@ export class AdminService {
     user: number,
     limit: number,
     offset: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
   ): Promise<any> {
     const messages = await this.messageRepository.searchUserChat(search, user, limit, offset);
     const total = await this.messageRepository.getChatTotal(search, user);
@@ -288,6 +297,7 @@ export class AdminService {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
   public async searchAvatars(status: number, limit: number, offset: number): Promise<any> {
     const avatars = await this.avatarRespository.findByStatus(status, limit, offset);
     const total = await this.avatarRespository.totalByStatus(status);
@@ -307,6 +317,7 @@ export class AdminService {
     limit: number,
     quantity: number,
     status: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
   ): Promise<any> {
     await this.objectRepository
       .update(id, {
@@ -321,6 +332,7 @@ export class AdminService {
       });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pre-existing, out of scope
   public async searchPlaces(type: string[], limit: number, offset: number): Promise<any> {
     const places = await this.placeRepository.findByType(type, limit, offset, [0,1], 'id');
     const total = await this.placeRepository.totalByType(type);
