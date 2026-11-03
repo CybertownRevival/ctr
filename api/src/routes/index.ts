@@ -18,3 +18,4 @@ export * from './messageboard.routes';
 export * from './inbox.routes';
 export * from './live-event.routes';
 export * from './vote.routes';
+export * from './fundbox.routes';

@@ -14,6 +14,7 @@ import WorldPage from "@/pages/world-browser/WorldPage.vue";
 import WorldBrowserPage from "./pages/world-browser/WorldBrowserPage.vue";
 import WorldBrowserTools from "./pages/world-browser/WorldBrowserTools.vue";
 import CityMapPage from "./pages/CityMapPage.vue";
+import FundboxPage from "./pages/Fundbox.vue";
 import InformationPage from "./pages/Information.vue";
 import NeighborhoodPage from "./pages/neighborhood/NeighborhoodPage.vue";
 import NeighborhoodMapPage from "./pages/neighborhood/NeighborhoodMapPage.vue";
@@ -68,6 +69,7 @@ import AdminObjectUpdate from "@/pages/admin/objects/update.vue";
 import CommunityOverview from "@/pages/admin/overview/overview.vue";
 import CityRoles from "@/pages/admin/roles/roles.vue";
 import Transactions from "@/pages/admin/transactions/search.vue";
+import FundboxAdmin from "@/pages/admin/fundbox/fundboxadmin.vue";
 import UserObjectSearch from "@/pages/admin/objects/instances/search.vue";
 import SeizedObjects from "@/pages/admin/objects/instances/seized.vue";
 import NewsEditor from "@/pages/admin/news/editor.vue";
@@ -397,6 +399,15 @@ export default [
     meta: { wrapper: false },
   },
   {
+    path: "/fundbox/:id",
+    component: FundboxPage,
+    name: "fundbox",
+    meta: {
+      title: "Fundbox",
+      wrapper: false,
+    },
+  },
+  {
     path: "/information/:type/:id/:slug?",
     component: InformationPage,
     name: "information",
@@ -452,6 +463,14 @@ export default [
         name: "Transactions",
         meta: {
           title: "Transactions Search - Admin Panel",
+        },
+      },
+      {
+        path: "/admin/fundbox/",
+        component: FundboxAdmin,
+        name: "FundboxAdmin",
+        meta: {
+          title: "Fundbox Administration - Admin Panel",
         },
       },
       {
